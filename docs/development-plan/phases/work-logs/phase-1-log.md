@@ -26,3 +26,12 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** (1) the CLI and the runtime hooks do nothing, without a message, when started through a symbolic link (`process.argv[1]` is the link, `import.meta.filename` the real path): a task for Phase 3. (2) Selecting an adapter that lives in the consuming project's own repository (`local:`) is not built. (3) GitHub offers no rulesets for a private repository on a free plan, so `host.protection` is `false` and the Git hooks and the agent runtime's hooks hold the branch rules; protect the branches with `node tools/harness.mjs host protect` when the repository is public or the plan changes, after setting `host.protection` to `true`.
 - **Next step:** Phase 1, task 1.1 (`harness adopt`), after the first push and the tag `0.1.0-dev.1`.
 - **Verify with:** `npm run docs:check`; `npm test`
+
+### 2026-11-02 — 1.1 done: `harness adopt`
+- **Tasks:** 1.1 ✅ (its log: [`phase-1/1.1.md`](./phase-1/1.1.md))
+- **Branch:** `feature/1.1-harness-adopt` — done, PR #2
+- **Decisions / deviations from the plan:** one engine with an `adopt` mode; a new optional runtime role `hook-adoption`; nothing deleted or committed; the project's entry file keeps its text and gains the managed blocks at its end.
+- **Problems / blockers / findings:** none that block. Older profile formats are not migrated.
+- **Next step:** 1.2 (the Cursor preset), `C2`.
+- **Verify with:** `npm run docs:check`; `npm test`
+

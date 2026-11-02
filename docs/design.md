@@ -535,6 +535,11 @@ with `harness adopt`. It is the bootstrap for an existing repository:
 
 Its test runs on a fixture shaped like such a project, never on another repository.
 
+**As built (task 1.1).** `harness adopt` is the bootstrap engine with `adopt: true` (`tools/lib/adopt.mjs`, `adopt-steps.mjs`): an existing scaffolded file is kept, not refused; the entry file gets the managed blocks that
+it lacks at its end, under one heading, with the project's own text first; the runtime's `hook-adoption` role merges the framework's hook entries into the project's configuration; `core.hooksPath` is pointed at
+the framework; nothing is committed and no branch is made. What the framework replaces is decided by a list of the names the first harness used (`REPLACED_SCRIPTS`) and by comparing a script's exported names
+with the framework's modules (two names in common, or its only one). The old profile file must be valid for the schema of this version: a key the schema does not know fails the adoption and is named.
+
 ---
 
 ## 7. Existing mechanisms as framework parts (all on Node)

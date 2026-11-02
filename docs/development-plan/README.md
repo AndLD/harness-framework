@@ -14,7 +14,7 @@ is updated in the change that starts or finishes it.
 <!-- plan-summary:start -->
 | Phase | Theme | Story points | Agent complexity | Status |
 | ----- | ----- | ------------ | ---------------- | ------ |
-| 1 | Adoption, presets, examples and the proof | 12 | C1–C2 | ⬜ Not started |
+| 1 | Adoption, presets, examples and the proof | 12 | C1–C2 | 🟡 In progress |
 | 2 | Security and review automation | 17 | C2–C3 | ⬜ Not started |
 | 3 | Issues and stabilization | 0 (grows) | — | ⬜ Not started |
 |  | **Total of Phases 1–3** | **29** (Phase 3 grows as issues are added) | | |
