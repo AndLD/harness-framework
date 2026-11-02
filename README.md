@@ -17,7 +17,7 @@ gives the steps. The commands below are the ones the build tasks added; one that
 | `profile/` | the schema of `harness-profile.json`, the one file that holds every project value, and the description of each role |
 | `adapters/` | what depends on a stack (`stack/`), a coding-agent runtime (`runtime/`) or a repository host (`host/`); each axis has a skeleton for a new adapter |
 | `tools/` | the `harness` command line, its checks, the Git hooks and the runtime hooks, and the conformance suite that every adapter passes (`tools/conformance/`, run by `harness adapter test`); plain Node, with no dependencies |
-| `tests/` | the framework's own tests that run the suite on the presets and on deliberately broken adapters (`tests/conformance/`), and the recorded fixtures |
+| `tests/` | the framework's own tests that run the suite on the presets and on deliberately broken adapters (`tests/conformance/`), the proof of the design on five scratch projects (`tests/proof/`), and the recorded fixtures |
 | `examples/` | a filled profile, a product-knowledge skeleton and a plan of a fictitious project |
 | `framework.json` | the name, the version, the adapters and the paths that a sync copies |
 
