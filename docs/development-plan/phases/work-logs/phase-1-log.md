@@ -35,3 +35,15 @@ pauses. Newest entry at the bottom.
 - **Next step:** 1.2 (the Cursor preset), `C2`.
 - **Verify with:** `npm run docs:check`; `npm test`
 
+### 2026-11-02 — decision: `0.1.0` ships with the Cursor preset unverified
+- **Tasks:** 1.2, 1.5 and the `0.1.0` tag.
+- **Branch:** `docs/phase-1-cursor-unverified`
+- **Decisions / deviations from the plan:** the owner has no Cursor subscription yet and chose, on 2026-11-02, to tag `0.1.0` with the Cursor preset marked **unverified** rather than hold the release. In practice: (1) task 1.2 writes the preset
+  from Cursor's documentation, records the event samples as written-from-documentation, and writes the owner's checklist for a real session into the adapter's README; the README, the manifest description and the changelog say that
+  the preset is unverified in a live session. (2) Task 1.5 does its automated part only (the bootstrap of each combination, `harness check all`, the targeted review) and does **not** wait for a Cursor session. (3) "Continue Phase 1" is the owner's
+  approval to tag `0.1.0` after 1.5: the session cuts the release by the release procedure (`harness release`, the release branch, its merges into the production and the integration branch, the tag) and **stops after the tag**; for this release only, the owner's decision is the approval of those merges that the Git rules otherwise ask for. (4) The checklist stays open; whoever runs it
+  reports the result, and a fix ships as `0.1.1`. The consuming project's own exit criterion (the owner has run the Cursor preset in a real session) stays open there and is not reworded by this decision.
+- **Problems / blockers / findings:** none.
+- **Next step:** 1.2 (the Cursor preset), `C2`, then 1.3, 1.4, 1.5, then the `0.1.0` tag.
+- **Verify with:** `npm run docs:check`; `npm test`
+
