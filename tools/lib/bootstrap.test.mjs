@@ -158,7 +158,7 @@ test('the template repository holds every adapter, the empty questions, and a lo
   buildTemplate({ out })
   const lock = readLock(out)
   assert.deepEqual(lock.template, ['README.md', 'BOOTSTRAP.md'])
-  assert.deepEqual(lock.adapters, { stacks: ['node-ts'], runtimes: ['claude-code'], hosts: ['github'] })
+  assert.deepEqual(lock.adapters, { stacks: ['node-ts'], runtimes: ['claude-code', 'cursor'], hosts: ['github'] })
   assert.equal(lock.source.type, 'path')
   assert.ok(existsSync(join(out, 'harness', 'adapters', 'runtime', 'claude-code', 'manifest.json')))
   assert.ok(existsSync(join(out, 'BOOTSTRAP.md')))

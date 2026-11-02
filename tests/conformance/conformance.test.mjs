@@ -32,6 +32,7 @@ const json = (change) => (text) => JSON.stringify(change(JSON.parse(text)), null
 for (const [axis, name] of [
   ['stack', 'node-ts'],
   ['runtime', 'claude-code'],
+  ['runtime', 'cursor'],
   ['host', 'github']
 ]) {
   test(`the ${axis} preset ${name} passes the conformance suite`, async () => {
