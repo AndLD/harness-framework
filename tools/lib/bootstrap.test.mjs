@@ -88,7 +88,7 @@ test('the profile file is written in the order of the schema, the unknown keys l
 
 test('an adapter the framework does not have is named with the ones it has', () => {
   const problems = unknownAdapters(completeProfile({ ...ANSWERS, adapters: { stacks: ['rust'] } }), adapterCatalogue())
-  assert.deepEqual(problems, ['the framework has no stack adapter "rust"; it has node-ts'])
+  assert.deepEqual(problems, ['the framework has no stack adapter "rust"; it has node-ts, python'])
 })
 
 test('the scaffold joins the ignore lines of every part and renders the core files with the profile', () => {
@@ -158,7 +158,11 @@ test('the template repository holds every adapter, the empty questions, and a lo
   buildTemplate({ out })
   const lock = readLock(out)
   assert.deepEqual(lock.template, ['README.md', 'BOOTSTRAP.md'])
-  assert.deepEqual(lock.adapters, { stacks: ['node-ts'], runtimes: ['claude-code', 'cursor'], hosts: ['github'] })
+  assert.deepEqual(lock.adapters, {
+    stacks: ['node-ts', 'python'],
+    runtimes: ['claude-code', 'cursor'],
+    hosts: ['github']
+  })
   assert.equal(lock.source.type, 'path')
   assert.ok(existsSync(join(out, 'harness', 'adapters', 'runtime', 'claude-code', 'manifest.json')))
   assert.ok(existsSync(join(out, 'BOOTSTRAP.md')))
@@ -209,7 +213,7 @@ test('init asks only what no flag answered, and an empty reply takes the value o
     /holds no framework\.json/
   )
   assert.equal(prompts.length, 6)
-  assert.ok(prompts[0].startsWith('Stack adapters (available: node-ts)'))
+  assert.ok(prompts[0].startsWith('Stack adapters (available: node-ts, python)'))
   const written = JSON.parse(readFileSync(join(root, 'harness-profile.json'), 'utf8'))
   assert.deepEqual(written.adapters, { stacks: ['node-ts'], runtimes: [], host: 'github' })
   assert.equal(written.coverageGate.branches, 80)

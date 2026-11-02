@@ -26,6 +26,7 @@
 //   harness guard pre-commit | pre-push                           the Git guards of the protected branches (run by the Git hooks)
 //   harness coverage check-changed [--skip-missing] <base> [<package>...]   the files changed since <base> meet the coverage gate
 //   harness coverage merge <artifacts> [--out <dir>] [<package>...]         merge the coverage shards of CI and hold the total to the gate
+//   harness coverage summarize [--skip-missing] [<package>...]              write the neutral summary of the last local run of a package (a tool that does not write it)
 //   harness host protect [--repo <owner/name>]                    set the protection of the production and the integration branch on the host
 //   harness adapter test <path> [--only <pattern>]                run the conformance suite of its axis on the adapter folder at <path>
 // `--root <dir>` runs on another project (default: the Git top level of the working directory).
@@ -37,7 +38,7 @@ import { ciChanges } from './lib/changes.mjs'
 import { release, releaseNotes } from './lib/changelog.mjs'
 import { bootstrap, buildTemplate } from './lib/bootstrap.mjs'
 import { CHECKS, checkAll, report, runCheck } from './lib/checks.mjs'
-import { checkChanged, mergeShards } from './lib/coverage.mjs'
+import { checkChanged, mergeShards, summarizePackages } from './lib/coverage.mjs'
 import { guardCommit, guardPush } from './lib/git-guards.mjs'
 import { adopt } from './lib/adopt.mjs'
 import { init } from './lib/init.mjs'
@@ -71,6 +72,7 @@ const USAGE = `usage: harness <command>
   guard pre-commit|pre-push
   coverage check-changed [--skip-missing] <base> [<package>...]
   coverage merge <artifacts> [--out <dir>] [<package>...]
+  coverage summarize [--skip-missing] [<package>...]
   host protect [--repo <owner/name>]
   adapter test <path> [--only <pattern>]`
 
@@ -258,6 +260,17 @@ export async function run(argv, { out = console.log, err = console.error, input 
         artifacts: resolve(artifacts),
         out: flags.out ? resolve(flags.out) : root,
         packages
+      })
+      messages.forEach((line) => out(line))
+      problems.forEach((line) => err(line))
+      return code
+    }
+    if (words[0] === 'coverage' && words[1] === 'summarize') {
+      const { code, messages, problems } = summarizePackages({
+        root,
+        profile: loadProfile(root),
+        packages: words.slice(2),
+        skipMissing: flags.skipMissing
       })
       messages.forEach((line) => out(line))
       problems.forEach((line) => err(line))

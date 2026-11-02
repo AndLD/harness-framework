@@ -3,7 +3,7 @@
   "version": "0.1.0-dev.1",
   "license": "MIT",
   "adapters": {
-    "stack": ["node-ts"],
+    "stack": ["node-ts", "python"],
     "runtime": ["claude-code", "cursor"],
     "host": ["github"]
   },
