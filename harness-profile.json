@@ -4,7 +4,8 @@
     "title": "harness-framework"
   },
   "repository": {
-    "slug": "AndLD/harness-framework"
+    "slug": "AndLD/harness-framework",
+    "url": "https://github.com/AndLD/harness-framework"
   },
   "adapters": {
     "stacks": [
