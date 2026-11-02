@@ -511,8 +511,9 @@ trees byte for byte, apart from the lock's timestamp. The template repository is
   README, the stack file, the rule-to-check map, the plan index, the open-ended phase as the first phase (`plan.openEndedPhaseNumber` 1, no
   task yet) and its work log, the changelog and its fragments folder, a releasing guide, and the harness-review bindings as a stub that the
   first harness review fills; node-ts adds a package manifest whose lint and test scripts say that no tool is installed yet (so CI is green on
-  a project with no code) and an empty lock file. The product-knowledge skeleton and the other bindings come with the examples (Phase 1 of the
-  framework's plan, task 1.4). `harness check scaffold` checks only their invariants:
+  a project with no code) and an empty lock file. The product-knowledge skeleton comes with task 1.4 of the framework's plan, as the templates `core/templates/scaffold/product-*.md` (they must travel with the vendored copy and the
+  template repository, which hold no `examples/`); `examples/product/` is the same skeleton filled for a fictitious project. The bindings of the plan, the phases and the code review are not written
+  by the bootstrap: no check needs them, and a project writes them when it needs a value that the method asks of its bindings. `harness check scaffold` checks only their invariants:
   - the framework's hook entries are present and call the vendored scripts;
   - the `Read(...)` deny rules of `access.denyRead` are present in `.claude/settings.json`;
   - the stack's ignore files exclude `harness/` (pinned mode), so formatting the project never rewrites the vendored tree;
