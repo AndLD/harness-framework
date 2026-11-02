@@ -136,3 +136,12 @@ test('the version of a TOML file is the one in its [project] table, and writing 
   assert.throws(() => readVersion('pyproject.toml', '[tool.x]\nversion = "7"\n'), /no version in its \[project\] table/)
   assert.throws(() => readVersion('package.json', '{}'), /package\.json has no version/)
 })
+
+test('a development version is below its own release, so 0.1.0-dev.1 is released as 0.1.0 and not as anything lower', () => {
+  assert.equal(nextVersion('0.1.0-dev.1', '0.1.0'), '0.1.0')
+  assert.equal(nextVersion('0.1.0-dev.1', 'patch'), '0.1.0')
+  assert.equal(nextVersion('0.1.0-dev.1', 'minor'), '0.2.0')
+  assert.equal(nextVersion('0.1.0-dev.1', '0.2.0'), '0.2.0')
+  assert.throws(() => nextVersion('0.1.0-dev.1', '0.0.9'), /not higher/)
+  assert.throws(() => nextVersion('0.1.0', '0.1.0-dev.2'), /not a version/)
+})

@@ -6,6 +6,8 @@ import { existsSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'no
 import { join } from 'node:path'
 
 const SEMVER = /^(\d+)\.(\d+)\.(\d+)$/
+// The version a development line is at, before the release it leads to: 0.1.0-dev.1 comes before 0.1.0
+const DEVELOPMENT = /^(\d+)\.(\d+)\.(\d+)-[0-9A-Za-z.-]+$/
 
 export function parseVersion(version) {
   const match = SEMVER.exec(version)
@@ -15,16 +17,25 @@ export function parseVersion(version) {
   return match.slice(1).map(Number)
 }
 
-// `bump` is major | minor | patch, or an explicit version that must be higher than the current one
+// `bump` is major | minor | patch, or an explicit version that must be higher than the current one. A current version that is a development version
+// (`0.1.0-dev.1`) is below its own release: `patch` and `0.1.0` both give 0.1.0.
 export function nextVersion(current, bump) {
-  const [major, minor, patch] = parseVersion(current)
+  const development = DEVELOPMENT.exec(current)
+  const [major, minor, patch] = development ? development.slice(1).map(Number) : parseVersion(current)
 
   if (bump === 'major') return `${major + 1}.0.0`
   if (bump === 'minor') return `${major}.${minor + 1}.0`
-  if (bump === 'patch') return `${major}.${minor}.${patch + 1}`
+  if (bump === 'patch') return development ? `${major}.${minor}.${patch}` : `${major}.${minor}.${patch + 1}`
 
   const [nextMajor, nextMinor, nextPatch] = parseVersion(bump)
-  const isHigher = nextMajor !== major ? nextMajor > major : nextMinor !== minor ? nextMinor > minor : nextPatch > patch
+  const isHigher =
+    nextMajor !== major
+      ? nextMajor > major
+      : nextMinor !== minor
+        ? nextMinor > minor
+        : development
+          ? nextPatch >= patch
+          : nextPatch > patch
   if (!isHigher) {
     throw new Error(`${bump} is not higher than the current version ${current}`)
   }
