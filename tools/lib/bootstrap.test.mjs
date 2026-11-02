@@ -104,6 +104,25 @@ test('the scaffold joins the ignore lines of every part and renders the core fil
   assert.ok(files['.github/workflows/ci.yml'] && files['CLAUDE.md'] && files['package.json'])
 })
 
+test('the scaffold writes the product-knowledge skeleton, which the entry file points to and the product-knowledge check accepts', () => {
+  const profile = withDefaults(readSchema(), completeProfile(ANSWERS))
+  const files = Object.fromEntries(scaffoldPlan({ profile, modules }).map(({ path, content }) => [path, content]))
+  assert.deepEqual(profile.productKnowledge.excluded, ['open-questions.md', 'backlog.md'])
+  for (const path of ['README.md', 'glossary.md', 'open-questions.md', 'backlog.md']) {
+    assert.ok(files[`docs/product/${path}`], path)
+  }
+  assert.match(
+    files['docs/product/README.md'],
+    /^\[← README\]\(\.\.\/\.\.\/README\.md\)\n\n# acme — product specification/
+  )
+  assert.match(files['docs/product/glossary.md'], /\| Term \| Code name \| Aliases \| Definition \|/)
+  assert.match(files['docs/product/open-questions.md'], /\| Id \| Question \| Kind \| Section \| Blocks \| Owner \|/)
+  assert.match(
+    files['AGENTS.md'],
+    /\| understand what the product is or does \| the \[product specification\]\(\.\/docs\/product\/README\.md\)/
+  )
+})
+
 test('without an agent runtime the project gets the agent-neutral minimum', () => {
   const profile = withDefaults(readSchema(), completeProfile({ ...ANSWERS, adapters: { stacks: ['node-ts'] } }))
   const files = scaffoldPlan({ profile, modules })

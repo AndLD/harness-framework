@@ -63,3 +63,11 @@ pauses. Newest entry at the bottom.
 - **Next step:** 1.4 (the examples), `C1`.
 - **Verify with:** `npm run docs:check`; `npm test`
 
+### 2026-11-02 — 1.4 done: the examples
+- **Tasks:** 1.4 ✅ (its log: [`phase-1/1.4.md`](./phase-1/1.4.md))
+- **Branch:** `feature/1.4-examples` — done, PR #6
+- **Decisions / deviations from the plan:** the product-knowledge skeleton is a set of scaffold templates (it must travel with the vendored copy), `examples/` holds it filled; the sample plan is a reference and is not written into a new project; the plan, phase and code-review bindings are not written by the bootstrap.
+- **Problems / blockers / findings:** none that block.
+- **Next step:** 1.5 (the proof), `C2`; it also fixes the duplicate CI job ids of two stacks (found in 1.3). Then the `0.1.0` tag.
+- **Verify with:** `npm run docs:check`; `npm test`
+

@@ -1,0 +1,110 @@
+{
+  "project": {
+    "name": "orbit-notes",
+    "title": "Orbit Notes",
+    "product": "A shared notes service: write notes in a browser, share them with a team, and find them again by search.",
+    "packages": "`api` (the HTTP service) and `web` (the browser client)",
+    "owner": "Dana Whitfield, who approves rule changes"
+  },
+  "repository": {
+    "slug": "example-org/orbit-notes"
+  },
+  "adapters": {
+    "stacks": [{ "adapter": "node-ts", "packages": ["api", "web"] }],
+    "runtimes": ["claude-code"],
+    "host": "github"
+  },
+  "coverageGate": { "statements": 90, "branches": 90, "functions": 90, "lines": 90 },
+  "coveragePackages": ["api", "web"],
+  "quality": {
+    "coverageMechanism": "`coverageGate` of this file, read by the coverage commands of the framework",
+    "coverageScope": "every source file of `api` and `web`, and every file a pull request changes",
+    "localGate": "the tests related to the changed files, and the coverage of the changed files",
+    "localGateMechanism": "the `pre-push` Git hook, which runs `harness gate`"
+  },
+  "requiredChecks": ["verify", "pr-title"],
+  "branches": { "production": "main", "integration": "develop" },
+  "paths": {
+    "plan": "docs/development-plan",
+    "phases": "docs/development-plan/phases",
+    "planIndex": "docs/development-plan/README.md",
+    "changelog": "CHANGELOG.md",
+    "changelogFragments": "changelog.d"
+  },
+  "plan": {
+    "taskId": "`<phase>.<number>`, with an optional letter suffix (`2.1`, `2.1a`)",
+    "phasesWithFragments": "every phase: each task writes one log fragment `work-logs/phase-<n>/<task id>.md` next to the phase files (template: `harness/core/plan/task-log-template.md`)",
+    "logCommand": "`node harness/tools/harness.mjs plan log <n>`",
+    "estimationScale": "story points (SP), Fibonacci; 1 SP is about half a developer-day or one focused agent session; estimates include the tests the definition of done requires",
+    "resumePhrases": "\"Start Phase N\", \"Continue Phase N\"; the phrase approves the pull requests of the named phases",
+    "openEndedPhase": "Phase 9 (issues found in use); its size grows",
+    "openEndedPhaseNumber": 9,
+    "specificationCitation": "by the file and the heading of the product specification, for example `notes.md`, \"Sharing\"",
+    "complexity": {
+      "scale": {
+        "C1": "routine: mechanical, fully specified, obvious to verify",
+        "C2": "standard engineering: a component to a clear specification, with tests",
+        "C3": "judgment: research, correctness-critical design, synthesis"
+      },
+      "models": {
+        "C1": "Sonnet 5.5 at medium effort",
+        "C2": "Sonnet 5.5 at high effort",
+        "C3": "Opus 5.5 at high effort"
+      }
+    }
+  },
+  "versions": { "runtime": "Node.js 22 LTS", "language": "TypeScript 5", "database": "PostgreSQL 16" },
+  "commands": {
+    "lint": "npm run lint",
+    "typecheck": "npm run typecheck",
+    "test": "npm test",
+    "testCoverage": "npm run test:coverage",
+    "e2e": "npm run e2e",
+    "docsCheck": "npm run docs:check",
+    "harnessSync": "npm run harness -- sync",
+    "harnessSyncLocal": "npm run harness -- sync --local",
+    "harnessDiff": "npm run harness -- diff",
+    "dbUp": "docker compose up -d db",
+    "dbMigrate": "npm run db:migrate -w api",
+    "dbSeed": "npm run db:seed -w api"
+  },
+  "terms": {
+    "stack": "\\bjest\\b|\\bnpm\\b|\\btypescript\\b|\\beslint\\b|\\bprettier\\b|istanbul|node_modules|package\\.json|\\bpostgres(ql)?\\b",
+    "product": "\\borbit notes\\b|\\bnotebook\\b",
+    "productGeneric": "\\bnote\\b|\\bteam\\b",
+    "projectValues": "`main`|`develop`|example-org/orbit-notes"
+  },
+  "contexts": [
+    { "name": "Notes", "sections": "`notes.md`: writing, editing and history" },
+    { "name": "Sharing", "sections": "`sharing.md`: teams, access and links" },
+    { "name": "Search", "sections": "`search.md`: finding notes" }
+  ],
+  "documents": {
+    "rules": "AGENTS.md",
+    "readme": "README.md",
+    "stack": "docs/engineering/stack.md",
+    "ruleChecks": "docs/engineering/rule-checks.md",
+    "specification": "docs/product/README.md",
+    "glossary": "docs/product/glossary.md",
+    "planMethod": "harness/core/plan/README.md",
+    "changelogFragments": "harness/core/templates/changelog-fragments.md",
+    "releasing": "docs/operations/releasing.md",
+    "codeReviews": "harness/core/reviews/code/README.md",
+    "harnessReviews": "harness/core/reviews/harness/README.md",
+    "harnessBindings": "docs/quality-reviews/harness/bindings.md"
+  },
+  "access": {
+    "denyRead": [".env", ".env.*", "!.env.example", "*.pem", "*.key"]
+  },
+  "productKnowledge": {
+    "root": "docs/product",
+    "specification": "docs/product",
+    "glossary": "glossary.md",
+    "register": "open-questions.md",
+    "backlog": "backlog.md",
+    "excluded": ["open-questions.md", "backlog.md"],
+    "allowedTerms": { "search.md": ["postgres"] },
+    "implementationPattern": "\\b(?:api|web)/src/\\S+"
+  },
+  "release": { "versionFiles": ["package.json"] }
+}
