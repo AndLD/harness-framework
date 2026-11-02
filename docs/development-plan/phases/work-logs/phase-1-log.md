@@ -71,3 +71,11 @@ pauses. Newest entry at the bottom.
 - **Next step:** 1.5 (the proof), `C2`; it also fixes the duplicate CI job ids of two stacks (found in 1.3). Then the `0.1.0` tag.
 - **Verify with:** `npm run docs:check`; `npm test`
 
+### 2026-11-02 — 1.5 done: the proof of §3.4
+- **Tasks:** 1.5 ✅ (its log: [`phase-1/1.5.md`](./phase-1/1.5.md))
+- **Branch:** `feature/1.5-proof` — done, PR #7
+- **Decisions / deviations from the plan:** the proof is a script in the repository (`tests/proof/`), so that it can be run again for `0.1.1`; the real Cursor session is not part of it (decision of 2026-11-02).
+- **Problems / blockers / findings:** the proof held on all five projects (62 checks) after three defects were fixed in this task: duplicate CI job ids with two stacks, and a document map that dropped rows (which left the releases guide, the changelog and the plan method unreachable).
+- **Next step:** finish Phase 1 and cut `0.1.0` by the release procedure (the decision of 2026-11-02 is the owner's approval of its merges), then stop.
+- **Verify with:** `npm run docs:check`; `npm test`; `tests/proof/proof.sh <directory>`
+

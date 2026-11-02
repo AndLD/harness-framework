@@ -130,6 +130,11 @@ PROJECT_VALUES='`main`|`develop`|AndLD/harness-framework'
 | Rule-to-check map (read on demand) | [`engineering/rule-checks.md`](./engineering/rule-checks.md) |
 | Project profile | this file |
 | Project overview, setup, environment variables | [`README.md`](../README.md) |
+| Changelog | [`CHANGELOG.md`](../CHANGELOG.md) |
+| Changelog fragments (entries of unreleased changes, collected by the release script) | [`core/templates/changelog-fragments.md`](../core/templates/changelog-fragments.md) |
 | Plan index | [`development-plan/README.md`](./development-plan/README.md) |
+| Plan method | [`core/plan/README.md`](../core/plan/README.md) |
+| Releases | [`operations/releasing.md`](./operations/releasing.md) |
 | Code quality reviews | [`core/reviews/code/README.md`](../core/reviews/code/README.md) |
-| Harness quality reviews | [`core/reviews/harness/README.md`](../core/reviews/harness/README.md), [`quality-reviews/harness/bindings.md`](./quality-reviews/harness/bindings.md) |
+| Harness quality reviews | [`core/reviews/harness/README.md`](../core/reviews/harness/README.md) |
+| Harness review bindings | [`quality-reviews/harness/bindings.md`](./quality-reviews/harness/bindings.md) |

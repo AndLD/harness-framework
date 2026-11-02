@@ -35,7 +35,8 @@
       "harnessReviews": "harness/core/reviews/harness/README.md",
       "harnessBindings": "docs/quality-reviews/harness/bindings.md",
       "specification": "docs/product/README.md",
-      "glossary": "docs/product/glossary.md"
+      "glossary": "docs/product/glossary.md",
+      "changelog": "CHANGELOG.md"
     },
     "plan": {
       "taskId": "`<phase>.<number>`, with an optional letter suffix (`2.1`, `2.1a`)",

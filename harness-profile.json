@@ -84,6 +84,7 @@
     "stack": "docs/engineering/stack.md",
     "ruleChecks": "docs/engineering/rule-checks.md",
     "readme": "README.md",
+    "changelog": "CHANGELOG.md",
     "changelogFragments": "core/templates/changelog-fragments.md",
     "planMethod": "core/plan/README.md",
     "releasing": "docs/operations/releasing.md",
