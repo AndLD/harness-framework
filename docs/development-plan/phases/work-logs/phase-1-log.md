@@ -54,3 +54,12 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none that block.
 - **Next step:** 1.3 (the Python preset, by the new-adapter procedure), `C2`.
 - **Verify with:** `npm run docs:check`; `npm test`
+
+### 2026-11-02 — 1.3 done: the Python preset
+- **Tasks:** 1.3 ✅ (its log: [`phase-1/1.3.md`](./phase-1/1.3.md))
+- **Branch:** `feature/1.3-python-preset` — done, PR #5
+- **Decisions / deviations from the plan:** the preset follows the new-adapter procedure; six deviations are fixed in the procedure and the guide (a summary command for a tool that writes no neutral summary, an ignore `pattern`, TOML version files, `.nvmrc` as lines, no hand-written lock file, uv in the framework's CI).
+- **Problems / blockers / findings:** a project with two stacks gets duplicate CI job ids; task 1.5 fixes it.
+- **Next step:** 1.4 (the examples), `C1`.
+- **Verify with:** `npm run docs:check`; `npm test`
+

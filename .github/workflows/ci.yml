@@ -59,6 +59,8 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+      # The conformance suite runs the Python preset's tools, so uv is there
+      - uses: astral-sh/setup-uv@v6
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
