@@ -2,7 +2,7 @@
 
 # Phase 1 — Adoption, presets, examples and the proof (12 SP)
 
-**Status:** 🟡 In progress · **Branches:** see the [implementation log](#implementation-log) · **Work log:** [phase-1-log](./work-logs/phase-1-log.md), and one fragment per task in `work-logs/phase-1/`
+**Status:** ✅ Done · **Branches:** see the [implementation log](#implementation-log) · **Work log:** [phase-1-log](./work-logs/phase-1-log.md), and one fragment per task in `work-logs/phase-1/`
 
 Finishes the first release. The tasks touch nothing in the project the framework was extracted from, so they run here: `harness adopt` for a project with copied harness scripts, the Cursor and Python presets, the examples that a new project receives, and the proof of the design (section 3.4) on a scratch project for every combination. The Cursor preset is written from Cursor's documentation and ships in `0.1.0` as **unverified**: the owner has no Cursor access yet (decision of 2026-11-02, see the [phase log](./work-logs/phase-1-log.md)), so running it in a real Cursor session stays open and is not part of this phase's acceptance. When the phase is done, `0.1.0` is tagged and the project that consumes the framework syncs to it (its task 17.16).
 

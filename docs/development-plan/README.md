@@ -14,10 +14,10 @@ is updated in the change that starts or finishes it.
 <!-- plan-summary:start -->
 | Phase | Theme | Story points | Agent complexity | Status |
 | ----- | ----- | ------------ | ---------------- | ------ |
-| 1 | Adoption, presets, examples and the proof | 12 | C1–C2 | 🟡 In progress |
+| 1 | Adoption, presets, examples and the proof | 12 | C1–C2 | ✅ Done |
 | 2 | Security and review automation | 17 | C2–C3 | ⬜ Not started |
-| 3 | Issues and stabilization | 0 (grows) | — | ⬜ Not started |
-|  | **Total of Phases 1–3** | **29** (Phase 3 grows as issues are added) | | |
+| 3 | Issues and stabilization | 2 (grows) | C1 | ⬜ Not started |
+|  | **Total of Phases 1–3** | **31** (Phase 3 grows as issues are added) | | |
 <!-- plan-summary:end -->
 
 ---
@@ -33,5 +33,5 @@ is updated in the change that starts or finishes it.
 <!-- plan-contents:start -->
 - [Phase 1 — Adoption, presets, examples and the proof (12 SP)](./phases/phase-1-adoption-presets-proof.md)
 - [Phase 2 — Security and review automation (17 SP)](./phases/phase-2-security.md)
-- [Phase 3 — Issues and stabilization (0 SP, grows as issues are added)](./phases/phase-3-issues.md)
+- [Phase 3 — Issues and stabilization (2 SP, grows as issues are added)](./phases/phase-3-issues.md)
 <!-- plan-contents:end -->
