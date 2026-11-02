@@ -31,7 +31,7 @@ import {
   writeLock
 } from './lock.mjs'
 import { planSummary } from './plan.mjs'
-import { PROFILE_FILE, loadProfile, readSchema, validate, withDefaults } from './profile.mjs'
+import { PROFILE_FILE, folderOf, loadProfile, readSchema, validate, withDefaults } from './profile.mjs'
 import { render, valueAt } from './render.mjs'
 import { readManifest, resolveSource } from './source.mjs'
 import { hashTree } from './tree.mjs'
@@ -296,6 +296,23 @@ function roleFunction(adapter, role) {
 }
 
 /**
+ * What a stack's `ciJobs` needs to know when the project has several stacks: how many there are, whether this is the first (the one that runs the
+ * documentation check), the folders it owns, and its own commands (the profile's commands are the project's, and come from the first stack's defaults).
+ */
+function jobsContext(profile, name, index, count, adapter) {
+  const entry = (profile.adapters?.stacks ?? []).find(
+    (item) => (typeof item === 'string' ? item : item.adapter) === name
+  )
+  return {
+    stacks: count,
+    first: index === 0,
+    name,
+    packages: Array.isArray(entry?.packages) ? entry.packages.map(folderOf) : undefined,
+    commands: adapter?.manifest.defaults?.commands
+  }
+}
+
+/**
  * The scaffolded files of a new project (design §6.3): the core templates of `core/templates/scaffold/` rendered with the profile, and the files
  * of each selected adapter's `scaffold-files` role. A file that several of them name must be a list of lines (the Git ignore file), and the lines
  * are joined in order without repeats; any other path named twice is an error.
@@ -332,13 +349,13 @@ export function scaffoldPlan({ profile, frameworkDir = FRAMEWORK_DIR, modules })
     )
   }
   const jobs = []
-  for (const name of stacks) {
+  stacks.forEach((name, index) => {
     contributions.push(...(roleFunction(modules.stack[name], 'scaffold-files')?.(profile) ?? []))
     const ciJobs = roleFunction(modules.stack[name], 'ci-job-layout')
     if (ciJobs) {
-      jobs.push(ciJobs(profile))
+      jobs.push(ciJobs(profile, jobsContext(profile, name, index, stacks.length, modules.stack[name])))
     }
-  }
+  })
   for (const name of runtimes) {
     contributions.push(...(roleFunction(modules.runtime[name], 'scaffold-files')?.(profile) ?? []))
   }

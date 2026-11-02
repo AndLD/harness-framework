@@ -123,6 +123,31 @@ test('the scaffold writes the product-knowledge skeleton, which the entry file p
   )
 })
 
+test('a project with two stacks gets one CI workflow whose job ids are unique, each stack with its own static job and its own coverage jobs', () => {
+  const profile = withDefaults(
+    readSchema(),
+    completeProfile({
+      ...ANSWERS,
+      adapters: {
+        stacks: [
+          { adapter: 'node-ts', packages: ['web'] },
+          { adapter: 'python', packages: ['api'] }
+        ],
+        runtimes: ['claude-code']
+      },
+      coveragePackages: ['web', 'api']
+    })
+  )
+  const files = Object.fromEntries(scaffoldPlan({ profile, modules }).map(({ path, content }) => [path, content]))
+  const ci = files['.github/workflows/ci.yml']
+  const jobIds = [...ci.slice(ci.indexOf('\njobs:')).matchAll(/^ {2}([a-z][\w-]*):$/gm)].map((match) => match[1])
+  assert.equal(new Set(jobIds).size, jobIds.length, jobIds.join(', '))
+  assert.deepEqual(jobIds, ['pr-title', 'changes', 'static-node-ts', 'web', 'static-python', 'api', 'verify'])
+  assert.match(ci, /needs: \[changes, static-node-ts, web, static-python, api\]/)
+  assert.equal(files['.nvmrc'], '22\n', 'both stacks name the Node version, as one line')
+  assert.match(files['pyproject.toml'], /members = \["api"\]/)
+})
+
 test('without an agent runtime the project gets the agent-neutral minimum', () => {
   const profile = withDefaults(readSchema(), completeProfile({ ...ANSWERS, adapters: { stacks: ['node-ts'] } }))
   const files = scaffoldPlan({ profile, modules })
