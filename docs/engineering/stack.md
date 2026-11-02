@@ -37,8 +37,8 @@ The core never depends on an adapter; the tools reach an adapter only through it
 ## 4. Test tooling
 
 `node --test` with `node:assert/strict`. A test that needs Git builds a throwaway repository in a temporary folder and removes it. The conformance suite
-(`tools/conformance/`) is run by `harness adapter test` and by `tests/conformance/conformance.test.mjs` on every preset and on broken copies. The recorded event samples are
-in the claude-code adapter (`events/`) and in `tests/fixtures/events/`.
+(`tools/conformance/`) is run by `harness adapter test` and by `tests/conformance/conformance.test.mjs` on every preset and on broken copies. The event samples are
+in each runtime adapter (`events/`): the Claude Code ones recorded, the Cursor ones written from its documentation.
 
 ## 5. Definition of done: stack items
 

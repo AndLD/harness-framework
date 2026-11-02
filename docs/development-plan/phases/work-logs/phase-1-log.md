@@ -47,3 +47,10 @@ pauses. Newest entry at the bottom.
 - **Next step:** 1.2 (the Cursor preset), `C2`, then 1.3, 1.4, 1.5, then the `0.1.0` tag.
 - **Verify with:** `npm run docs:check`; `npm test`
 
+### 2026-11-02 — 1.2 done: the Cursor preset
+- **Tasks:** 1.2 ✅ (its log: [`phase-1/1.2.md`](./phase-1/1.2.md))
+- **Branch:** `feature/1.2-cursor-preset` — done, PR #4
+- **Decisions / deviations from the plan:** native and compat modes, decided by whether `claude-code` is selected; `.cursorignore` is a managed block that the sync adds (a new optional runtime role `managed-blocks`, `#` markers); the preset is documented as unverified in a live session, with the checklist in its README.
+- **Problems / blockers / findings:** none that block.
+- **Next step:** 1.3 (the Python preset, by the new-adapter procedure), `C2`.
+- **Verify with:** `npm run docs:check`; `npm test`
