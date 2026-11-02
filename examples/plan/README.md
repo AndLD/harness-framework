@@ -1,6 +1,6 @@
 # Development plan
 
-The plan of Orbit Notes: phases of tasks, each task one pull request. The method is the [plan method](../../harness/core/plan/README.md).
+The plan of Orbit Notes: phases of tasks, each task one pull request. The method is the plan method of the framework (`core/plan/` there).
 
 **Phase status legend:** ⬜ not started · 🟡 in progress · ✅ done. A phase's status is kept in the summary table and in the phase file, and
 is updated in the change that starts or finishes it.
