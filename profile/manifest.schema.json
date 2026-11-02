@@ -121,6 +121,7 @@
       "pull-request-tools": "optional",
       "waiting-advice": "optional",
       "model-map": "optional",
+      "hook-adoption": "logic-optional",
       "scaffold-files": "logic-optional"
     },
     "host": {

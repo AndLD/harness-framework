@@ -7,6 +7,7 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- `harness adopt` (design §6.4; task 1.1): the bootstrap for a repository that copied the first harness. The agent-runtime contract gains the optional role `hook-adoption` (`adoptConfiguration`), which the Claude Code preset fills: it adds the framework's hook entries and read exclusions to the project's own `.claude/settings.json` and names the hook commands that are the project's own.
 - The framework is its own project (design §11): lock mode `self` with the profile role `paths.frameworkDir` (`.`), `harness init --self` and `harness bootstrap --self`, its own plan (Phases 1 to 3), CI and rules. The first tagged development version is `0.1.0-dev.1`.
 - The skeleton of the framework: the folders of the layout, `framework.json` at `0.1.0-dev`, the MIT license, this changelog and the
   README. The core documents, the tools and the adapters follow in the build tasks of the design.

@@ -3,6 +3,7 @@
 //   harness init [--name <n>] [--repository <owner/name>] [--stack <a,b>] [--runtime <a,b>] [--host <h>] [--set <role>=<value>]…
 //                [--detached [--reason <why>]] [--non-interactive] [--from <folder or Git URL> [--to <version>]] [--force]
 //                                                                fill the profile file (asking what no flag answers), then bootstrap
+//   harness adopt [--non-interactive] [--from …] [--to …] [init's flags]   the bootstrap for a repository that copied the first harness (design §6.4)
 //   harness bootstrap [--non-interactive] [--detached | --self] [--from …] [--force]   the engine on the profile file as it is (design §6.1); --self is the
 //                                                                 framework's own repository, where the tree at the root is the source (mode self)
 //   harness template <dir> [--from <folder or Git URL> --to <version>]         build the template repository into an empty folder
@@ -38,6 +39,7 @@ import { bootstrap, buildTemplate } from './lib/bootstrap.mjs'
 import { CHECKS, checkAll, report, runCheck } from './lib/checks.mjs'
 import { checkChanged, mergeShards } from './lib/coverage.mjs'
 import { guardCommit, guardPush } from './lib/git-guards.mjs'
+import { adopt } from './lib/adopt.mjs'
 import { init } from './lib/init.mjs'
 import { readStdin, runGate } from './lib/gate.mjs'
 import { protectHost } from './lib/host.mjs'
@@ -49,6 +51,7 @@ import { detach, diff, override, sync } from './lib/vendor.mjs'
 const USAGE = `usage: harness <command>
   init [--name <n>] [--repository <owner/name>] [--stack <a,b>] [--runtime <a,b>] [--host <h>] [--set <role>=<value>]
        [--detached [--reason <why>]] [--non-interactive] [--from <folder or Git URL> [--to <version>]] [--force]
+  adopt [--non-interactive] [--from <folder or Git URL> [--to <version>]] [init's flags]
   bootstrap [--non-interactive] [--detached [--reason <why>]] [--from <folder or Git URL> [--to <version>]] [--force]
   template <dir> [--from <folder or Git URL> [--to <version>]]
   sync [--from <folder or Git URL>] [--to <version>]
@@ -150,22 +153,24 @@ export async function run(argv, { out = console.log, err = console.error, input 
   const command = words.join(' ')
 
   try {
-    if (command === 'init' || command === 'bootstrap') {
+    if (command === 'init' || command === 'bootstrap' || command === 'adopt') {
       const options = { root, flags, input, out, err }
       const { code } =
-        command === 'init'
-          ? await init(options)
-          : await bootstrap({
-              root,
-              from: flags.from,
-              to: flags.to,
-              force: flags.force,
-              detached: flags.detached,
-              self: flags.self,
-              reason: flags.reason,
-              out,
-              err
-            })
+        command === 'adopt'
+          ? await adopt(options)
+          : command === 'init'
+            ? await init(options)
+            : await bootstrap({
+                root,
+                from: flags.from,
+                to: flags.to,
+                force: flags.force,
+                detached: flags.detached,
+                self: flags.self,
+                reason: flags.reason,
+                out,
+                err
+              })
       return code
     }
     if (words[0] === 'template' && words.length === 2) {
