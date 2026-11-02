@@ -1,0 +1,171 @@
+{
+  "project": {
+    "name": "harness-framework",
+    "title": "harness-framework"
+  },
+  "repository": {
+    "slug": "AndLD/harness-framework",
+    "url": "https://github.com/AndLD/harness-framework"
+  },
+  "adapters": {
+    "stacks": [
+      "node-ts"
+    ],
+    "runtimes": [
+      "claude-code"
+    ],
+    "host": "github"
+  },
+  "coverageGate": {
+    "statements": 90,
+    "branches": 90,
+    "functions": 90,
+    "lines": 90
+  },
+  "coveragePackages": [],
+  "requiredChecks": [
+    "verify",
+    "pr-title"
+  ],
+  "branches": {
+    "production": "main",
+    "integration": "develop"
+  },
+  "paths": {
+    "plan": "docs/development-plan",
+    "phases": "docs/development-plan/phases",
+    "planIndex": "docs/development-plan/README.md",
+    "changelog": "CHANGELOG.md",
+    "changelogFragments": "changelog.d",
+    "frameworkDir": "."
+  },
+  "plan": {
+    "taskId": "`<phase>.<number>`, with an optional letter suffix (`2.1`, `2.1a`)",
+    "phasesWithFragments": "every phase: each task writes one log fragment `work-logs/phase-<n>/<task id>.md` next to the phase files (template: `core/plan/task-log-template.md`)",
+    "logCommand": "`node tools/harness.mjs plan log <n>`",
+    "estimationScale": "story points (SP), Fibonacci; 1 SP is about half a developer-day or one focused agent session; estimates include the tests the definition of done requires",
+    "resumePhrases": "\"Start Phase N\", \"Continue Phase N\"; the phrase approves the pull requests of the named phases",
+    "openEndedPhase": "Phase 3 (issues found in use); its size grows",
+    "complexity": {
+      "scale": {
+        "C1": "routine: mechanical, fully specified, obvious to verify",
+        "C2": "standard engineering: a component to a clear specification with tests, tools to work out",
+        "C3": "judgment: research, correctness-critical design, synthesis"
+      },
+      "models": {
+        "C1": "Sonnet 5.5 at medium effort",
+        "C2": "Sonnet 5.5 at high effort",
+        "C3": "Opus 5.5 at high effort"
+      }
+    },
+    "openEndedPhaseNumber": 3
+  },
+  "versions": {
+    "runtime": "Node.js 22 LTS"
+  },
+  "commands": {
+    "lint": "npm run lint",
+    "typecheck": "npm run typecheck",
+    "test": "npm test",
+    "testCoverage": "npm run test:coverage",
+    "docsCheck": "npm run docs:check",
+    "harnessSync": "npm run harness -- sync",
+    "harnessSyncLocal": "npm run harness -- sync --local",
+    "harnessDiff": "npm run harness -- diff"
+  },
+  "terms": {
+    "stack": "\\bjest\\b|\\bnpm\\b|\\btypescript\\b|\\beslint\\b|\\bprettier\\b|istanbul|node_modules|package\\.json",
+    "product": "(?!)",
+    "productGeneric": "(?!)",
+    "projectValues": "`main`|`develop`|AndLD/harness-framework"
+  },
+  "documents": {
+    "rules": "AGENTS.md",
+    "method": "core/method/method.md",
+    "stack": "docs/engineering/stack.md",
+    "ruleChecks": "docs/engineering/rule-checks.md",
+    "readme": "README.md",
+    "changelog": "CHANGELOG.md",
+    "changelogFragments": "core/templates/changelog-fragments.md",
+    "planMethod": "core/plan/README.md",
+    "releasing": "docs/operations/releasing.md",
+    "codeReviews": "core/reviews/code/README.md",
+    "harnessReviews": "core/reviews/harness/README.md",
+    "harnessBindings": "docs/quality-reviews/harness/bindings.md"
+  },
+  "layers": {
+    "scope": [
+      "AGENTS.md",
+      "CLAUDE.md",
+      "README.md",
+      "CHANGELOG.md",
+      "changelog.d/**",
+      "docs/**",
+      ".github/**",
+      ".claude/**",
+      "scripts/**",
+      "harness-profile.json",
+      "harness.lock.json"
+    ],
+    "adapter": [
+      "docs/engineering/**",
+      "docs/operations/**",
+      ".github/**",
+      ".claude/**",
+      "scripts/**"
+    ],
+    "state": [
+      "docs/development-plan/**",
+      "docs/design.md",
+      "docs/quality-reviews/harness/20*.md",
+      "CHANGELOG.md",
+      "changelog.d/**"
+    ],
+    "entry": [
+      "AGENTS.md",
+      "CLAUDE.md",
+      "README.md"
+    ]
+  },
+  "gate": {
+    "outside": [
+      ".github/**",
+      ".claude/**"
+    ],
+    "isolated": [
+      "docs/**",
+      "scripts/**",
+      "harness.lock.json"
+    ],
+    "steps": [
+      {
+        "label": "framework tests",
+        "run": [
+          [
+            "npm",
+            "test"
+          ]
+        ],
+        "when": [
+          "core/**",
+          "profile/**",
+          "adapters/**",
+          "tools/**",
+          "tests/**",
+          "examples/**",
+          "framework.json",
+          "package.json"
+        ]
+      }
+    ]
+  },
+  "host": {
+    "protection": false
+  },
+  "release": {
+    "versionFiles": [
+      "package.json",
+      "framework.json"
+    ]
+  }
+}

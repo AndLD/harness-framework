@@ -1,0 +1,10 @@
+{
+  "sourceFile": "src/main.py",
+  "format": {
+    "handled": ["src/main.py", "src/main.pyi"],
+    "ignored": ["README.md", "pyproject.toml", "logo.png", "archive.zip"]
+  },
+  "coverage": {
+    "shards": ["conformance/shard-1.json", "conformance/shard-2.json"]
+  }
+}

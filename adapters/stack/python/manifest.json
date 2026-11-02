@@ -1,0 +1,117 @@
+{
+  "axis": "stack",
+  "name": "python",
+  "contract": 1,
+  "description": "Python: uv workspaces, pytest with coverage.py, ruff, mypy.",
+  "terms": "\\bpytest\\b|\\bpython\\b|\\bpip\\b|\\buv\\b|\\bruff\\b|\\bmypy\\b|coverage\\.py|pyproject|\\.venv|__pycache__|htmlcov",
+  "roles": {
+    "package-manager": {
+      "fills": "uv workspaces: `uv sync --locked` installs, uv.lock is the lock file, the workspace members are the packages (`[tool.uv.workspace]` of the root pyproject.toml)"
+    },
+    "coverage-packages": {
+      "fills": "the uv workspace members that carry a coverage gate (coveragePackages of the profile file); each keeps its sources in src/ and its tests in tests/"
+    },
+    "test-runner": {
+      "fills": "pytest through `uv run`, run from the package: `uv run coverage run -m pytest`"
+    },
+    "coverage-tool": {
+      "fills": "coverage.py (branch coverage) run from the package with the root configuration; its JSON report `<package>/coverage/coverage.json` is the raw coverage, and `harness coverage summarize` writes the neutral summary coverage/coverage-summary.json from it"
+    },
+    "coverage-merge": {
+      "fills": "adds up what the shards of coverage.py's JSON report executed (lines, branches, functions) and writes the neutral summary",
+      "module": "coverage.mjs",
+      "export": "merge"
+    },
+    "linter": {
+      "fills": "ruff check, with the rules E, F, I, B, UP, ANN (a typed public boundary) and T20 (no print left behind)"
+    },
+    "formatter": {
+      "fills": "ruff format, run from the project's own environment only: `uv run --no-sync ruff format`",
+      "module": "format.mjs",
+      "export": "formatCommand"
+    },
+    "typecheck": {
+      "fills": "mypy in strict mode through `uv run mypy`"
+    },
+    "version-file": {
+      "fills": "pyproject.toml, the `version` of its [project] table (release.versionFiles of the profile file)"
+    },
+    "local-gate-plan": {
+      "fills": "ruff check, mypy and the format check of the touched packages, the whole test suite with coverage of each touched package (pytest cannot follow a file to its tests), and the changed-file coverage",
+      "module": "gate.mjs",
+      "export": "plan"
+    },
+    "ci-job-layout": {
+      "fills": "a static job and a coverage job per package, which keep coverage.py's JSON report for the aggregator",
+      "module": "ci-jobs.mjs",
+      "export": "ciJobs"
+    },
+    "commands": {
+      "fills": "uv run ruff, mypy, pytest and coverage, and the framework's tools through node (the commands of the profile file)"
+    },
+    "ignored-directories": {
+      "fills": ".venv, __pycache__, htmlcov, coverage, dist"
+    },
+    "ignore-files": {
+      "fills": "the root pyproject.toml, whose `extend-exclude` of ruff (and `exclude` of mypy) names the vendored framework",
+      "files": [
+        {
+          "path": "pyproject.toml",
+          "pattern": "^\\s*extend-exclude\\s*=.*[\"']<folder>/?[\"']",
+          "example": "extend-exclude = [\"<folder>\"]"
+        }
+      ]
+    },
+    "scaffold-files": {
+      "fills": "`.python-version`, `.nvmrc` (the harness tools run on Node), a root `pyproject.toml` with the uv workspace, the development tools and the configuration of ruff, mypy and coverage.py, and the ignore lines of its tools; no uv.lock, which the project creates with `uv lock`",
+      "module": "scaffold.mjs",
+      "export": "scaffoldFiles"
+    }
+  },
+  "enforces": [
+    {
+      "rule": "nn.coverage",
+      "when": "local",
+      "by": "the pre-push gate holds the changed files of a touched package (`harness coverage check-changed`)"
+    },
+    {
+      "rule": "nn.coverage",
+      "when": "remote",
+      "by": "CI merges the coverage of the shards and holds each package and every changed file to the gate"
+    },
+    {
+      "rule": "nn.tests",
+      "when": "remote",
+      "by": "CI runs the tests of every package"
+    },
+    {
+      "rule": "nn.typed",
+      "when": "local",
+      "by": "ruff (ANN) and mypy of the touched packages in the pre-push gate"
+    },
+    {
+      "rule": "nn.clean",
+      "when": "local",
+      "by": "ruff (T20 for debug printing) of the touched packages in the pre-push gate"
+    }
+  ],
+  "defaults": {
+    "commands": {
+      "lint": "uv run ruff check .",
+      "typecheck": "uv run mypy .",
+      "test": "uv run pytest",
+      "testCoverage": "uv run coverage run -m pytest",
+      "docsCheck": "node harness/tools/harness.mjs check all",
+      "harnessSync": "node harness/tools/harness.mjs sync",
+      "harnessSyncLocal": "node harness/tools/harness.mjs sync --local",
+      "harnessDiff": "node harness/tools/harness.mjs diff"
+    },
+    "versions": {
+      "runtime": "Python 3.12 (the harness tools run on Node.js 22 LTS)"
+    },
+    "release": {
+      "versionFiles": ["pyproject.toml"],
+      "lockCommand": "uv lock"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "framework": "harness-framework",
+  "mode": "self",
+  "version": "0.1.0-dev",
+  "adapters": {
+    "stacks": [
+      "node-ts"
+    ],
+    "runtimes": [
+      "claude-code"
+    ],
+    "host": "github"
+  },
+  "managed": {
+    "docs/profile.md": "d233d399884693eb7b137d926b816e11edba74d89c09b3edab25cffefe5ebed7",
+    "docs/quality-reviews/harness/bindings.md#layers": "6af8e7333722941cb4c94ec632655903319c7cbd7501a4443ac731a1a41a72d7",
+    "docs/engineering/rule-checks.md#rule-map": "4c6c56d7c5b3b8c0e9d3da8fee39a131e56fee4f440c770780fc7821846039b2",
+    "AGENTS.md#procedures": "36d28e821b59adc3e85d7f4824800092e011bc2dc308d9dde76225ae4b85ea1e",
+    "AGENTS.md#non-negotiables": "60bc719e1aa1bbb4ce989385e5c3791bc01d70005a59bae8814cff06c80ec1c0",
+    "AGENTS.md#git-rules": "51a748ea3cb19d734da7df615fd3713befaa6ca3134e2029069df1ab8ae56afb",
+    ".claude/skills/code-review/SKILL.md": "3a46b3ee03a74b1a464bff2d507dcaba5c739011e531e31a5d507cf11721fd46",
+    ".claude/skills/end-session/SKILL.md": "93153946dbb075f19a1087ed87bf7ae6830f6167366d684d9f3ed707be9e5be4",
+    ".claude/skills/finish-phase/SKILL.md": "3f557bee2d0f60b55a69a4956468cb3f558d3f56cc3656a286d434260206c584",
+    ".claude/skills/harness-review/SKILL.md": "9807ed551c0c0a7c1137d305b34faac5b90b0a5230527f37776d14d58b4fc950",
+    ".claude/skills/new-adapter/SKILL.md": "abf372f55fe41b78c86db30776c4425156f4832c5aef56ae85dd79d6d88f7d1d",
+    ".claude/skills/open-pull-request/SKILL.md": "a40f251c0ccde81d8fa240005182284641b9d6e0af03c6c5075b2445e462f87b",
+    ".claude/skills/release/SKILL.md": "f3d0e8f361e9579bda1f15e85d1266ce6f3a25904a5e7ecdc8b84e9c40f3c4f2",
+    ".claude/skills/start-task/SKILL.md": "866265baea6ed4fbc49cf571fba9167e59b924c7d40044153fa9f1a7ae729310"
+  },
+  "profile": "4db1a95878ab04cbfd71b7863b719be1c42096d17c391967ccfd6b921baf686a"
+}

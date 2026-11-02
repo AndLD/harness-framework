@@ -1,0 +1,23 @@
+{
+  "name": "harness-framework",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "description": "A framework for the harness of a software project: rules, method documents, checks, Git hooks and agent-runtime configuration.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "prepare": "git config core.hooksPath tools/git-hooks",
+    "harness": "node tools/harness.mjs",
+    "docs:check": "node tools/harness.mjs check all",
+    "lint": "prettier --check .",
+    "format": "prettier --write .",
+    "typecheck": "node scripts/syntax-check.mjs",
+    "test": "node --test",
+    "test:coverage": "node --test"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
+  }
+}

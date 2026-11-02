@@ -1,0 +1,40 @@
+[← AGENTS.md](../../AGENTS.md)
+
+# Rule-to-check map
+
+Which mechanism holds each rule of the entry file, and at which moment: early (the agent runtime, before the action), local (the Git hooks
+and the push gate) or remote (the host and CI). The rows of the core rules are generated from the adapters of the profile and rewritten by
+`npm run harness -- sync --local`; the rows of this project's own rules go below the block.
+
+<!-- harness:begin rule-map -->
+| Rule | Text | Early (agent runtime) | Local (Git hooks, gate) | Remote (host, CI) | Status |
+| ---- | ---- | --------------------- | ----------------------- | ----------------- | ------ |
+| `nn.change` | Non-negotiables (a PR that violates these is rejected). Changing one needs the owner's explicit confirmation of that change, recorded in the pull r… | – | – | – | judgment |
+| `nn.tests` | Every feature ships with unit + integration tests, and user-visible flows get e2e tests. | – | – | CI runs the tests of every package | enforced |
+| `nn.coverage` | Coverage must stay at or above the coverage gate (profile); CI fails below it. | – | the pre-push gate holds the changed files whose related tests ran (`harness coverage check-changed`) | CI merges the coverage of the shards and holds each package and every changed file to the gate | enforced |
+| `nn.typed` | No new untyped public boundaries (the stack's lint rule names them). No new magic string logic without a typed constant. | – | lint and typecheck of the touched packages in the pre-push gate | – | enforced |
+| `nn.clean` | No dead code, no commented-out blocks, no debug printing left in committed code (use the logger). | – | lint of the touched packages in the pre-push gate | – | enforced |
+| `nn.secrets` | No secrets in the repo; add values only to .env.example, never .env. | `guard-edit` refuses the edit of an environment file; the `Read(...)` deny rules of `access.denyRead` keep secrets out of reads (best effort); nothing scans the committed content for a secret | – | – | partly |
+| `git.branches` | Branch names, types and the merge strategy are in the profile; how branches flow (one branch per task, finishing a release) is in method §5. | – | – | – | judgment |
+| `git.merge` | Squash merge into the integration branch; a merge commit for release and hotfix branches (profile). | – | – | – | judgment |
+| `git.retention` | Branches are never deleted from the repository host after merging; they are kept for history. Turn off "automatically delete head branches" in the … | `guard-shell` refuses `push --delete`, `push :branch` and the API call that deletes a ref | `pre-push` refuses the deletion of a remote branch | – | enforced |
+| `git.local-delete` | Deleting a local branch is fine when it is already merged. | – | – | – | judgment |
+| `git.protection` | The production and the integration branch are protected: no direct pushes (for administrators too), no force-push, no deletion, every change throug… | `guard-shell` refuses a push to a protected branch | `pre-push` refuses a push to a protected branch | – | enforced |
+| `git.admin-bypass` | The production and the integration branch are protected: no direct pushes (for administrators too), no force-push, no deletion, every change throug… | – | – | – | judgment |
+| `git.commit-format` | Commit messages: the commit format of the profile (its type and optional scope, for example feat(<scope>): …), with the plan task id in the body (t… | – | – | the `pr-title` job checks the pull-request title | enforced |
+| `git.small-prs` | One logical change per commit; PRs should be small and single-purpose. | – | – | – | judgment |
+| `git.no-direct-commit` | No direct commits to the production or the integration branch; merge via PR with at least one review (while the project is solo, the owner's approv… | `guard-shell` refuses a commit on a protected branch | `pre-commit` refuses a commit on a protected branch (the root commit of a new repository passes) | – | enforced |
+| `git.green-checks` | The required checks (§7.3) must be green before merge. | the merge guard of the shell hook refuses `gh pr merge` while a required check is not green | – | – | enforced |
+| `agent.branch-first` | If the current branch is the production or the integration branch, create the right branch first (names per §7.1) before changing files. Start ever… | `guard-shell` refuses a commit or a push on a protected branch | `pre-commit` refuses a commit on a protected branch | – | enforced |
+| `agent.routine-push` | Committing and pushing to a feature/bugfix/docs/chore branch is routine and needs no confirmation. Never commit or push directly to the production … | – | – | – | judgment |
+| `agent.plan-approval` | Plan work (approval given by the request): when the user asks to start or continue one or more phases (the resume phrases of the profile, for examp… | – | – | – | judgment |
+| `agent.plan-related` | Plan-related PRs merge the same way. Every PR that belongs to a named phase is covered by the same approval: its task PRs, and also the documentati… | – | – | – | judgment |
+| `agent.claim` | Claim a task before working on it. Push its branch and open a draft pull request for it first (title and body as in the claim row of the profile); … | – | – | – | judgment |
+| `agent.open-pr` | Opening a pull request is automatic. Create the PR as soon as a branch is ready (any branch type, including release and hotfix branches into the pr… | – | – | – | judgment |
+| `agent.ask-merge` | Ask the user before merging any other pull request: documentation or chore PRs that are not related to the development plan of a named phase, anyth… | – | – | – | judgment |
+| `agent.no-rewrite` | Never delete a remote branch, never force-push to the production or the integration branch, never rewrite published history. | – | – | – | judgment |
+| `agent.no-auto-merge` | Never enable auto-merge unless the user asks. | – | – | – | judgment |
+| `agent.ci-fixes` | Automatic CI fixes are on for plan work. After opening a PR for a named phase, attach it to the session and turn on the agent runtime's CI monitori… | – | – | – | judgment |
+
+The host cannot protect its branches here (`host.protection` is off), so the protection rules have no remote holder; the Git hooks and the merge guard of the runtime hold them.
+<!-- harness:end rule-map -->
