@@ -294,7 +294,7 @@ export function release({ root, profile, dryRun = false, dev = false, date = new
   if (dev) {
     return [
       ...lines,
-      `Done. Commit it (chore(release): ${version}) and tag the commit v${version}; the final release is made with \`harness release\`.`
+      `Done. Commit it (chore(release): ${version}) and tag the commit ${version} (no "v": a tag with it is a release); the final release is made with \`harness release\`.`
     ]
   }
   return [
