@@ -155,6 +155,44 @@ test('guard-shell on a host without protection refuses a merge while a required 
   )
 })
 
+test('guard-shell refuses `gh pr merge --auto` into the production branch and on a release branch, and lets it through on a task pull request', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'gh-auto-'))
+  dirs.push(dir)
+  writeFileSync(
+    join(dir, 'gh'),
+    `#!/bin/sh\necho "{\\"baseRefName\\":\\"$PR_BASE\\",\\"headRefName\\":\\"$PR_HEAD\\"}"\n`
+  )
+  chmodSync(join(dir, 'gh'), 0o755)
+  const path = `${dir}:${process.env.PATH}`
+  const { root } = project('feature/x')
+  const event = (command, cwd = root) => ({
+    ...sample('claude-code', 'bash-ls.json', cwd),
+    tool_input: { command }
+  })
+  const run = (command, base, head, cwd) =>
+    hook('guard-shell', event(command, cwd), { env: { PR_BASE: base, PR_HEAD: head }, path })
+
+  assert.equal(run('gh pr merge 5 --auto --squash', 'develop', 'feature/3.1-x').code, 0)
+  assert.match(run('gh pr merge 5 --auto --squash', 'main', 'release/0.1.2').err, /production branch/)
+  assert.match(run('gh pr merge 5 --auto --merge', 'develop', 'release/0.1.2').err, /never on a release or hotfix/i)
+  assert.equal(
+    run('gh pr merge 5 --squash', 'main', 'release/0.1.2').code,
+    0,
+    'a merge without --auto is not this guard'
+  )
+
+  const off = project('feature/x')
+  writeFileSync(
+    join(off.root, 'harness-profile.json'),
+    JSON.stringify({
+      branches: { production: 'main', integration: 'develop' },
+      adapters: { stacks: ['node-ts'], host: 'github' },
+      host: { protection: true, autoMerge: false }
+    })
+  )
+  assert.match(run('gh pr merge 5 --auto --squash', 'develop', 'feature/x', off.root).err, /Auto-merge is off/)
+})
+
 test('guard-edit refuses an environment file in each runtime, the vendored framework in pinned mode only, and nothing else', () => {
   const { root } = project('feature/x')
   const claude = hook('guard-edit', sample('claude-code', 'write-env.json', root))

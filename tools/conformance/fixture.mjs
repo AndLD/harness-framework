@@ -60,6 +60,7 @@ export function bootstrapProject({ framework, stacks, runtimes, host }) {
     join(framework, 'tools', 'harness.mjs'),
     'init',
     '--non-interactive',
+    '--no-host-setup',
     '--name',
     'conformance',
     '--repository',

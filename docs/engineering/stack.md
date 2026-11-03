@@ -47,4 +47,4 @@ Beyond [method §4](../../core/method/method.md#4-definition-of-done): `npm run 
 
 ## 6. Agent runtime
 
-The agent-runtime adapters of the profile: claude-code (Claude Code: CLAUDE.md that imports the entry file, hooks in .claude/settings.json, Read deny rules, skills in .claude/skills). The repository host: github (GitHub: workflows, pull requests with the gh command line; no rulesets on this repository's plan, see section 9 of the entry file).
+The agent-runtime adapters of the profile: claude-code (Claude Code: CLAUDE.md that imports the entry file, hooks in .claude/settings.json, Read deny rules, skills in .claude/skills). The repository host: github (GitHub: workflows, pull requests with the gh command line; the repository is public, so it has rulesets and auto-merge, see section 9 of the entry file).

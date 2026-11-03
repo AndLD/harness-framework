@@ -262,6 +262,14 @@ pauses. Newest entry at the bottom.
 - **Next step:** task 3.18.
 - **Verify with:** `npm test`
 
+### 2026-11-03 — task 3.18 done
+- **Tasks:** 3.18 (done; second task of `0.1.2`). 3.17 is merged ([#31](https://github.com/AndLD/harness-framework/pull/31)).
+- **Branch:** `feature/3.18-auto-merge` (details: `work-logs/phase-3/3.18.md`).
+- **Decisions / deviations from the plan:** `host.autoMerge` takes the value of `host.protection` when the profile file has none (`x-sameAs` in the schema); the update workflow starts the checks by `workflow_dispatch` unless a token of the project's own is set; the guard refuses auto-merge on a pull request not into the integration branch. The workflow is verified against a stand-in only; the migration note of 0.1.2 is begun and the later tasks add to it.
+- **Problems / blockers / findings:** none.
+- **Next step:** task 3.3.
+- **Verify with:** `npm run docs:check`
+
 ### 2026-11-03 — task 3.9 done
 - **Tasks:** 3.9 (done; fourth task of `0.1.2`).
 - **Branch:** `feature/3.9-claim-ownership` (details: `work-logs/phase-3/3.9.md`).

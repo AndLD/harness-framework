@@ -71,6 +71,16 @@
       "by": "native mode: `guard-shell` on `beforeShellExecution` refuses `push --delete`, `push :branch` and the API call that deletes a ref"
     },
     {
+      "rule": "agent.auto-merge",
+      "when": "early",
+      "by": "native mode: `guard-shell` refuses `gh pr merge --auto` into the production branch, on a release or hotfix branch and on a pull request not into the integration branch"
+    },
+    {
+      "rule": "agent.no-auto-merge",
+      "when": "early",
+      "by": "native mode: `guard-shell` refuses `gh pr merge --auto` where `host.autoMerge` is off"
+    },
+    {
       "rule": "nn.secrets",
       "when": "early",
       "by": "native mode: `guard-edit` on `preToolUse` (Write) refuses the edit of an environment file; the `.cursorignore` block of `access.denyRead` keeps secrets out of the agent's reads (terminal commands and MCP tools are outside it); nothing scans the committed content for a secret",
