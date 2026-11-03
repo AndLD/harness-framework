@@ -144,3 +144,7 @@ the adapters in `adapters/`, and nothing is vendored. The projects that use the 
   set by `harness host protect`, holds the branch rules on GitHub; the Git hooks and the agent runtime's hooks hold them locally too.
 - **`docs/temp/` is the owner's.** It is ignored by Git and holds the owner's scratch notes. An agent writes there only when the owner asks, and never links
   it from a tracked document.
+- **Auto-merge (the owner's standing request of 2026-11-03).** On every task pull request and plan-related pull request into the integration branch
+  that the rules of section 7 let an agent merge without asking, the agent enables the host's auto-merge (squash) once the task's definition of done
+  holds, and merges the pull request itself if it is green but still open. Never on a pull request into the production branch, a release or hotfix
+  branch, or one that needs the owner's approval. This is the owner asking, as the auto-merge rule of section 7 requires; task 3.18 makes it a core rule.
