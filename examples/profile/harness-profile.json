@@ -28,6 +28,7 @@
     "plan": "docs/development-plan",
     "phases": "docs/development-plan/phases",
     "planIndex": "docs/development-plan/README.md",
+    "issues": "docs/development-plan/issues",
     "changelog": "CHANGELOG.md",
     "changelogFragments": "changelog.d"
   },
@@ -36,9 +37,7 @@
     "phasesWithFragments": "every phase: each task writes one log fragment `work-logs/phase-<n>/<task id>.md` next to the phase files (template: `harness/core/plan/task-log-template.md`)",
     "logCommand": "`node harness/tools/harness.mjs plan log <n>`",
     "estimationScale": "story points (SP), Fibonacci; 1 SP is about half a developer-day or one focused agent session; estimates include the tests the definition of done requires",
-    "resumePhrases": "\"Start Phase N\", \"Continue Phase N\"; the phrase approves the pull requests of the named phases",
-    "openEndedPhase": "Phase 9 (issues found in use); its size grows",
-    "openEndedPhaseNumber": 9,
+    "resumePhrases": "\"Start Phase N\", \"Continue Phase N\", \"Work the issue queue\", \"Fix I-<n>\"; the phrase approves the pull requests of the named phases and issues",
     "specificationCitation": "by the file and the heading of the product specification, for example `notes.md`, \"Sharing\"",
     "complexity": {
       "scale": {

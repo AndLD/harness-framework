@@ -228,6 +228,11 @@
           "type": "string",
           "description": "The plan index document."
         },
+        "issues": {
+          "type": "string",
+          "description": "The folder of the issue queue: defects and improvements found in use, one file per issue (`I-<n>.md`) with its log beside it, an index of the open ones, and `archived/` for the finished ones.",
+          "default": "docs/development-plan/issues"
+        },
         "changelog": {
           "type": "string",
           "description": "The changelog."
@@ -290,7 +295,7 @@
         },
         "openEndedPhase": {
           "type": "string",
-          "description": "The open-ended phase."
+          "description": "Deprecated since 0.2.0 (the issue queue, `paths.issues`, replaces the open-ended phase); kept so that a profile written before loads, and removed from it by the migration."
         },
         "specificationCitation": {
           "type": "string",
@@ -322,7 +327,7 @@
         },
         "openEndedPhaseNumber": {
           "type": "integer",
-          "description": "The number of the open-ended phase, which collects the issues found in use; the entry file's Role binding line names it."
+          "description": "Deprecated since 0.2.0 (the issue queue, `paths.issues`, replaces the open-ended phase); kept so that a profile written before loads, and removed from it by the migration."
         }
       },
       "additionalProperties": false

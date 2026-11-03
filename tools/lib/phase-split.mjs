@@ -3,58 +3,13 @@
 // `work-logs/phase-<n>-log.md`). Every link into the phase and its logs is rewritten across the repository, anchors included, and the links inside the
 // moved text are made relative to where the text now stands, so that nothing is left broken. The same code is the migration script of `0.2.0` (for the
 // open phases of a project) and `harness plan split <phase>` (for a phase by choice, a finished one for example).
-import { execFileSync } from 'node:child_process'
-import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs'
-import { dirname, join, posix } from 'node:path'
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { followMoves, replacePaths, rewriteLinks } from './link-moves.mjs'
 import { TASKS_END, TASKS_START, compareIds, taskTable } from './phase-files.mjs'
 import { planSummary } from './plan.mjs'
 
-const LINK = /(\]\()([^)\s]+)((?:\s+"[^"]*")?\))/g
-const REFERENCE = /^(\[[^\]]+\]:\s*)(\S+)/gm
-const EXTERNAL = /^([a-z][a-z0-9+.-]*:|#|\/\/)/i
 const SYMBOL = /(⬜|🟡|✅)/
-
-/**
- * `text` (the content of the repository file `from`, now to be written as `to`) with every relative link made right for its new place: a target that is
- * itself moved (`moves`: old path to new path) is followed, and the path is written relative to `to`'s folder.
- */
-export function rewriteLinks(text, from, to, moves) {
-  const rewrite = (target) => {
-    if (EXTERNAL.test(target)) {
-      return target
-    }
-    const [path, anchor] = target.split('#')
-    if (!path) {
-      return target
-    }
-    const resolved = posix.normalize(posix.join(posix.dirname(from), path))
-    if (resolved.startsWith('..')) {
-      return target
-    }
-    const mapped = moves.get(resolved) ?? moves.get(resolved.replace(/\/$/, '')) ?? resolved
-    let relative = posix.relative(posix.dirname(to), mapped) || '.'
-    if (path.endsWith('/') && !relative.endsWith('/')) {
-      relative += '/'
-    }
-    if (path.startsWith('.') && !relative.startsWith('.')) {
-      relative = `./${relative}`
-    }
-    return anchor === undefined ? relative : `${relative}#${anchor}`
-  }
-  return text
-    .replace(LINK, (_, open, target, close) => `${open}${rewrite(target)}${close}`)
-    .replace(REFERENCE, (_, open, target) => `${open}${rewrite(target)}`)
-}
-
-/** The full paths of a moved file written in plain text (a code span, a sentence) are replaced by the new ones. */
-const replacePaths = (text, moves) => {
-  let result = text
-  for (const [from, to] of [...moves].sort((a, b) => b[0].length - a[0].length)) {
-    result = result.split(from).join(to)
-  }
-  return result
-}
-
 const shorten = (title) => (title.length > 100 ? `${title.slice(0, 97)}…` : title)
 const plain = (text) => text.replace(/\*\*|\[([^\]]*)\]\([^)]*\)/g, '$1')
 // The title of a task: its bold lead whole, else the start of its text
@@ -113,30 +68,6 @@ const taskFileText = (phase, row, log) =>
     ...(log ? [`**Log:** [${row.id}.log.md](./${row.id}.log.md)`] : [])
   ].join(' · ') +
   `\n\n${row.description}\n`
-
-const listFiles = (root) => {
-  try {
-    return execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard'], {
-      cwd: root,
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'ignore']
-    })
-      .split('\n')
-      .filter((name) => name && existsSync(join(root, name)))
-  } catch {
-    const files = []
-    const visit = (dir) => {
-      for (const name of readdirSync(join(root, dir))) {
-        if (name === '.git' || name === 'node_modules') continue
-        const path = dir ? `${dir}/${name}` : name
-        if (statSync(join(root, path)).isDirectory()) visit(path)
-        else files.push(path)
-      }
-    }
-    visit('')
-    return files
-  }
-}
 
 /**
  * Splits the phase file of phase `number` into a folder. Nothing happens to a phase that is a folder already (the migration script runs twice).
@@ -198,7 +129,9 @@ export function splitPhase({ root, profile, number }) {
   const readmePath = `${folder}/README.md`
   const before = follow(lines.slice(0, first).join('\n'), old, readmePath).replace(
     /\*\*Work log:\*\*[^\n]*/,
-    '**Work log:** [log](./log.md), and a log beside each task (`<id>.log.md`)'
+    moves.has(phaseLog)
+      ? '**Work log:** [log](./log.md), and a log beside each task (`<id>.log.md`)'
+      : '**Work log:** `log.md` when the phase has something to record, and a log beside each task (`<id>.log.md`)'
   )
   const after = follow(lines.slice(last + 1).join('\n'), old, readmePath)
   created.set(readmePath, `${before}\n${TASKS_START}\n${table}\n${TASKS_END}\n${after}`)
@@ -222,17 +155,7 @@ export function splitPhase({ root, profile, number }) {
   }
 
   // The rest of the repository: its links and its plain-text paths follow the moved files
-  const touched = []
-  for (const path of listFiles(root).filter(
-    (name) => /\.(md|json)$/.test(name) && !moves.has(name) && !name.startsWith('docs/temp/')
-  )) {
-    const original = readFileSync(join(root, path), 'utf8')
-    const next = replacePaths(path.endsWith('.md') ? rewriteLinks(original, path, path, moves) : original, moves)
-    if (next !== original) {
-      writeFileSync(join(root, path), next)
-      touched.push(path)
-    }
-  }
+  const touched = followMoves({ root, moves })
 
   mkdirSync(join(root, folder), { recursive: true })
   for (const [path, content] of [...created, ...moved]) {
@@ -274,4 +197,4 @@ export function splitPhases({ root, profile, numbers }) {
   return { messages }
 }
 
-export { compareIds }
+export { compareIds, rewriteLinks }

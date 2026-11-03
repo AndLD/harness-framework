@@ -53,7 +53,7 @@ the [phase index template](./phase-index-template.md):
 - A task is `not started` until a change for it exists, `in progress` while its change is open, `done` when merged and verified.
 - A phase is `not started` until its first task starts, `in progress` until its exit criteria hold, then `done`.
 - The status of a phase is the same in the phase file and in the plan index; both change in the same change.
-- An open-ended phase (issues found in use, stabilization) declares it at the top; its size is stated as growing.
+- Issues found in use are not a phase: they are the issue queue (the plan method, section 8), so that no phase has to stay open without a goal or an end.
 
 ## 4. Exit criteria
 
