@@ -78,3 +78,13 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none. Phase 3 is now 23 SP.
 - **Next step:** 3.6 to 3.8 first (`0.1.1`); then 3.10 at the start of the work toward `0.2.0`.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — 3.10: the split command rewrites the links
+- **Tasks:** 3.10 (not started); its size stays 6 SP.
+- **Branch:** `docs/3.10-rewrite-links`
+- **Decisions / deviations from the plan:** the consuming project (AndLD/bot-rts, its task 12.7) will also split a finished phase, Phase 17, at the
+  owner's request, as the example of a large phase in the new layout. 24 of its files link to that phase. So the split command rewrites every link into
+  the phase and its logs, anchors included, and its tests prove that no link is left broken.
+- **Problems / blockers / findings:** none.
+- **Next step:** unchanged: 3.6 to 3.8 first (`0.1.1`); then 3.10 at the start of the work toward `0.2.0`.
+- **Verify with:** `npm run docs:check`
