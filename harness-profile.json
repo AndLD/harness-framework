@@ -160,7 +160,7 @@
     ]
   },
   "host": {
-    "protection": false
+    "protection": true
   },
   "release": {
     "versionFiles": [

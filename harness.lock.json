@@ -14,10 +14,10 @@
   "managed": {
     "docs/profile.md": "d233d399884693eb7b137d926b816e11edba74d89c09b3edab25cffefe5ebed7",
     "docs/quality-reviews/harness/bindings.md#layers": "6af8e7333722941cb4c94ec632655903319c7cbd7501a4443ac731a1a41a72d7",
-    "docs/engineering/rule-checks.md#rule-map": "4c6c56d7c5b3b8c0e9d3da8fee39a131e56fee4f440c770780fc7821846039b2",
+    "docs/engineering/rule-checks.md#rule-map": "b4bf9aa1465573b59be071fe03f5e909ff13c75b4d7848f4cc1ccd3eac6873bd",
     "AGENTS.md#procedures": "36d28e821b59adc3e85d7f4824800092e011bc2dc308d9dde76225ae4b85ea1e",
     "AGENTS.md#non-negotiables": "60bc719e1aa1bbb4ce989385e5c3791bc01d70005a59bae8814cff06c80ec1c0",
-    "AGENTS.md#git-rules": "51a748ea3cb19d734da7df615fd3713befaa6ca3134e2029069df1ab8ae56afb",
+    "AGENTS.md#git-rules": "e73d91e5150c261a99bfa798bbbce2e5ffa42c2fcd6d8ed60ba3b0a220f96c0e",
     ".claude/skills/code-review/SKILL.md": "3a46b3ee03a74b1a464bff2d507dcaba5c739011e531e31a5d507cf11721fd46",
     ".claude/skills/end-session/SKILL.md": "93153946dbb075f19a1087ed87bf7ae6830f6167366d684d9f3ed707be9e5be4",
     ".claude/skills/finish-phase/SKILL.md": "3f557bee2d0f60b55a69a4956468cb3f558d3f56cc3656a286d434260206c584",
@@ -27,5 +27,5 @@
     ".claude/skills/release/SKILL.md": "f3d0e8f361e9579bda1f15e85d1266ce6f3a25904a5e7ecdc8b84e9c40f3c4f2",
     ".claude/skills/start-task/SKILL.md": "866265baea6ed4fbc49cf571fba9167e59b924c7d40044153fa9f1a7ae729310"
   },
-  "profile": "4db1a95878ab04cbfd71b7863b719be1c42096d17c391967ccfd6b921baf686a"
+  "profile": "2394b4b4ae448a13599763df1a66f2dd32c49314bbb5dafb2e2cb8881cffa5f3"
 }
