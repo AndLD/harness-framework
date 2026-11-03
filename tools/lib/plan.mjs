@@ -2,8 +2,9 @@
 // and the implementation log of a phase, printed from the merged pull requests (`harness plan log`). The squash commits on the integration
 // branch carry the plan task ids in a `Plan: <id>[, <id>]` line of their body, and the pull request number in the subject.
 import { execFileSync } from 'node:child_process'
-import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join, relative } from 'node:path'
+import { loadPhaseEntries, parsePhaseFolder } from './phase-files.mjs'
 
 export const SUMMARY_START = '<!-- plan-summary:start -->'
 export const SUMMARY_END = '<!-- plan-summary:end -->'
@@ -179,20 +180,44 @@ export function implementationLog(rows, repoUrl) {
   return lines.join('\n')
 }
 
-const PHASE_FILE = /^phase-\d+-.+\.md$/
+/** The phases of a phases folder, each as a file (`parsePhase`) or as a folder (`parsePhaseFolder`), in the order of their names. */
+export function readPhaseFiles({ root, phasesDir, complexity }) {
+  const entries = loadPhaseEntries({
+    phasesDir,
+    list: (path) => (existsSync(join(root, path)) ? readdirSync(join(root, path)) : []),
+    readText: (path) => readFileSync(join(root, path), 'utf8')
+  })
+  return entries.map((entry) =>
+    entry.layout === 'file'
+      ? parsePhase(entry.name, entry.text)
+      : parsePhaseFolder(entry.folder, entry.text, entry.taskFiles, {
+          complexity,
+          exists: (path) => existsSync(join(root, phasesDir, entry.folder, path))
+        })
+  )
+}
 
 /**
- * `harness plan summary`: rewrites the generated blocks of the plan index from the phase files, or with `check` only compares them.
+ * `harness plan summary`: rewrites the generated blocks of the plan index, and of the phase index of each phase kept as a folder, from the phase and task
+ * files, or with `check` only compares them. Also holds the layout of a phase folder: the size in its title is the sum of its task files, each task file
+ * has a status, a size and, for an open task, a marker, and every log link resolves.
  * @returns {{ problems: string[], message: string }}
  */
 export function planSummary({ root, profile, check = false }) {
   const { phases: phasesDir, planIndex } = profile.paths
-  const phases = readdirSync(join(root, phasesDir))
-    .filter((name) => PHASE_FILE.test(name))
-    .map((name) => parsePhase(name, readFileSync(join(root, phasesDir, name), 'utf8')))
-
   const complexity = profile.plan?.complexity
-  const problems = phases.flatMap((phase) => phaseProblems(phase, complexity))
+  let phases = readPhaseFiles({ root, phasesDir, complexity })
+
+  if (!check) {
+    for (const phase of phases.filter((item) => item.layout === 'folder' && item.expectedReadme)) {
+      const path = join(root, phasesDir, phase.file)
+      if (phase.expectedReadme !== readFileSync(path, 'utf8')) {
+        writeFileSync(path, phase.expectedReadme)
+      }
+    }
+    phases = readPhaseFiles({ root, phasesDir, complexity })
+  }
+  const problems = phases.flatMap((phase) => [...phaseProblems(phase, complexity), ...(phase.problems ?? [])])
   const current = readFileSync(join(root, planIndex), 'utf8')
   const link = relative(dirname(planIndex), phasesDir).split('\\').join('/')
   const expected = renderIndex(current, phases, { phasesLink: link.startsWith('.') ? link : `./${link}`, complexity })

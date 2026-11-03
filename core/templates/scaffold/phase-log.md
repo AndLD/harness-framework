@@ -1,4 +1,4 @@
-[← Phase {{plan.openEndedPhaseNumber}}](../phase-{{plan.openEndedPhaseNumber}}-issues.md)
+[← Phase {{plan.openEndedPhaseNumber}}]({{rel:paths.phases}}/phase-{{plan.openEndedPhaseNumber}}-issues/README.md)
 
 # Phase {{plan.openEndedPhaseNumber}} — work log
 

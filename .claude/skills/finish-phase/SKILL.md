@@ -8,6 +8,6 @@ disable-model-invocation: true
 
 # Finish a phase
 
-1. Check the exit criteria of the phase file one by one; a criterion that does not hold is a task or a decision for the owner, not a footnote.
-2. Set the phase status, regenerate the plan summary, and record the result in the phase's work log (the template is in the plan method).
+1. Check the exit criteria of the phase index (`README.md` of its folder) one by one; a criterion that does not hold is a task or a decision for the owner, not a footnote.
+2. Set the phase status in its index, regenerate the plan summary, and record the result in the phase's work log (`log.md`; the template is in the plan method).
 4. Start the next phase only if the request named it. Otherwise stop with a summary: what each task delivered, what was deferred, and any decision that waits for the owner.

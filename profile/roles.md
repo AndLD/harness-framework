@@ -71,9 +71,9 @@ Branch types:
 | Role | Value |
 | ---- | ----- |
 | Plan index | {{link:paths.planIndex}} |
-| Milestone | a phase, one file `{{paths.phases}}/phase-<n>-<slug>.md` |
+| Milestone | a phase, a folder `{{paths.phases}}/phase-<n>-<slug>/` (its index `README.md`, a file `<id>.md` per task); a phase of the older layout is one file `{{paths.phases}}/phase-<n>-<slug>.md` |
 | Task id | {{plan.taskId}} |
-| Session log | `{{paths.phases}}/work-logs/phase-<n>-log.md`, one per phase, append-only: the phase-wide entries (decisions before the start, pauses) |
+| Session log | `{{paths.phases}}/phase-<n>-<slug>/log.md`, one per phase, append-only: the phase-wide entries (decisions before the start, pauses); a phase of the older layout keeps `{{paths.phases}}/work-logs/phase-<n>-log.md` |
 | Phases with per-task records | {{plan.phasesWithFragments}} |
 | Phases with one log | {{plan.phasesWithOneLog}} |
 | Plan-log command | {{plan.logCommand}} |

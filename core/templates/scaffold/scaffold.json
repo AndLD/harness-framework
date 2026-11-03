@@ -23,11 +23,11 @@
     },
     {
       "template": "open-ended-phase.md",
-      "path": "{{paths.phases}}/phase-{{plan.openEndedPhaseNumber}}-issues.md"
+      "path": "{{paths.phases}}/phase-{{plan.openEndedPhaseNumber}}-issues/README.md"
     },
     {
       "template": "phase-log.md",
-      "path": "{{paths.phases}}/work-logs/phase-{{plan.openEndedPhaseNumber}}-log.md"
+      "path": "{{paths.phases}}/phase-{{plan.openEndedPhaseNumber}}-issues/log.md"
     },
     {
       "template": "changelog.md",

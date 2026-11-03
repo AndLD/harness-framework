@@ -20,6 +20,7 @@
 //                                                                 plan, changelog, product-knowledge
 //   harness check all                                             every check, then the project's own (`checks.project`)
 //   harness plan summary [--check]                                write (or compare) the summary of the plan index
+//   harness plan split <phase>                                    split a phase kept as one file into a folder: the phase index, a file per task and the logs beside them
 //   harness plan log <phase> [ref]                                the implementation log of a phase from the merged pull requests
 //   harness release [--dev] [--dry-run]                           prepare a release on its branch: versions and changelog; --dev only sets a development version
 //   harness release notes <version>                               the changelog section of a version, for the host's release
@@ -50,6 +51,7 @@ import { readStdin, runGate } from './lib/gate.mjs'
 import { protectHost } from './lib/host.mjs'
 import { layerConfig, renderLayerMap } from './lib/layers.mjs'
 import { planLog, planSummary } from './lib/plan.mjs'
+import { splitPhases } from './lib/phase-split.mjs'
 import { isMain } from './lib/main-module.mjs'
 import { migrate } from './lib/migrate.mjs'
 import { rollback } from './lib/rollback.mjs'
@@ -73,6 +75,7 @@ const USAGE = `usage: harness <command>
   layers
   check <${Object.keys(CHECKS).join('|')}|all>
   plan summary [--check]
+  plan split <phase>
   plan log <phase> [ref]
   release [--dev] [--dry-run]
   release notes <version>
@@ -231,6 +234,12 @@ export async function run(argv, { out = console.log, err = console.error, input 
     if (words[0] === 'plan' && words[1] === 'summary' && words.length === 2) {
       const { problems, message } = planSummary({ root, profile: loadProfile(root), check: flags.check })
       return report('plan', { problems, messages: [message] }, { out, err })
+    }
+    if (words[0] === 'plan' && words[1] === 'split' && words.length === 3 && /^\d+$/.test(words[2])) {
+      splitPhases({ root, profile: loadProfile(root), numbers: [Number(words[2])] }).messages.forEach((line) =>
+        out(line)
+      )
+      return 0
     }
     if (words[0] === 'plan' && words[1] === 'log' && (words.length === 3 || words.length === 4)) {
       out(planLog({ root, profile: loadProfile(root), phase: words[2], ref: words[3] }))

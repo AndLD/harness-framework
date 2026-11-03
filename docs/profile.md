@@ -58,10 +58,10 @@ Branch types:
 | Role | Value |
 | ---- | ----- |
 | Plan index | [`development-plan/README.md`](./development-plan/README.md) |
-| Milestone | a phase, one file `docs/development-plan/phases/phase-<n>-<slug>.md` |
+| Milestone | a phase, a folder `docs/development-plan/phases/phase-<n>-<slug>/` (its index `README.md`, a file `<id>.md` per task); a phase of the older layout is one file `docs/development-plan/phases/phase-<n>-<slug>.md` |
 | Task id | `<phase>.<number>`, with an optional letter suffix (`2.1`, `2.1a`) |
-| Session log | `docs/development-plan/phases/work-logs/phase-<n>-log.md`, one per phase, append-only: the phase-wide entries (decisions before the start, pauses) |
-| Phases with per-task records | every phase: each task writes one log fragment `work-logs/phase-<n>/<task id>.md` next to the phase files (template: `core/plan/task-log-template.md`) |
+| Session log | `docs/development-plan/phases/phase-<n>-<slug>/log.md`, one per phase, append-only: the phase-wide entries (decisions before the start, pauses); a phase of the older layout keeps `docs/development-plan/phases/work-logs/phase-<n>-log.md` |
+| Phases with per-task records | every phase: each task writes its own log `<task id>.log.md` beside its task file in the phase folder (template: `core/plan/task-log-template.md`); a phase of the older layout keeps its fragments in `work-logs/phase-<n>/` |
 | Plan-log command | `node tools/harness.mjs plan log <n>` |
 | Implementation log | printed from the merged pull requests by the plan-log command (the `Plan: <task id>` lines of the squash commits); the phases with one log keep the table written in the phase file |
 | Task claim | a draft pull request titled `chore(plan): claim task <task id>` with `Plan: <task id>` in the body, opened before any other work on the task |

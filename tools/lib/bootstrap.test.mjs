@@ -100,7 +100,12 @@ test('the scaffold joins the ignore lines of every part and renders the core fil
   assert.match(files['AGENTS.md'], /^# acme — rules for agents/)
   assert.match(files['AGENTS.md'], /<!-- harness:begin git-rules -->\n<!-- harness:end git-rules -->/)
   assert.match(files['docs/engineering/stack.md'], /The stack adapters of the profile: node-ts \(TypeScript on Node/)
-  assert.ok(files['docs/development-plan/phases/phase-1-issues.md'].startsWith('[← Development plan](../README.md)'))
+  assert.ok(
+    files['docs/development-plan/phases/phase-1-issues/README.md'].startsWith('[← Development plan](../../README.md)')
+  )
+  assert.ok(
+    files['docs/development-plan/phases/phase-1-issues/log.md'].startsWith('[← Phase 1](../phase-1-issues/README.md)')
+  )
   assert.ok(files['.github/workflows/ci.yml'] && files['CLAUDE.md'] && files['package.json'])
 })
 
