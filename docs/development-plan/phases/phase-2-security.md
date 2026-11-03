@@ -6,6 +6,8 @@
 
 After `0.1.0`: a security review method next to the code review and the harness review, the automation of what a script can decide, the measurements that harness reviews ran by hand, and an off-plan record for work that no task covers. Planned with the owner on 2026-10-30; the method outline is in section 11.1 of the design.
 
+**Execution order:** after `0.3.0`, as the order of development in the [plan index](../README.md) says; earlier if the repository goes public or a second person uses the framework.
+
 | #   | Task | Agent | SP  | Status |
 | --- | ---- | ----- | --- | ------ |
 | 2.1 | **Security review method**: `core/reviews/security/README.md` (dimensions S1 to S6 of section 11.1, scoring, procedure, findings, cadence) and `_template.md`, a bindings template, and the procedure `security-review`, packaged per runtime. The code review's security dimension (C7) links to it instead of repeating it. The CORE scan returns 0 on the new files. | C3 | 5 | ⬜ |

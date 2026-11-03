@@ -103,3 +103,23 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none. Phase 3 is now 28 SP.
 - **Next step:** 3.6 → 3.7 → 3.8 → 3.11, released as `0.1.1`.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — the issue queue, rollback, probe areas, local adapters; the release order
+- **Tasks:** 3.13, 3.14 and 3.15 added; 3.4 rewritten as a build task (3 → 5 SP); 3.11 extended (2 → 3 SP). None started.
+- **Branch:** `docs/queue-rollback-probes-local-adapters`
+- **Decisions / deviations from the plan:** the owner's decisions, recorded as tasks so that none depends on a conversation:
+  - **3.13, the issue queue.** The open-ended phase is not a phase (no goal, no end, a size that grows, a number in the sequence). It becomes an
+    unnumbered queue next to the phases. The defects of this phase move there and its design tasks into phases by release, but only when 3.13 runs,
+    with the tools that support it, so that ids change once.
+  - **3.14, rollback.** A copy of `docs/` and `harness/` would miss what a migration changes elsewhere (`AGENTS.md`, the skills, the profile file, the
+    lock, the hooks), so it could not restore a project exactly. Rollback goes through Git: a recorded starting commit, the tool's changes in one
+    commit, `harness rollback`, and a test that requires an empty diff.
+  - **3.15, probe areas.** Probes belong to each project, so a note cannot name them. Notes list the areas a version touched (3.11); probes name the
+    areas they exercise; `update-framework` reruns those that meet.
+  - **3.4, local adapters.** The owner keeps the feature: it is built in `0.3.0`, after the migrations, which must leave local adapters alone and test
+    them against a changed contract.
+  - **The release order** (plan index): `0.1.1` = 3.6, 3.7, 3.8, 3.11; `0.1.2` = 3.3, 3.9, 3.1, 3.2; `0.2.0` = 3.5, 3.12, 3.14, 3.10, 3.13, 3.15,
+    then Phase 4; `0.3.0` = 3.4; then Phase 2.
+- **Problems / blockers / findings:** none. Phase 3 is now 40 SP.
+- **Next step:** 3.6 → 3.7 → 3.8 → 3.11, released as `0.1.1`.
+- **Verify with:** `npm run docs:check`

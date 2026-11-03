@@ -16,20 +16,24 @@ is updated in the change that starts or finishes it.
 | ----- | ----- | ------------ | ---------------- | ------ |
 | 1 | Adoption, presets, examples and the proof | 12 | C1–C2 | ✅ Done |
 | 2 | Security and review automation | 17 | C2–C3 | ⬜ Not started |
-| 3 | Issues and stabilization | 28 (grows) | C1–C2 | ⬜ Not started |
-| 4 | Reaching and holding the structure of documents | 18 | C1–C2 | ⬜ Not started |
-|  | **Total of Phases 1–4** | **75** (Phase 3 grows as issues are added) | | |
+| 3 | Issues and stabilization | 40 (grows) | C1–C2 | ⬜ Not started |
+| 4 | Reaching and holding the structure of documents | 19 | C1–C2 | ⬜ Not started |
+|  | **Total of Phases 1–4** | **88** (Phase 3 grows as issues are added) | | |
 <!-- plan-summary:end -->
 
 **Order of development** (the owner's decision of 2026-11-03). The framework is developed first; the project it was extracted from, AndLD/bot-rts,
 is its first consumer and takes releases to prove them. Releases group the tasks:
 
-| Release | Tasks | The first consumer |
-| ------- | ----- | ------------------ |
+| Release | Tasks, in order | The first consumer |
+| ------- | --------------- | ------------------ |
 | `0.1.1` | 3.6, 3.7, 3.8, then 3.11 (the first migration note) | takes it; it closes the consumer's extraction phase |
-| `0.1.2` | 3.3, 3.9, 3.1, 3.2; 3.4 after the owner's decision | skips it on purpose, so that `0.2.0` is the first chained migration |
-| `0.2.0` | 3.5, 3.12, 3.10, then Phase 4 | takes the development version before the final tag, then the release |
+| `0.1.2` | 3.3, 3.9, 3.1, 3.2 | skips it on purpose, so that `0.2.0` is the first chained migration |
+| `0.2.0` | 3.5 (`migrate`), 3.12 (scripts and the migration test), 3.14 (rollback), 3.10 (task files), 3.13 (the issue queue), 3.15 (probe areas), then Phase 4 | takes the development version before the final tag, then the release |
+| `0.3.0` | 3.4 (local adapters) | takes it |
 | next | Phase 2 (earlier if the repository goes public or a second person uses the framework) | takes it |
+
+Task 3.13 ends by moving this plan's own open-ended phase into the issue queue: its defects become issues, and its design tasks move into phases by
+release, in the order above. Until then they stay in Phase 3, so that their ids do not change twice.
 
 ---
 
@@ -44,6 +48,6 @@ is its first consumer and takes releases to prove them. Releases group the tasks
 <!-- plan-contents:start -->
 - [Phase 1 — Adoption, presets, examples and the proof (12 SP)](./phases/phase-1-adoption-presets-proof.md)
 - [Phase 2 — Security and review automation (17 SP)](./phases/phase-2-security.md)
-- [Phase 3 — Issues and stabilization (28 SP, grows as issues are added)](./phases/phase-3-issues.md)
-- [Phase 4 — Reaching and holding the structure of documents (18 SP)](./phases/phase-4-document-extension.md)
+- [Phase 3 — Issues and stabilization (40 SP, grows as issues are added)](./phases/phase-3-issues.md)
+- [Phase 4 — Reaching and holding the structure of documents (19 SP)](./phases/phase-4-document-extension.md)
 <!-- plan-contents:end -->
