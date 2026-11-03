@@ -3,11 +3,40 @@ import { execFileSync } from 'node:child_process'
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { after, test } from 'node:test'
+import { after, before, test } from 'node:test'
 import { updateBranch } from './branch-update.mjs'
 
 const dirs = []
 after(() => dirs.forEach((dir) => rmSync(dir, { recursive: true, force: true })))
+
+const saved = {}
+const GIT_ENV = {
+  GIT_AUTHOR_NAME: 't',
+  GIT_AUTHOR_EMAIL: 't@t',
+  GIT_COMMITTER_NAME: 't',
+  GIT_COMMITTER_EMAIL: 't@t',
+  GIT_CONFIG_NOSYSTEM: '1'
+}
+before(() => {
+  // The code under test commits: a fixed identity, and none of the machine's own Git configuration (a signing rule, a global hooks path)
+  const folder = mkdtempSync(join(tmpdir(), 'git-config-'))
+  dirs.push(folder)
+  const config = join(folder, 'gitconfig')
+  writeFileSync(config, '')
+  for (const [key, value] of Object.entries({ ...GIT_ENV, GIT_CONFIG_GLOBAL: config })) {
+    saved[key] = process.env[key]
+    process.env[key] = value
+  }
+})
+after(() => {
+  for (const [key, value] of Object.entries(saved)) {
+    if (value === undefined) {
+      delete process.env[key]
+    } else {
+      process.env[key] = value
+    }
+  }
+})
 
 const git = (cwd, ...args) =>
   execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', '-c', 'commit.gpgsign=false', ...args], {
