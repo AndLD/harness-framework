@@ -227,3 +227,11 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none.
 - **Next step:** task 3.8.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — task 3.8 done: exceptions, the report path, development versions
+- **Tasks:** 3.8 (done).
+- **Branch:** `feature/3.8-core-exceptions` — done (details: `work-logs/phase-3/3.8.md`).
+- **Decisions / deviations from the plan:** `harness release --dev` was added, since a development tag must hold a `framework.json` with the tag's version.
+- **Problems / blockers / findings:** none.
+- **Next step:** task 3.11.
+- **Verify with:** `npm run docs:check`

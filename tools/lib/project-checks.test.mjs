@@ -200,7 +200,7 @@ test('core, pinned: the vendored framework core is scanned with the project term
   assert.equal(problems.length, 1)
   assert.match(problems[0], /^harness\/core\/rules\.md:1: the product term "cart" is in the vendored framework core/)
   assert.match(problems[0], /add it to `terms\.productGeneric`/)
-  assert.match(problems[0], /report it upstream.*stay on the current version/)
+  assert.match(problems[0], /report it upstream.*record it in `terms\.exceptions`/)
 
   // Way out 1: an ordinary word is listed in productGeneric
   const generic = { ...PROFILE, terms: { ...PROFILE.terms, productGeneric: '\\border\\b|\\bcart\\b' } }
@@ -219,6 +219,38 @@ test('core, pinned: the vendored framework core is scanned with the project term
   assert.match(
     checkCore({ root, profile: profileOf(root) }).problems.join('\n'),
     /the stack term "Postgres" is in the vendored/
+  )
+})
+
+test('core, pinned: a recorded exception holds while the lock is at its version and fails after a sync to the next', () => {
+  const lock = (version) =>
+    JSON.stringify({ mode: 'pinned', version, source: { type: 'git', url: 'https://example.com/framework.git' } })
+  const exception = {
+    file: 'harness/core/rules.md',
+    word: 'cart',
+    report: 'https://example.com/framework/issues/7',
+    version: '0.1.0'
+  }
+  const withException = (exceptions) => JSON.stringify({ ...PROFILE, terms: { ...PROFILE.terms, exceptions } })
+  const root = project({ 'harness.lock.json': lock('0.1.0'), 'harness/core/rules.md': 'Each cart is checked.\n' })
+
+  assert.equal(checkCore({ root, profile: profileOf(root) }).problems.length, 1)
+
+  write(root, { 'harness-profile.json': withException([exception]) })
+  assert.deepEqual(checkCore({ root, profile: profileOf(root) }).problems, [])
+
+  // The next version still has the word: the hit is reported again, and the exception says why it does not hold
+  write(root, { 'harness.lock.json': lock('0.1.1') })
+  const problems = checkCore({ root, profile: profileOf(root) }).problems
+  assert.equal(problems.length, 2)
+  assert.match(problems[0], /harness\/core\/rules\.md:1: the product term "cart" is in the vendored/)
+  assert.match(problems[1], /holds for version 0\.1\.0, and the lock is at 0\.1\.1: remove it/)
+
+  // The next version has the fix: only the stale exception is left
+  write(root, { 'harness/core/rules.md': 'Each item is checked.\n' })
+  assert.match(
+    checkCore({ root, profile: profileOf(root) }).problems.join('\n'),
+    /^terms\.exceptions\[0\].*the lock is at 0\.1\.1: remove it/
   )
 })
 
@@ -268,6 +300,28 @@ test('changelog: a fragment needs a kind; a release on its branch sets the versi
     checkChangelog({ root, profile: profileOf(root) }).problems[0],
     /bad\.md: a changelog fragment starts with/
   )
+})
+
+test('changelog: a development version of a release sets only the versions, and numbers itself by the tags', () => {
+  const root = project()
+  git(root, 'checkout', '--quiet', '-b', 'release/1.1.0')
+  const dry = release({ root, profile: profileOf(root), dev: true, dryRun: true })
+  assert.deepEqual(dry, [
+    'release/1.1.0: 1.0.0 -> 1.1.0-dev.1 (a development version: no changelog entry)',
+    'Dry run: nothing was written.'
+  ])
+
+  release({ root, profile: profileOf(root), dev: true })
+  assert.equal(JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).version, '1.1.0-dev.1')
+  assert.equal(readFileSync(join(root, 'CHANGELOG.md'), 'utf8'), FILES['CHANGELOG.md'])
+  assert.equal(git(root, 'status', '--porcelain', 'changelog.d'), '', 'the fragments stay for the final release')
+
+  // Tagged, the next one is dev.2; the final release still starts from the development version
+  commit(root, 'chore(release): 1.1.0-dev.1')
+  git(root, 'tag', 'v1.1.0-dev.1')
+  assert.match(release({ root, profile: profileOf(root), dev: true, dryRun: true })[0], /-> 1\.1\.0-dev\.2 /)
+  release({ root, profile: profileOf(root), date: '2026-10-31' })
+  assert.equal(JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).version, '1.1.0')
 })
 
 test('product knowledge: the register, the glossary and the scan, each from the profile; no role, no check', () => {

@@ -143,10 +143,10 @@ test("the vendored scan words each hit with the way out of its term list; an ada
     text.replace(/^h\/core\/a\.md:\d: /, '')
   )
   assert.deepEqual(messages, [
-    'the stack term "Postgres" is in the vendored framework core, which you cannot edit; an ordinary word: make `terms.stack` of the profile file narrower; a product or tool word: report it upstream (an issue of the framework repository) and stay on the current version',
-    'the product term "bot" is in the vendored framework core, which you cannot edit; an ordinary word: add it to `terms.productGeneric` of the profile file; a product or tool word: report it upstream (an issue of the framework repository) and stay on the current version',
-    'the project value "Phase 4" is in the vendored framework core, which you cannot edit; an ordinary word: make `terms.projectValues` of the profile file narrower; a product or tool word: report it upstream (an issue of the framework repository) and stay on the current version',
-    'the host adapter somehost term "SomeHost" is in the vendored framework core, which you cannot edit; report it upstream (an issue of the framework repository) and stay on the current version'
+    'the stack term "Postgres" is in the vendored framework core, which you cannot edit; an ordinary word: make `terms.stack` of the profile file narrower; a product or tool word: report it upstream (an issue of the framework repository), record it in `terms.exceptions` of the profile file for this version, and take the fix with the next one',
+    'the product term "bot" is in the vendored framework core, which you cannot edit; an ordinary word: add it to `terms.productGeneric` of the profile file; a product or tool word: report it upstream (an issue of the framework repository), record it in `terms.exceptions` of the profile file for this version, and take the fix with the next one',
+    'the project value "Phase 4" is in the vendored framework core, which you cannot edit; an ordinary word: make `terms.projectValues` of the profile file narrower; a product or tool word: report it upstream (an issue of the framework repository), record it in `terms.exceptions` of the profile file for this version, and take the fix with the next one',
+    'the host adapter somehost term "SomeHost" is in the vendored framework core, which you cannot edit; report it upstream (an issue of the framework repository), record it in `terms.exceptions` of the profile file for this version, and take the fix with the next one'
   ])
 })
 
@@ -189,3 +189,35 @@ function readCoreText(dir) {
     .map((entry) => readFileSync(new URL(`${entry.parentPath ?? entry.path}/${entry.name}`, 'file://'), 'utf8'))
     .join('\n')
 }
+
+test('an exception of the profile file accepts a hit of its file and word at its version, and is a problem at any other', () => {
+  const files = { 'h/core/a.md': 'A bot waits.\nThe BOT again.', 'h/core/b.md': 'A bot.' }
+  const profile = { ...PROFILE, product: '\\bbots?\\b', productGeneric: '(?!)' }
+  const exception = { file: 'h/core/a.md', word: 'bot', report: 'https://example.com/issues/1', version: '0.1.1' }
+  const scan = (exceptions, version) =>
+    frameworkCoreProblems(files, profile, 'h/core', [], { vendored: true, exceptions, version })
+
+  // Both hits of a.md are accepted, the hit of b.md is not
+  assert.deepEqual(
+    scan([exception], '0.1.1').map((text) => text.slice(0, 37)),
+    ['h/core/b.md:1: the product term "bot"']
+  )
+
+  // After a sync to another version the exception is a problem, and so is the hit it no longer covers
+  const after = scan([exception], '0.1.2')
+  assert.equal(after.length, 4)
+  assert.match(
+    after.at(-1),
+    /^terms\.exceptions\[0\] of the profile file: the exception for "bot" in h\/core\/a\.md \(https:\/\/example\.com\/issues\/1\) holds for version 0\.1\.1, and the lock is at 0\.1\.2: remove it/
+  )
+
+  // At its version, an exception for a word that is not there (the fix came in the same version) is a problem
+  const gone = { ...exception, word: 'robot' }
+  assert.match(scan([gone], '0.1.1').at(-1), /matches no hit in version 0\.1\.1: remove it/)
+
+  // Outside a vendored folder there are no exceptions: the files can be edited
+  assert.equal(
+    frameworkCoreProblems(files, profile, 'h/core', [], { exceptions: [exception], version: '0.1.1' }).length,
+    3
+  )
+})
