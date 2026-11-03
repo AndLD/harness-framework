@@ -195,7 +195,7 @@ export async function run(argv, { out = console.log, err = console.error, input 
       return 0
     }
     if (command === 'migrate') {
-      migrate({ root }).messages.forEach((line) => out(line))
+      ;(await migrate({ root })).messages.forEach((line) => out(line))
       return 0
     }
     if (command === 'check all') {

@@ -53,7 +53,7 @@ workflows (section 11, assumptions); shells other than `sh` for the Git hooks.
   `runtime/claude-code`, `host/github`), `framework.json`, `README.md`, `CHANGELOG.md` and `LICENSE`. It does not hold the other presets,
   `examples/` or the conformance fixtures.
 - **Pin.** `harness.lock.json` at the root records the framework version, the source (a local path while staging, later a Git URL and
-  tag) and the commit the tag pointed to, the selected adapters, the SHA-256 of every vendored file and of every managed file it generates (section 6.3), and the hash of
+  tag) and the commit the tag pointed to, the selected adapters, the migrations record (`migrations`: the version the project's files are at and the migration scripts applied; see `migrations/README.md`), the SHA-256 of every vendored file and of every managed file it generates (section 6.3), and the hash of
   the profile file used for the generation.
 - **Update.** `node harness/tools/harness.mjs sync [--to <version>] [--from <path or URL>]` replaces the vendored tree and rewrites the lock, then
   starts `harness migrate` of the new tree in a new process, which regenerates the managed files with the new version's tools (the tools that ran
