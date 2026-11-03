@@ -127,7 +127,7 @@ A project may want the framework once and then own it: edit the core freely, nev
 | --------- | ------ | -------- |
 | Owner of `harness/` | the framework | **the project**: it is core, but core the project maintains |
 | `harness check vendored` and the edit guard | refuse a local edit | off; the edit guard allows `harness/` |
-| `harness check core` (the CORE scan) | runs upstream, on the framework source | runs **in the project** on `harness/core/`, with the project's term lists, because nobody upstream scans this copy any more |
+| `harness check core` (the CORE scan) | runs upstream, on the framework source with the framework's own words, **and in the project** on `harness/core/` with the project's term lists, which the framework cannot know; the words of `core/vocabulary.json` are never reported, and a hit names the file, the line, the word and the ways out (an ordinary word goes to `terms.productGeneric`; a product or tool word is reported upstream) | runs **in the project** on `harness/core/`, with the project's term lists, because nobody upstream scans this copy any more |
 | `harness check generated`, `scaffold`, `layers` and the rest | on | on: the managed files are generated from the project's own `harness/`, so an edit to a core rule reaches the entry file's blocks and the skills by the next `harness sync --local` |
 | `harness sync` | takes a version from the source; `--local` regenerates the managed files only | refuses without `--local`, which regenerates the managed files from `harness/` |
 | `harness diff` | the change against the locked version | the change against `base`: what the fork has done since it left |
