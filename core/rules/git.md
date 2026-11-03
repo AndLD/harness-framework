@@ -57,7 +57,8 @@ Squash merge into the integration branch; a merge commit for release and hotfix 
   the fixes of tooling or tests that block a task). Merge them without asking once the required checks pass. A PR counts as
   plan-related only when it serves a named phase; anything else follows the next rule.
 - **Claim a task before working on it.** Push its branch and open a **draft** pull request for it first (title and body as in the claim row of the <!-- rule:agent.claim -->
-  [profile]({{rel:paths.profileDocument}}#4-plan)); a task with an open pull request belongs to the session that opened it.
+  [profile]({{rel:paths.profileDocument}}#4-plan)); a task with an open pull request belongs to the session that opened it, and a session that
+  resumes a phase continues it only as [method §6]({{rel:documents.method}}#6-session-protocol-resuming-and-pausing-a-phase) says (the log names it, or the owner does; otherwise ask).
   With several agents the orchestrator or the owner merges, and the CI events and review comments of a pull request go to the session
   that owns it ([method §7]({{rel:documents.method}}#7-several-agents)).
 - **Opening a pull request is automatic.** Create the PR as soon as a branch is ready (any branch type, including <!-- rule:agent.open-pr -->
