@@ -16,9 +16,9 @@ is updated in the change that starts or finishes it.
 | ----- | ----- | ------------ | ---------------- | ------ |
 | 1 | Adoption, presets, examples and the proof | 12 | C1–C2 | ✅ Done |
 | 2 | Security and review automation | 17 | C2–C3 | ⬜ Not started |
-| 3 | Issues and stabilization | 40 (grows) | C1–C2 | ⬜ Not started |
+| 3 | Issues and stabilization | 41 (grows) | C1–C2 | ⬜ Not started |
 | 4 | Reaching and holding the structure of documents | 19 | C1–C2 | ⬜ Not started |
-|  | **Total of Phases 1–4** | **88** (Phase 3 grows as issues are added) | | |
+|  | **Total of Phases 1–4** | **89** (Phase 3 grows as issues are added) | | |
 <!-- plan-summary:end -->
 
 **Order of development** (the owner's decision of 2026-11-03). The framework is developed first; the project it was extracted from, AndLD/bot-rts,
@@ -32,8 +32,8 @@ is its first consumer and takes releases to prove them. Releases group the tasks
 | `0.3.0` | 3.4 (local adapters) | takes it |
 | next | Phase 2 (earlier if the repository goes public or a second person uses the framework) | takes it |
 
-Task 3.13 ends by moving this plan's own open-ended phase into the issue queue: its defects become issues, and its design tasks move into phases by
-release, in the order above. Until then they stay in Phase 3, so that their ids do not change twice.
+Task 3.13 turns this plan's open-ended phase into a normal phase that keeps every id, so the order above stays valid: Phase 3 ends with 3.4 in
+`0.3.0`, and only its defects that have not started (if any) become issues of the new queue, under their old ids as well.
 
 ---
 
@@ -48,6 +48,6 @@ release, in the order above. Until then they stay in Phase 3, so that their ids 
 <!-- plan-contents:start -->
 - [Phase 1 — Adoption, presets, examples and the proof (12 SP)](./phases/phase-1-adoption-presets-proof.md)
 - [Phase 2 — Security and review automation (17 SP)](./phases/phase-2-security.md)
-- [Phase 3 — Issues and stabilization (40 SP, grows as issues are added)](./phases/phase-3-issues.md)
+- [Phase 3 — Issues and stabilization (41 SP, grows as issues are added)](./phases/phase-3-issues.md)
 - [Phase 4 — Reaching and holding the structure of documents (19 SP)](./phases/phase-4-document-extension.md)
 <!-- plan-contents:end -->

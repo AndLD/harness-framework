@@ -109,8 +109,11 @@ pauses. Newest entry at the bottom.
 - **Branch:** `docs/queue-rollback-probes-local-adapters`
 - **Decisions / deviations from the plan:** the owner's decisions, recorded as tasks so that none depends on a conversation:
   - **3.13, the issue queue.** The open-ended phase is not a phase (no goal, no end, a size that grows, a number in the sequence). It becomes an
-    unnumbered queue next to the phases. The defects of this phase move there and its design tasks into phases by release, but only when 3.13 runs,
-    with the tools that support it, so that ids change once.
+    unnumbered queue next to the phases, and finished issues move to an archive, so the queue holds only work to do.
+    - A move never renames a planned task: the old open-ended phase becomes a normal phase that keeps every id; only defects not yet started become
+      issues, under their old ids too; a task in progress never moves. So the order of development, written by id, survives; `check plan` fails on
+      an order that names a task that exists nowhere.
+    - Here, Phase 3 becomes a normal phase that ends with 3.4 in `0.3.0`.
   - **3.14, rollback.** A copy of `docs/` and `harness/` would miss what a migration changes elsewhere (`AGENTS.md`, the skills, the profile file, the
     lock, the hooks), so it could not restore a project exactly. Rollback goes through Git: a recorded starting commit, the tool's changes in one
     commit, `harness rollback`, and a test that requires an empty diff.
@@ -120,6 +123,6 @@ pauses. Newest entry at the bottom.
     them against a changed contract.
   - **The release order** (plan index): `0.1.1` = 3.6, 3.7, 3.8, 3.11; `0.1.2` = 3.3, 3.9, 3.1, 3.2; `0.2.0` = 3.5, 3.12, 3.14, 3.10, 3.13, 3.15,
     then Phase 4; `0.3.0` = 3.4; then Phase 2.
-- **Problems / blockers / findings:** none. Phase 3 is now 40 SP.
+- **Problems / blockers / findings:** none. Phase 3 is now 41 SP.
 - **Next step:** 3.6 → 3.7 → 3.8 → 3.11, released as `0.1.1`.
 - **Verify with:** `npm run docs:check`
