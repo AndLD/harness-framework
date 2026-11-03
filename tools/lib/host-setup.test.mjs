@@ -1,0 +1,163 @@
+import assert from 'node:assert/strict'
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { after, test } from 'node:test'
+import { FRAMEWORK_DIR, loadModules } from './bootstrap.mjs'
+import { decideHostSetup, hostAdapterOf } from './host-setup.mjs'
+import { init } from './init.mjs'
+
+const dirs = []
+const fresh = () => {
+  const dir = mkdtempSync(join(tmpdir(), 'host-setup-'))
+  dirs.push(dir)
+  return dir
+}
+after(() => dirs.forEach((dir) => rmSync(dir, { recursive: true, force: true })))
+
+const modules = await loadModules(FRAMEWORK_DIR)
+const profile = {
+  repository: { slug: 'acme/shop' },
+  adapters: { host: 'github' },
+  branches: { production: 'main', integration: 'develop' }
+}
+const adapter = hostAdapterOf(profile, modules)
+
+// A stand-in for `gh`: the host offers rulesets or does not or cannot be asked; the user administers the repository or not
+function host({ rulesets = 'offered', admin = true } = {}) {
+  const calls = []
+  const cli = (args) => {
+    calls.push(args)
+    if (args.join(' ') === 'api repos/acme/shop/rulesets') {
+      return {
+        offered: { status: 0, stdout: '[]', stderr: '' },
+        private: {
+          status: 1,
+          stdout: '',
+          stderr: 'Upgrade to GitHub Pro or make this repository public to enable this feature.'
+        },
+        unreachable: { status: 1, stdout: '', stderr: 'could not resolve host' }
+      }[rulesets]
+    }
+    if (args.includes('.permissions.admin')) {
+      return { status: 0, stdout: `${admin}\n`, stderr: '' }
+    }
+    return { status: 0, stdout: '', stderr: '' }
+  }
+  return { cli, calls }
+}
+const decide = (options, extra = {}) =>
+  decideHostSetup({ profile, adapter, harness: 'harness/tools/harness.mjs', cli: host(options).cli, ...extra })
+
+test('a host that offers rulesets and an administrator get the protection applied, after one question in an interactive run', async () => {
+  const asked = []
+  const plan = await decide({}, { confirm: async (question) => (asked.push(question), true) })
+  assert.equal(plan.profile.host.protection, true)
+  assert.equal(plan.apply, true)
+  assert.equal(asked.length, 1)
+  assert.match(asked[0], /ruleset.*"allow auto-merge" on.*"delete head branches" off in acme\/shop\? \[Y\/n\]/)
+
+  const declined = await decide({}, { confirm: async () => false })
+  assert.equal(declined.apply, false)
+  assert.equal(declined.profile.host.protection, true)
+  assert.match(declined.messages[0], /not applied, as you answered.*host protect/)
+  assert.equal((await decide({})).apply, true, 'a run with no terminal asks nothing')
+})
+
+test('a host that offers rulesets to a user without admin rights gets the files and one command for the owner', async () => {
+  const plan = await decide({ admin: false })
+  assert.equal(plan.apply, false)
+  assert.equal(plan.profile.host.protection, true)
+  assert.match(
+    plan.messages[0],
+    /you do not administer it.*ask an owner of the repository to run: node harness\/tools\/harness\.mjs host protect/
+  )
+})
+
+test('a host that cannot protect the repository gets host.protection false and one line on what going public or a paid plan adds', async () => {
+  const plan = await decide({ rulesets: 'private' })
+  assert.equal(plan.profile.host.protection, false)
+  assert.equal(plan.apply, false)
+  assert.match(
+    plan.messages[0],
+    /host.protection is false.*auto-merge is off.*public, or a paid plan, adds the ruleset and auto-merge/
+  )
+})
+
+test("a host that cannot be asked changes nothing and names the command, and a value the profile file has is the owner's", async () => {
+  const plan = await decide({ rulesets: 'unreachable' })
+  assert.equal(plan.profile.host, undefined)
+  assert.equal(plan.apply, false)
+  assert.match(
+    plan.messages[0],
+    /Host setup skipped.*could not resolve host.*run: node harness\/tools\/harness\.mjs host protect/
+  )
+
+  const set = { ...profile, host: { protection: false } }
+  const asked = host()
+  const kept = await decideHostSetup({ profile: set, adapter, harness: 'x', cli: asked.cli })
+  assert.deepEqual([kept.profile, kept.apply, kept.messages], [set, false, []])
+  assert.deepEqual(asked.calls, [], 'the host is not asked')
+})
+
+const FLAGS = { nonInteractive: true, name: 'acme', repository: 'acme/shop', stack: 'node-ts', runtime: 'claude-code' }
+async function bootstrapped(options, hostSetup) {
+  const root = fresh()
+  const lines = []
+  const { code } = await init({
+    root,
+    flags: FLAGS,
+    hostSetup,
+    out: (line) => lines.push(line),
+    err: (line) => lines.push(line)
+  })
+  return {
+    code,
+    output: lines.join('\n'),
+    profile: JSON.parse(readFileSync(join(root, 'harness-profile.json'), 'utf8')),
+    workflow: existsSync(join(root, '.github/workflows/update-branches.yml'))
+  }
+}
+
+test('the bootstrap of a protectable repository sets the protection, auto-merge and the workflow, and leaves out the step that does it', async () => {
+  const gh = host()
+  const result = await bootstrapped({}, { cli: gh.cli })
+  assert.equal(result.code, 0, result.output)
+  assert.equal(result.profile.host.protection, true)
+  assert.equal(result.workflow, true)
+  assert.ok(gh.calls.some((call) => call.join(' ').includes('allow_auto_merge=true')))
+  assert.ok(gh.calls.some((call) => call.includes('POST') && call.some((arg) => arg.endsWith('/rulesets'))))
+  assert.match(result.output, /Host setup: setting the ruleset/)
+  assert.doesNotMatch(result.output, /Protect both branches/)
+  assert.match(result.output, /\n {2}2\. Read the scaffolded files/)
+})
+
+test('the bootstrap of a repository the host cannot protect has host.protection false, no workflow, and no step that protects', async () => {
+  const gh = host({ rulesets: 'private' })
+  const result = await bootstrapped({}, { cli: gh.cli })
+  assert.equal(result.code, 0, result.output)
+  assert.equal(result.profile.host.protection, false)
+  assert.equal(result.workflow, false)
+  assert.ok(!gh.calls.some((call) => call.includes('POST') || call.includes('PATCH')), 'nothing is set on the host')
+  assert.match(result.output, /auto-merge is off/)
+  assert.doesNotMatch(result.output, /Protect both branches/)
+})
+
+test('the bootstrap of a repository the user does not administer writes the files and names the command for the owner', async () => {
+  const gh = host({ admin: false })
+  const result = await bootstrapped({}, { cli: gh.cli })
+  assert.equal(result.code, 0, result.output)
+  assert.equal(result.profile.host.protection, true)
+  assert.equal(result.workflow, true)
+  assert.ok(!gh.calls.some((call) => call.includes('POST') || call.includes('PATCH')))
+  assert.match(result.output, /ask an owner of the repository to run/)
+  assert.match(result.output, /Protect both branches/)
+})
+
+test('without the host setup (--no-host-setup, or a caller that gives none) the host is not asked and the profile file has no host.protection', async () => {
+  const result = await bootstrapped({}, false)
+  assert.equal(result.code, 0, result.output)
+  assert.equal(result.profile.host, undefined)
+  assert.equal(result.workflow, true, 'by default the host protects, so the workflow is scaffolded')
+  assert.match(result.output, /Protect both branches/)
+})

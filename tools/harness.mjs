@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // The `harness` command line (design §7.1). The build tasks add commands; this version holds:
 //   harness init [--name <n>] [--repository <owner/name>] [--stack <a,b>] [--runtime <a,b>] [--host <h>] [--set <role>=<value>]…
-//                [--detached [--reason <why>]] [--non-interactive] [--from <folder or Git URL> [--to <version>]] [--force]
+//                [--detached [--reason <why>]] [--non-interactive] [--no-host-setup] [--from <folder or Git URL> [--to <version>]] [--force]
 //                                                                fill the profile file (asking what no flag answers), then bootstrap
 //   harness adopt [--non-interactive] [--from …] [--to …] [init's flags]   the bootstrap for a repository that copied the first harness (design §6.4)
 //   harness bootstrap [--non-interactive] [--detached | --self] [--from …] [--force]   the engine on the profile file as it is (design §6.1); --self is the
@@ -27,6 +27,7 @@
 //   harness coverage check-changed [--skip-missing] <base> [<package>...]   the files changed since <base> meet the coverage gate
 //   harness coverage merge <artifacts> [--out <dir>] [<package>...]         merge the coverage shards of CI and hold the total to the gate
 //   harness coverage summarize [--skip-missing] [<package>...]              write the neutral summary of the last local run of a package (a tool that does not write it)
+//   harness branch update [--previous <branch>]                   bring the integration branch into the branch of a stacked task after the squash merge of the one under it
 //   harness host protect [--repo <owner/name>]                    set the protection of the production and the integration branch on the host
 //   harness adapter test <path> [--only <pattern>]                run the conformance suite of its axis on the adapter folder at <path>
 // `--root <dir>` runs on another project (default: the Git top level of the working directory).
@@ -36,6 +37,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { ciChanges } from './lib/changes.mjs'
 import { release, releaseNotes } from './lib/changelog.mjs'
+import { updateBranch } from './lib/branch-update.mjs'
 import { bootstrap, buildTemplate } from './lib/bootstrap.mjs'
 import { CHECKS, checkAll, report, runCheck } from './lib/checks.mjs'
 import { checkChanged, mergeShards, summarizePackages } from './lib/coverage.mjs'
@@ -51,9 +53,9 @@ import { detach, diff, override, sync } from './lib/vendor.mjs'
 
 const USAGE = `usage: harness <command>
   init [--name <n>] [--repository <owner/name>] [--stack <a,b>] [--runtime <a,b>] [--host <h>] [--set <role>=<value>]
-       [--detached [--reason <why>]] [--non-interactive] [--from <folder or Git URL> [--to <version>]] [--force]
+       [--detached [--reason <why>]] [--non-interactive] [--no-host-setup] [--from <folder or Git URL> [--to <version>]] [--force]
   adopt [--non-interactive] [--from <folder or Git URL> [--to <version>]] [init's flags]
-  bootstrap [--non-interactive] [--detached [--reason <why>]] [--from <folder or Git URL> [--to <version>]] [--force]
+  bootstrap [--non-interactive] [--no-host-setup] [--detached [--reason <why>]] [--from <folder or Git URL> [--to <version>]] [--force]
   template <dir> [--from <folder or Git URL> [--to <version>]]
   sync [--from <folder or Git URL>] [--to <version>]
   sync --local
@@ -73,6 +75,7 @@ const USAGE = `usage: harness <command>
   coverage check-changed [--skip-missing] <base> [<package>...]
   coverage merge <artifacts> [--out <dir>] [<package>...]
   coverage summarize [--skip-missing] [<package>...]
+  branch update [--previous <branch>]
   host protect [--repo <owner/name>]
   adapter test <path> [--only <pattern>]`
 
@@ -89,7 +92,8 @@ const FLAGS_WITH_VALUE = new Set([
   '--stack',
   '--runtime',
   '--host',
-  '--only'
+  '--only',
+  '--previous'
 ])
 // Flags that may be given several times; their values are collected in a list
 const REPEATED_FLAGS = new Set(['--set'])
@@ -102,7 +106,8 @@ const BOOLEAN_FLAGS = new Set([
   '--detached',
   '--non-interactive',
   '--force',
-  '--self'
+  '--self',
+  '--no-host-setup'
 ])
 
 export function parseArgs(argv) {
@@ -157,7 +162,7 @@ export async function run(argv, { out = console.log, err = console.error, input 
 
   try {
     if (command === 'init' || command === 'bootstrap' || command === 'adopt') {
-      const options = { root, flags, input, out, err }
+      const options = { root, flags, input, hostSetup: flags.noHostSetup ? false : {}, out, err }
       const { code } =
         command === 'adopt'
           ? await adopt(options)
@@ -171,6 +176,7 @@ export async function run(argv, { out = console.log, err = console.error, input 
                 detached: flags.detached,
                 self: flags.self,
                 reason: flags.reason,
+                hostSetup: flags.noHostSetup ? false : {},
                 out,
                 err
               })
@@ -272,6 +278,18 @@ export async function run(argv, { out = console.log, err = console.error, input 
         profile: loadProfile(root),
         packages: words.slice(2),
         skipMissing: flags.skipMissing
+      })
+      messages.forEach((line) => out(line))
+      problems.forEach((line) => err(line))
+      return code
+    }
+    if (command === 'branch update') {
+      const { branches } = loadProfile(root)
+      const { code, messages, problems } = updateBranch({
+        root,
+        integration: branches.integration,
+        production: branches.production,
+        previous: flags.previous
       })
       messages.forEach((line) => out(line))
       problems.forEach((line) => err(line))

@@ -41,7 +41,7 @@ check_all() { step "harness check all (the project's own copy)" $PH check all; }
 
 echo "== A: node-ts with Claude Code"
 mkdir "$P/a" && cd "$P/a" && git init -q
-$H init --non-interactive --name orbit-a --repository acme/orbit-a --stack node-ts --runtime claude-code --host github >"$P/a.log" 2>&1 && echo "  ok   harness init" || { echo "  FAIL harness init"; tail -5 "$P/a.log"; fail=1; }
+$H init --non-interactive --no-host-setup --name orbit-a --repository acme/orbit-a --stack node-ts --runtime claude-code --host github >"$P/a.log" 2>&1 && echo "  ok   harness init" || { echo "  FAIL harness init"; tail -5 "$P/a.log"; fail=1; }
 check_all; node_checks
 step "CLAUDE.md imports the entry file" grep -qx '@AGENTS.md' CLAUDE.md
 step ".claude/settings.json has the four hooks" bash -c "node -e \"const s=require('./.claude/settings.json');process.exit(Object.keys(s.hooks).length===3&&s.permissions.deny.length>0?0:1)\""
@@ -50,7 +50,7 @@ step "no Cursor files" bash -c '! test -e .cursor && ! test -e .cursorignore'
 
 echo "== B: python with Cursor (native)"
 mkdir "$P/b" && cd "$P/b" && git init -q
-$H init --non-interactive --name orbit-b --repository acme/orbit-b --stack python --runtime cursor --host github --set 'adapters.stacks=[{"adapter":"python","packages":["api"]}]' --set 'coveragePackages=["api"]' >"$P/b.log" 2>&1 && echo "  ok   harness init" || { echo "  FAIL harness init"; tail -5 "$P/b.log"; fail=1; }
+$H init --non-interactive --no-host-setup --name orbit-b --repository acme/orbit-b --stack python --runtime cursor --host github --set 'adapters.stacks=[{"adapter":"python","packages":["api"]}]' --set 'coveragePackages=["api"]' >"$P/b.log" 2>&1 && echo "  ok   harness init" || { echo "  FAIL harness init"; tail -5 "$P/b.log"; fail=1; }
 python_package; check_all; python_checks
 step ".cursor/hooks.json has the four hooks" bash -c "node -e \"const h=require('./.cursor/hooks.json');process.exit(h.version===1&&Object.keys(h.hooks).length===4?0:1)\""
 step "the skills are in .cursor/skills" test -f .cursor/skills/start-task/SKILL.md
@@ -60,7 +60,7 @@ step "AGENTS.md is the entry file, with no pointer file" test -f AGENTS.md
 
 echo "== C: node-ts and python together, both runtimes (compat)"
 mkdir "$P/c" && cd "$P/c" && git init -q
-$H init --non-interactive --name orbit-c --repository acme/orbit-c --stack node-ts,python --runtime claude-code,cursor --host github --set 'adapters.stacks=[{"adapter":"node-ts","packages":["web"]},{"adapter":"python","packages":["api"]}]' --set 'coveragePackages=["web","api"]' >"$P/c.log" 2>&1 && echo "  ok   harness init" || { echo "  FAIL harness init"; tail -5 "$P/c.log"; fail=1; }
+$H init --non-interactive --no-host-setup --name orbit-c --repository acme/orbit-c --stack node-ts,python --runtime claude-code,cursor --host github --set 'adapters.stacks=[{"adapter":"node-ts","packages":["web"]},{"adapter":"python","packages":["api"]}]' --set 'coveragePackages=["web","api"]' >"$P/c.log" 2>&1 && echo "  ok   harness init" || { echo "  FAIL harness init"; tail -5 "$P/c.log"; fail=1; }
 python_package; check_all
 step "CI job ids are unique" bash -c "test -z \"\$(sed -n '/^jobs:/,\$p' .github/workflows/ci.yml | grep -E '^  [a-z][a-z0-9-]*:\$' | sort | uniq -d)\""
 step "each stack has its own static job" bash -c "grep -q '^  static-node-ts:' .github/workflows/ci.yml && grep -q '^  static-python:' .github/workflows/ci.yml"
@@ -75,7 +75,7 @@ python_checks
 
 echo "== D: detached, with a core rule edited"
 mkdir "$P/d" && cd "$P/d" && git init -q
-$H init --non-interactive --detached --name orbit-d --repository acme/orbit-d --stack node-ts --runtime claude-code --host github >"$P/d.log" 2>&1 && echo "  ok   harness init --detached" || { echo "  FAIL harness init --detached"; tail -5 "$P/d.log"; fail=1; }
+$H init --non-interactive --no-host-setup --detached --name orbit-d --repository acme/orbit-d --stack node-ts --runtime claude-code --host github >"$P/d.log" 2>&1 && echo "  ok   harness init --detached" || { echo "  FAIL harness init --detached"; tail -5 "$P/d.log"; fail=1; }
 check_all
 step "the lock says detached" grep -q '"mode": "detached"' harness.lock.json
 sed -i.bak 's/Squash merge into the integration branch/Squash merge, by the owner, into the integration branch/' harness/core/rules/git.md && rm harness/core/rules/git.md.bak

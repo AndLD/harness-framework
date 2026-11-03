@@ -56,6 +56,16 @@ test('protect allows auto-merge by default and when host.autoMerge is on, and tu
   assert.match(protect({ profile: profile(), cli: gh }).messages[1], /Merged branches are kept; auto-merge is allowed/)
 })
 
+test('detectProtection says whether the user administers the repository, and nothing when the host does not say', () => {
+  const answer = (admin) => (args) =>
+    args.includes('.permissions.admin') ? admin : { status: 0, stdout: '[]', stderr: '' }
+  const detect = (admin) => detectProtection({ slug: 'owner/name', cli: answer(admin) })
+  assert.equal(detect({ status: 0, stdout: 'true\n', stderr: '' }).admin, true)
+  assert.equal(detect({ status: 0, stdout: 'false\n', stderr: '' }).admin, false)
+  assert.equal(detect({ status: 1, stdout: '', stderr: 'nope' }).admin, undefined)
+  assert.equal(detect({ status: 0, stdout: 'maybe', stderr: '' }).admin, undefined)
+})
+
 test('protect keeps merged branches, creates the ruleset and removes the classic protection', () => {
   const { gh, calls } = standIn()
   const { messages, problems } = protect({ profile: profile(), cli: gh })

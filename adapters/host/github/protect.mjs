@@ -53,13 +53,17 @@ export function buildRuleset(profile) {
 
 /**
  * Whether the host can protect the repository, asked of the host: the rulesets of the repository are readable, or the host answers that
- * they need a public repository or a paid plan.
- * @returns {{ available: boolean, reason: string }}; an answer that is neither (no network, no rights) is an error, not a guess
+ * they need a public repository or a paid plan. Where it can, `admin` says whether the user of the command line administers the repository
+ * (`protect` needs that); undefined when the host does not say.
+ * @returns {{ available: boolean, reason: string, admin?: boolean }}; an answer that is neither (no network, no rights) is an error, not a guess
  */
 export function detectProtection({ slug, cli = runGh }) {
   const answer = cli(['api', `repos/${slug}/rulesets`])
   if (answer.status === 0) {
-    return { available: true, reason: 'the host offers rulesets for this repository' }
+    const rights = cli(['api', `repos/${slug}`, '--jq', '.permissions.admin'])
+    const admin =
+      rights.status === 0 && /^(true|false)$/.test(rights.stdout.trim()) ? rights.stdout.trim() === 'true' : undefined
+    return { available: true, reason: 'the host offers rulesets for this repository', admin }
   }
   if (/upgrade to github pro|make this repository public/i.test(`${answer.stderr}${answer.stdout}`)) {
     return { available: false, reason: 'the host offers rulesets only for a public repository or a paid plan' }
