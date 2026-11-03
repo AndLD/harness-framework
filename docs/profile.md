@@ -98,7 +98,7 @@ The harness review's term lists (M1, M2 of its method) and the bounded contexts 
 Stack terms (case-insensitive), which must not appear in CORE or DOMAIN text:
 
 ```bash
-STACK='\bjest\b|\bnpm\b|\btypescript\b|\beslint\b|\bprettier\b|istanbul|node_modules|package\.json'
+STACK='\bjest\b|\bnpm\b|\btypescript\b|\beslint\b|\bprettier\b|istanbul|node_modules|package\.json|\b(?:postgres(?:ql)?|mysql|mariadb|sqlite|mongodb|redis|memcached|dynamodb|cassandra|elasticsearch|rabbitmq|kafka)\b|\b(?:prisma|typeorm|sequelize|sqlalchemy|drizzle|hibernate|knex)\b|\b(?:nestjs|nextjs|next\.js|reactjs|react\.js|react native|vue|angular|svelte|django|flask|fastapi|spring boot)\b|\b(?:cypress|playwright|selenium|puppeteer|vitest|mocha|jasmine)\b|\b(?:docker|kubernetes|k8s|terraform|vercel|netlify|heroku|aws|azure|gcp|cloudflare)\b|\b(?:gitlab|bitbucket|gitea|jenkins|circleci|copilot|windsurf|aider|codex)\b'
 ```
 
 Product terms, which must not appear in CORE sections (the CORE scan skips the generic words below):
