@@ -36,6 +36,8 @@ pauses. Newest entry at the bottom.
   - Its finding H-20261103-03 (the agent cannot load seven of the eight procedures as skills) is added as 4.4a, before 4.5, so that 4.5 measures the block
     with the new values. Phase 4 is now 18 SP.
   - The re-read of this phase against the review (order, "provisional", the decision of 4.6) is still the owner's, at the start of the phase.
+  - At the owner's request, 4.5 also says how a probe of another repository runs: as a separate session started there. In the review, the probe of a
+    bootstrapped project ran as a subagent, so it inherited the reviewing repository's entry file and got no session-start hook. The size stays 2 SP.
 - **Problems / blockers / findings:** none.
 - **Next step:** after `0.1.1` (3.6 to 3.8) and the consuming project's sync. The owner re-reads this phase, then "Start Phase 4".
 - **Verify with:** `npm run docs:check`
