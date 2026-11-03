@@ -790,6 +790,7 @@
         "autoMerge": {
           "type": "boolean",
           "x-sameAs": "protection",
+          "default": true,
           "description": "Whether an agent enables the host's auto-merge on the pull requests it may merge without asking (the task and plan-related pull requests of a named phase), so that the host merges them once the required checks pass. Not set: on where `host.protection` is true, off where it is false (nothing would require the checks there). Off brings back the rule that an agent asks before it merges and never enables auto-merge unless asked."
         }
       }
