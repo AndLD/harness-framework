@@ -35,7 +35,9 @@ Task status: ⬜ not started · 🟡 in progress · ✅ done.
 
 ## Implementation log
 
-Printed by the plan-log command.
+| Tasks | PR | Change | Merged |
+| ----- | -- | ------ | ------ |
+| 5.1 | [#9](https://example.test/pull/9) | The first thing | 2026-11-01 |
 `
 
 const LOG = `[← Phase 5](../phase-5-fifth.md)

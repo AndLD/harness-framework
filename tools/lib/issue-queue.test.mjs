@@ -266,7 +266,7 @@ function oldProject() {
   )
   write(
     'plan/phases/phase-5-issues.md',
-    '[← Plan](../README.md)\n\n# Phase 5 — Issues and stabilization (11 SP, grows as issues are added)\n\n**Status:** 🟡 In progress · **Work log:** x\n\nThe open-ended phase: a defect or an improvement found in use becomes a task of this phase, and its size\ngrows with its tasks.\n\n| # | Task | Agent | SP | Status |\n| - | ---- | ----- | -- | ------ |\n| 5.1 | **Done defect**: fixed. | C1 | 1 | ✅ |\n| 5.2 | **Defect under way**: in progress. | C1 | 2 | 🟡 |\n| 5.3 | **Planned improvement**: named by the order. | C2 | 3 | ⬜ |\n| 5.4 | **Not started defect**: see [the plan](../README.md). | C1 | 2 | ⬜ |\n| 5.5 | **Another one**: x. | C2 | 3 | ⬜ |\n\nTask status: ⬜ not started.\n\n**Exit criteria:** none; the phase stays open.\n'
+    '[← Plan](../README.md)\n\n# Phase 5 — Issues and stabilization (11 SP, grows as issues are added)\n\n**Status:** 🟡 In progress · **Work log:** x\n\nThe open-ended phase: a defect or an improvement found in use becomes a task of this phase, and its size\ngrows with its tasks.\n\n| # | Task | Agent | SP | Status |\n| - | ---- | ----- | -- | ------ |\n| 5.1 | **Done defect**: fixed. | C1 | 1 | ✅ |\n| 5.2 | **Defect under way**: in progress. | C1 | 2 | 🟡 |\n| 5.3 | **Planned improvement**: named by the order. | C2 | 3 | ⬜ |\n| 5.4 | **Not started defect**: see [the plan](../README.md). | C1 | 2 | ⬜ |\n| 5.5 | **Another one**: x. | C2 | 3 | ⬜ |\n\nTask status: ⬜ not started.\n\n**Exit criteria:** none; the phase stays open.\n\n## Implementation log\n\n| Tasks | PR | Change | Merged |\n| ----- | -- | ------ | ------ |\n| 5.1 | #9 | The defect | 2026-11-01 |\n'
   )
   const profile = {
     paths: {
