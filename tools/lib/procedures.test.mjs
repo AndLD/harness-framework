@@ -58,7 +58,8 @@ test('the procedures of the framework are all well formed, and each is named by 
       'release',
       'report-upstream',
       'start-task',
-      'triage-reports'
+      'triage-reports',
+      'update-framework'
     ]
   )
   for (const { description, body, invocation } of procedures) {
