@@ -349,7 +349,10 @@ report is approved.
      hooks during the review.
 5. **Cold-start probes.** Run the scenarios of `bindings.md` with fresh, read-only subagents that receive only the task text
    and the repository (no conversation context). Record the files each read, the first action it took, and any wrong or
-   uncertain step. A probe is evidence for D6, D9 and D10. Never fix a document during a probe.
+   uncertain step. A probe is evidence for D6, D9 and D10. Never fix a document during a probe. Every probe in `bindings.md` names the **areas**
+   it exercises (the list of areas of the framework's migration notes, `migrations/areas.json`), and records the words it read at this review, so that a version
+   taken later is compared with them: the probes whose areas meet the areas of the versions taken are run again, and an area that no probe covers is run
+   from its starting probe in [`starting-probes.md`](./starting-probes.md) (`harness probes <from> <to>` lists both).
 6. **Export dry run.** Perform the blueprint exercise of section 3 on paper: classify, list the parameters a new project
    would have to supply, and name the blockers.
 7. **Report.** Fill [`report-template.md`](./report-template.md) as `YYYY-MM-DD.md` in the project's folder of this review; if two reviews happen

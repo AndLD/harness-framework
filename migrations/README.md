@@ -35,7 +35,7 @@ A migration changes files across the project (the vendored copy, the entry file,
 
 ## Areas
 
-`areas.json` is the fixed list of areas (entry rules, Git rules, plan format, procedures, review method, adapter contract, and the others) with the globs that belong to each. `harness release` lists in a note the areas whose files changed in `core/`, `tools/`, `adapters/` and `profile/` since the tag of the previous release. A changed file that belongs to no area stops the release until the list is extended, so the list stays complete. The probes of a project are matched to the areas.
+`areas.json` is the fixed list of areas (entry rules, Git rules, plan format, procedures, review method, adapter contract, and the others) with the globs that belong to each. `harness release` lists in a note the areas whose files changed in `core/`, `tools/`, `adapters/` and `profile/` since the tag of the previous release. A changed file that belongs to no area stops the release until the list is extended, so the list stays complete. The probes of a project are matched to the areas: each probe in its harness-review bindings names the areas it exercises, and `harness probes <from> <to>` lists the probes to run again for the versions taken, and the starting probe (`core/reviews/harness/starting-probes.md`) of each area that no probe covers.
 
 ## The notes
 
