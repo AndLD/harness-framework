@@ -115,11 +115,19 @@ Squash merge into the integration branch; a merge commit for release and hotfix 
 - **Ask the user before merging any other pull request:** documentation or chore PRs that are not related to the development plan of a named phase, anything <!-- rule:agent.ask-merge -->
   targeting the production branch, and release and hotfix branches. Approval for one merge does not carry over to another.
 - Never delete a remote branch, never force-push to the production or the integration branch, never rewrite published history. <!-- rule:agent.no-rewrite -->
-- Never enable auto-merge unless the user asks. <!-- rule:agent.no-auto-merge -->
+- **Auto-merge merges a task's pull request; nothing waits for you to come back.** As the last step of a task, once its definition of done holds, <!-- rule:agent.auto-merge -->
+  enable the host's auto-merge (squash) on exactly the pull requests this section lets you merge without asking: the task and plan-related
+  pull requests of the named phases, into the integration branch. Never on a pull request into the production branch, on a release or a
+  hotfix branch, or on one that needs the owner's approval; the shell guard refuses it there. When the checks are already green the host
+  merges at once, which is expected. After you push to a pull request, check that auto-merge is still on, and merge a green pull request
+  that is still open yourself. The final message lists the pull requests that wait for the owner.
+- **A task that needs the previous one** branches from its branch (one level, no deeper) while that pull request is open; after the squash
+  merge, `harness branch update` brings in the integration branch and resolves the conflicts that only the squash causes. <!-- rule:agent.stack -->
 - **Automatic CI fixes are on for plan work.** After opening a PR for a named phase, attach it to the session and turn on the agent <!-- rule:agent.ci-fixes -->
   runtime's CI monitoring with automatic fixes (the tools are in [stack §6](./docs/engineering/stack.md#6-agent-runtime)) without
-  asking; it wakes the session on CI failures, merge conflicts and review comments. Do not poll CI yourself. When CI is green,
-  merge per the rules above and go on to the next task, so work flows across phases.
+  asking; it wakes the session on CI failures, merge conflicts and review comments. Never wait by checking the pull request again and
+  again; the runtime adapter says how a session waits (stack §6).
+  When CI is green, the host merges the pull request (auto-merge); go on to the next task, so work flows across phases.
 <!-- harness:end git-rules -->
 
 ---
@@ -144,7 +152,3 @@ the adapters in `adapters/`, and nothing is vendored. The projects that use the 
   set by `harness host protect`, holds the branch rules on GitHub; the Git hooks and the agent runtime's hooks hold them locally too.
 - **`docs/temp/` is the owner's.** It is ignored by Git and holds the owner's scratch notes. An agent writes there only when the owner asks, and never links
   it from a tracked document.
-- **Auto-merge (the owner's standing request of 2026-11-03).** On every task pull request and plan-related pull request into the integration branch
-  that the rules of section 7 let an agent merge without asking, the agent enables the host's auto-merge (squash) once the task's definition of done
-  holds, and merges the pull request itself if it is green but still open. Never on a pull request into the production branch, a release or hotfix
-  branch, or one that needs the owner's approval. This is the owner asking, as the auto-merge rule of section 7 requires; task 3.18 makes it a core rule.

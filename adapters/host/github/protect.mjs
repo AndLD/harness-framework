@@ -1,6 +1,6 @@
 // The GitHub host adapter's branch protection (design §4.3 and §7.4), `harness host protect`: one repository ruleset over the production and the
 // integration branch (no deletion, no force-push, a pull request for every change, the required checks; administrators may bypass only when
-// merging a pull request), and the repository setting that keeps merged branches. It needs repository admin rights and a repository on which
+// merging a pull request), and the repository settings: merged branches are kept, and auto-merge is allowed (`host.autoMerge`). It needs repository admin rights and a repository on which
 // GitHub offers rulesets (a public one, or a paid plan); `detectProtection` asks the host, and the profile's `host.protection` must agree.
 import { spawnSync } from 'node:child_process'
 
@@ -101,7 +101,17 @@ export function protect({ profile, slug = profile.repository.slug, cli = runGh }
     return answer.stdout
   }
 
-  call(['api', '-X', 'PATCH', `repos/${slug}`, '-F', 'delete_branch_on_merge=false'])
+  const autoMerge = profile.host?.autoMerge ?? true
+  call([
+    'api',
+    '-X',
+    'PATCH',
+    `repos/${slug}`,
+    '-F',
+    'delete_branch_on_merge=false',
+    '-F',
+    `allow_auto_merge=${autoMerge}`
+  ])
   const ruleset = JSON.stringify(buildRuleset(profile))
   const existing = JSON.parse(call(['api', `repos/${slug}/rulesets`]) || '[]').find(
     (item) => item.name === RULESET_NAME
@@ -111,7 +121,10 @@ export function protect({ profile, slug = profile.repository.slug, cli = runGh }
   } else {
     call(['api', '-X', 'POST', `repos/${slug}/rulesets`, '--input', '-'], ruleset)
   }
-  const messages = [`Ruleset ${RULESET_NAME} applied to ${production} and ${integration} in ${slug}`]
+  const messages = [
+    `Ruleset ${RULESET_NAME} applied to ${production} and ${integration} in ${slug}`,
+    `Merged branches are kept; auto-merge is ${autoMerge ? 'allowed' : 'not allowed'} (host.autoMerge)`
+  ]
 
   // The ruleset replaces the classic branch protection, which cannot exempt administrators from the checks without also letting them push
   for (const branch of [production, integration]) {

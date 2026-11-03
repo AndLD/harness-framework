@@ -142,6 +142,7 @@
       "pull-request-title-check": "required",
       "pull-requests": "required",
       "merge-guard": "logic-optional",
+      "auto-merge": "optional",
       "release": "required",
       "ci-timings": "optional",
       "values-in-host-files": "logic",

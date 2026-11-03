@@ -15,7 +15,10 @@ export function loadProfile(root, schema = readSchema()) {
   return existsSync(path) ? withDefaults(schema, JSON.parse(readFileSync(path, 'utf8'))) : {}
 }
 
-/** `value` with the `default` of every property of an object schema that it lacks; the input is not changed. */
+/**
+ * `value` with the `default` of every property of an object schema that it lacks; the input is not changed. A property with `x-sameAs` (the name of a
+ * sibling) lacks a default of its own and takes the value of that sibling: `host.autoMerge` is on where the host protects its branches.
+ */
 export function withDefaults(schema, value) {
   if (schema.type !== 'object' || value === null || typeof value !== 'object' || Array.isArray(value)) {
     return value
@@ -24,6 +27,9 @@ export function withDefaults(schema, value) {
   for (const [key, property] of Object.entries(schema.properties ?? {})) {
     if (result[key] === undefined && property.default !== undefined) {
       result[key] = structuredClone(property.default)
+    }
+    if (result[key] === undefined && property['x-sameAs'] !== undefined) {
+      result[key] = result[property['x-sameAs']]
     }
     if (result[key] !== undefined) {
       result[key] = withDefaults(property, result[key])

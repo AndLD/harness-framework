@@ -33,6 +33,8 @@ and the push gate) or remote (the host and CI). The rows of the core rules are g
 | `agent.open-pr` | Opening a pull request is automatic. Create the PR as soon as a branch is ready (any branch type, including release and hotfix branches into the pr… | – | – | – | judgment |
 | `agent.ask-merge` | Ask the user before merging any other pull request: documentation or chore PRs that are not related to the development plan of a named phase, anyth… | – | – | – | judgment |
 | `agent.no-rewrite` | Never delete a remote branch, never force-push to the production or the integration branch, never rewrite published history. | – | – | – | judgment |
+| `agent.auto-merge` | Auto-merge merges a task's pull request; nothing waits for you to come back. As the last step of a task, once its definition of done holds, enable … | – | – | – | judgment |
+| `agent.stack` | A task that needs the previous one branches from its branch (one level, no deeper) while that pull request is open; after the squash merge, harness… | – | – | – | judgment |
 | `agent.no-auto-merge` | Never enable auto-merge unless the user asks. | – | – | – | judgment |
 | `agent.ci-fixes` | Automatic CI fixes are on for plan work. After opening a PR for a named phase, attach it to the session and turn on the agent runtime's CI monitori… | – | – | – | judgment |
 

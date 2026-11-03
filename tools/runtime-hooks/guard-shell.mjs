@@ -52,8 +52,35 @@ export function mergeGuard(profile, { cwd, module = () => hostModule(profile, 'm
   }
 }
 
+// The guard of turning on the host's auto-merge, where an agent may not (a pull request into the production branch, a release or a hotfix, or a
+// repository with `host.autoMerge` off); undefined when the host adapter has no such guard
+export function autoMergeGuard(profile, { cwd, module = () => hostModule(profile, 'merge-guard') } = {}) {
+  let host
+  try {
+    host = module()
+  } catch {
+    return undefined
+  }
+  if (!host.isAutoMerge) {
+    return undefined
+  }
+  return {
+    isAutoMerge: host.isAutoMerge,
+    check: (words) =>
+      host.checkAutoMerge({
+        words,
+        cwd,
+        branches: profile.branches,
+        enabled: profile.host?.autoMerge ?? profile.host?.protection !== false
+      })
+  }
+}
+
 /** The result of the hook for an event: a refusal, or nothing. */
-export function decide(event, { profile = loadProfile(event.cwd), branch = currentBranch(event.cwd), merge } = {}) {
+export function decide(
+  event,
+  { profile = loadProfile(event.cwd), branch = currentBranch(event.cwd), merge, autoMerge } = {}
+) {
   if (event.kind !== 'shell') {
     return {}
   }
@@ -61,7 +88,8 @@ export function decide(event, { profile = loadProfile(event.cwd), branch = curre
     protectedBranches: [profile.branches?.production, profile.branches?.integration].filter(Boolean),
     cwd: event.cwd,
     branchOf,
-    merge: merge ?? mergeGuard(profile, { cwd: event.cwd })
+    merge: merge ?? mergeGuard(profile, { cwd: event.cwd }),
+    autoMerge: autoMerge ?? autoMergeGuard(profile, { cwd: event.cwd })
   })
   return message ? { block: message } : {}
 }
