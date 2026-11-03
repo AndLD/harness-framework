@@ -243,3 +243,13 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none. No open issues of the repository at the start of the session, so no report was triaged.
 - **Next step:** stop; the owner cuts `0.1.1` (`core/procedures/release.md`: development version first, then the note, then the final release), then the consuming project syncs it. After it, `0.1.2` starts with 3.17.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — 0.1.1 is released
+- **Tasks:** 3.6, 3.7, 3.8, 3.11 (released).
+- **Branch:** `release/0.1.1` — merged into `main` by [#28](https://github.com/AndLD/harness-framework/pull/28), tagged `v0.1.1`; `main` is merged back into `develop` by `chore/merge-release-0.1.1`.
+- **Decisions / deviations from the plan:**
+  - The development version `0.1.1-dev.1` was tagged first, and a scratch clone of the consuming project synced it and ran its checks (`check core` clean; `check generated` failed until `sync --local`, as the note says; `check all` green).
+  - One fix on the release branch: a development tag has no `v` (the release workflow runs on `v*.*.*`, and a `v`-prefixed development tag would have run it and failed on the missing changelog section). The procedure, the releasing guide, the tool's message and its test said `v<x.y.z>-dev.<n>` and now say `<x.y.z>-dev.<n>`.
+- **Problems / blockers / findings:** none open. The consuming project takes `0.1.1` by `sync --to 0.1.1`, then follows `migrations/0.1.1.md`.
+- **Next step:** `0.1.2` starts with 3.17 (plan index: 3.17, 3.18, 3.3, 3.9, 3.1, 3.2), when the owner asks for it.
+- **Verify with:** `npm run docs:check`
