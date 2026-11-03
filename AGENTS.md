@@ -29,6 +29,7 @@ cite by its role (the branches, the coverage gate, the commands) is in the [proj
 | a branch is ready and a pull request has to be opened, or a claim pull request marked ready | [`core/procedures/open-pull-request.md`](./core/procedures/open-pull-request.md) |
 | cutting a release or a hotfix | [`core/procedures/release.md`](./core/procedures/release.md) |
 | starting or resuming a phase or a task of the development plan, before any other work on it | [`core/procedures/start-task.md`](./core/procedures/start-task.md) |
+| the open reports of users have to be triaged: the session start lists them, or the owner asks | [`core/procedures/triage-reports.md`](./core/procedures/triage-reports.md) |
 <!-- harness:end procedures -->
 
 ---
@@ -130,6 +131,9 @@ Squash merge into the integration branch; a merge commit for release and hotfix 
   asking; it wakes the session on CI failures, merge conflicts and review comments. Never wait by checking the pull request again and
   again; the runtime adapter says how a session waits (stack §6).
   When CI is green, the host merges the pull request (auto-merge); go on to the next task, so work flows across phases.
+- **Triage the open reports of users before other work**, by the procedure `triage-reports` of the reading map, at most `reports.triageLimit` of the
+  [profile](./docs/profile.md) a session. Never add a report as a new issue before looking for the same or a close problem already recorded.
+  Answers and closings on the host need the owner's approval.
 <!-- harness:end git-rules -->
 
 ---

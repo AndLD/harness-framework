@@ -52,6 +52,7 @@ export function parseIssueFile(file, text) {
     area,
     reported,
     formerly: field(text, 'Formerly'),
+    fixedIn: field(text, 'Fixed in'),
     log: /\*\*Log:\*\*\s*\[[^\]]*\]\(([^)]+)\)/.exec(text)?.[1] ?? null,
     file,
     problems

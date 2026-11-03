@@ -29,7 +29,7 @@ plan until task 3.13; it is a normal phase now, keeps every id, and ends with 3.
 | [3.13](./3.13.md) | The issues found in use are kept as a phase, though they are not one | C2 | 7 | ✅ |
 | [3.14](./3.14.md) | A migration cannot be undone exactly | C2 | 2 | ✅ |
 | [3.15](./3.15.md) | A migration is not checked for what it does to an agent | C2 | 2 | ⬜ |
-| [3.16](./3.16.md) | Reports from users are neither taken in nor sent upstream by any procedure | C2 | 6 | ⬜ |
+| [3.16](./3.16.md) | Reports from users are neither taken in nor sent upstream by any procedure | C2 | 6 | ✅ |
 | [3.17](./3.17.md) | The Git guard checks the project's branch, not the branch of the repository a command acts on | C2 | 2 | ✅ |
 | [3.18](./3.18.md) | Nothing merges a green pull request unless someone comes back, and a consumer is never set up for it | C2 | 5 | ✅ |
 <!-- phase-tasks:end -->

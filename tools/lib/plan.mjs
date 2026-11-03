@@ -218,7 +218,7 @@ export function readPhaseFiles({ root, phasesDir, complexity }) {
 const listIn = (root) => (path) => (existsSync(join(root, path)) ? readdirSync(join(root, path)) : [])
 
 /** The issue queue of the project (`paths.issues`), or null when it has none yet. */
-function readQueueOf(root, profile) {
+export function readQueueOf(root, profile) {
   return profile.paths.issues
     ? readQueue({
         dir: profile.paths.issues,
@@ -232,6 +232,21 @@ function readQueueOf(root, profile) {
 function areasOf(root, profile) {
   const path = join(root, inFramework(profile, 'migrations'), 'areas.json')
   return existsSync(path) ? Object.keys(JSON.parse(readFileSync(path, 'utf8')).areas ?? {}) : null
+}
+
+/** The tasks of the phases that are not done: `{ id, title, status }`, read from the task files and the rows of the phase files. */
+export function openTasks({ root, profile }) {
+  const phasesDir = profile.paths.phases
+  const entries = loadPhaseEntries({
+    phasesDir,
+    list: listIn(root),
+    readText: (path) => readFileSync(join(root, path), 'utf8')
+  }).map((entry) => ({
+    file: `${phasesDir}/${entry.file}`,
+    text: entry.text,
+    tasks: entry.taskFiles?.map(({ file, text }) => parseTaskFile(file, text)).filter((task) => task.id)
+  }))
+  return readPhases(entries).flatMap((phase) => phase.tasks.filter((task) => task.status !== '✅'))
 }
 
 /**

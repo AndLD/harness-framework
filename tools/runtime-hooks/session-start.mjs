@@ -8,6 +8,8 @@ import { compareIds, loadPhaseEntries, parseTaskFile, TASK_LOG_FILE } from '../l
 import { loadProfile } from '../lib/profile.mjs'
 import { runHook } from './io.mjs'
 import { isMain } from '../lib/main-module.mjs'
+import { readQueue } from '../lib/issue-queue.mjs'
+import { intakeLines, recordedReports, reportSettings } from '../lib/reports.mjs'
 
 const IN_PROGRESS = /\*\*Status:\*\*\s*🟡/
 
@@ -109,7 +111,8 @@ export function sessionStartMessage(
   phasesDir,
   methodPath = 'the method',
   planIndex = null,
-  issuesDir = null
+  issuesDir = null,
+  reportLines = []
 ) {
   const lines = [`Branch: ${branch || 'unknown'}`]
   const phases = phasesInProgress(readText, list, phasesDir)
@@ -129,7 +132,7 @@ export function sessionStartMessage(
       ...(phase.log ? [phase.log] : []),
       ...phase.files
         .filter((name) => TASK_LOG_FILE.test(name))
-        .sort()
+        .sort((x, y) => compareIds(x.replace(/\.log\.md$/, ''), y.replace(/\.log\.md$/, '')))
         .map((name) => `${phase.folder}/${name}`)
     ].map((file) => ({ file, text: readText(file) }))
     const newest = newestNextStep(logs)
@@ -160,11 +163,31 @@ export function sessionStartMessage(
   if (queue) {
     lines.push(queue)
   }
+  lines.push(...reportLines)
   lines.push(`Read the method, section "Session protocol" (${methodPath}), before you start or resume a phase.`)
   return lines.join('\n')
 }
 
-export function decide(event) {
+// The lines about the reports of users, when the intake is on: asks the host through its adapter, and says so when it cannot
+export async function reportLinesOf({ root, profile, readText, list, host: given = null }) {
+  if (reportSettings({ profile, root }).intake === 'off') {
+    return []
+  }
+  const host = given ?? (await import('../lib/reports-command.mjs')).hostReports(profile)
+  const settings = reportSettings({ profile, root, capable: Boolean(host) })
+  if (settings.intake === 'off') {
+    return []
+  }
+  try {
+    const reports = host.listReports({ slug: profile.repository.slug })
+    const queue = profile.paths?.issues ? readQueue({ dir: profile.paths.issues, list, readText }) : null
+    return intakeLines({ settings, reports, recorded: recordedReports({ queue }) })
+  } catch (error) {
+    return intakeLines({ settings, reports: [], recorded: new Set(), error: error.message.split('\n')[0] })
+  }
+}
+
+export async function decide(event) {
   if (event.kind !== 'session-start') {
     return {}
   }
@@ -182,6 +205,7 @@ export function decide(event) {
   } catch {
     // not a git checkout
   }
+  const reportLines = await reportLinesOf({ root, profile, readText, list })
   return {
     context: sessionStartMessage(
       branch,
@@ -190,7 +214,8 @@ export function decide(event) {
       profile.paths?.phases ?? 'docs/plan/phases',
       profile.documents?.method,
       profile.paths?.planIndex,
-      profile.paths?.issues
+      profile.paths?.issues,
+      reportLines
     )
   }
 }

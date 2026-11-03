@@ -332,6 +332,31 @@
       },
       "additionalProperties": false
     },
+    "reports": {
+      "type": "object",
+      "description": "Reports from users on the repository host (task 3.16): whether an agent takes them in, and whether a consuming project sends the defects it finds in the framework upstream. Both need a host adapter with the `reports` role; a host without it keeps both switches `off`. A local, ignored file, `harness-profile.local.json`, may override these three values at once without a pull request (for example `{ \"reports\": { \"intake\": \"off\" } }` pauses the intake when reports flood in).",
+      "default": {},
+      "properties": {
+        "intake": {
+          "type": "string",
+          "enum": ["off", "notify", "auto"],
+          "default": "off",
+          "description": "`off`: no hook line and no skill. `notify`: the session start prints the open reports and those not yet triaged, and the agent does not process them; the owner starts the triage. `auto`: the agent triages before other work, at most `triageLimit` reports a session, and the rest wait."
+        },
+        "triageLimit": {
+          "type": "integer",
+          "default": 3,
+          "description": "The most reports an agent triages in one session when `intake` is `auto` (1 or more)."
+        },
+        "upstream": {
+          "type": "string",
+          "enum": ["off", "ask", "post"],
+          "default": "off",
+          "description": "For a consuming project: what it does with a defect of the framework that it suspects. `off`: it is noted in the task's log and the owner told, with no draft. `ask`: the agent searches the framework's reports for the same problem, drafts a report and posts it after the owner's approval. `post`: as `ask`, without the approval."
+        }
+      },
+      "additionalProperties": false
+    },
     "api": {
       "type": "object",
       "description": "The public API, for projects that have one.",

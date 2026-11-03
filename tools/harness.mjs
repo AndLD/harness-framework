@@ -10,6 +10,7 @@
 //   harness sync [--from <folder or Git URL>] [--to <version>]   take the framework into harness/ and rewrite harness.lock.json
 //   harness sync --local                                          regenerate the managed files only, without fetching
 //   harness migrate                                               bring the project to the vendored version, with its tools: regenerate the managed files (sync starts it)
+//   harness reports status|list|show|search|candidates|plan|comment|close|create   the reports of users on the host, through the host adapter (the procedures triage-reports and report-upstream)
 //   harness rollback                                              undo the last migration through Git: restore the files its commit changed or added, and nothing else
 //   harness diff                                                  the local change of harness/ against the locked version or the fork point
 //   harness override <path> --reason <why> --issue <link>         accept one edited vendored file until the next sync
@@ -54,6 +55,7 @@ import { planLog, planSummary } from './lib/plan.mjs'
 import { splitPhases } from './lib/phase-split.mjs'
 import { isMain } from './lib/main-module.mjs'
 import { migrate } from './lib/migrate.mjs'
+import { reportsCommand } from './lib/reports-command.mjs'
 import { rollback } from './lib/rollback.mjs'
 import { loadProfile, lookup } from './lib/profile.mjs'
 import { detach, diff, override, sync } from './lib/vendor.mjs'
@@ -67,6 +69,7 @@ const USAGE = `usage: harness <command>
   sync [--from <folder or Git URL>] [--to <version>]
   sync --local
   migrate
+  reports <status|list|show|search|candidates|plan|comment|close|create> [--untriaged] [--upstream] [--approved] [--title <t>] [--body <b>] [--relation <r>] [--candidate <id>] [--version <v>]
   rollback
   diff
   override <path> --reason <why> --issue <link>
@@ -103,7 +106,12 @@ const FLAGS_WITH_VALUE = new Set([
   '--runtime',
   '--host',
   '--only',
-  '--previous'
+  '--previous',
+  '--body',
+  '--title',
+  '--relation',
+  '--candidate',
+  '--version'
 ])
 // Flags that may be given several times; their values are collected in a list
 const REPEATED_FLAGS = new Set(['--set'])
@@ -117,7 +125,10 @@ const BOOLEAN_FLAGS = new Set([
   '--non-interactive',
   '--force',
   '--self',
-  '--no-host-setup'
+  '--no-host-setup',
+  '--untriaged',
+  '--upstream',
+  '--approved'
 ])
 
 export function parseArgs(argv) {
@@ -203,6 +214,11 @@ export async function run(argv, { out = console.log, err = console.error, input 
     if (command === 'migrate') {
       ;(await migrate({ root })).messages.forEach((line) => out(line))
       return 0
+    }
+    if (words[0] === 'reports') {
+      const { lines, code } = reportsCommand({ words: words.slice(1), flags, root, profile: loadProfile(root) })
+      lines.forEach((line) => (code === 0 ? out(line) : err(line)))
+      return code
     }
     if (command === 'rollback') {
       rollback({ root }).messages.forEach((line) => out(line))
