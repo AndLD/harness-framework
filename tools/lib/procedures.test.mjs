@@ -48,6 +48,7 @@ test('the procedures of the framework are all well formed, and each is named by 
   assert.deepEqual(
     procedures.map(({ name }) => name),
     [
+      'change-plan',
       'code-review',
       'end-session',
       'finish-phase',
@@ -127,7 +128,7 @@ test('the framework procedures come first, and a name that both have is an error
   const profile = { paths: { procedures: 'docs/procedures' } }
   const names = listAllProcedures(root, profile).map(({ name }) => name)
   assert.equal(names.at(-1), 'add-endpoint')
-  assert.equal(names[0], 'code-review')
+  assert.equal(names[0], 'change-plan')
 
   own(root, { 'start-task.md': header('start-task') })
   assert.throws(
