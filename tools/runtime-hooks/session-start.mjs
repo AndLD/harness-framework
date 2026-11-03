@@ -3,10 +3,10 @@
 import { execFileSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { nextTask, readPhases } from '../lib/next-task.mjs'
 import { loadProfile } from '../lib/profile.mjs'
 import { runHook } from './io.mjs'
+import { isMain } from '../lib/main-module.mjs'
 
 const IN_PROGRESS = /\*\*Status:\*\*\s*🟡/
 
@@ -117,6 +117,6 @@ export function decide(event) {
   }
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+if (isMain(import.meta.url)) {
   await runHook((event) => decide(event), { kind: 'session-start' })
 }
