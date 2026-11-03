@@ -140,5 +140,7 @@ the adapters in `adapters/`, and nothing is vendored. The projects that use the 
   the presets and on deliberately broken copies (`tests/conformance/`). A new adapter follows the [new-adapter guide](./core/contracts/new-adapter.md).
 - **The old repository.** The framework was extracted from the repository `AndLD/bot-rts` (Phase 17 of its plan), which keeps consuming it as a pinned
   copy. A defect found there is fixed here, and `bot-rts` takes the fix with a sync.
-- **Branch protection.** GitHub offers no rulesets for a private repository on a free plan, so `host.protection` is `false` in the profile: the Git hooks and
-  the agent runtime's hooks hold the branch rules, and the merge guard refuses `gh pr merge` while a required check is not green.
+- **Branch protection.** The repository is public (since 2026-11-03), so `host.protection` is `true` in the profile and the `protected-branches` ruleset,
+  set by `harness host protect`, holds the branch rules on GitHub; the Git hooks and the agent runtime's hooks hold them locally too.
+- **`docs/temp/` is the owner's.** It is ignored by Git and holds the owner's scratch notes. An agent writes there only when the owner asks, and never links
+  it from a tracked document.
