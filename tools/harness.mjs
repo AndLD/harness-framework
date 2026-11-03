@@ -11,6 +11,7 @@
 //   harness sync --local                                          regenerate the managed files only, without fetching
 //   harness migrate                                               bring the project to the vendored version, with its tools: regenerate the managed files (sync starts it)
 //   harness reports status|list|show|search|candidates|plan|comment|close|create   the reports of users on the host, through the host adapter (the procedures triage-reports and report-upstream)
+//   harness probes <from> <to>                                    the probes of the project to run again for the versions taken, and the starting probe of an area no probe covers
 //   harness rollback                                              undo the last migration through Git: restore the files its commit changed or added, and nothing else
 //   harness diff                                                  the local change of harness/ against the locked version or the fork point
 //   harness override <path> --reason <why> --issue <link>         accept one edited vendored file until the next sync
@@ -18,7 +19,7 @@
 //   harness profile get <role>                                    print a value of the profile file (a list one item per line)
 //   harness layers                                                print the layer map
 //   harness check <name>                                          one check: vendored, generated, profile, adapters, values, layers, links, paths, core,
-//                                                                 plan, changelog, product-knowledge
+//                                                                 plan, changelog, probes, product-knowledge
 //   harness check all                                             every check, then the project's own (`checks.project`)
 //   harness plan summary [--check]                                write (or compare) the summary of the plan index
 //   harness plan split <phase>                                    split a phase kept as one file into a folder: the phase index, a file per task and the logs beside them
@@ -55,6 +56,7 @@ import { planLog, planSummary } from './lib/plan.mjs'
 import { splitPhases } from './lib/phase-split.mjs'
 import { isMain } from './lib/main-module.mjs'
 import { migrate } from './lib/migrate.mjs'
+import { probesReport } from './lib/probe-areas.mjs'
 import { reportsCommand } from './lib/reports-command.mjs'
 import { rollback } from './lib/rollback.mjs'
 import { loadProfile, lookup } from './lib/profile.mjs'
@@ -70,6 +72,7 @@ const USAGE = `usage: harness <command>
   sync --local
   migrate
   reports <status|list|show|search|candidates|plan|comment|close|create> [--untriaged] [--upstream] [--approved] [--title <t>] [--body <b>] [--relation <r>] [--candidate <id>] [--version <v>]
+  probes <from> <to>
   rollback
   diff
   override <path> --reason <why> --issue <link>
@@ -213,6 +216,10 @@ export async function run(argv, { out = console.log, err = console.error, input 
     }
     if (command === 'migrate') {
       ;(await migrate({ root })).messages.forEach((line) => out(line))
+      return 0
+    }
+    if (words[0] === 'probes' && words.length === 3) {
+      probesReport({ root, profile: loadProfile(root), from: words[1], to: words[2] }).forEach((line) => out(line))
       return 0
     }
     if (words[0] === 'reports') {
