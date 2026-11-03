@@ -17,7 +17,7 @@ tools already know.
 | ----- | ------------------ |
 | **CORE** | `AGENTS.md` (the managed blocks non-negotiables, git-rules), `harness/**` (the vendored copy) |
 | **DOMAIN** | – |
-| **ADAPTER** | `docs/engineering/**`, `docs/operations/**`, `.github/**`, `.claude/**`, `scripts/**` |
+| **ADAPTER** | `docs/engineering/**`, `docs/operations/**`, `docs/procedures/**`, `.github/**`, `.claude/**`, `scripts/**` |
 | **PROFILE** | `harness-profile.json`, `harness.lock.json`, `docs/profile.md`, `**/bindings.md` |
 | **STATE** | `docs/development-plan/**`, `docs/design.md`, `docs/quality-reviews/harness/20*.md`, `CHANGELOG.md`, `changelog.d/**` |
 | **ENTRY** | `AGENTS.md`, `CLAUDE.md`, `README.md` |

@@ -630,8 +630,12 @@ be up to date with its base. The bootstrap asks the host (`detectProtection`) be
   - `release`;
   - `harness-review` and `code-review`, the start prompts of the bindings as procedures;
   - `new-adapter` (section 5).
-- **Project procedures.** `bot-rts`'s own procedures (add an endpoint, add a migration, add a catalogue key) use the same format in
-  `docs/procedures/` (the profile's `paths.procedures`), and the same tool packages them.
+- **Project procedures** (built in task 4.1). `bot-rts`'s own procedures (add an endpoint, add a migration, add a catalogue key) use the same format in
+  `docs/procedures/` (the profile's `paths.procedures`, optional), and the same tool packages them: the skill of each is written for the selected
+  runtimes (its note of origin names the project's file), and the `procedures` block of the entry file lists them after the framework's. The two sets
+  share one namespace: a name that both have is an error, because a skill and a row of the reading map would name two procedures. The folder is the
+  project's, not CORE: the CORE scan does not read it, and a layer of the project's own map classifies it. This repository uses it for its own recurring
+  work (`docs/procedures/change-framework.md`).
 - **Two owners avoided.** The entry file states each rule once and links the procedure. The procedure holds the steps, not the rule.
 
 ### 8.2 B7: the layer map from one source

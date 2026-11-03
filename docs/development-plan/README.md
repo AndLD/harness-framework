@@ -17,7 +17,7 @@ is updated in the change that starts or finishes it.
 | 1 | Adoption, presets, examples and the proof | 12 | C1–C2 | ✅ Done |
 | 2 | Security and review automation | 17 | C2–C3 | ⬜ Not started |
 | 3 | Stabilization, migrations and local adapters | 56 | C1–C2 | 🟡 In progress |
-| 4 | Reaching and holding the structure of documents | 19 | C1–C2 | ⬜ Not started |
+| 4 | Reaching and holding the structure of documents | 19 | C1–C2 | 🟡 In progress |
 |  | **Total of Phases 1–4** | **104** | | |
 <!-- plan-summary:end -->
 

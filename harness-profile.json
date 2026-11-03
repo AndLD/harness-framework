@@ -40,6 +40,7 @@
     "phases": "docs/development-plan/phases",
     "planIndex": "docs/development-plan/README.md",
     "issues": "docs/development-plan/issues",
+    "procedures": "docs/procedures",
     "changelog": "CHANGELOG.md",
     "changelogFragments": "changelog.d",
     "frameworkDir": "."
@@ -113,6 +114,7 @@
     "adapter": [
       "docs/engineering/**",
       "docs/operations/**",
+      "docs/procedures/**",
       ".github/**",
       ".claude/**",
       "scripts/**"

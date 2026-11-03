@@ -68,13 +68,14 @@ export const managedKey = (path, block) => (block ? `${path}#${block}` : path)
 // Every managed file and block as the generators render it now, `{ path, block, content, append? }`. A role the project's profile file does not have
 // leaves its generator out: `harness check profile` is what asks for it. A block has no line break at either end, so that what the lock
 // hashes is what the file holds between its markers. A generator with `expand({ root, profile })` gives several blocks of its own (`{ path, block,
-// content, append }`); `append` says that the block is added at the end of its file when the file lacks it (the file is made if it is missing).
+// content, append }`); `append` says that the block is added at the end of its file when the file lacks it (the file is made if it is missing). An item without
+// `block` is a whole file, written as it is.
 function renderManaged(root, generators) {
   const profile = loadProfile(root)
   const trimmed = (item) => ({ ...item, content: item.content.replace(/^\n+|\n+$/g, '') })
   return generators.flatMap((generator) => {
     if (generator.expand) {
-      return generator.expand({ root, profile }).map(trimmed)
+      return generator.expand({ root, profile }).map((item) => (item.block ? trimmed(item) : item))
     }
     const path = managedPath(generator, profile)
     if (!path) {
