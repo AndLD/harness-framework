@@ -8,6 +8,7 @@ import { generators as registered } from './generators.mjs'
 import { appendBlock, extractBlock, hashBlock, replaceBlock } from './managed.mjs'
 import { LOCK_FILE, MODES, VENDOR_DIR, profileHash, readLock, selectedAdapters, writeLock } from './lock.mjs'
 import { loadProfile } from './profile.mjs'
+import { startOfSync } from './migration-guard.mjs'
 import { readManifest, referenceTree, resolveSource } from './source.mjs'
 import { copyFiles, hashFile, hashTree, walk } from './tree.mjs'
 
@@ -179,7 +180,8 @@ export function sync({ root, from, to, local = false, generators = registered, s
   const adapters = profile.adapters || !lock ? selectedAdapters(profile) : lock.adapters
   const fetched = resolveSource({ root, from, to, lock })
   try {
-    const result = vendor({ root, fetched, adapters, lock, generators, generate: false })
+    const start = startOfSync({ root, profile, lock })
+    const result = vendor({ root, fetched, adapters, lock, generators, generate: false, start })
     return { lock: result.lock, messages: [...result.messages, ...startMigrate({ root })] }
   } finally {
     fetched.cleanup()
@@ -192,7 +194,15 @@ export function sync({ root, from, to, local = false, generators = registered, s
  * files stay as they are, and the lock keeps their previous record until `harness migrate` regenerates them with the new version's tools.
  * @returns {{ lock: object, messages: string[] }}
  */
-export function vendor({ root, fetched, adapters, lock = null, generators = registered, generate = true }) {
+export function vendor({
+  root,
+  fetched,
+  adapters,
+  lock = null,
+  generators = registered,
+  generate = true,
+  start = null
+}) {
   const paths = selectFiles(fetched.dir, fetched.manifest, adapters)
   const vendorDir = join(root, VENDOR_DIR)
   rmSync(vendorDir, { recursive: true, force: true })
@@ -204,7 +214,7 @@ export function vendor({ root, fetched, adapters, lock = null, generators = regi
     framework: fetched.manifest.name,
     mode: MODES.pinned,
     version,
-    migrations: generate ? { version, applied: [] } : lock?.migrations,
+    migrations: generate ? { version, applied: [] } : start ? { ...lock?.migrations, start } : lock?.migrations,
     source,
     adapters,
     files: hashTree(vendorDir, paths),

@@ -10,6 +10,7 @@
 //   harness sync [--from <folder or Git URL>] [--to <version>]   take the framework into harness/ and rewrite harness.lock.json
 //   harness sync --local                                          regenerate the managed files only, without fetching
 //   harness migrate                                               bring the project to the vendored version, with its tools: regenerate the managed files (sync starts it)
+//   harness rollback                                              undo the last migration through Git: restore the files its commit changed or added, and nothing else
 //   harness diff                                                  the local change of harness/ against the locked version or the fork point
 //   harness override <path> --reason <why> --issue <link>         accept one edited vendored file until the next sync
 //   harness detach --reason <why>                                 the project takes the copy over; no more versions
@@ -51,6 +52,7 @@ import { layerConfig, renderLayerMap } from './lib/layers.mjs'
 import { planLog, planSummary } from './lib/plan.mjs'
 import { isMain } from './lib/main-module.mjs'
 import { migrate } from './lib/migrate.mjs'
+import { rollback } from './lib/rollback.mjs'
 import { loadProfile, lookup } from './lib/profile.mjs'
 import { detach, diff, override, sync } from './lib/vendor.mjs'
 
@@ -63,6 +65,7 @@ const USAGE = `usage: harness <command>
   sync [--from <folder or Git URL>] [--to <version>]
   sync --local
   migrate
+  rollback
   diff
   override <path> --reason <why> --issue <link>
   detach --reason <why>
@@ -196,6 +199,10 @@ export async function run(argv, { out = console.log, err = console.error, input 
     }
     if (command === 'migrate') {
       ;(await migrate({ root })).messages.forEach((line) => out(line))
+      return 0
+    }
+    if (command === 'rollback') {
+      rollback({ root }).messages.forEach((line) => out(line))
       return 0
     }
     if (command === 'check all') {

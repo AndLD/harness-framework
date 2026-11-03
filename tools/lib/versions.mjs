@@ -40,6 +40,9 @@ export function compareVersions(a, b) {
   return 0
 }
 
+/** The version a lock without the migrations record counts as. */
+export const FIRST_VERSION = '0.1.0'
+
 /** The final version a development version leads to (`0.2.0-dev.1` gives `0.2.0`). */
 export const baseVersion = (version) => parseVersion(version).numbers.join('.')
 
