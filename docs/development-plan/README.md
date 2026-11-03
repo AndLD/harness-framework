@@ -22,7 +22,8 @@ is updated in the change that starts or finishes it.
 <!-- plan-summary:end -->
 
 **Order of development** (the owner's decision of 2026-11-03). The framework is developed first; the project it was extracted from, AndLD/bot-rts,
-is its first consumer and takes releases to prove them. Releases group the tasks:
+is its first consumer and takes releases to prove them. This table is the only place that says which release a task belongs to and in what order the releases come; a phase file
+says only the order inside the phase, and a task only what it needs first. Releases group the tasks:
 
 | Release | Tasks, in order | The first consumer |
 | ------- | --------------- | ------------------ |

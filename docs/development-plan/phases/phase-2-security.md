@@ -6,7 +6,7 @@
 
 After `0.1.0`: a security review method next to the code review and the harness review, the automation of what a script can decide, the measurements that harness reviews ran by hand, and an off-plan record for work that no task covers. Planned with the owner on 2026-10-30; the method outline is in section 11.1 of the design.
 
-**Execution order:** after `0.3.0`, as the order of development in the [plan index](../README.md) says; earlier if the repository goes public or a second person uses the framework.
+**Execution order:** when the order of development in the [plan index](../README.md) says.
 
 | #   | Task | Agent | SP  | Status |
 | --- | ---- | ----- | --- | ------ |

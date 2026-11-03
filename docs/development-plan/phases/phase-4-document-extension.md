@@ -8,7 +8,7 @@ Planned on 2026-11-03 from an analysis of the documents that a project edits or 
 
 **Provisional.** The sizes are estimates, and the order and the content are reviewed after the closing review of the extraction (task 17.17 of the project this framework was extracted from), whose probes P8 and P9 test exactly this gap; its findings may add, drop or reorder tasks. Nothing here is built before that review.
 
-**Execution order:** tasks 3.5, 3.12, 3.14, 3.10, 3.13 and 3.15 of Phase 3 first (4.2 and 4.3 are written for the layout of 3.10 and the queue of 3.13, and 4.4 for the migrations of 3.5, 3.12 and 3.14 and the probe areas of 3.15), then 4.1 to 4.6 (with 4.4a) in the order of the table, and the phase before Phase 2 (security) unless the owner says otherwise. When it is done, the next minor version (`0.2.0`) is tagged, and the consuming project takes it with its own sync task.
+**Execution order:** when the [plan index](../README.md) (its order of development) says; it needs tasks of Phase 3 first: 4.2 and 4.3 the layout of 3.10 and the queue of 3.13, 4.4 the migrations of 3.5, 3.12 and 3.14 and the probe areas of 3.15. Inside the phase: 4.1 to 4.6 (with 4.4a) in the order of the table.
 
 | #   | Task | Agent | SP  | Status |
 | --- | ---- | ----- | --- | ------ |

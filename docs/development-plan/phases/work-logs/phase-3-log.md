@@ -126,3 +126,13 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none. Phase 3 is now 41 SP.
 - **Next step:** 3.6 → 3.7 → 3.8 → 3.11, released as `0.1.1`.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — the release order has one home
+- **Tasks:** 3.4, 3.5, 3.10, 3.11, 3.12, 3.13, 3.14 and 3.15 reworded (sizes unchanged).
+- **Branch:** `docs/queue-rollback-probes-local-adapters`
+- **Decisions / deviations from the plan:** the owner agreed to keep each fact once. The release of a task and the order of releases are only in the
+  plan index's order of development; a phase file says only the order inside it; a task row says only what it needs first ("Needs 3.7 first"), a
+  fact about the work that the parallel-work measurements use. The rows lost their "Part of `0.x`"; Phases 2 and 4 point to the plan index.
+- **Problems / blockers / findings:** none.
+- **Next step:** unchanged: 3.6 → 3.7 → 3.8 → 3.11, released as `0.1.1`.
+- **Verify with:** `npm run docs:check`
