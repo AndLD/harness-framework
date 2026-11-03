@@ -63,3 +63,18 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none. Phase 3 is now 20 SP.
 - **Next step:** after 3.6 to 3.8 (`0.1.1`), with the other defects of the phase.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — task 3.10 widened: a file per task and a generated phase index
+- **Tasks:** 3.10 (not started), from 3 to 6 SP.
+- **Branch:** `docs/task-files-plan`
+- **Decisions / deviations from the plan:** the owner asked to split every open phase into an index and a file per task, here, in the templates and in
+  the consuming project. That is the same problem as 3.10 (a resuming agent reads what it does not need; finished tasks are logged twice), so 3.10 now
+  holds both.
+  - A task's description and its log stay in separate files, side by side. In the consuming project's Phase 17 a task's log averages 831 words and its
+    description 125, and most readers need only the description; the description is also edited by planning, the log only by the task's session.
+  - The phase index is generated from the task files, so that two agents finishing different tasks never edit one file.
+  - A split command migrates a project's open phases; finished phases keep the one-file layout.
+  - It ships in `0.2.0`, before 4.2 and 4.3 of Phase 4.
+- **Problems / blockers / findings:** none. Phase 3 is now 23 SP.
+- **Next step:** 3.6 to 3.8 first (`0.1.1`); then 3.10 at the start of the work toward `0.2.0`.
+- **Verify with:** `npm run docs:check`

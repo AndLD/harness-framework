@@ -41,3 +41,12 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none.
 - **Next step:** after `0.1.1` (3.6 to 3.8) and the consuming project's sync. The owner re-reads this phase, then "Start Phase 4".
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — task 3.10 of Phase 3 comes first
+- **Tasks:** none changed here.
+- **Branch:** `docs/task-files-plan`
+- **Decisions / deviations from the plan:** task 3.10 of Phase 3 makes a phase a folder with a generated index and a file per task. 4.2 (the plan checks
+  hold a phase's structure) and 4.3 (the procedure `change-plan`) are written for that layout, so 3.10 is built first and ships in the same `0.2.0`.
+- **Problems / blockers / findings:** none.
+- **Next step:** unchanged, after 3.10.
+- **Verify with:** `npm run docs:check`
