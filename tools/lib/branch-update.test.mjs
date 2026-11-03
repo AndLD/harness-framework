@@ -46,7 +46,7 @@ const git = (cwd, ...args) =>
   }).trim()
 
 // An origin with develop; a clone `work` on which task A (a.txt, shared.txt) is built, task B on top of A (shared.txt, b.txt), and A squash-merged into develop
-function stackedTasks({ afterSquash } = {}) {
+function stackedTasks({ afterSquash, laterOnA = false } = {}) {
   const base = mkdtempSync(join(tmpdir(), 'branch-update-'))
   dirs.push(base)
   const origin = join(base, 'origin.git')
@@ -61,20 +61,34 @@ function stackedTasks({ afterSquash } = {}) {
   git(work, 'checkout', '--quiet', '-b', 'develop')
   write('shared.txt', 'one\ntwo\nthree\n')
   write('c.txt', 'c\n')
+  write('d.txt', 'x\ny\nm\nn\nz\n')
   commit('start')
   git(work, 'push', '--quiet', 'origin', 'develop')
 
   git(work, 'checkout', '--quiet', '-b', 'feature/a')
   write('a.txt', 'a\n')
   write('shared.txt', 'one\ntwo A\nthree\n')
+  if (laterOnA) {
+    write('d.txt', 'x\ny A\nm\nn\nz\n')
+  }
   commit('task a')
   git(work, 'push', '--quiet', 'origin', 'feature/a')
 
   git(work, 'checkout', '--quiet', '-b', 'feature/b')
   write('b.txt', 'b\n')
   write('shared.txt', 'one\ntwo A\nthree B\n')
+  if (laterOnA) {
+    write('d.txt', 'x\ny B\nm\nn\nz\n')
+  }
   commit('task b')
   git(work, 'push', '--quiet', 'origin', 'feature/b')
+  if (laterOnA) {
+    // task a goes on after b was made from it
+    git(work, 'checkout', '--quiet', 'feature/a')
+    write('d.txt', 'x\ny A\nm\nn\nz A later\n')
+    commit('task a, later')
+    git(work, 'push', '--quiet', 'origin', 'feature/a')
+  }
 
   git(work, 'checkout', '--quiet', 'develop')
   git(work, 'merge', '--squash', '--quiet', 'feature/a')
@@ -148,4 +162,29 @@ test('a branch with no conflict is merged without --previous, and the protected 
   git(work, 'checkout', '--quiet', 'feature/c')
   writeFileSync(join(work, 'c.txt'), 'dirty\n')
   assert.match(update(work).problems[0], /uncommitted changes/)
+})
+
+test('a branch made from an older commit of the previous one takes what the previous gained since, and the resolution drops none of it', () => {
+  const { work } = stackedTasks({ laterOnA: true })
+  const result = update(work, { previous: 'feature/a' })
+  assert.deepEqual(result.problems, [])
+  assert.equal(result.code, 0)
+  assert.equal(readFileSync(join(work, 'd.txt'), 'utf8'), 'x\ny B\nm\nn\nz A later\n', "b's change and a's later one")
+  assert.equal(readFileSync(join(work, 'shared.txt'), 'utf8'), 'one\ntwo A\nthree B\n')
+  assert.equal(git(work, 'status', '--porcelain'), '')
+  assert.equal(git(work, 'merge-base', '--is-ancestor', 'origin/feature/a', 'HEAD') ?? '', '')
+})
+
+test('the previous branch is not merged when this branch has it, and a conflict with it is reported with the merge in progress', () => {
+  const { work } = stackedTasks()
+  assert.equal(update(work, { previous: 'feature/a' }).code, 0)
+  assert.doesNotMatch(git(work, 'log', '--format=%s', '-3'), /Merge remote-tracking branch 'origin\/feature\/a'/)
+
+  const clash = stackedTasks({ laterOnA: true })
+  writeFileSync(join(clash.work, 'd.txt'), 'x\ny B\nm\nn\nz clash\n')
+  git(clash.work, 'add', '-A')
+  git(clash.work, 'commit', '--quiet', '-m', 'b changes the line a changes later')
+  const result = update(clash.work, { previous: 'feature/a' })
+  assert.equal(result.code, 1)
+  assert.match(result.problems[0], /conflicts in d\.txt\. This branch was made from an older commit of feature\/a/)
 })
