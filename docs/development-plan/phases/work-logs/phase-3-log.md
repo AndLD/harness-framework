@@ -161,3 +161,26 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none. Phase 3 is now 48 SP.
 - **Next step:** unchanged: 3.6 → 3.7 → 3.8 → 3.11, released as `0.1.1`.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — a session follows the order of development, not the table
+- **Tasks:** 3.9 extended (2 → 3 SP).
+- **Branch:** `docs/start-task-order`
+- **Decisions / deviations from the plan:** the owner noticed that "Start Phase 3" could start with 3.1: this phase is ⬜, so the session-start hook
+  prints nothing for it, and `start-task` picks "the next ⬜ task … in the plan's order", which reads as the table. The execution-order line of this
+  phase now says "not the order of the table" and gives the rule (the earliest unfinished release of the plan index, in the order of its row), without a
+  second copy of the order. 3.9, which already edits `start-task`, also makes step 2 follow the execution order and the hook print the next task by it.
+  Until then, the owner's prompts name the release and the first task.
+- **Problems / blockers / findings:** none. Phase 3 is now 49 SP.
+- **Next step:** unchanged: 3.6 → 3.7 → 3.8 → 3.11, released as `0.1.1`.
+- **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — task 3.17: the Git guard judges the wrong repository
+- **Tasks:** 3.17 added (not started).
+- **Branch:** `docs/start-task-order`
+- **Decisions / deviations from the plan:** found while recording the entry above: a session of the consuming project (on its integration branch)
+  could not commit to this repository's clone on a feature branch, because the guard judges every Git command by the project's own branch, also after
+  `cd` or with `-C`. The reverse is the unsafe case: a commit to another clone's integration branch passes while the project is on a feature branch.
+  It goes first in `0.1.2` (the plan index), since it is a safety defect.
+- **Problems / blockers / findings:** none. Phase 3 is now 51 SP.
+- **Next step:** unchanged: 3.6 → 3.7 → 3.8 → 3.11, released as `0.1.1`.
+- **Verify with:** `npm run docs:check`
