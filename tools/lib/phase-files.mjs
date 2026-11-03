@@ -3,6 +3,15 @@
 // task's append-only log) and `log.md` (what concerns the whole phase). The tools still read the one-file layout (`phases/phase-<n>-<slug>.md`), so a phase
 // that is finished need not be split. Pure functions on texts; the loader takes the file system as `list` and `readText` so that a test passes strings.
 
+import {
+  backLinkProblems,
+  implementationSection,
+  indexPartsProblems,
+  logProblems,
+  recordProblems,
+  workLogProblems
+} from './phase-structure.mjs'
+
 export const TASKS_START = '<!-- phase-tasks:start -->'
 export const TASKS_END = '<!-- phase-tasks:end -->'
 
@@ -85,14 +94,77 @@ export function withTaskTable(text, table) {
   return `${text.slice(0, from + TASKS_START.length)}\n${table}\n${text.slice(to)}`
 }
 
+// The checks of the structure of a phase folder (core/plan/phases.md, section 9): its index, the back-links and logs of its tasks, the work log, the
+// record of every done task, and that a task belongs to the phase it is filed in
+function folderStructureProblems({
+  folder,
+  file,
+  readme,
+  tasks,
+  taskFiles,
+  exists,
+  phasesDir,
+  planIndex,
+  files,
+  logs,
+  workLog
+}) {
+  const at = `${phasesDir}/${folder}`
+  const problems = [
+    ...backLinkProblems({ file: `${at}/README.md`, text: readme, expected: planIndex, what: 'the plan index' }),
+    ...indexPartsProblems({ file, text: readme }),
+    ...workLogProblems({ file, text: readme, exists })
+  ]
+  const number = readme.match(/^# Phase (\d+) — /m)?.[1]
+  for (const task of tasks) {
+    if (number && task.id.split('.')[0] !== number) {
+      problems.push(
+        `${task.file}: the task is filed in Phase ${number} but its id belongs to Phase ${task.id.split('.')[0]}`
+      )
+    }
+    const text = taskFiles.find(({ file: name }) => name === `${task.id}.md`)?.text ?? ''
+    problems.push(
+      ...backLinkProblems({ file: `${at}/${task.id}.md`, text, expected: `${at}/README.md`, what: 'the phase index' })
+    )
+  }
+  for (const log of logs) {
+    const id = TASK_LOG_FILE.exec(log.file)?.[1]
+    problems.push(
+      ...logProblems({
+        file: `${at}/${log.file}`,
+        text: log.text,
+        expected: `${at}/${id}.md`,
+        what: `the task ${id}`,
+        status: true
+      })
+    )
+  }
+  if (workLog !== null) {
+    problems.push(
+      ...logProblems({ file: `${at}/log.md`, text: workLog, expected: `${at}/README.md`, what: 'the phase index' })
+    )
+  }
+  problems.push(
+    ...recordProblems({
+      done: tasks.filter((task) => task.status === '✅').map((task) => task.id),
+      section: implementationSection(readme),
+      hasLog: (id) => files.includes(`${id}.log.md`),
+      file
+    })
+  )
+  return problems
+}
+
 /**
  * A phase kept as a folder, read the way `parsePhase` reads a phase file, with its tasks from their files.
  * @param {string} folder the folder's name (`phase-3-issues`)
  * @param {string} readme the text of its `README.md`
  * @param {{ file: string, text: string }[]} taskFiles
- * @param {{ complexity?: object, exists?: (path: string) => boolean }} options `exists` tells whether a path relative to the folder is there
+ * @param {{ complexity?: object, exists?: (path: string) => boolean, structure?: object }} options `exists` tells whether a path relative to the folder is there.
+ *   `structure` (`{ phasesDir, planIndex, files, logs, workLog }`) switches on the checks of the structure of the phase (phase-structure.mjs): the names of the
+ *   files in the folder, the logs of the tasks as `{ file, text }`, and the text of the phase's work log (null when missing)
  */
-export function parsePhaseFolder(folder, readme, taskFiles, { complexity, exists = () => true } = {}) {
+export function parsePhaseFolder(folder, readme, taskFiles, { complexity, exists = () => true, structure } = {}) {
   const file = `${folder}/README.md`
   const title = TITLE.exec(readme)
   const status = STATUS.exec(readme)
@@ -125,6 +197,10 @@ export function parsePhaseFolder(folder, readme, taskFiles, { complexity, exists
   const logLink = /\*\*Work log:\*\*\s*\[[^\]]*\]\(([^)]+)\)/.exec(readme)?.[1]
   if (logLink && !exists(logLink.replace(/^\.\//, ''))) {
     problems.push(`${file}: the work log ${logLink} does not exist`)
+  }
+
+  if (structure) {
+    problems.push(...folderStructureProblems({ folder, file, readme, tasks, taskFiles, exists, ...structure }))
   }
 
   return {
@@ -168,7 +244,11 @@ export function loadPhaseEntries({ list, readText, phasesDir }) {
           .filter((item) => TASK_FILE.test(item))
           .sort((a, b) => compareIds(a.replace(/\.md$/, ''), b.replace(/\.md$/, '')))
           .map((item) => ({ file: item, text: readText(`${phasesDir}/${name}/${item}`) })),
-        files: inside
+        files: inside,
+        logs: inside
+          .filter((item) => TASK_LOG_FILE.test(item))
+          .map((item) => ({ file: item, text: readText(`${phasesDir}/${name}/${item}`) })),
+        workLog: inside.includes('log.md') ? readText(`${phasesDir}/${name}/log.md`) : null
       })
     }
   }

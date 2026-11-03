@@ -17,6 +17,7 @@ import {
 import { inFramework } from './lock.mjs'
 import { orderOfDevelopment, readPhases } from './next-task.mjs'
 import { loadPhaseEntries, parsePhaseFolder, parseTaskFile } from './phase-files.mjs'
+import { needsProblems } from './phase-structure.mjs'
 
 export const SUMMARY_START = '<!-- plan-summary:start -->'
 export const SUMMARY_END = '<!-- plan-summary:end -->'
@@ -54,6 +55,7 @@ export function parsePhase(file, text) {
     file,
     title: `Phase ${title[1]} — ${title[2]} (${title[3]} SP${title[4] ? `, ${title[4]}` : ''})`,
     taskPoints,
+    ids: rows.map((match) => match[1]),
     markers: rows.filter((match) => match[2]).map((match) => match[2]),
     unmarked: rows.filter((match) => !match[2] && match[4] !== '✅').map((match) => match[1])
   }
@@ -199,7 +201,7 @@ export function implementationLog(rows, repoUrl) {
 }
 
 /** The phases of a phases folder, each as a file (`parsePhase`) or as a folder (`parsePhaseFolder`), in the order of their names. */
-export function readPhaseFiles({ root, phasesDir, complexity }) {
+export function readPhaseFiles({ root, phasesDir, complexity, planIndex }) {
   const entries = loadPhaseEntries({
     phasesDir,
     list: (path) => (existsSync(join(root, path)) ? readdirSync(join(root, path)) : []),
@@ -210,7 +212,10 @@ export function readPhaseFiles({ root, phasesDir, complexity }) {
       ? parsePhase(entry.name, entry.text)
       : parsePhaseFolder(entry.folder, entry.text, entry.taskFiles, {
           complexity,
-          exists: (path) => existsSync(join(root, phasesDir, entry.folder, path))
+          exists: (path) => existsSync(join(root, phasesDir, entry.folder, path)),
+          structure: planIndex
+            ? { phasesDir, planIndex, files: entry.files, logs: entry.logs, workLog: entry.workLog }
+            : undefined
         })
   )
 }
@@ -291,6 +296,16 @@ export function orderProblems({ root, profile, indexText }) {
   return problems
 }
 
+// The tasks that the task files of the folder phases need (`Needs`) exist, and none is in a later phase
+function needProblems(phases, queue) {
+  const known = new Set(phases.flatMap((phase) => phase.tasks?.map((task) => task.id) ?? phase.ids ?? []))
+  for (const issue of queue ? [...queue.open, ...queue.archived] : []) {
+    known.add(issue.id)
+    for (const old of issue.formerly?.match(/\d+\.\d+[a-z]?/g) ?? []) known.add(old)
+  }
+  return phases.flatMap((phase) => needsProblems({ tasks: phase.tasks ?? [], known, phase: phase.number }))
+}
+
 const phaseSequenceIds = (order) =>
   [...order.replace(/`?\b\d+\.\d+\.\d+(?:-[\w.]+)?\b`?/g, ' ').matchAll(/\b(?:\d+\.\d+[a-z]?|I-\d+)\b/g)].map(
     (match) => match[0]
@@ -307,7 +322,7 @@ export function planSummary({ root, profile, check = false }) {
   const { phases: phasesDir, planIndex } = profile.paths
   const complexity = profile.plan?.complexity
   const scale = Object.keys(complexity?.scale ?? {})
-  let phases = readPhaseFiles({ root, phasesDir, complexity })
+  let phases = readPhaseFiles({ root, phasesDir, complexity, planIndex })
   let queue = readQueueOf(root, profile)
 
   if (!check) {
@@ -317,7 +332,7 @@ export function planSummary({ root, profile, check = false }) {
         writeFileSync(path, phase.expectedReadme)
       }
     }
-    phases = readPhaseFiles({ root, phasesDir, complexity })
+    phases = readPhaseFiles({ root, phasesDir, complexity, planIndex })
     if (queue) {
       archiveDone({ root, queue })
       queue = readQueueOf(root, profile)
@@ -343,6 +358,7 @@ export function planSummary({ root, profile, check = false }) {
   }
   const current = readFileSync(join(root, planIndex), 'utf8')
   problems.push(...orderProblems({ root, profile, indexText: current }))
+  problems.push(...needProblems(phases, queue))
   const link = relative(dirname(planIndex), phasesDir).split('\\').join('/')
   const queueLink = queue ? relative(dirname(planIndex), `${queue.dir}/README.md`).split('\\').join('/') : null
   const expected = renderIndex(current, phases, {

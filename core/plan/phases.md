@@ -101,6 +101,15 @@ phase log and the task logs, by the date of the entry, and the open tasks of the
 
 ## 9. Checks
 
-A phase is conformant when: the anatomy parts that apply are present and in order; every task has an id, a size and a status (in a folder: in its task file, which `harness check plan` reads);
-every open task carries an agent-complexity marker where the plan uses them; the title size equals the sum of the task sizes; the status agrees with the index; the work-log link resolves; every task cited
-elsewhere exists here; every done task has a row in the implementation log.
+`harness check plan` (part of the documentation check) holds this, for the phases kept as folders; a phase of the older layout (one file) is held to the sizes, the markers and the summary only, since the tools do not rewrite its history, and `harness plan split <n>` moves it to the folder layout.
+
+**Checked**, each with a test that plants the defect:
+
+- **The phase index** has the parts that apply, in the order of section 1: title, status line, optional execution order, the task table between its markers, the task legend (`Task status: …`), the exit criteria and the implementation-log heading. The exit criteria are the line `**Exit criteria:** …` of the template, not a heading of their own. A missing part, a part out of place and a heading in its stead are named.
+- **Back-links.** The first line of the phase index links to the plan index, that of a task file to the phase index, that of the phase's `log.md` to the phase index, and that of a task log to its task file; each link must resolve to that document.
+- **The work log.** A link in the status line resolves, and a phase that has a `log.md` links it. A task log starts with its `**Status:**` line.
+- **Tasks.** A task has an id, a size and a status in its file (in a folder), the id belongs to the phase it is filed in, the title size equals the sum of the task sizes, and every open task carries an agent-complexity marker where the plan uses them. The task table and the summary agree with the files.
+- **Records.** A done task has the log of its own (`<id>.log.md`), or, in a phase that keeps a table in its implementation log, a row there (section 5).
+- **Tasks cited elsewhere exist.** The tasks that an order of development or an execution order names, and those that a task `Needs`, exist in a phase or in the issue queue (under its old id as well), and a task never needs one of a later phase.
+
+**Judgment**, which no tool reads: that the goal is clear, that a task is atomic and says how it is verified, that the exit criteria are observable (section 4), and that a decision is in the document that owns it (section 6).

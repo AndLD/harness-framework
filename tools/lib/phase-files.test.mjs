@@ -20,7 +20,7 @@ const taskFile = (id, title, { status = '⬜', agent = 'C2', size = 3, needs, lo
 
 const readme = (size, table = '', status = '🟡 In progress') =>
   `[← Development plan](../../README.md)\n\n# Phase 7 — Seventh (${size} SP)\n\n**Status:** ${status} · **Work log:** [log](./log.md)\n\n` +
-  `${TASKS_START}\n${table}\n${TASKS_END}\n\n**Exit criteria:** all done.\n`
+  `${TASKS_START}\n${table}\n${TASKS_END}\n\nTask status: ⬜ not started · 🟡 in progress · ✅ done.\n\n**Exit criteria:** all done.\n\n## Implementation log\n\nPrinted from the merged pull requests.\n`
 
 const tasks = (files) => files.map(([id, ...rest]) => parseTaskFile(`${id}.md`, taskFile(id, `Task ${id}`, ...rest)))
 
@@ -132,9 +132,10 @@ function project() {
     `# Plan\n\n${'<!-- plan-summary:start -->'}\nold\n${'<!-- plan-summary:end -->'}\n\n${'<!-- plan-contents:start -->'}\nold\n${'<!-- plan-contents:end -->'}\n`
   )
   write('plan/phases/phase-7-seventh/README.md', readme(6))
-  write('plan/phases/phase-7-seventh/log.md', '# Phase 7 log\n')
+  write('plan/phases/phase-7-seventh/log.md', '[← Phase 7](./README.md)\n\n# Phase 7 log\n')
   for (const { file, text } of folderFiles()) write(`plan/phases/phase-7-seventh/${file}`, text)
-  write('plan/phases/phase-7-seventh/7.2.log.md', '# 7.2 log\n')
+  write('plan/phases/phase-7-seventh/7.1.log.md', '[← 7.1](./7.1.md)\n\n# 7.1 log\n\n**Status:** ✅ done\n')
+  write('plan/phases/phase-7-seventh/7.2.log.md', '[← 7.2](./7.2.md)\n\n# 7.2 log\n\n**Status:** 🟡 in progress\n')
   write(
     'plan/phases/phase-1-first.md',
     '# Phase 1 — First (2 SP)\n\n**Status:** ✅ Done\n\n| 1.1 | text | C1 | 2 | ✅ |\n'
