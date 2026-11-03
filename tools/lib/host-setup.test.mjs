@@ -190,3 +190,25 @@ test('without the host setup (--no-host-setup, or a caller that gives none) the 
   assert.equal(result.workflow, true, 'by default the host protects, so the workflow is scaffolded')
   assert.match(result.output, /Protect both branches/)
 })
+
+test('the first steps of the selected adapters are in the next steps of the bootstrap and in the scaffolded stack file', async () => {
+  const root = fresh()
+  const lines = []
+  const { code } = await init({
+    root,
+    flags: { ...FLAGS, stack: 'python' },
+    hostSetup: false,
+    out: (line) => lines.push(line),
+    err: (line) => lines.push(line)
+  })
+  assert.equal(code, 0, lines.join('\n'))
+  assert.match(lines.join('\n'), /\n {2}\d\. Python: run `uv lock` once and commit `uv\.lock`\./)
+  const stack = readFileSync(join(root, 'docs/engineering/stack.md'), 'utf8')
+  assert.match(stack, /Done once, by hand, after the bootstrap:\n\n- Python: run `uv lock` once/)
+
+  const plain = fresh()
+  const quiet = []
+  await init({ root: plain, flags: FLAGS, hostSetup: false, out: (line) => quiet.push(line) })
+  assert.doesNotMatch(quiet.join('\n'), /uv lock/)
+  assert.doesNotMatch(readFileSync(join(plain, 'docs/engineering/stack.md'), 'utf8'), /Done once/)
+})

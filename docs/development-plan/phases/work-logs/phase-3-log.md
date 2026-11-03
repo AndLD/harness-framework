@@ -277,3 +277,11 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** the three probes the task asks for are not run (they need a separate agent); everything else the task lists is verified.
 - **Next step:** task 3.1.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — task 3.2 done: the tasks of release 0.1.2 are merged or in review
+- **Tasks:** 3.2 (done). 3.17, 3.18, 3.3, 3.9, 3.1 and 3.2 are the tasks of `0.1.2`.
+- **Branch:** `feature/3.2-python-scaffold` (details: `work-logs/phase-3/3.2.md`).
+- **Decisions / deviations from the plan:** the adapter manifest gains an optional `firstSteps` field.
+- **Problems / blockers / findings:** none. No open issues of the repository at the start of the session, so no report was triaged. The three agent probes of task 3.9 were not run.
+- **Next step:** stop; the owner cuts `0.1.2` (`core/procedures/release.md`: development version first, then the note, then the final release).
+- **Verify with:** `npm run docs:check`
