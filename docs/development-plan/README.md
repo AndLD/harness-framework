@@ -29,9 +29,11 @@ says only the order inside the phase, and a task only what it needs first. Relea
 | ------- | --------------- | ------------------ |
 | `0.1.1` | 3.6, 3.7, 3.8, then 3.11 (the first migration note) | takes it; it closes the consumer's extraction phase |
 | `0.1.2` | 3.17, 3.18, 3.3, 3.9, 3.1, 3.2 | skips it on purpose, so that `0.2.0` is the first chained migration |
-| `0.2.0` | 3.19 (a defect of `0.1.1` reported by the consumer, small and first), 3.5 (`migrate`), 3.12 (scripts and the migration test), 3.14 (rollback), 3.10 (task files), 3.13 (the issue queue), 3.16 (reports: intake and upstream), 3.15 (probe areas), then Phase 4 | takes the development version before the final tag, then the release |
+| `0.2.0` | 3.5 (`migrate`), 3.12 (scripts and the migration test), 3.14 (rollback), 3.10 (task files), 3.13 (the issue queue), 3.16 (reports: intake and upstream), 3.15 (probe areas), then Phase 4 | takes the development version before the final tag, then the release |
 | `0.3.0` | 3.4 (local adapters) | takes it |
 | next | Phase 2 (earlier if the repository goes public or a second person uses the framework) | takes it |
+
+**Not scheduled:** task 3.19 (the framework's tests that `harness sync` copies fail in a pinned project; [issue 30](https://github.com/AndLD/harness-framework/issues/30)) is a known defect that belongs to no release yet; the owner puts it into one when it is to be done.
 
 Task 3.13 turns this plan's open-ended phase into a normal phase that keeps every id, so the order above stays valid: Phase 3 ends with 3.4 in
 `0.3.0`, and only its defects that have not started (if any) become issues of the new queue, under their old ids as well.

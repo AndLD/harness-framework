@@ -320,5 +320,13 @@ pauses. Newest entry at the bottom.
   - `harness release` rewrote `framework.json` in a way Prettier rejects; it now keeps the format of a JSON version file.
   - The tag `v0.1.2` was first pushed to the wrong commit (the merge of 0.1.1) because the local `main` was not fetched; its Release workflow failed at the version check and created nothing. With the owner's approval the tag was moved to the merge commit of #39 and the workflow ran green.
 - **Problems / blockers / findings:** the guard refuses a push (a tag too) while the checkout is on a protected branch; tag from a work branch checkout. Task 3.19 (issue 30) is next in `0.2.0`.
-- **Next step:** `0.2.0` begins with 3.19, then 3.5 (plan index), when the owner asks for it.
+- **Next step:** `0.2.0` begins with 3.5 (plan index), when the owner asks for it.
+- **Verify with:** `npm run docs:check`
+
+### 2026-11-04 — task 3.19 is taken out of `0.2.0`
+- **Tasks:** 3.19 (⬜; not scheduled).
+- **Branch:** `docs/3.19-unscheduled`.
+- **Decisions / deviations from the plan:** at the owner's request 3.19 (issue 30) is no longer first in `0.2.0`; it stays a task of Phase 3 and a known defect, listed in the plan index as not scheduled, until the owner puts it into a release.
+- **Problems / blockers / findings:** none.
+- **Next step:** none for this change; `0.2.0` begins with 3.5 when the owner asks for it.
 - **Verify with:** `npm run docs:check`
