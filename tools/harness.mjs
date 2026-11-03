@@ -48,6 +48,7 @@ import { readStdin, runGate } from './lib/gate.mjs'
 import { protectHost } from './lib/host.mjs'
 import { layerConfig, renderLayerMap } from './lib/layers.mjs'
 import { planLog, planSummary } from './lib/plan.mjs'
+import { isMain } from './lib/main-module.mjs'
 import { loadProfile, lookup } from './lib/profile.mjs'
 import { detach, diff, override, sync } from './lib/vendor.mjs'
 
@@ -328,6 +329,6 @@ export async function run(argv, { out = console.log, err = console.error, input 
   return 2
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === resolve(import.meta.filename)) {
+if (isMain(import.meta.url)) {
   process.exitCode = await run(process.argv.slice(2))
 }

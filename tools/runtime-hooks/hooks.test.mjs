@@ -1,6 +1,15 @@
 import assert from 'node:assert/strict'
 import { execFileSync, spawnSync } from 'node:child_process'
-import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import {
+  chmodSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  realpathSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync
+} from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { after, test } from 'node:test'
@@ -45,8 +54,8 @@ function project(branch, { files = {}, env = {} } = {}) {
   return { root, env }
 }
 
-function hook(script, event, { env = {}, path } = {}) {
-  const result = spawnSync(process.execPath, [join(HERE, `${script}.mjs`)], {
+function hook(script, event, { env = {}, path, from = HERE } = {}) {
+  const result = spawnSync(process.execPath, [join(from, `${script}.mjs`)], {
     input: typeof event === 'string' ? event : JSON.stringify(event),
     encoding: 'utf8',
     env: { ...process.env, PATH: path ?? process.env.PATH, ...env }
@@ -117,6 +126,47 @@ test('guard-shell judges a Git command by the repository it acts on: a `cd` befo
     assert.match(run(onFeature, command).err, /cannot be told/, command)
   }
   assert.equal(run(onFeature, `cd ${onDevelop} && git checkout -b feature/y && git commit -m x`).code, 0)
+})
+
+test('each hook works when started through a link to its file or to a folder above it, as it does by its real path', () => {
+  const links = realpathSync(mkdtempSync(join(tmpdir(), 'hook-links-')))
+  dirs.push(links)
+  symlinkSync(HERE, join(links, 'hooks-link'))
+  mkdirSync(join(links, 'files'))
+  for (const script of ['guard-shell', 'guard-edit', 'session-start', 'format-edited']) {
+    symlinkSync(join(HERE, `${script}.mjs`), join(links, 'files', `${script}.mjs`))
+  }
+  const { root } = project('feature/x')
+  const develop = project('develop').root
+  const cases = [
+    ['guard-shell', sample('claude-code', 'bash-push-main.json', root), 2],
+    [
+      'guard-shell',
+      { ...sample('claude-code', 'bash-ls.json', develop), tool_input: { command: 'git commit -m x' } },
+      2
+    ],
+    ['guard-edit', sample('claude-code', 'write-env.json', root), 2],
+    ['session-start', sample('claude-code', 'session-start.json', root), 0]
+  ]
+  for (const [script, event, code] of cases) {
+    const direct = hook(script, event)
+    assert.equal(direct.code, code, `${script} by its real path`)
+    for (const from of [join(links, 'hooks-link'), join(links, 'files')]) {
+      const linked = hook(script, event, { from })
+      assert.deepEqual(linked, direct, `${script} through ${from}`)
+    }
+  }
+  assert.notEqual(
+    hook('session-start', sample('claude-code', 'session-start.json', root), {
+      from: join(links, 'files'),
+      env: { CLAUDE_PROJECT_DIR: root }
+    }).out,
+    ''
+  )
+  assert.equal(
+    hook('format-edited', sample('claude-code', 'write-env.json', root), { from: join(links, 'files') }).code,
+    0
+  )
 })
 
 test('guard-shell on a host without protection refuses a merge while a required check is not green, through the gh of the path', () => {

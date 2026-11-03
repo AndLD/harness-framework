@@ -2,11 +2,11 @@
 // by the branch of the repository it acts on, and,
 // on a host that cannot protect its branches, a merge while a required check is not green (the merge guard of the host adapter).
 import { execFileSync } from 'node:child_process'
-import { fileURLToPath } from 'node:url'
 import { hostModule } from '../lib/host.mjs'
 import { refusal } from '../lib/guard.mjs'
 import { loadProfile } from '../lib/profile.mjs'
 import { runHook } from './io.mjs'
+import { isMain } from '../lib/main-module.mjs'
 
 function currentBranch(directory) {
   try {
@@ -94,6 +94,6 @@ export function decide(
   return message ? { block: message } : {}
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+if (isMain(import.meta.url)) {
   await runHook((event) => decide(event), { kind: 'shell' })
 }
