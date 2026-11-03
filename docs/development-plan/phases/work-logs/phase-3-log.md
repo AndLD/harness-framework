@@ -200,3 +200,14 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none. Phase 3 is now 56 SP; `0.1.2` is 3.17, 3.18, 3.3, 3.9, 3.1, 3.2.
 - **Next step:** unchanged: 3.6 → 3.7 → 3.8 → 3.11, released as `0.1.1`.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — 3.18: a switch for consumers, and the standing request removed
+- **Tasks:** 3.18 (not started; size unchanged).
+- **Branch:** `docs/3.18-consumer-switch`
+- **Decisions / deviations from the plan:** the owner asked that auto-merge reach every consumer. 3.18 already makes it a core rule and sets up the
+  host; it now also has a profile switch `autoMerge` (on by default where the host protects the branches, off where it cannot), so that a team that
+  wants a person to merge can turn it off. Until 3.18, this repository and the consuming project carry a standing request for auto-merge in section 9
+  of their entry file (#22 here); the version's migration note offers its removal, and 3.18 removes this repository's.
+- **Problems / blockers / findings:** none.
+- **Next step:** unchanged: 3.6 → 3.7 → 3.8 → 3.11, released as `0.1.1`.
+- **Verify with:** `npm run docs:check`
