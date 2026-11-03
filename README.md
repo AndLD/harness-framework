@@ -64,7 +64,8 @@ selected in its profile file (`adapters`), and the SHA-256 of every copied file.
 
 | Command | What it does |
 | ------- | ------------ |
-| `sync --from <folder or Git URL> [--to <version>]` | Copies the paths that `framework.json` lists as distributable, and of `adapters/` only the selected ones, into `harness/`, byte for byte, and rewrites the lock. A Git source needs the version; its tag is `<version>` or `v<version>`, and a tag that once pointed to another commit is refused. Without `--from`, it takes the locked source again. Overrides are dropped. |
+| `sync --from <folder or Git URL> [--to <version>]` | Copies the paths that `framework.json` lists as distributable, and of `adapters/` only the selected ones, into `harness/`, byte for byte, and rewrites the lock. A Git source needs the version; its tag is `<version>` or `v<version>`, and a tag that once pointed to another commit is refused. Without `--from`, it takes the locked source again. Overrides are dropped. It only places the files and updates the lock, then starts `migrate` of the new version in a new process. |
+| `migrate` | Brings the project to the vendored version with that version's own tools: regenerates the managed files. `sync` starts it; a project whose `sync` is older than `0.2.0` runs it itself after the sync. |
 | `sync --local` | Regenerates the files the tools manage in the project from `harness/` and the profile file, and fetches nothing. |
 | `check generated` | Renders every managed file and block again (the profile document, the layer map, the entry file's rule blocks) and fails when the project's text differs, in every mode, detached too. |
 | `check vendored` | Fails when a file in `harness/` was edited, removed or added, when a managed file differs, or when the profile file changed since the managed files were generated. With a folder as the source, it also fails when the source changed without a sync, so the two change together. |
@@ -110,7 +111,7 @@ The checks and the project tools read every value from the profile file:
 
 ## Taking a version
 
-A project takes a version with `sync --from <source> --to <version>`, then regenerates the managed files as the note says. Every version from `0.1.1` on has a **migration note**, [`migrations/<version>.md`](./migrations/README.md), that says what a project must do when it takes that version from the previous one, with the check that proves each action done. A project that skips versions (`0.1.1` straight to `0.3.0`) reads the notes of every version after its own up to the target, in order, and does the required actions of each; the changelog says what changed, the notes say what to do. The areas a note lists tell which of the project's own files and probes the version touched. A version that needs nothing says so.
+A project takes a version with `sync --from <source> --to <version>`, then runs `node harness/tools/harness.mjs migrate` where the `sync` of its old version did not start it (every version before `0.2.0`), as the note says. Every version from `0.1.1` on has a **migration note**, [`migrations/<version>.md`](./migrations/README.md), that says what a project must do when it takes that version from the previous one, with the check that proves each action done. A project that skips versions (`0.1.1` straight to `0.3.0`) reads the notes of every version after its own up to the target, in order, and does the required actions of each; the changelog says what changed, the notes say what to do. The areas a note lists tell which of the project's own files and probes the version touched. A version that needs nothing says so.
 
 ## A word found in `core/`
 
