@@ -204,6 +204,7 @@ export function vendor({ root, fetched, adapters, lock = null, generators = regi
     framework: fetched.manifest.name,
     mode: MODES.pinned,
     version,
+    migrations: generate ? { version, applied: [] } : lock?.migrations,
     source,
     adapters,
     files: hashTree(vendorDir, paths),

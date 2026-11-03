@@ -2,14 +2,15 @@
 // managed files with the new version's tools. A project whose old `sync` could not start it runs `harness migrate` itself.
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
 import { after, before, test } from 'node:test'
 import { run } from '../harness.mjs'
 import { FRAMEWORK_DIR } from './bootstrap.mjs'
-import { readLock } from './lock.mjs'
+import { readLock, writeLock } from './lock.mjs'
 import { migrate } from './migrate.mjs'
+import { baseVersion, compareVersions, isDevelopment } from './versions.mjs'
 import { sync } from './vendor.mjs'
 
 const dirs = []
@@ -137,7 +138,7 @@ test('a sync that cannot start the migration leaves the managed files stale, and
 })
 
 test('migrate needs a lock, and a failing migration of the new version fails the sync with the way to run it again', async () => {
-  assert.throws(() => migrate({ root: fresh() }), /nothing to migrate/)
+  await assert.rejects(() => migrate({ root: fresh() }), /nothing to migrate/)
 
   const { first, second } = versions()
   const root = await projectAt(first)
@@ -149,4 +150,132 @@ test('migrate needs a lock, and a failing migration of the new version fails the
     /`harness migrate` of the new version failed \(exit 3\)[^]*boom[^]*run `node harness\/tools\/harness\.mjs migrate`/
   )
   assert.equal(readLock(root).version, '1.1.0', 'the files and the lock are in place')
+})
+
+// A framework whose migrations folder holds the scripts and notes given, as `{ '0.2.0.mjs': text, '0.2.0.md': text }`
+function scriptedFramework(version, migrations) {
+  const dir = fresh()
+  const files = {
+    'framework.json': JSON.stringify({
+      name: 'harness-framework',
+      version,
+      distributable: ['migrations', 'framework.json']
+    }),
+    ...Object.fromEntries(Object.entries(migrations).map(([name, text]) => [`migrations/${name}`, text]))
+  }
+  for (const [path, text] of Object.entries(files)) {
+    mkdirSync(dirname(join(dir, path)), { recursive: true })
+    writeFileSync(join(dir, path), text)
+  }
+  return dir
+}
+
+// A script that adds its line to `log.txt` once: it checks its starting state, so a second run changes nothing
+const script = (version, extra = '') => `import { existsSync, readFileSync, appendFileSync } from 'node:fs'
+import { join } from 'node:path'
+export default ({ root }) => {
+  ${extra}
+  const file = join(root, 'log.txt')
+  const text = existsSync(file) ? readFileSync(file, 'utf8') : ''
+  if (text.includes('${version}\\n')) return ['${version}: already done']
+  appendFileSync(file, '${version}\\n')
+  return ['${version}: done']
+}
+`
+
+function scriptedProject(source) {
+  const root = fresh()
+  writeFileSync(join(root, 'harness-profile.json'), JSON.stringify({ adapters: { stacks: [], runtimes: [] } }))
+  sync({ root, from: source, generators: [], startMigrate: () => [] })
+  return root
+}
+
+const logOf = (root) => (existsSync(join(root, 'log.txt')) ? readFileSync(join(root, 'log.txt'), 'utf8') : '')
+
+test('migrate runs the scripts of every version after the project\u2019s own, in order, records them, and prints the notes in order', async () => {
+  const source = scriptedFramework('0.4.0', {
+    '0.3.0.mjs': script('0.3.0'),
+    '0.1.1.md': '# Migration to 0.1.1\n',
+    '0.2.0.mjs': script('0.2.0'),
+    '0.2.0.md': '# Migration to 0.2.0\n',
+    '0.4.0.mjs': script('0.4.0'),
+    '0.4.0.md': '# Migration to 0.4.0\n',
+    '0.5.0.mjs': script('0.5.0')
+  })
+  const root = scriptedProject(source)
+  assert.equal(readLock(root).migrations, undefined, 'a lock without the record counts as 0.1.0 with nothing applied')
+
+  const { messages } = await migrate({ root, generators: [] })
+  assert.equal(logOf(root), '0.2.0\n0.3.0\n0.4.0\n', 'the scripts up to the target, oldest first; 0.5.0 is after it')
+  assert.deepEqual(readLock(root).migrations, { version: '0.4.0', applied: ['0.2.0', '0.3.0', '0.4.0'] })
+  const notes = messages.filter((line) => line.startsWith('Migration note of'))
+  assert.deepEqual(notes, [
+    'Migration note of 0.1.1 (follow its required actions):',
+    'Migration note of 0.2.0 (follow its required actions):',
+    'Migration note of 0.4.0 (follow its required actions):'
+  ])
+
+  const again = await migrate({ root, generators: [] })
+  assert.equal(logOf(root), '0.2.0\n0.3.0\n0.4.0\n')
+  assert.equal(again.messages.filter((line) => /^Migration (script|note)/.test(line)).length, 0, 'nothing is pending')
+})
+
+test('a script runs twice without change, and a run that stopped resumes with the scripts not yet applied', async () => {
+  const source = scriptedFramework('0.3.0', {
+    '0.2.0.mjs': script('0.2.0'),
+    '0.3.0.mjs': script('0.3.0', "if (!process.env.MIGRATE_TEST_OK) throw new Error('the second script stops')")
+  })
+  const root = scriptedProject(source)
+
+  await assert.rejects(() => migrate({ root, generators: [] }), /the second script stops/)
+  assert.deepEqual(readLock(root).migrations, { version: '0.1.0', applied: ['0.2.0'] }, 'the first script is recorded')
+
+  process.env.MIGRATE_TEST_OK = '1'
+  try {
+    const { messages } = await migrate({ root, generators: [] })
+    assert.ok(!messages.some((line) => line.includes('0.2.0: ')), 'the applied script is not run again')
+    assert.equal(logOf(root), '0.2.0\n0.3.0\n')
+
+    // The same scripts again, as if the record were lost: they find their work done
+    writeLock(root, { ...readLock(root), migrations: undefined })
+    const rerun = await migrate({ root, generators: [] })
+    assert.ok(rerun.messages.includes('  0.2.0: already done') && rerun.messages.includes('  0.3.0: already done'))
+    assert.equal(logOf(root), '0.2.0\n0.3.0\n')
+  } finally {
+    delete process.env.MIGRATE_TEST_OK
+  }
+})
+
+test('a development version runs the script of its final version without recording it, and the final version runs it once more', async () => {
+  const migrations = { '0.2.0.mjs': script('0.2.0'), '0.2.0.md': '# Migration to 0.2.0\n' }
+  const root = scriptedProject(scriptedFramework('0.2.0-dev.1', migrations))
+  await migrate({ root, generators: [] })
+  assert.equal(logOf(root), '0.2.0\n')
+  assert.deepEqual(readLock(root).migrations, { version: '0.2.0-dev.1', applied: [] })
+
+  const final = scriptedFramework('0.2.0', migrations)
+  sync({ root, from: final, generators: [], startMigrate: () => [] })
+  const { messages } = await migrate({ root, generators: [] })
+  assert.ok(messages.includes('  0.2.0: already done'), 'the script ran again and found its work done')
+  assert.deepEqual(readLock(root).migrations, { version: '0.2.0', applied: ['0.2.0'] })
+})
+
+test('a project that is detached, or the framework itself, only regenerates the managed files', async () => {
+  const root = scriptedProject(scriptedFramework('0.2.0', { '0.2.0.mjs': script('0.2.0') }))
+  writeLock(root, { ...readLock(root), mode: 'self' })
+  const { messages } = await migrate({ root, generators: [] })
+  assert.match(messages.join('\n'), /only a pinned project has migrations to run/)
+  assert.equal(logOf(root), '')
+})
+
+test('versions are compared as x.y.z with a development version before its final one', () => {
+  assert.ok(compareVersions('0.1.2', '0.1.10') < 0)
+  assert.ok(compareVersions('0.2.0-dev.2', '0.2.0') < 0)
+  assert.ok(compareVersions('0.2.0-dev.2', '0.2.0-dev.10') < 0)
+  assert.ok(compareVersions('0.2.0-dev', '0.2.0-dev.1') < 0)
+  assert.equal(compareVersions('v1.0.0', '1.0.0'), 0)
+  assert.ok(compareVersions('0.2.0', '0.1.9') > 0)
+  assert.equal(baseVersion('0.2.0-dev.3'), '0.2.0')
+  assert.ok(isDevelopment('0.2.0-dev.3') && !isDevelopment('0.2.0'))
+  assert.throws(() => compareVersions('latest', '1.0.0'), /not a version/)
 })
