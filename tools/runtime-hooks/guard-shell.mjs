@@ -1,4 +1,5 @@
-// Runtime hook (PreToolUse on the shell): `harness/tools/runtime-hooks/guard-shell.mjs`. Refuses the commands of the Git rules (see lib/guard.mjs), and,
+// Runtime hook (PreToolUse on the shell): `harness/tools/runtime-hooks/guard-shell.mjs`. Refuses the commands of the Git rules (see lib/guard.mjs), each judged
+// by the branch of the repository it acts on, and,
 // on a host that cannot protect its branches, a merge while a required check is not green (the merge guard of the host adapter).
 import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
@@ -16,6 +17,26 @@ function currentBranch(directory) {
     }).trim()
   } catch {
     return ''
+  }
+}
+
+// The branch checked out in the repository of `{ cwd, gitDir }` (a git dir named by `--git-dir`), '' for a detached head, null when it is no repository
+export function branchOf({ cwd, gitDir }) {
+  const git = (...args) =>
+    execFileSync('git', [...(gitDir ? ['--git-dir', gitDir] : []), ...args], {
+      cwd,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore']
+    }).trim()
+  try {
+    return git('symbolic-ref', '--short', 'HEAD')
+  } catch {
+    try {
+      git('rev-parse', '--git-dir')
+      return ''
+    } catch {
+      return null
+    }
   }
 }
 
@@ -38,6 +59,8 @@ export function decide(event, { profile = loadProfile(event.cwd), branch = curre
   }
   const message = refusal(event.command, branch, {
     protectedBranches: [profile.branches?.production, profile.branches?.integration].filter(Boolean),
+    cwd: event.cwd,
+    branchOf,
     merge: merge ?? mergeGuard(profile, { cwd: event.cwd })
   })
   return message ? { block: message } : {}
