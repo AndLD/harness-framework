@@ -9,6 +9,7 @@
 //   harness template <dir> [--from <folder or Git URL> --to <version>]         build the template repository into an empty folder
 //   harness sync [--from <folder or Git URL>] [--to <version>]   take the framework into harness/ and rewrite harness.lock.json
 //   harness sync --local                                          regenerate the managed files only, without fetching
+//   harness migrate                                               bring the project to the vendored version, with its tools: regenerate the managed files (sync starts it)
 //   harness diff                                                  the local change of harness/ against the locked version or the fork point
 //   harness override <path> --reason <why> --issue <link>         accept one edited vendored file until the next sync
 //   harness detach --reason <why>                                 the project takes the copy over; no more versions
@@ -49,6 +50,7 @@ import { protectHost } from './lib/host.mjs'
 import { layerConfig, renderLayerMap } from './lib/layers.mjs'
 import { planLog, planSummary } from './lib/plan.mjs'
 import { isMain } from './lib/main-module.mjs'
+import { migrate } from './lib/migrate.mjs'
 import { loadProfile, lookup } from './lib/profile.mjs'
 import { detach, diff, override, sync } from './lib/vendor.mjs'
 
@@ -60,6 +62,7 @@ const USAGE = `usage: harness <command>
   template <dir> [--from <folder or Git URL> [--to <version>]]
   sync [--from <folder or Git URL>] [--to <version>]
   sync --local
+  migrate
   diff
   override <path> --reason <why> --issue <link>
   detach --reason <why>
@@ -189,6 +192,10 @@ export async function run(argv, { out = console.log, err = console.error, input 
     }
     if (command === 'sync') {
       sync({ root, from: flags.from, to: flags.to, local: flags.local }).messages.forEach((line) => out(line))
+      return 0
+    }
+    if (command === 'migrate') {
+      migrate({ root }).messages.forEach((line) => out(line))
       return 0
     }
     if (command === 'check all') {

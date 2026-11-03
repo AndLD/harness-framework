@@ -55,8 +55,9 @@ workflows (section 11, assumptions); shells other than `sh` for the Git hooks.
 - **Pin.** `harness.lock.json` at the root records the framework version, the source (a local path while staging, later a Git URL and
   tag) and the commit the tag pointed to, the selected adapters, the SHA-256 of every vendored file and of every managed file it generates (section 6.3), and the hash of
   the profile file used for the generation.
-- **Update.** `node harness/tools/harness.mjs sync [--to <version>] [--from <path or URL>]` replaces the vendored tree, regenerates
-  the managed files and rewrites the lock. A sync is a chore pull request of its own, with the framework changelog of the versions it
+- **Update.** `node harness/tools/harness.mjs sync [--to <version>] [--from <path or URL>]` replaces the vendored tree and rewrites the lock, then
+  starts `harness migrate` of the new tree in a new process, which regenerates the managed files with the new version's tools (the tools that ran
+  `sync` are the old ones, and would write the old version's text). A sync is a chore pull request of its own, with the framework changelog of the versions it
   crosses in its body. A sync refuses a version it has seen before whose tag now points to another commit (a moved tag).
   `harness sync --local` only regenerates the managed files from the vendored tree, with no network, in every mode.
 - **Guard.** `harness check vendored` is part of the documentation check and of CI. It fails when a vendored or managed file differs from
