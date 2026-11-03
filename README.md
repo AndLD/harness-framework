@@ -48,8 +48,12 @@ one engine (`tools/lib/bootstrap.mjs`):
 `harness bootstrap` completes the profile file from the answers, `profile/starter.json` and the defaults of the selected adapters, writes the
 scaffolded files once (it refuses to overwrite one the project has, unless `--force`), vendors the framework and generates the managed files,
 commits the result as the root commit of the integration branch (or on a new integration branch from a commit the host made), makes the
-production branch from the same commit, installs the Git hooks and runs `check all`. It prints what is left to the owner: the first push of
-both branches, and `host protect`. `--detached` starts the project as its own copy; the result equals a pinned bootstrap followed by
+production branch from the same commit, installs the Git hooks and runs `check all`. Before it writes the files it asks the host what it offers
+for the repository (`--no-host-setup` skips this): where the host can protect the repository and you administer it, it sets `host.protection: true`,
+applies the ruleset, turns on "allow auto-merge" and writes the workflow that keeps the pull requests waiting on auto-merge up to date (an interactive
+run says what it will set and asks once); where you have no admin rights it writes the files and names the one command for the owner; where the host
+cannot protect the repository (a private repository on a free plan) it sets `host.protection: false`, which turns auto-merge off, and says what going
+public or a paid plan adds. It prints what is left to the owner: the first push of both branches, and `host protect` where the bootstrap did not do it. `--detached` starts the project as its own copy; the result equals a pinned bootstrap followed by
 `detach`.
 
 ## Using it
@@ -90,7 +94,8 @@ The checks and the project tools read every value from the profile file:
 | `coverage merge <artifacts> [--out <dir>] [<package>...]` | Merges the shards that CI uploaded (`coverage-<package>-<i>-of-<n>`) with the stack's merge and holds each total to the gate. |
 | `coverage summarize [--skip-missing] [<package>...]` | Writes the neutral summary of the last local run of a package from its raw coverage, with the stack's merge and without the gate: for a tool that does not write the summary itself (coverage.py). |
 | `check scaffold` | The ignore files of the stacks exclude the vendored framework, and the configuration of each agent runtime holds the framework's hook entries and read exclusions. |
-| `host protect [--repo <owner/name>]` | Sets the protection of the production and the integration branch on the host through the host adapter; it fails when `host.protection` of the profile differs from what the host can do. |
+| `host protect [--repo <owner/name>]` | Sets the protection of the production and the integration branch on the host through the host adapter, and turns the host's auto-merge on or off by `host.autoMerge` (on where the host protects, off where it cannot); it fails when `host.protection` of the profile differs from what the host can do. |
+| `branch update [--previous <branch>]` | In the branch of a task stacked on the branch of the previous one, after the previous pull request was squash-merged: merges the integration branch and resolves the conflicts that only the squash causes (a file whose content on the integration branch is what the previous branch has at its tip), in favour of this branch; any other conflict is left for you, with the merge in progress. |
 | `adopt [--non-interactive] [--from <folder or Git URL> [--to <version>]]` (and the flags of `init`) | The bootstrap for a repository that copied the first harness (a profile file under `scripts/`, Git hooks, link and plan scripts, a project check). It moves the profile file to the root and completes it (asking for the required roles, as `init`), writes `harness/`, the lock and the managed files, adds the managed blocks to the entry file (below the project's own text), points `core.hooksPath` and the runtime's hook entries at the framework, lists the scripts and hooks the framework now replaces (by name, or by what they export) and the project's own checks (`checks.project`). It deletes and commits nothing; the project removes the replaced scripts in its own pull request. |
 | `adapter test <path> [--only <pattern>]` | Runs the conformance suite of its axis on the adapter folder at `<path>` (a preset, or a new adapter written by [the new-adapter guide](core/contracts/new-adapter.md)); `--only` narrows the checks by name. It exits 1 when a check fails. |
 | `check links` | Every relative link of the tracked Markdown files resolves, and an `#anchor` matches a heading as the host renders it. |
