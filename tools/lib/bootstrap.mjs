@@ -271,6 +271,16 @@ export function unknownAdapters(profile, catalogue) {
     )
 }
 
+// What the selected adapters ask a project to do once, by hand, after the bootstrap (`firstSteps` of their manifests), each as one sentence
+export function firstStepsOf(profile, catalogue) {
+  const { stacks, runtimes, host } = selectedAdapters(profile)
+  return [
+    ...stacks.flatMap((name) => catalogue.stack[name]?.firstSteps ?? []),
+    ...runtimes.flatMap((name) => catalogue.runtime[name]?.firstSteps ?? []),
+    ...(host ? (catalogue.host[host]?.firstSteps ?? []) : [])
+  ]
+}
+
 // A phrase per axis for the scaffolded stack file: each adapter with its description
 function adapterPhrase(names, manifests, none) {
   const phrases = names.map((name) => `${name} (${(manifests[name]?.description ?? '').replace(/\.$/, '')})`)
@@ -331,7 +341,10 @@ export function scaffoldPlan({ profile, frameworkDir = FRAMEWORK_DIR, modules })
         catalogue.runtime,
         'none (the agent-neutral minimum: the entry file, its procedures, the Git hooks and CI)'
       ),
-      host: adapterPhrase(host ? [host] : [], catalogue.host, 'none')
+      host: adapterPhrase(host ? [host] : [], catalogue.host, 'none'),
+      firstSteps: firstStepsOf(profile, catalogue)
+        .map((step) => `- ${step}`)
+        .join('\n')
     }
   }
 
@@ -487,7 +500,7 @@ export function adoptionSteps(profile) {
  * The owner's steps after a bootstrap, which the tools cannot do. The step that protects the branches is left out where the bootstrap did it
  * (`protected`), and where the host cannot (`host.protection` is false).
  */
-export function nextSteps(profile, { protected: done = false } = {}) {
+export function nextSteps(profile, { protected: done = false, firstSteps = [] } = {}) {
   const { production, integration } = profile.branches
   const steps = [
     [
@@ -497,6 +510,7 @@ export function nextSteps(profile, { protected: done = false } = {}) {
     ...(done || profile.host?.protection === false
       ? []
       : [[`Protect both branches: node ${inFramework(profile, 'tools/harness.mjs')} host protect`]]),
+    ...firstSteps.map((step) => [step]),
     [
       `Read the scaffolded files (${profile.paths.entryFile}, the stack file, the plan) and fill in what is the project's.`
     ],
@@ -679,9 +693,10 @@ export async function bootstrap({
     messages.forEach((line) => out(line))
 
     const code = checkAll({ root, out, err, stdio: 'pipe' })
-    ;(adopt ? adoptionSteps(effective) : nextSteps(effective, { protected: protectedByBootstrap })).forEach((line) =>
-      out(line)
-    )
+    ;(adopt
+      ? adoptionSteps(effective)
+      : nextSteps(effective, { protected: protectedByBootstrap, firstSteps: firstStepsOf(effective, catalogue) })
+    ).forEach((line) => out(line))
     return { code, messages }
   } finally {
     fetched.cleanup()
