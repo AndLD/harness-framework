@@ -139,6 +139,11 @@ for (const tag of TAGS) {
       readdirSync(phases).some((name) => /^phase-\d+-issues$/.test(name) && existsSync(join(phases, name, 'README.md')))
     )
     assert.ok(!readdirSync(phases).some((name) => /^phase-\d+-issues\.md$/.test(name)))
+    // The script of 0.2.0 made the open-ended phase a normal one and gave the project its issue queue
+    assert.ok(existsSync(join(root, 'docs/development-plan/issues/README.md')))
+    const profile = JSON.parse(readFileSync(join(root, 'harness-profile.json'), 'utf8'))
+    assert.equal(profile.plan.openEndedPhaseNumber, undefined)
+    assert.equal(profile.paths.issues, 'docs/development-plan/issues')
     const checked = node(projectTools, ['check', 'all', '--root', root])
     assert.equal(checked.status, 0, checked.stdout + checked.stderr)
 

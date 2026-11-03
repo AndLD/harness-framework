@@ -82,7 +82,7 @@ Branch types:
 | Status symbols | ⬜ not started · 🟡 in progress · ✅ done |
 | Estimation scale | {{plan.estimationScale}} |
 | Resume phrases | {{plan.resumePhrases}} |
-| Open-ended phase | {{plan.openEndedPhase}} |
+| Issue queue | {{link:paths.issues}}: the defects and improvements found in use, not a phase; a file `I-<n>.md` per issue with its log beside it, branch `bugfix/I-<n>-<slug>`, the open ones in the folder's `README.md`, the finished ones in `archived/` |
 | Specification citation | {{plan.specificationCitation}} |
 | Agent complexity | every open task carries a marker in the `Agent` column of its phase file: {{derived.complexityScale}} |
 | Agent models | {{derived.complexityModels}} |

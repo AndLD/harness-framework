@@ -75,8 +75,8 @@ export function orderOfDevelopment(indexText) {
     line.startsWith('|') ? (/^\|\s*[-: |]+\|?\s*$/.test(line) ? [] : [line.split('|').slice(1, -1)[1] ?? '']) : [line]
   )
   return cells.flatMap((cell) =>
-    [...cell.replace(VERSION, ' ').matchAll(/\b(?:Phase (\d+)|(\d+\.\d+[a-z]?))\b/g)].map((match) =>
-      match[1] ? { phase: Number(match[1]) } : match[2]
+    [...cell.replace(VERSION, ' ').matchAll(/\b(?:Phase (\d+)|(\d+\.\d+[a-z]?)|(I-\d+))\b/g)].map((match) =>
+      match[1] ? { phase: Number(match[1]) } : (match[2] ?? match[3])
     )
   )
 }

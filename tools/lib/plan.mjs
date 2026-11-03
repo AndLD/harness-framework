@@ -4,12 +4,26 @@
 import { execFileSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join, relative } from 'node:path'
-import { loadPhaseEntries, parsePhaseFolder } from './phase-files.mjs'
+import {
+  archiveDone,
+  archiveTable,
+  openTable,
+  queueProblems,
+  queueSummary,
+  readQueue,
+  withQueueBlock,
+  ARCHIVE_FOLDER
+} from './issue-queue.mjs'
+import { inFramework } from './lock.mjs'
+import { orderOfDevelopment, readPhases } from './next-task.mjs'
+import { loadPhaseEntries, parsePhaseFolder, parseTaskFile } from './phase-files.mjs'
 
 export const SUMMARY_START = '<!-- plan-summary:start -->'
 export const SUMMARY_END = '<!-- plan-summary:end -->'
 export const CONTENTS_START = '<!-- plan-contents:start -->'
 export const CONTENTS_END = '<!-- plan-contents:end -->'
+export const ISSUES_START = '<!-- plan-issues:start -->'
+export const ISSUES_END = '<!-- plan-issues:end -->'
 
 const TITLE = /^# Phase (\d+) — (.+?) \((\d+) SP(?:, ([^)]*))?\)\s*$/m
 const STATUS = /\*\*Status:\*\*\s*((?:⬜|🟡|✅)\s*[A-Za-z ]+?)\s*(?:·|$)/m
@@ -107,7 +121,7 @@ export function summaryTable(phases, { complexity } = {}) {
     )
   }
   lines.push(
-    `|  | **Total of ${phaseRange(sorted[0]?.number ?? 0, last)}** | **${total}**${grows.length ? ` (${grows.join(', ')} grows as issues are added)` : ''} |${marked ? ' | ' : ' '}|`
+    `|  | **Total${sorted.length ? ` of ${phaseRange(sorted[0].number, last)}` : ''}** | **${total}**${grows.length ? ` (${grows.join(', ')} grows as issues are added)` : ''} |${marked ? ' | ' : ' '}|`
   )
 
   return lines.join('\n')
@@ -131,9 +145,13 @@ function replaceBetween(text, start, end, body) {
 }
 
 // The index text with both generated blocks rewritten
-export function renderIndex(indexText, phases, { phasesLink, complexity } = {}) {
+export function renderIndex(indexText, phases, { phasesLink, complexity, queueLine } = {}) {
   const withSummary = replaceBetween(indexText, SUMMARY_START, SUMMARY_END, summaryTable(phases, { complexity }))
-  return replaceBetween(withSummary, CONTENTS_START, CONTENTS_END, contentsList(phases, phasesLink))
+  const withContents = replaceBetween(withSummary, CONTENTS_START, CONTENTS_END, contentsList(phases, phasesLink))
+  // The issue queue's line is written where the index has its block (a plan with no queue has none)
+  return queueLine && withContents.includes(ISSUES_START)
+    ? replaceBetween(withContents, ISSUES_START, ISSUES_END, queueLine)
+    : withContents
 }
 
 const PLAN_LINE = /^Plan:\s*(.+)$/gm
@@ -197,16 +215,85 @@ export function readPhaseFiles({ root, phasesDir, complexity }) {
   )
 }
 
+const listIn = (root) => (path) => (existsSync(join(root, path)) ? readdirSync(join(root, path)) : [])
+
+/** The issue queue of the project (`paths.issues`), or null when it has none yet. */
+function readQueueOf(root, profile) {
+  return profile.paths.issues
+    ? readQueue({
+        dir: profile.paths.issues,
+        list: listIn(root),
+        readText: (path) => readFileSync(join(root, path), 'utf8')
+      })
+    : null
+}
+
+// The areas of the migration notes (the names of `areas.json` of the framework tree); null where the project has no such list
+function areasOf(root, profile) {
+  const path = join(root, inFramework(profile, 'migrations'), 'areas.json')
+  return existsSync(path) ? Object.keys(JSON.parse(readFileSync(path, 'utf8')).areas ?? {}) : null
+}
+
 /**
- * `harness plan summary`: rewrites the generated blocks of the plan index, and of the phase index of each phase kept as a folder, from the phase and task
- * files, or with `check` only compares them. Also holds the layout of a phase folder: the size in its title is the sum of its task files, each task file
- * has a status, a size and, for an open task, a marker, and every log link resolves.
+ * The ids an order of development or an execution order may name: the tasks of the phases, the issues of the queue and its archive, and the ids an issue
+ * took over from a task of a phase that was moved (`Formerly`). Names the ids that exist nowhere.
+ */
+export function orderProblems({ root, profile, indexText }) {
+  const { phases: phasesDir, planIndex } = profile.paths
+  const entries = loadPhaseEntries({
+    phasesDir,
+    list: listIn(root),
+    readText: (path) => readFileSync(join(root, path), 'utf8')
+  }).map((entry) => ({
+    file: `${phasesDir}/${entry.file}`,
+    text: entry.text,
+    tasks: entry.taskFiles?.map(({ file, text }) => parseTaskFile(file, text)).filter((task) => task.id)
+  }))
+  const phases = readPhases(entries)
+  const queue = readQueueOf(root, profile)
+  const known = new Set(phases.flatMap((phase) => phase.tasks.map((task) => task.id)))
+  for (const issue of queue ? [...queue.open, ...queue.archived] : []) {
+    known.add(issue.id)
+    for (const old of issue.formerly?.match(/\d+\.\d+[a-z]?/g) ?? []) known.add(old)
+  }
+  const problems = []
+  for (const token of orderOfDevelopment(indexText)) {
+    if (typeof token === 'string' ? !known.has(token) : !phases.some((phase) => phase.number === token.phase)) {
+      problems.push(
+        `${planIndex}: the order of development names ${typeof token === 'string' ? `task ${token}` : `Phase ${token.phase}`}, which exists in no phase and not in the issue queue (nor its archive, under its old id)`
+      )
+    }
+  }
+  for (const phase of phases.filter((item) => item.order !== null && !item.points)) {
+    for (const id of new Set(phaseSequenceIds(phase.order))) {
+      if (!known.has(id)) {
+        problems.push(
+          `${phase.file}: the execution order names task ${id}, which exists in no phase and not in the issue queue (nor its archive, under its old id)`
+        )
+      }
+    }
+  }
+  return problems
+}
+
+const phaseSequenceIds = (order) =>
+  [...order.replace(/`?\b\d+\.\d+\.\d+(?:-[\w.]+)?\b`?/g, ' ').matchAll(/\b(?:\d+\.\d+[a-z]?|I-\d+)\b/g)].map(
+    (match) => match[0]
+  )
+
+/**
+ * `harness plan summary`: rewrites the generated blocks of the plan index, of the phase index of each phase kept as a folder, and of the two indexes of the
+ * issue queue (archiving the issues that are done), from the phase, task and issue files, or with `check` only compares them. Also holds the layout of a
+ * phase folder (the size in its title is the sum of its task files, each task file has a status, a size and, for an open task, a marker, and every log link
+ * resolves), the layout of the queue, and that an order of development or an execution order names only ids that exist.
  * @returns {{ problems: string[], message: string }}
  */
 export function planSummary({ root, profile, check = false }) {
   const { phases: phasesDir, planIndex } = profile.paths
   const complexity = profile.plan?.complexity
+  const scale = Object.keys(complexity?.scale ?? {})
   let phases = readPhaseFiles({ root, phasesDir, complexity })
+  let queue = readQueueOf(root, profile)
 
   if (!check) {
     for (const phase of phases.filter((item) => item.layout === 'folder' && item.expectedReadme)) {
@@ -216,16 +303,43 @@ export function planSummary({ root, profile, check = false }) {
       }
     }
     phases = readPhaseFiles({ root, phasesDir, complexity })
+    if (queue) {
+      archiveDone({ root, queue })
+      queue = readQueueOf(root, profile)
+      const write = (path, body) => {
+        const text = readFileSync(join(root, path), 'utf8')
+        const next = withQueueBlock(text, body)
+        if (next !== null && next !== text) writeFileSync(join(root, path), next)
+      }
+      write(`${queue.dir}/README.md`, openTable(queue.open, { marked: scale.length > 0 }))
+      if (queue.archiveReadme !== null) write(`${queue.dir}/${ARCHIVE_FOLDER}/README.md`, archiveTable(queue.archived))
+      queue = readQueueOf(root, profile)
+    }
   }
   const problems = phases.flatMap((phase) => [...phaseProblems(phase, complexity), ...(phase.problems ?? [])])
+  if (queue) {
+    problems.push(
+      ...queueProblems(queue, {
+        areas: areasOf(root, profile),
+        scale,
+        exists: (path) => existsSync(join(root, queue.dir, path))
+      })
+    )
+  }
   const current = readFileSync(join(root, planIndex), 'utf8')
+  problems.push(...orderProblems({ root, profile, indexText: current }))
   const link = relative(dirname(planIndex), phasesDir).split('\\').join('/')
-  const expected = renderIndex(current, phases, { phasesLink: link.startsWith('.') ? link : `./${link}`, complexity })
+  const queueLink = queue ? relative(dirname(planIndex), `${queue.dir}/README.md`).split('\\').join('/') : null
+  const expected = renderIndex(current, phases, {
+    phasesLink: link.startsWith('.') ? link : `./${link}`,
+    complexity,
+    queueLine: queue ? queueSummary(queue, queueLink.startsWith('.') ? queueLink : `./${queueLink}`) : null
+  })
 
   if (check) {
     if (expected !== current) {
       problems.push(
-        `${planIndex}: the summary or the contents disagree with the phase files; run \`harness plan summary\``
+        `${planIndex}: the summary or the contents disagree with the phase files${queue ? ' and the issue queue' : ''}; run \`harness plan summary\``
       )
     }
     return { problems, message: `Checked the plan summary against ${phases.length} phase files.` }

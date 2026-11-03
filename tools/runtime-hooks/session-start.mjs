@@ -92,7 +92,25 @@ function nextTaskOf(readText, list, phasesDir, planIndex) {
 }
 
 // The message to print for a repository
-export function sessionStartMessage(branch, readText, list, phasesDir, methodPath = 'the method', planIndex = null) {
+// The line about the issue queue: how many issues are open and where the index is; null where the project has no queue
+export function issueQueueLine(readText, list, issuesDir) {
+  if (!issuesDir || !list(issuesDir).includes('README.md')) {
+    return null
+  }
+  const open = list(issuesDir).filter((name) => /^I-\d+\.md$/.test(name))
+  const started = open.filter((name) => /\*\*Status:\*\*\s*🟡/.test(readText(`${issuesDir}/${name}`))).length
+  return `Issue queue: ${open.length} open issue(s)${started ? `, ${started} in progress` : ''} (${issuesDir}/README.md); read the index, never the archive, when asked to work the queue.`
+}
+
+export function sessionStartMessage(
+  branch,
+  readText,
+  list,
+  phasesDir,
+  methodPath = 'the method',
+  planIndex = null,
+  issuesDir = null
+) {
   const lines = [`Branch: ${branch || 'unknown'}`]
   const phases = phasesInProgress(readText, list, phasesDir)
 
@@ -138,6 +156,10 @@ export function sessionStartMessage(branch, readText, list, phasesDir, methodPat
       lines.push(`Task in progress (${fragment.file}): ${fragment.step ?? 'no next step recorded'}`)
     }
   }
+  const queue = issueQueueLine(readText, list, issuesDir)
+  if (queue) {
+    lines.push(queue)
+  }
   lines.push(`Read the method, section "Session protocol" (${methodPath}), before you start or resume a phase.`)
   return lines.join('\n')
 }
@@ -167,7 +189,8 @@ export function decide(event) {
       list,
       profile.paths?.phases ?? 'docs/plan/phases',
       profile.documents?.method,
-      profile.paths?.planIndex
+      profile.paths?.planIndex,
+      profile.paths?.issues
     )
   }
 }

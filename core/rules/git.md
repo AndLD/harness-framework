@@ -1,12 +1,12 @@
 <!-- The managed block "git-rules" of the entry file (its section 7, up to the session protocol), rendered with the profile file by `harness sync`. Each rule carries a stable id in a comment; the Role binding line is the only line that names values. -->
-**Role binding.** This repository fills the roles of §1 and §7 as follows, and this line is the only place in these two sections that names the values: the integration branch is `{{branches.integration}}`, the production branch is `{{branches.production}}`, the open-ended phase is Phase {{plan.openEndedPhaseNumber}}, the repository host is {{repository.host}}; every other value is in the [profile]({{rel:paths.profileDocument}}).
+**Role binding.** This repository fills the roles of §1 and §7 as follows, and this line is the only place in these two sections that names the values: the integration branch is `{{branches.integration}}`, the production branch is `{{branches.production}}`, the issue queue is the [open issues]({{rel:paths.issues}}/README.md), the repository host is {{repository.host}}; every other value is in the [profile]({{rel:paths.profileDocument}}).
 
 ### 7.1 Branches
 
 Branch names, types and the merge strategy are in the [profile]({{rel:paths.profileDocument}}#3-branches-and-merging); how branches flow <!-- rule:git.branches -->
 (one branch per task, finishing a release) is in [method §5]({{rel:documents.method}}#5-git-workflow).
 **`<id>` is the task number from the development plan**, as in `feature/<id>-<slug>`.
-Work that is not in the plan first becomes a task: a defect or an improvement found in use becomes a task of the open-ended phase (a bugfix branch named by its task id).
+Work that is not in the plan first becomes a task or an issue: a defect or an improvement found in use becomes an **issue** of the issue queue (`I-<n>`, a bugfix branch `bugfix/I-<n>-<slug>`), which is not a phase.
 Documentation or tooling work that no task covers uses a branch slug only (the docs and chore branch types).
 
 ### 7.2 Merge strategy
@@ -45,13 +45,13 @@ Squash merge into the integration branch; a merge commit for release and hotfix 
 - If the current branch is the production or the integration branch, **create the right branch first** (names per §7.1) before changing files. Start every new branch, worktree and session from the integration branch as it is on the remote (fetch first). <!-- rule:agent.branch-first -->
 - Committing and pushing to a feature/bugfix/docs/chore branch is routine and **needs no confirmation**. Never commit or <!-- rule:agent.routine-push -->
   push directly to the production or the integration branch.
-- **Plan work (approval given by the request):** when the user asks to start or continue one or more phases (the resume phrases <!-- rule:agent.plan-approval -->
-  of the [profile]({{rel:paths.profileDocument}}#4-plan), for example "Start Phase N"), that request is the approval for **every task PR of the named phases**. Create each
+- **Plan work (approval given by the request):** when the user asks to start or continue one or more phases, to work the issue queue or to fix issues (the resume phrases <!-- rule:agent.plan-approval -->
+  of the [profile]({{rel:paths.profileDocument}}#4-plan), for example "Start Phase N", "Work the issue queue" or "Fix I-<n>"), that request is the approval for **every task PR of the named phases and every PR of the named issues**. Create each
   task's pull request into the integration branch and squash-merge it **without asking**, once the required checks pass (before CI
   exists: once lint, typecheck and tests pass locally). Do not pause between tasks, and when a named phase's exit criteria are
   met, record it and start the next named phase. Stop after the last named phase with a summary, and earlier only when
   blocked or when a decision is needed that only the user can make. The approval does not extend to phases that were not named.
-- **Plan-related PRs merge the same way.** Every PR that belongs to a named phase is covered by the same approval: its task <!-- rule:agent.plan-related -->
+- **Plan-related PRs merge the same way.** Every PR that belongs to a named phase or issue is covered by the same approval: its task <!-- rule:agent.plan-related -->
   PRs, and also the documentation and chore PRs that exist because of the plan (the phase's implementation log, task and
   status updates in the phase file and the development plan, the work log, the matching specification updates, and
   the fixes of tooling or tests that block a task). Merge them without asking once the required checks pass. A PR counts as
