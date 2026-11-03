@@ -146,3 +146,18 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none.
 - **Next step:** unchanged: 3.6 → 3.7 → 3.8 → 3.11, released as `0.1.1`.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — task 3.16: reports, their switches, and duplicates
+- **Tasks:** 3.16 added (not started); 3.13 extended (6 → 7 SP).
+- **Branch:** `docs/queue-rollback-probes-local-adapters`
+- **Decisions / deviations from the plan:** the owner's decisions:
+  - Taking in reports and sending them upstream become skills and switches, not rules every session pays for. A consumer's upstream reporting is `off`
+    by default, so it spends no tokens; the consuming project of the extraction turns it on at `ask`.
+  - Intake has three settings (`off`, `notify`, `auto` with a limit per session) and a local override, so the owner can pause it at once when the flow
+    breaks or reports flood in.
+  - Triage never adds a report before it looks for the same or a close problem already recorded; several reports can point to one issue
+    (`Reported:`), and the queue's indexes show title and area so the match starts there.
+  - Until 3.16, the plan index's interim rule does the same by hand, at most three reports a session, unless the owner pauses it.
+- **Problems / blockers / findings:** none. Phase 3 is now 48 SP.
+- **Next step:** unchanged: 3.6 → 3.7 → 3.8 → 3.11, released as `0.1.1`.
+- **Verify with:** `npm run docs:check`

@@ -16,9 +16,9 @@ is updated in the change that starts or finishes it.
 | ----- | ----- | ------------ | ---------------- | ------ |
 | 1 | Adoption, presets, examples and the proof | 12 | C1–C2 | ✅ Done |
 | 2 | Security and review automation | 17 | C2–C3 | ⬜ Not started |
-| 3 | Issues and stabilization | 41 (grows) | C1–C2 | ⬜ Not started |
+| 3 | Issues and stabilization | 48 (grows) | C1–C2 | ⬜ Not started |
 | 4 | Reaching and holding the structure of documents | 19 | C1–C2 | ⬜ Not started |
-|  | **Total of Phases 1–4** | **89** (Phase 3 grows as issues are added) | | |
+|  | **Total of Phases 1–4** | **96** (Phase 3 grows as issues are added) | | |
 <!-- plan-summary:end -->
 
 **Order of development** (the owner's decision of 2026-11-03). The framework is developed first; the project it was extracted from, AndLD/bot-rts,
@@ -29,7 +29,7 @@ says only the order inside the phase, and a task only what it needs first. Relea
 | ------- | --------------- | ------------------ |
 | `0.1.1` | 3.6, 3.7, 3.8, then 3.11 (the first migration note) | takes it; it closes the consumer's extraction phase |
 | `0.1.2` | 3.3, 3.9, 3.1, 3.2 | skips it on purpose, so that `0.2.0` is the first chained migration |
-| `0.2.0` | 3.5 (`migrate`), 3.12 (scripts and the migration test), 3.14 (rollback), 3.10 (task files), 3.13 (the issue queue), 3.15 (probe areas), then Phase 4 | takes the development version before the final tag, then the release |
+| `0.2.0` | 3.5 (`migrate`), 3.12 (scripts and the migration test), 3.14 (rollback), 3.10 (task files), 3.13 (the issue queue), 3.16 (reports: intake and upstream), 3.15 (probe areas), then Phase 4 | takes the development version before the final tag, then the release |
 | `0.3.0` | 3.4 (local adapters) | takes it |
 | next | Phase 2 (earlier if the repository goes public or a second person uses the framework) | takes it |
 
@@ -42,7 +42,7 @@ Task 3.13 turns this plan's open-ended phase into a normal phase that keeps ever
 
 "Start Phase N", "Continue Phase N"; the phrase approves the pull requests of the named phases. The session reads the phase file and its work log first (the session protocol of the method).
 
-**Reports from consumers come first.** Before other work, a session lists the open issues of this repository (`gh issue list`). Each report from a consuming project (a defect found while it takes a version) becomes a task of Phase 3 (an issue of the queue once 3.13 exists) and is done before the next task of the order; the issue is closed by the pull request that fixes it. A release is cut only with the owner's approval, so a session stops when the tasks of a release are merged, and the owner hands the release to the consuming project.
+**Reports from consumers come first**, until task 3.16 replaces this with a procedure and switches. Before other work, unless the owner has paused intake, a session lists the open issues of this repository (`gh issue list`) and triages at most three of them. It never adds a report as a new task before it looks for the same or a close problem already recorded (the open and finished tasks of Phase 3, and the queue once 3.13 exists): the same problem is linked to that task, not added again; a close one becomes a task that names the related one; a confirmed new defect becomes a task of Phase 3 (an issue of the queue once 3.13 exists), done before the next task of the order and closing the report by its pull request. Answers and closings on the host need the owner's approval. A release is cut only with the owner's approval, so a session stops when the tasks of a release are merged, and the owner hands the release to the consuming project.
 
 ---
 
@@ -51,6 +51,6 @@ Task 3.13 turns this plan's open-ended phase into a normal phase that keeps ever
 <!-- plan-contents:start -->
 - [Phase 1 — Adoption, presets, examples and the proof (12 SP)](./phases/phase-1-adoption-presets-proof.md)
 - [Phase 2 — Security and review automation (17 SP)](./phases/phase-2-security.md)
-- [Phase 3 — Issues and stabilization (41 SP, grows as issues are added)](./phases/phase-3-issues.md)
+- [Phase 3 — Issues and stabilization (48 SP, grows as issues are added)](./phases/phase-3-issues.md)
 - [Phase 4 — Reaching and holding the structure of documents (19 SP)](./phases/phase-4-document-extension.md)
 <!-- plan-contents:end -->
