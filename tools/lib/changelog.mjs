@@ -42,6 +42,20 @@ export function nextVersion(current, bump) {
   return bump
 }
 
+/**
+ * The next development version of a release: 0.1.1 gives 0.1.1-dev.1, then 0.1.1-dev.2, by the tags the repository already has (`tags`, with or
+ * without the `v`). A project syncs a development version to run its checks before the final tag.
+ */
+export function nextDevelopmentVersion(version, tags) {
+  const prefix = `${version}-dev.`
+  const taken = tags
+    .map((tag) => tag.replace(/^v/, ''))
+    .filter((tag) => tag.startsWith(prefix))
+    .map((tag) => Number(tag.slice(prefix.length)))
+    .filter(Number.isInteger)
+  return `${prefix}${Math.max(0, ...taken) + 1}`
+}
+
 const UNRELEASED = '## [Unreleased]'
 
 // The headings of Keep a Changelog, in the order a release lists them
@@ -178,10 +192,11 @@ const RELEASE_BRANCH = /^(release|hotfix)\/(\d+\.\d+\.\d+)$/
 /**
  * `harness release [--dry-run]`, on a branch `release/<x.y.z>` or `hotfix/<x.y.z>`: sets the version in every version file (JSON, or the `[project]` table of a TOML file), moves the entries under
  * "Unreleased" and those of the fragments to a section of the version, removes the fragments and runs the lock command of the profile. It
- * commits and tags nothing.
+ * commits and tags nothing. With `dev` it only sets the next development version of the release (`0.1.1-dev.1`), which is tagged first so that
+ * projects can sync it before the final tag: the changelog and the fragments stay as they are.
  * @returns {string[]} what it did or would do
  */
-export function release({ root, profile, dryRun = false, date = new Date().toISOString().slice(0, 10) }) {
+export function release({ root, profile, dryRun = false, dev = false, date = new Date().toISOString().slice(0, 10) }) {
   const git = (...args) => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim()
   const versionFiles = profile.release?.versionFiles ?? ['package.json']
 
@@ -195,7 +210,8 @@ export function release({ root, profile, dryRun = false, date = new Date().toISO
   }
 
   const current = readVersion(versionFiles[0], readFileSync(join(root, versionFiles[0]), 'utf8'))
-  const version = nextVersion(current, match[2])
+  const target = nextVersion(current, match[2])
+  const version = dev ? nextDevelopmentVersion(target, git('tag', '--list').split('\n')) : target
   const fragmentsDir = join(root, profile.paths.changelogFragments)
   const names = fragmentFiles(fragmentsDir)
   const fragments = names.map((name) => parseFragment(name, readFileSync(join(fragmentsDir, name), 'utf8')))
@@ -208,21 +224,33 @@ export function release({ root, profile, dryRun = false, date = new Date().toISO
     fragments
   )
 
-  const lines = [`${branch}: ${current} -> ${version} (${date}), ${fragments.length} changelog fragments`]
+  const lines = [
+    dev
+      ? `${branch}: ${current} -> ${version} (a development version: no changelog entry)`
+      : `${branch}: ${current} -> ${version} (${date}), ${fragments.length} changelog fragments`
+  ]
   if (dryRun) {
     return [...lines, 'Dry run: nothing was written.']
   }
   for (const file of versionFiles) {
     writeFileSync(join(root, file), writeVersion(file, readFileSync(join(root, file), 'utf8'), version))
   }
-  writeFileSync(changelogPath, changelog)
-  names.forEach((name) => rmSync(join(fragmentsDir, name)))
+  if (!dev) {
+    writeFileSync(changelogPath, changelog)
+    names.forEach((name) => rmSync(join(fragmentsDir, name)))
+  }
   const lockCommand = profile.release?.lockCommand
   if (lockCommand) {
     const [command, ...args] = lockCommand.split(' ')
     if (spawnSync(command, args, { cwd: root, stdio: 'inherit' }).status !== 0) {
       throw new Error(`${lockCommand} failed`)
     }
+  }
+  if (dev) {
+    return [
+      ...lines,
+      `Done. Commit it (chore(release): ${version}) and tag the commit v${version}; the final release is made with \`harness release\`.`
+    ]
   }
   return [
     ...lines,

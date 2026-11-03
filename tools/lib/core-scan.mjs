@@ -56,49 +56,85 @@ const inVocabulary = (vocabulary, term) => {
 
 // What a project can do about a hit in the vendored copy of the framework's core, which it cannot edit
 function wayOut(field) {
+  const upstream =
+    'report it upstream (an issue of the framework repository), record it in `terms.exceptions` of the profile file for this version, and take the fix with the next one'
   if (!field) {
-    return 'report it upstream (an issue of the framework repository) and stay on the current version'
+    return upstream
   }
   const ordinary =
     field === 'productGeneric'
       ? 'an ordinary word: add it to `terms.productGeneric` of the profile file'
       : `an ordinary word: make \`terms.${field}\` of the profile file narrower`
-  return `${ordinary}; a product or tool word: report it upstream (an issue of the framework repository) and stay on the current version`
+  return `${ordinary}; a product or tool word: ${upstream}`
 }
 
-function lineProblems(path, line, index, patterns, { vocabulary = new Set(), vendored = false } = {}) {
-  const problems = []
-  for (const [kind, pattern, field] of patterns) {
-    const term = [...line.matchAll(pattern)]
+// The hits of one line: `{ path, line, kind, term, field }`; a word of the vocabulary is not one
+function lineHits(path, text, index, patterns, vocabulary) {
+  return patterns.flatMap(([kind, pattern, field]) => {
+    const term = [...text.matchAll(pattern)]
       .map((match) => match[0])
       .find((found) => !field || !inVocabulary(vocabulary, found))
-    if (term) {
-      const what = vendored
-        ? `is in the vendored framework core, which you cannot edit; ${wayOut(field)}`
-        : 'does not belong in a CORE file; cite a role of the profile'
-      problems.push(`${path}:${index + 1}: the ${kind} "${term}" ${what}`)
-    }
-  }
-  return problems
+    return term ? [{ path, line: index + 1, kind, term, field }] : []
+  })
 }
+
+function describe({ path, line, kind, term, field }, vendored) {
+  const what = vendored
+    ? `is in the vendored framework core, which you cannot edit; ${wayOut(field)}`
+    : 'does not belong in a CORE file; cite a role of the profile'
+  return `${path}:${line}: the ${kind} "${term}" ${what}`
+}
+
+const lineProblems = (path, text, index, patterns, { vocabulary = new Set(), vendored = false } = {}) =>
+  lineHits(path, text, index, patterns, vocabulary).map((hit) => describe(hit, vendored))
+
+// The exceptions of the profile file that no longer hold: for another version than the lock's, or for a hit that is gone
+function staleExceptions(exceptions, hits, version) {
+  return exceptions.flatMap((exception, index) => {
+    const where = `terms.exceptions[${index}] of the profile file: the exception for "${exception.word}" in ${exception.file} (${exception.report})`
+    if (exception.version !== version) {
+      return [
+        `${where} holds for version ${exception.version}, and the lock is at ${version}: remove it; if the scan still reports the word, report it upstream again or go back to ${exception.version}`
+      ]
+    }
+    const used = hits.some((hit) => accepts(exception, hit))
+    return used ? [] : [`${where} matches no hit in version ${version}: remove it`]
+  })
+}
+
+const accepts = (exception, hit) =>
+  exception.file === hit.path && exception.word.toLowerCase() === hit.term.toLowerCase()
 
 /**
  * The problems of the framework's `core/` folder, every file whole (no binding line, no sections); `files` maps a path to its text. With no file
  * at all the scan would prove nothing, so an empty `files` is a problem. `vendored` says that the folder is the pinned copy a project cannot edit, so a
- * hit names the ways out; `vocabulary` is the set of the words the core uses on purpose (`loadVocabulary`).
+ * hit names the ways out; `vocabulary` is the set of the words the core uses on purpose (`loadVocabulary`). `exceptions` are the recorded hits of the
+ * profile file (`terms.exceptions`: file, word, report, version), accepted in a vendored folder while `version` (the lock's) is the one they hold for;
+ * one that holds for another version, or for a hit that is gone, is a problem itself, so that an exception cannot outlive the fix.
  */
-export function frameworkCoreProblems(files, terms, folder, adapters = [], { vocabulary, vendored = false } = {}) {
+export function frameworkCoreProblems(
+  files,
+  terms,
+  folder,
+  adapters = [],
+  { vocabulary = new Set(), vendored = false, exceptions = [], version } = {}
+) {
   const patterns = leakPatterns(terms, adapters)
   const paths = Object.keys(files).sort()
 
   if (paths.length === 0) {
     return [`${folder}: no file found, so the CORE scan of the framework would prove nothing`]
   }
-  return paths.flatMap((path) =>
-    files[path]
-      .split('\n')
-      .flatMap((line, index) => lineProblems(path, line, index, patterns, { vocabulary, vendored }))
+  const hits = paths.flatMap((path) =>
+    files[path].split('\n').flatMap((line, index) => lineHits(path, line, index, patterns, vocabulary))
   )
+  const excepted = (hit) =>
+    vendored && exceptions.some((exception) => exception.version === version && accepts(exception, hit))
+  const rejected = hits.filter((hit) => !excepted(hit))
+  return [
+    ...rejected.map((hit) => describe(hit, vendored)),
+    ...(vendored ? staleExceptions(exceptions, hits, version) : [])
+  ]
 }
 
 /**
@@ -192,7 +228,7 @@ export function checkCore({ root, profile }) {
         profile.terms,
         folder,
         adapterTerms(join(root, dirname(folder), 'adapters')),
-        { vocabulary, vendored }
+        { vocabulary, vendored, exceptions: profile.terms.exceptions, version: readLock(root)?.version }
       )
     )
   }

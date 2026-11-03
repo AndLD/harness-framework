@@ -120,6 +120,8 @@ Project values, which must not appear in CORE text except on the **Role binding*
 PROJECT_VALUES='`main`|`develop`|AndLD/harness-framework'
 ```
 
+A hit of the CORE scan in the vendored framework core that the project reported upstream and waits for the fix of is recorded in `terms.exceptions` of the profile file (the file, the word, the link to the report and the framework version it holds for); `npm run docs:check` accepts it while the lock is at that version and fails on the exception after a sync to another one.
+
 ## 10. Document map
 
 | Role | Document |

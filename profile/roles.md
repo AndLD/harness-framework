@@ -172,6 +172,8 @@ Project values, which must not appear in CORE text except on the **Role binding*
 PROJECT_VALUES='{{terms.projectValues}}'
 ```
 
+A hit of the CORE scan in the vendored framework core that the project reported upstream and waits for the fix of is recorded in `terms.exceptions` of the profile file (the file, the word, the link to the report and the framework version it holds for); `{{commands.docsCheck}}` accepts it while the lock is at that version and fails on the exception after a sync to another one.
+
 {{#if productKnowledge}}
 The product-knowledge check (`harness check product-knowledge`, part of `{{commands.docsCheck}}`) reads the product specification in
 `{{productKnowledge.specification}}/`: its glossary `{{productKnowledge.glossary}}`, its register of open items `{{productKnowledge.register}}` and its backlog `{{productKnowledge.backlog}}`.

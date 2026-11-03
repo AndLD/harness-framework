@@ -100,8 +100,16 @@ The checks and the project tools read every value from the profile file:
 | `check changelog` | Every changelog fragment starts with a Keep a Changelog kind. |
 | `check product-knowledge` | The register of open items, the glossary, and no stack term, plan reference or code path in the product knowledge (`productKnowledge`). |
 | `plan log <phase> [ref]` | The implementation log of a phase, from the `Plan:` lines of the squash commits. |
-| `release [--dry-run]`, `release notes <version>` | On a `release/<x.y.z>` or `hotfix/<x.y.z>` branch, the versions of `release.versionFiles` and the changelog section; the notes of one version for the host's release. |
+| `release [--dev] [--dry-run]`, `release notes <version>` | On a `release/<x.y.z>` or `hotfix/<x.y.z>` branch, the versions of `release.versionFiles` and the changelog section; with `--dev` only the next development version `<x.y.z>-dev.<n>` (the changelog stays), which is tagged before the final tag so that a project can sync it and run its checks; the notes of one version for the host's release. |
 | `ci changes <base> <head>` | Whether a change needs the code checks: not when every changed path is documentation (`checks.documentationPaths`, every Markdown file by default). In doubt it says it does. CI and the push gate use the same rule. |
+
+## A word found in `core/`
+
+The framework's `core/` is neutral: it names no stack, tool, runtime, host or project. `harness check core` of a project that uses the framework scans its vendored `core/` with the project's own `terms`, and a hit names the file, the line and the word.
+
+- **An ordinary word** (the project's term list is too broad): answer it in the project, with `terms.productGeneric`. If the core uses the word on purpose, it belongs in `core/vocabulary.json`, which the scan never reports. The framework does not rename its own words.
+- **A product, tool or project word that reached `core/`** is a leak, and a defect of the framework: report it with the issue template "A word found in core". A confirmed leak becomes a task of the open-ended phase of the plan, and is fixed in a patch release. Until then the project is not blocked: it records the hit in `terms.exceptions` of its profile file (the file, the word, the link to the report, and the framework version it holds for), which `check core` accepts while the lock is at that version. After a sync to another version the exception fails the check, so it cannot outlive the fix.
+- **Before the final tag** of a release the framework tags a development version (`<x.y.z>-dev.<n>`, see the [releasing guide](./docs/operations/releasing.md)), so that a project can sync it and run the scan first.
 
 Planned for `0.1.0`, in the order of the build tasks:
 
