@@ -45,6 +45,8 @@ after(() => {
 
 const git = (...args) =>
   execFileSync('git', args, { cwd: FRAMEWORK_DIR, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
+const projectGit = (root, ...args) =>
+  execFileSync('git', args, { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim()
 const node = (tools, args) => spawnSync(process.execPath, [tools, ...args], { encoding: 'utf8' })
 
 const TAGS = git('tag', '--list', 'v[0-9]*.[0-9]*.[0-9]*')
@@ -82,7 +84,7 @@ test('the tags of the released versions are present', () => {
 })
 
 for (const tag of TAGS) {
-  test(`a project bootstrapped from ${tag} takes the current tree, migrates, and passes check all`, () => {
+  test(`a project bootstrapped from ${tag} takes the current tree, migrates, passes check all, and rolls back to an empty diff`, () => {
     const old = exportTag(tag)
     const root = fresh()
     const oldTools = join(old, 'tools/harness.mjs')
@@ -107,6 +109,9 @@ for (const tag of TAGS) {
     ])
     assert.equal(init.status, 0, init.stdout + init.stderr)
 
+    // A version is taken on a branch of its own, and the migration is one commit on the commit it starts from
+    projectGit(root, 'checkout', '-q', '-b', 'chore/take-version')
+    const start = projectGit(root, 'rev-parse', 'HEAD')
     const { dir: current, version } = currentTree()
     const projectTools = join(root, 'harness/tools/harness.mjs')
     const oldSync = node(projectTools, ['sync', '--from', current, '--root', root])
@@ -121,5 +126,11 @@ for (const tag of TAGS) {
     assert.equal(readLock(root).version, version)
     const checked = node(projectTools, ['check', 'all', '--root', root])
     assert.equal(checked.status, 0, checked.stdout + checked.stderr)
+
+    // Rollback gives back exactly the project that was bootstrapped
+    const undone = node(projectTools, ['rollback', '--root', root])
+    assert.equal(undone.status, 0, undone.stdout + undone.stderr)
+    assert.equal(projectGit(root, 'diff', start, '--stat'), '', 'no file differs from the starting commit')
+    assert.equal(projectGit(root, 'ls-files', '--others', '--exclude-standard'), '', 'no added file is left over')
   })
 }

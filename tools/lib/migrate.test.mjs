@@ -1,7 +1,7 @@
 // Taking a version (task 3.5): `sync` places the files and starts `harness migrate` of the new version in a new process, which regenerates the
 // managed files with the new version's tools. A project whose old `sync` could not start it runs `harness migrate` itself.
 import assert from 'node:assert/strict'
-import { spawnSync } from 'node:child_process'
+import { execFileSync, spawnSync } from 'node:child_process'
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
@@ -63,6 +63,9 @@ function projectCommand(root, ...args) {
 }
 const check = (root, name) => projectCommand(root, 'check', name)
 
+const git = (root, ...args) =>
+  execFileSync('git', args, { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim()
+
 const PROCEDURE = 'core/procedures/start-task.md'
 
 // Two versions of the framework: a copy of this tree, and a next one in which a procedure (and so a generated skill) changed
@@ -105,6 +108,8 @@ async function projectAt(source) {
   ])
   assert.equal(code, 0, output)
   assert.equal(check(root, 'generated').code, 0)
+  // The bootstrap leaves the project on its integration branch; a version is taken on a branch of its own
+  git(root, 'checkout', '-q', '-b', 'chore/take-version')
   return root
 }
 
@@ -278,4 +283,78 @@ test('versions are compared as x.y.z with a development version before its final
   assert.equal(baseVersion('0.2.0-dev.3'), '0.2.0')
   assert.ok(isDevelopment('0.2.0-dev.3') && !isDevelopment('0.2.0'))
   assert.throws(() => compareVersions('latest', '1.0.0'), /not a version/)
+})
+
+test('a sync is refused on a protected branch and with uncommitted changes, before it touches a file', async () => {
+  const { first, second } = versions()
+  const root = await projectAt(first)
+  const head = git(root, 'rev-parse', 'HEAD')
+
+  writeFileSync(join(root, 'notes.txt'), 'my work\n')
+  const dirty = await harness(root, ['sync', '--from', second])
+  assert.equal(dirty.code, 1)
+  assert.match(dirty.output, /uncommitted changes \(notes\.txt\)[^]*harness rollback/)
+
+  rmSync(join(root, 'notes.txt'))
+  git(root, 'checkout', '-q', 'develop')
+  const protectedBranch = await harness(root, ['sync', '--from', second])
+  assert.equal(protectedBranch.code, 1)
+  assert.match(protectedBranch.output, /you are on develop, a protected branch/)
+
+  assert.equal(readLock(root).version, '1.0.0', 'nothing was synced')
+  assert.equal(git(root, 'status', '--porcelain'), '')
+  assert.equal(git(root, 'rev-parse', 'HEAD'), head)
+})
+
+test('the migration is one commit that records where it started, and rollback restores exactly the files it changed or added', async () => {
+  const { first, second } = versions()
+  const root = await projectAt(first)
+  const start = git(root, 'rev-parse', 'HEAD')
+
+  const result = await harness(root, ['sync', '--from', second])
+  assert.equal(result.code, 0, result.output)
+  assert.equal(git(root, 'rev-parse', 'HEAD~1'), start, 'one commit on top of the start')
+  assert.equal(git(root, 'status', '--porcelain'), '', 'nothing is left uncommitted')
+  assert.match(git(root, 'log', '-1', '--format=%s'), /^chore\(framework\): migrate to 1\.1\.0$/)
+  assert.deepEqual(readLock(root).migrations, {
+    version: '1.1.0',
+    applied: [],
+    start: { commit: start, version: '1.0.0' }
+  })
+
+  // The agent's own work follows as separate commits, and is not touched by the rollback
+  writeFileSync(join(root, 'agent.txt'), 'the agent\u2019s work\n')
+  git(root, 'add', '.')
+  git(root, 'commit', '-q', '-m', 'feat: my work')
+
+  const undone = projectCommand(root, 'rollback')
+  assert.equal(undone.code, 0, undone.output)
+  assert.equal(git(root, 'diff', start, '--stat', '--', '.', ':!agent.txt'), '', 'every file is as it was at the start')
+  assert.equal(readFileSync(join(root, 'agent.txt'), 'utf8'), 'the agent\u2019s work\n')
+  assert.equal(readLock(root).version, '1.0.0')
+
+  const again = projectCommand(root, 'rollback')
+  assert.equal(again.code, 1)
+  assert.match(again.output, /nothing to roll back/)
+})
+
+test('after the sync of an older version, migrate takes the sync\u2019s changes into its own commit, and refuses any other change', async () => {
+  const { first, second } = versions()
+  const root = await projectAt(first)
+  const start = git(root, 'rev-parse', 'HEAD')
+
+  sync({ root, from: second, startMigrate: () => [] })
+  writeFileSync(join(root, 'notes.txt'), 'not the sync\u2019s\n')
+  const refused = projectCommand(root, 'migrate')
+  assert.equal(refused.code, 1)
+  assert.match(refused.output, /uncommitted changes that a sync does not write \(notes\.txt\)/)
+  rmSync(join(root, 'notes.txt'))
+
+  const migrated = projectCommand(root, 'migrate')
+  assert.equal(migrated.code, 0, migrated.output)
+  assert.equal(git(root, 'rev-parse', 'HEAD~1'), start)
+  assert.equal(git(root, 'status', '--porcelain'), '')
+
+  assert.equal(projectCommand(root, 'rollback').code, 0)
+  assert.equal(git(root, 'diff', start, '--stat'), '')
 })

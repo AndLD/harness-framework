@@ -13,9 +13,9 @@ import { pathToFileURL } from 'node:url'
 import { inFramework, MODES, readLock, writeLock } from './lock.mjs'
 import { loadProfile } from './profile.mjs'
 import { regenerate } from './vendor.mjs'
-import { baseVersion, compareVersions, isDevelopment } from './versions.mjs'
-
-export const FIRST_VERSION = '0.1.0'
+import { commitEverything, isRepository } from './migration-git.mjs'
+import { startOfMigrate } from './migration-guard.mjs'
+import { baseVersion, compareVersions, FIRST_VERSION, isDevelopment } from './versions.mjs'
 
 /** The versions that have a script or a note in the migrations folder, with which of the two, oldest first. */
 export function listMigrations(folder) {
@@ -55,6 +55,10 @@ export async function migrate({ root, generators, profile = loadProfile(root) })
   }
 
   const target = lock.version
+  // A migration is pending when the lock holds a version the project's files are not yet at; it is one commit, undone by `harness rollback`
+  const undoable = isRepository(root) && lock.migrations?.version !== target
+  const start = undoable ? startOfMigrate({ root, profile, lock }) : lock.migrations?.start
+  const record = (version) => ({ version, applied, ...(start ? { start } : {}) })
   const from = lock.migrations?.version ?? FIRST_VERSION
   const applied = [...(lock.migrations?.applied ?? [])]
   const pending = listMigrations(join(root, inFramework(profile, 'migrations'))).filter(
@@ -74,12 +78,24 @@ export async function migrate({ root, generators, profile = loadProfile(root) })
     if (!(isDevelopment(target) && version === baseVersion(target))) {
       applied.push(version)
     }
-    writeLock(root, { ...readLock(root), migrations: { version: from, applied } })
+    writeLock(root, { ...readLock(root), migrations: record(from) })
   }
 
   messages.push(...regenerate({ root, generators }).messages)
-  const next = { ...readLock(root), migrations: { version: target, applied } }
+  const next = { ...readLock(root), migrations: record(target) }
   writeLock(root, next)
+
+  if (undoable) {
+    const committed = commitEverything(
+      root,
+      `chore(framework): migrate to ${target}\n\nFrom ${start.version} (${start.commit.slice(0, 12)}). \`harness rollback\` undoes this commit's changes.`
+    )
+    messages.push(
+      committed
+        ? 'Committed the migration as one commit; `harness rollback` undoes it.'
+        : 'The migration changed no file.'
+    )
+  }
 
   for (const { version, note } of pending.filter(({ note }) => note)) {
     messages.push(`Migration note of ${version} (follow its required actions):`, readFileSync(note, 'utf8').trimEnd())

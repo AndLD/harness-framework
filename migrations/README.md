@@ -29,6 +29,10 @@ A script is `export default ({ root, profile }) => lines`, which may be async an
 
 The **migration test** (`tests/migration/`) bootstraps a project from every released tag with the tools of that tag, takes the current tree with the project's own `sync`, runs `migrate` and requires `harness check all` to pass; a script that breaks a project of any earlier version fails it.
 
+## Undoing a migration
+
+A migration changes files across the project (the vendored copy, the entry file, the skills, the profile file, the lock, the documents), so a copy of a few folders cannot undo it; Git does. `harness sync` refuses to start on the production or the integration branch and with uncommitted changes, and records the commit and version it starts from in the lock (`migrations.start`). The migration, sync's changes included, is committed as **one commit** (`chore(framework): migrate to <version>`); what the agent changes after it is committed apart. `harness rollback` restores every file that commit changed to its content at the starting commit, and removes every file it added, and nothing else; the result stays uncommitted for review. The migration test migrates a project from each released tag, rolls back, and requires an empty diff against the starting commit.
+
 ## Areas
 
 `areas.json` is the fixed list of areas (entry rules, Git rules, plan format, procedures, review method, adapter contract, and the others) with the globs that belong to each. `harness release` lists in a note the areas whose files changed in `core/`, `tools/`, `adapters/` and `profile/` since the tag of the previous release. A changed file that belongs to no area stops the release until the list is extended, so the list stays complete. The probes of a project are matched to the areas.
