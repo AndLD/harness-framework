@@ -1,8 +1,9 @@
 // `harness branch update`: brings the integration branch into the branch of a task that was stacked on the branch of the previous one, after the
 // previous pull request was squash-merged. The squash puts the same changes on the integration branch as new commits, so the merge conflicts
 // on every file the two branches changed, though the contents agree: the integration branch has, for such a file, what the previous branch
-// has at its tip. The script resolves exactly those conflicts, in favour of this branch (which has the previous work and its own on top), and
-// leaves the others, which someone else changed, for a person.
+// has at its tip. The script first takes the previous branch's tip into this branch, if this branch was made from an older commit of it, and then
+// resolves exactly those conflicts in favour of this branch (which has all of the previous work and its own on top), and leaves the others, which someone
+// else changed, for a person.
 import { execFileSync } from 'node:child_process'
 
 const run = (root, args, { allowFailure = false } = {}) => {
@@ -48,6 +49,21 @@ export function updateBranch({ root, integration, production, previous, fetch = 
     return { code: 0, messages: [`${branch} already has ${upstream}.`], problems: [] }
   }
 
+  // This branch may have been made from an older commit of the previous one: take what the previous branch gained since first, so that "this branch's
+  // side" of a conflict has all of the previous branch's work, and resolving to it drops nothing
+  const tip = previous ? `origin/${previous}` : null
+  if (tip && run(root, ['merge-base', '--is-ancestor', tip, 'HEAD'], { allowFailure: true }) === null) {
+    if (run(root, ['merge', '--no-edit', tip], { allowFailure: true }) === null) {
+      return {
+        code: 1,
+        messages: [],
+        problems: [
+          `Merging ${tip} into ${branch} conflicts in ${run(root, ['diff', '--name-only', '--diff-filter=U']).split('\n').filter(Boolean).join(', ')}. This branch was made from an older commit of ${previous}: resolve these conflicts, commit the merge, and run this again. The merge is left in progress.`
+        ]
+      }
+    }
+  }
+
   if (run(root, ['merge', '--no-edit', upstream], { allowFailure: true }) !== null) {
     return { code: 0, messages: [`Merged ${upstream} into ${branch}; there were no conflicts.`], problems: [] }
   }
@@ -62,7 +78,6 @@ export function updateBranch({ root, integration, production, previous, fetch = 
     }
   }
 
-  const tip = `origin/${previous}`
   const squashOnly = conflicted.filter((path) => contentAt(root, upstream, path) === contentAt(root, tip, path))
   for (const path of squashOnly) {
     if (run(root, ['cat-file', '-e', `:2:${path}`], { allowFailure: true }) === null) {
