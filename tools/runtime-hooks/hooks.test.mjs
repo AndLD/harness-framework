@@ -79,6 +79,46 @@ test('guard-shell lets other commands through, and refuses a commit on a protect
   assert.match(hook('guard-shell', { ...bypass, cwd: project('feature/x').root }).err, /--no-verify.*owner/)
 })
 
+test('guard-shell judges a Git command by the repository it acts on: a `cd` before it, `-C` and `--git-dir`, both ways', () => {
+  const onFeature = project('feature/x').root
+  const onDevelop = project('develop').root
+  const run = (cwd, command) =>
+    hook('guard-shell', { ...sample('claude-code', 'bash-ls.json', cwd), tool_input: { command } })
+
+  // the project is on its integration branch, the other clone on a task branch: allowed
+  for (const command of [
+    `cd ${onFeature} && git commit -m x`,
+    `git -C ${onFeature} commit -m x`,
+    `git --git-dir=${onFeature}/.git --work-tree=${onFeature} commit -m x`,
+    `git --git-dir ${onFeature}/.git commit -m x`,
+    `GIT_DIR=${onFeature}/.git git commit -m x`,
+    `cd ${onFeature} && cd .. && cd ${onFeature} && git push origin HEAD`
+  ]) {
+    assert.equal(run(onDevelop, command).code, 0, command)
+  }
+  // the project is on a task branch, the other clone on its integration branch: refused
+  for (const command of [
+    `cd ${onDevelop} && git commit -m x`,
+    `git -C ${onDevelop} commit -m x`,
+    `git --git-dir=${onDevelop}/.git commit -m x`,
+    `GIT_DIR=${onDevelop}/.git git push`,
+    `(cd ${onDevelop} && git status); cd ${onDevelop} && git commit -m x`
+  ]) {
+    assert.match(run(onFeature, command).err, /You are on develop in /, command)
+  }
+  // a subshell does not move the shell, and what cannot be resolved is judged as protected
+  assert.match(run(onDevelop, `(cd ${onFeature} && git status); git commit -m x`).err, /You are on develop/)
+  for (const command of [
+    'cd /nonexistent/clone && git commit -m x',
+    'cd "$OTHER" && git commit -m x',
+    `git --work-tree ${onFeature} commit -m x`,
+    'git -C /nonexistent commit -m x'
+  ]) {
+    assert.match(run(onFeature, command).err, /cannot be told/, command)
+  }
+  assert.equal(run(onFeature, `cd ${onDevelop} && git checkout -b feature/y && git commit -m x`).code, 0)
+})
+
 test('guard-shell on a host without protection refuses a merge while a required check is not green, through the gh of the path', () => {
   const dir = mkdtempSync(join(tmpdir(), 'gh-merge-'))
   dirs.push(dir)

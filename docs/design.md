@@ -580,7 +580,7 @@ so CI and the local gate cannot disagree about what to skip.
   - `pre-commit` guards the protected branches (new);
   - `pre-push` refuses a protected or a deleted remote ref (new) and checks the vendored tree, on every push, before the
     documentation-only skip; then it sources the project's setup script and runs the gate driver with the stack's plan.
-- **Runtime hooks** in `harness/tools/runtime-hooks/`: `guard-shell` (today's `hook-guard-bash`, including its shell parser), `guard-edit` (adds the
+- **Runtime hooks** in `harness/tools/runtime-hooks/`: `guard-shell` (today's `hook-guard-bash`, including its shell parser; it judges each Git command by the branch of the repository the command acts on: the `cd` before it, `-C`, `--git-dir`, and a repository it cannot resolve counts as protected), `guard-edit` (adds the
   vendored folder), `format-edited` (asks the stack's formatter) and `session-start` (prints the next open task with its marker and the model the map gives it; adds the open pull requests from the host, which the
   claim rule needs, within a few seconds; offline or on a timeout it says that the list was skipped). `io.mjs` reads either runtime's input, recognising Cursor by its `cursor_version` field, and answers in that runtime's
   form. So one script serves both runtimes and both of Cursor's modes.

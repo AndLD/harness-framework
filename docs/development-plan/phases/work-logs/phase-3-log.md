@@ -253,3 +253,11 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none open. The consuming project takes `0.1.1` by `sync --to 0.1.1`, then follows `migrations/0.1.1.md`.
 - **Next step:** `0.1.2` starts with 3.17 (plan index: 3.17, 3.18, 3.3, 3.9, 3.1, 3.2), when the owner asks for it.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — task 3.17 done
+- **Tasks:** 3.17 (done; first task of `0.1.2`).
+- **Branch:** `feature/3.17-guard-repository` (details: `work-logs/phase-3/3.17.md`).
+- **Decisions / deviations from the plan:** the shell parser reports the depth of parentheses, so a `cd` in a subshell ends with it.
+- **Problems / blockers / findings:** none.
+- **Next step:** task 3.18.
+- **Verify with:** `npm test`
