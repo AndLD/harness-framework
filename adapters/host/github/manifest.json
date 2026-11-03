@@ -56,6 +56,11 @@
       "fills": "the repository setting \"allow auto-merge\", turned on by `harness host protect` (with `host.autoMerge`); `gh pr merge --auto` turns it on for a pull request; the workflow that brings the integration branch into the pull requests waiting on it, which the ruleset requires up to date",
       "file": "templates/update-branches.yml"
     },
+    "reports": {
+      "fills": "the reports of users are GitHub issues: list, search, show, create, comment on and close them with the gh command line; the slug of a framework repository from its address",
+      "module": "reports.mjs",
+      "export": "listReports"
+    },
     "scaffold-files": {
       "fills": "`.github/workflows/ci.yml` (the frame of the template with the jobs of the stacks), `.github/workflows/release.yml` and, with `host.protection` and `host.autoMerge`, `.github/workflows/update-branches.yml`",
       "module": "scaffold.mjs",

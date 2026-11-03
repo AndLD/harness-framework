@@ -141,6 +141,11 @@ for (const tag of TAGS) {
     assert.ok(!readdirSync(phases).some((name) => /^phase-\d+-issues\.md$/.test(name)))
     // The script of 0.2.0 made the open-ended phase a normal one and gave the project its issue queue
     assert.ok(existsSync(join(root, 'docs/development-plan/issues/README.md')))
+    // The procedures whose switch is off carry no skill, though a sync by the old tools wrote them
+    assert.ok(
+      !existsSync(join(root, '.claude/skills/triage-reports')) &&
+        !existsSync(join(root, '.claude/skills/report-upstream'))
+    )
     const profile = JSON.parse(readFileSync(join(root, 'harness-profile.json'), 'utf8'))
     assert.equal(profile.plan.openEndedPhaseNumber, undefined)
     assert.equal(profile.paths.issues, 'docs/development-plan/issues')

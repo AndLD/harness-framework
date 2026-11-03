@@ -1,5 +1,5 @@
 // The neutral procedures (design §8.1, B6): `core/procedures/<name>.md`, steps an agent follows for a recurring piece of work. Each has frontmatter (`name`,
-// `description` — the trigger: when to use it —, `invocation`: `auto` or `explicit`, and optional `paths`) and a body that names roles of the profile file and
+// `description` — the trigger: when to use it —, `invocation`: `auto` or `explicit`, and optional `paths` and `when`) and a body that names roles of the profile file and
 // commands as `{{commands.lint}}`. An agent-runtime adapter packages them for its runtime (a skill, for Claude Code); a project without such a runtime reads
 // them from the reading map of its entry file. The body is rendered with the profile file, and a role it needs that the profile lacks is an error.
 import { readdirSync, readFileSync } from 'node:fs'
@@ -38,8 +38,21 @@ export function parseProcedure(text, file = 'a procedure') {
     description: header.description,
     invocation: header.invocation,
     ...(header.paths ? { paths: header.paths.split(',').map((glob) => glob.trim()) } : {}),
+    ...(header.when ? { when: header.when } : {}),
     body: match[2].replace(/^\n+/, '')
   }
+}
+
+/**
+ * Whether a procedure applies to a project: one with a `when` (a role of the profile file, such as `reports.intake`) applies only when the role is set and
+ * is not `off`, so that a project that does not use the switch carries no skill and no row of the reading map for it.
+ */
+export function procedureApplies(procedure, profile) {
+  if (!procedure.when) {
+    return true
+  }
+  const value = valueAt(profile, procedure.when)
+  return value !== undefined && value !== null && value !== '' && value !== false && value !== 'off'
 }
 
 /** The procedures of a folder, sorted by name; the file name is the procedure's name. */

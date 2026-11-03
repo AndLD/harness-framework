@@ -3,6 +3,10 @@
     "name": "harness-framework",
     "title": "harness-framework"
   },
+  "reports": {
+    "intake": "auto",
+    "triageLimit": 3
+  },
   "repository": {
     "slug": "AndLD/harness-framework",
     "url": "https://github.com/AndLD/harness-framework"

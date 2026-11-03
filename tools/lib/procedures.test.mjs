@@ -46,7 +46,9 @@ test('the procedures of the framework are all well formed, and each is named by 
       'new-adapter',
       'open-pull-request',
       'release',
-      'start-task'
+      'report-upstream',
+      'start-task',
+      'triage-reports'
     ]
   )
   for (const { description, body, invocation } of procedures) {

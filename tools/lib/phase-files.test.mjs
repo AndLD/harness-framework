@@ -190,6 +190,15 @@ test('the next task and the session start message read a phase folder: the newes
     '# 7.2 log\n\n### 2026-11-03 — first\n- **Next step:** write the tests\n\n### 2026-11-04 — second\n- **Next step:** ask the owner\n'
   )
 
+  // On the same day, the log of the task with the higher id is the later one (7.10 after 7.2, not before)
+  files.set(
+    'plan/phases/phase-7-seventh/7.10.log.md',
+    '# 7.10 log\n\n### 2026-11-04 — third\n- **Next step:** ship 7.10\n'
+  )
+  const tied = sessionStartMessage('develop', readText, list, 'plan/phases', 'docs/method.md', 'plan/README.md')
+  assert.match(tied, /Last next step \(plan\/phases\/phase-7-seventh\/7\.10\.log\.md, 2026-11-04\): ship 7\.10/)
+  files.delete('plan/phases/phase-7-seventh/7.10.log.md')
+
   const message = sessionStartMessage('develop', readText, list, 'plan/phases', 'docs/method.md', 'plan/README.md')
   assert.match(message, /Phase in progress: Phase 7 — Seventh \(6 SP\) \(plan\/phases\/phase-7-seventh\/README\.md\)/)
   assert.match(message, /Last next step \(plan\/phases\/phase-7-seventh\/7\.2\.log\.md, 2026-11-04\): ask the owner/)
