@@ -12,6 +12,7 @@ import { checkLinks } from './links.mjs'
 import { checkPaths } from './paths.mjs'
 import { planLog, planSummary } from './plan.mjs'
 import { checkProductKnowledge } from './product-knowledge.mjs'
+import { AREAS_BEGIN, AREAS_END, NOTE_HEADINGS } from './migration-notes.mjs'
 import { loadProfile } from './profile.mjs'
 
 const made = []
@@ -122,6 +123,8 @@ const commit = (root, message) => {
   git(root, '-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '--quiet', '-m', message)
 }
 const profileOf = (root) => loadProfile(root)
+const NOTE_TEXT = (version) =>
+  `# Migration to ${version} from 1.0.0\n\n${NOTE_HEADINGS.map((heading) => `## ${heading}\n\n${heading === 'Areas touched' ? `${AREAS_BEGIN}\n${AREAS_END}` : 'Nothing.'}\n`).join('\n')}`
 
 test('links: a clean project passes; a broken file link, a missing anchor and a link to an ignored file fail', () => {
   const root = project()
@@ -322,6 +325,52 @@ test('changelog: a development version of a release sets only the versions, and 
   assert.match(release({ root, profile: profileOf(root), dev: true, dryRun: true })[0], /-> 1\.1\.0-dev\.2 /)
   release({ root, profile: profileOf(root), date: '2026-10-31' })
   assert.equal(JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).version, '1.1.0')
+})
+
+test('release with migration notes: refused without the note, areas derived from the diff since the previous tag, the note linked', () => {
+  const changelog =
+    '# Changelog\n\n## [Unreleased]\n\n## [1.0.0] - 2026-10-01\n\n### Added\n\n- Start.\n\n[Unreleased]: https://example.com/acme/shop/compare/v1.0.0...HEAD\n[1.0.0]: https://example.com/acme/shop/releases/tag/v1.0.0\n'
+  const profile = { ...PROFILE, release: { ...PROFILE.release, migrations: 'migrations' } }
+  const root = project({
+    'harness-profile.json': JSON.stringify(profile),
+    'CHANGELOG.md': changelog,
+    'migrations/areas.json': JSON.stringify({
+      ignore: ['**/*.test.mjs'],
+      areas: { procedures: ['core/procedures/**'], checks: ['tools/**'] }
+    }),
+    'core/procedures/start.md': 'Start.\n',
+    'tools/check.mjs': 'a\n'
+  })
+  git(root, 'tag', 'v1.0.0')
+  write(root, { 'core/procedures/start.md': 'Start it.\n', 'tools/check.test.mjs': 'b\n' })
+  commit(root, 'feat: change a procedure')
+  git(root, 'checkout', '--quiet', '-b', 'release/1.0.1')
+  const run = (options = {}) => release({ root, profile: profileOf(root), date: '2026-11-03', ...options })
+
+  assert.throws(() => run({ dryRun: true }), /the migration note migrations\/1\.0\.1\.md is missing/)
+
+  write(root, { 'migrations/1.0.1.md': NOTE_TEXT('1.0.1').replace('## Optional actions', '## Extras') })
+  assert.throws(() => run({ dryRun: true }), /migrations\/1\.0\.1\.md: the sections must be, in order/)
+
+  write(root, { 'migrations/1.0.1.md': NOTE_TEXT('1.0.1') })
+  commit(root, 'docs: the note')
+  const dry = run({ dryRun: true })
+  assert.equal(dry[0], 'migrations/1.0.1.md: areas touched: procedures')
+  assert.match(dry[1], /^release\/1\.0\.1: 1\.0\.0 -> 1\.0\.1/)
+
+  run()
+  assert.match(
+    readFileSync(join(root, 'migrations/1.0.1.md'), 'utf8'),
+    /<!-- areas:begin -->\n- procedures\n<!-- areas:end -->/
+  )
+  assert.match(
+    readFileSync(join(root, 'CHANGELOG.md'), 'utf8'),
+    /## \[1\.0\.1\] - 2026-11-03\n\nMigration note: \[migrations\/1\.0\.1\.md\]\(migrations\/1\.0\.1\.md\)\n\n### Added/
+  )
+
+  // A development version needs no note, and writes none
+  git(root, 'checkout', '--quiet', '-b', 'release/1.0.2')
+  assert.match(run({ dev: true, dryRun: true })[0], /-> 1\.0\.2-dev\.1 /)
 })
 
 test('product knowledge: the register, the glossary and the scan, each from the profile; no role, no check', () => {

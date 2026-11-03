@@ -235,3 +235,11 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none.
 - **Next step:** task 3.11.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — task 3.11 done: the tasks of release 0.1.1 are merged or in review
+- **Tasks:** 3.11 (done). 3.6, 3.7, 3.8 and 3.11 are the tasks of `0.1.1`.
+- **Branch:** `feature/3.11-migration-notes` — done (details: `work-logs/phase-3/3.11.md`).
+- **Decisions / deviations from the plan:** the migration note is required by `harness release` through the profile role `release.migrations`, which only the framework's profile sets.
+- **Problems / blockers / findings:** none. No open issues of the repository at the start of the session, so no report was triaged.
+- **Next step:** stop; the owner cuts `0.1.1` (`core/procedures/release.md`: development version first, then the note, then the final release), then the consuming project syncs it. After it, `0.1.2` starts with 3.17.
+- **Verify with:** `npm run docs:check`

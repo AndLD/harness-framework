@@ -100,8 +100,12 @@ The checks and the project tools read every value from the profile file:
 | `check changelog` | Every changelog fragment starts with a Keep a Changelog kind. |
 | `check product-knowledge` | The register of open items, the glossary, and no stack term, plan reference or code path in the product knowledge (`productKnowledge`). |
 | `plan log <phase> [ref]` | The implementation log of a phase, from the `Plan:` lines of the squash commits. |
-| `release [--dev] [--dry-run]`, `release notes <version>` | On a `release/<x.y.z>` or `hotfix/<x.y.z>` branch, the versions of `release.versionFiles` and the changelog section; with `--dev` only the next development version `<x.y.z>-dev.<n>` (the changelog stays), which is tagged before the final tag so that a project can sync it and run its checks; the notes of one version for the host's release. |
+| `release [--dev] [--dry-run]`, `release notes <version>` | On a `release/<x.y.z>` or `hotfix/<x.y.z>` branch, the versions of `release.versionFiles` and the changelog section; with `--dev` only the next development version `<x.y.z>-dev.<n>` (the changelog stays), which is tagged before the final tag so that a project can sync it and run its checks; the notes of one version for the host's release. With `release.migrations` in the profile file, a release is refused without the migration note of its version, which the command links from the changelog and fills with the areas the version touched. |
 | `ci changes <base> <head>` | Whether a change needs the code checks: not when every changed path is documentation (`checks.documentationPaths`, every Markdown file by default). In doubt it says it does. CI and the push gate use the same rule. |
+
+## Taking a version
+
+A project takes a version with `sync --from <source> --to <version>`, then regenerates the managed files as the note says. Every version from `0.1.1` on has a **migration note**, [`migrations/<version>.md`](./migrations/README.md), that says what a project must do when it takes that version from the previous one, with the check that proves each action done. A project that skips versions (`0.1.1` straight to `0.3.0`) reads the notes of every version after its own up to the target, in order, and does the required actions of each; the changelog says what changed, the notes say what to do. The areas a note lists tell which of the project's own files and probes the version touched. A version that needs nothing says so.
 
 ## A word found in `core/`
 

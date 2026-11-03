@@ -166,6 +166,7 @@
     "versionFiles": [
       "package.json",
       "framework.json"
-    ]
+    ],
+    "migrations": "migrations"
   }
 }

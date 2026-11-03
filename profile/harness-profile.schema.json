@@ -897,6 +897,10 @@
           "description": "The JSON files whose `version` the release sets; the first one holds the current version.",
           "default": ["package.json"]
         },
+        "migrations": {
+          "type": "string",
+          "description": "The folder of the migration notes, one `<version>.md` for every version, with an `areas.json` next to them. `harness release` refuses a version without its note, writes the areas the version touched into it, and links it from the changelog."
+        },
         "lockCommand": {
           "type": "string",
           "description": "A command that brings the dependency lock file up to date with the new versions."
