@@ -3,6 +3,9 @@
   "name": "python",
   "contract": 1,
   "description": "Python: uv workspaces, pytest with coverage.py, ruff, mypy.",
+  "firstSteps": [
+    "Python: run `uv lock` once and commit `uv.lock`. The scaffold cannot write it, and CI installs with `uv sync --locked`, so CI is red until the file exists."
+  ],
   "terms": "\\bpytest\\b|\\bpython\\b|\\bpip\\b|\\buv\\b|\\bruff\\b|\\bmypy\\b|coverage\\.py|pyproject|\\.venv|__pycache__|htmlcov",
   "roles": {
     "package-manager": {
@@ -63,7 +66,7 @@
       ]
     },
     "scaffold-files": {
-      "fills": "`.python-version`, `.nvmrc` (the harness tools run on Node), a root `pyproject.toml` with the uv workspace, the development tools and the configuration of ruff, mypy and coverage.py, and the ignore lines of its tools; no uv.lock, which the project creates with `uv lock`",
+      "fills": "`.python-version`, `.nvmrc` (the harness tools run on Node), a root `pyproject.toml` with the uv workspace, the development tools and the configuration of ruff, mypy and coverage.py, a `pyproject.toml`, a first module and its test in each package (at the root when the project has none), and the ignore lines of its tools; no uv.lock, which the project creates with `uv lock`",
       "module": "scaffold.mjs",
       "export": "scaffoldFiles"
     }

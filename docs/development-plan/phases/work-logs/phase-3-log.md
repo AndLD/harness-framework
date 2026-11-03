@@ -243,3 +243,71 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none. No open issues of the repository at the start of the session, so no report was triaged.
 - **Next step:** stop; the owner cuts `0.1.1` (`core/procedures/release.md`: development version first, then the note, then the final release), then the consuming project syncs it. After it, `0.1.2` starts with 3.17.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — 0.1.1 is released
+- **Tasks:** 3.6, 3.7, 3.8, 3.11 (released).
+- **Branch:** `release/0.1.1` — merged into `main` by [#28](https://github.com/AndLD/harness-framework/pull/28), tagged `v0.1.1`; `main` is merged back into `develop` by `chore/merge-release-0.1.1`.
+- **Decisions / deviations from the plan:**
+  - The development version `0.1.1-dev.1` was tagged first, and a scratch clone of the consuming project synced it and ran its checks (`check core` clean; `check generated` failed until `sync --local`, as the note says; `check all` green).
+  - One fix on the release branch: a development tag has no `v` (the release workflow runs on `v*.*.*`, and a `v`-prefixed development tag would have run it and failed on the missing changelog section). The procedure, the releasing guide, the tool's message and its test said `v<x.y.z>-dev.<n>` and now say `<x.y.z>-dev.<n>`.
+- **Problems / blockers / findings:** none open. The consuming project takes `0.1.1` by `sync --to 0.1.1`, then follows `migrations/0.1.1.md`.
+- **Next step:** `0.1.2` starts with 3.17 (plan index: 3.17, 3.18, 3.3, 3.9, 3.1, 3.2), when the owner asks for it.
+- **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — task 3.17 done
+- **Tasks:** 3.17 (done; first task of `0.1.2`).
+- **Branch:** `feature/3.17-guard-repository` (details: `work-logs/phase-3/3.17.md`).
+- **Decisions / deviations from the plan:** the shell parser reports the depth of parentheses, so a `cd` in a subshell ends with it.
+- **Problems / blockers / findings:** none.
+- **Next step:** task 3.18.
+- **Verify with:** `npm test`
+
+### 2026-11-03 — task 3.18 done
+- **Tasks:** 3.18 (done; second task of `0.1.2`). 3.17 is merged ([#31](https://github.com/AndLD/harness-framework/pull/31)).
+- **Branch:** `feature/3.18-auto-merge` (details: `work-logs/phase-3/3.18.md`).
+- **Decisions / deviations from the plan:** `host.autoMerge` takes the value of `host.protection` when the profile file has none (`x-sameAs` in the schema); the update workflow starts the checks by `workflow_dispatch` unless a token of the project's own is set; the guard refuses auto-merge on a pull request not into the integration branch. The workflow is verified against a stand-in only; the migration note of 0.1.2 is begun and the later tasks add to it.
+- **Problems / blockers / findings:** none.
+- **Next step:** task 3.3.
+- **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — task 3.1 done
+- **Tasks:** 3.1 (done; fifth task of `0.1.2`).
+- **Branch:** `feature/3.1-repository-url` (details: `work-logs/phase-3/3.1.md`).
+- **Decisions / deviations from the plan:** the host contract gains an optional role, `repository-address`.
+- **Problems / blockers / findings:** none.
+- **Next step:** task 3.2.
+- **Verify with:** `npm run docs:check`
+
+- **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — task 3.3 done
+- **Tasks:** 3.3 (done; third task of `0.1.2`).
+- **Branch:** `feature/3.3-symlink` (details: `work-logs/phase-3/3.3.md`).
+- **Decisions / deviations from the plan:** none.
+- **Problems / blockers / findings:** none.
+- **Next step:** task 3.9.
+- **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — task 3.9 done
+- **Tasks:** 3.9 (done; fourth task of `0.1.2`).
+- **Branch:** `feature/3.9-claim-ownership` (details: `work-logs/phase-3/3.9.md`).
+- **Decisions / deviations from the plan:** the session-start hook prints the next task with a reminder to check for an open pull request (it reads files only).
+- **Problems / blockers / findings:** the three probes the task asks for are not run (they need a separate agent); everything else the task lists is verified.
+- **Next step:** task 3.1.
+- **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — task 3.2 done: the tasks of release 0.1.2 are merged or in review
+- **Tasks:** 3.2 (done). 3.17, 3.18, 3.3, 3.9, 3.1 and 3.2 are the tasks of `0.1.2`.
+- **Branch:** `feature/3.2-python-scaffold` (details: `work-logs/phase-3/3.2.md`).
+- **Decisions / deviations from the plan:** the adapter manifest gains an optional `firstSteps` field.
+- **Problems / blockers / findings:** none. No open issues of the repository at the start of the session, so no report was triaged. The three agent probes of task 3.9 were not run.
+- **Next step:** stop; the owner cuts `0.1.2` (`core/procedures/release.md`: development version first, then the note, then the final release).
+- **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — issue 30 is triaged as task 3.19
+- **Tasks:** 3.19 (added, ⬜; not started).
+- **Branch:** `docs/triage-issue-30`.
+- **Decisions / deviations from the plan:** the report ([issue 30](https://github.com/AndLD/harness-framework/issues/30), from the consuming project) is a confirmed defect: `tools/` is distributed with its tests, which need files of the framework repository and every preset. No close or equal task exists. It is added as 3.19 (C1, 2 SP) and placed first in `0.2.0` of the order of development, not in `0.1.2`, whose tasks were fixed by the owner and are merged; moving it into `0.1.2` is the owner's call. The issue was not answered or closed on the host (that needs the owner's approval).
+- **Problems / blockers / findings:** the issue was not in the list when this session began; it is dated 19:57 UTC.
+- **Next step:** stop; the owner cuts `0.1.2`.
+- **Verify with:** `npm run docs:check`
