@@ -303,3 +303,11 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none. No open issues of the repository at the start of the session, so no report was triaged. The three agent probes of task 3.9 were not run.
 - **Next step:** stop; the owner cuts `0.1.2` (`core/procedures/release.md`: development version first, then the note, then the final release).
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — issue 30 is triaged as task 3.19
+- **Tasks:** 3.19 (added, ⬜; not started).
+- **Branch:** `docs/triage-issue-30`.
+- **Decisions / deviations from the plan:** the report ([issue 30](https://github.com/AndLD/harness-framework/issues/30), from the consuming project) is a confirmed defect: `tools/` is distributed with its tests, which need files of the framework repository and every preset. No close or equal task exists. It is added as 3.19 (C1, 2 SP) and placed first in `0.2.0` of the order of development, not in `0.1.2`, whose tasks were fixed by the owner and are merged; moving it into `0.1.2` is the owner's call. The issue was not answered or closed on the host (that needs the owner's approval).
+- **Problems / blockers / findings:** the issue was not in the list when this session began; it is dated 19:57 UTC.
+- **Next step:** stop; the owner cuts `0.1.2`.
+- **Verify with:** `npm run docs:check`
