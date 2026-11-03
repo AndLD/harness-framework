@@ -42,6 +42,8 @@ Task 3.13 turns this plan's open-ended phase into a normal phase that keeps ever
 
 "Start Phase N", "Continue Phase N"; the phrase approves the pull requests of the named phases. The session reads the phase file and its work log first (the session protocol of the method).
 
+**Reports from consumers come first.** Before other work, a session lists the open issues of this repository (`gh issue list`). Each report from a consuming project (a defect found while it takes a version) becomes a task of Phase 3 (an issue of the queue once 3.13 exists) and is done before the next task of the order; the issue is closed by the pull request that fixes it. A release is cut only with the owner's approval, so a session stops when the tasks of a release are merged, and the owner hands the release to the consuming project.
+
 ---
 
 ## Contents

@@ -136,3 +136,13 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none.
 - **Next step:** unchanged: 3.6 → 3.7 → 3.8 → 3.11, released as `0.1.1`.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — reports from consumers come first
+- **Tasks:** none changed.
+- **Branch:** `docs/queue-rollback-probes-local-adapters`
+- **Decisions / deviations from the plan:** the owner runs one session per repository: this one builds and releases, the consuming project (AndLD/bot-rts)
+  takes releases. Its defects reach this repository as issues; the plan index ("Resuming work") makes a session list them first and turn each into a
+  task here. A session stops when a release's tasks are merged, since cutting a release needs the owner.
+- **Problems / blockers / findings:** none.
+- **Next step:** unchanged: 3.6 → 3.7 → 3.8 → 3.11, released as `0.1.1`.
+- **Verify with:** `npm run docs:check`
