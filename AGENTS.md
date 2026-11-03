@@ -77,8 +77,9 @@ Squash merge into the integration branch; a merge commit for release and hotfix 
 - The production and the integration branch are protected: no direct pushes (for administrators <!-- rule:git.protection -->
   too), no force-push, no deletion, every change through a PR, and the **required checks** green. The required checks are listed with
   what each job runs in the [profile](./docs/profile.md#2-quality-gates); that list is the only statement of the merge gates.
-  The host cannot enforce this for this repository (`host.protection` is off in the profile), so the Git hooks and the agent runtime's
-  hooks hold it where they can, and an agent never merges a PR while a required check is not green.
+  The host enforces this with the repository ruleset that `harness host protect` sets from the profile.
+  An administrator may bypass the rules only when merging a PR, for example past a red check. That bypass is the owner's: an agent <!-- rule:git.admin-bypass -->
+  never uses it unless the owner asks for that specific merge.
 
 ### 7.4 Commit & PR rules
 
