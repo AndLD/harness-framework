@@ -30,6 +30,6 @@ test('the release procedure and the releasing guide tag a development version be
   for (const path of ['core/procedures/release.md', 'docs/operations/releasing.md']) {
     const text = read(path)
     assert.match(text, /harness release --dev/, `${path} names the command`)
-    assert.match(text, /v<x\.y\.z>-dev\.<n>/, `${path} names the tag`)
+    assert.match(text, /tag the commit `<x\.y\.z>-dev\.<n>`, with no `v`/, `${path} names the tag, without the v`)
   }
 })
