@@ -90,6 +90,7 @@ Run from the repository root unless a package is named.
 | Every check of the framework (`harness check all`): the vendored copy, the profile file, the layer map, links, backticked paths, the CORE scan, the plan summary, the changelog fragments and the product knowledge | `npm run docs:check` |
 | Take the framework again from its source into `harness/`; regenerate the managed files only; show a local change of `harness/` | `npm run harness -- sync`; `npm run harness -- sync --local`; `npm run harness -- diff` |
 
+A release is refused without the migration note of its version in `migrations/`.
 
 ## 9. Review values
 

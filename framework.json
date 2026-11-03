@@ -12,6 +12,7 @@
     "profile",
     "adapters",
     "tools",
+    "migrations",
     "framework.json",
     "README.md",
     "BOOTSTRAP.md",

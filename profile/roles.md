@@ -141,6 +141,9 @@ Run from the repository root unless a package is named.
 {{#if release}}
 
 A release (`harness release`, on a release or hotfix branch) sets the version of {{release.versionFiles}}, and then runs `{{release.lockCommand}}`.
+{{#if release.migrations}}
+A release is refused without the migration note of its version in `{{release.migrations}}/`.
+{{/if}}
 {{/if}}
 
 ## 9. Review values
