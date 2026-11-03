@@ -107,7 +107,8 @@ Squash merge into the integration branch; a merge commit for release and hotfix 
   the fixes of tooling or tests that block a task). Merge them without asking once the required checks pass. A PR counts as
   plan-related only when it serves a named phase; anything else follows the next rule.
 - **Claim a task before working on it.** Push its branch and open a **draft** pull request for it first (title and body as in the claim row of the <!-- rule:agent.claim -->
-  [profile](./docs/profile.md#4-plan)); a task with an open pull request belongs to the session that opened it.
+  [profile](./docs/profile.md#4-plan)); a task with an open pull request belongs to the session that opened it, and a session that
+  resumes a phase continues it only as [method §6](./core/method/method.md#6-session-protocol-resuming-and-pausing-a-phase) says (the log names it, or the owner does; otherwise ask).
   With several agents the orchestrator or the owner merges, and the CI events and review comments of a pull request go to the session
   that owns it ([method §7](./core/method/method.md#7-several-agents)).
 - **Opening a pull request is automatic.** Create the PR as soon as a branch is ready (any branch type, including <!-- rule:agent.open-pr -->
@@ -122,7 +123,8 @@ Squash merge into the integration branch; a merge commit for release and hotfix 
   merges at once, which is expected. After you push to a pull request, check that auto-merge is still on, and merge a green pull request
   that is still open yourself. The final message lists the pull requests that wait for the owner.
 - **A task that needs the previous one** branches from its branch (one level, no deeper) while that pull request is open; after the squash
-  merge, `harness branch update` brings in the integration branch and resolves the conflicts that only the squash causes. <!-- rule:agent.stack -->
+  merge, retarget the pull request to the integration branch and run `harness branch update`, which brings it in and resolves the conflicts that only
+  the squash causes; push after the retarget, because a retarget alone starts no checks. <!-- rule:agent.stack -->
 - **Automatic CI fixes are on for plan work.** After opening a PR for a named phase, attach it to the session and turn on the agent <!-- rule:agent.ci-fixes -->
   runtime's CI monitoring with automatic fixes (the tools are in [stack §6](./docs/engineering/stack.md#6-agent-runtime)) without
   asking; it wakes the session on CI failures, merge conflicts and review comments. Never wait by checking the pull request again and

@@ -123,6 +123,7 @@ test('the auto-merge rule is on with host.autoMerge, and the old rule (never una
   assert.match(on, /rule:agent\.stack/)
   assert.doesNotMatch(on, /Never enable auto-merge unless the user asks|rule:agent\.no-auto-merge/)
   assert.match(on, /harness branch update/)
+  assert.match(on, /a retarget alone starts no checks/)
   assert.match(on, /the host merges the pull request \(auto-merge\)/)
 
   const off = renderEntryBlock('git-rules', { ...profile(), host: { protection: true, autoMerge: false } })

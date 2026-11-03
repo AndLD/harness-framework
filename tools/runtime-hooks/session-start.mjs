@@ -3,6 +3,7 @@
 import { execFileSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { nextTask, readPhases } from '../lib/next-task.mjs'
 import { loadProfile } from '../lib/profile.mjs'
 import { runHook } from './io.mjs'
 import { isMain } from '../lib/main-module.mjs'
@@ -42,13 +43,37 @@ export function lastNextStep(logText) {
   return steps.length ? steps[steps.length - 1][1].trim() : null
 }
 
+// The next task of the plan, by its order (`lib/next-task.mjs`), or null when the plan cannot be read or has no task left
+function nextTaskOf(readText, list, phasesDir, planIndex) {
+  try {
+    const files = list(phasesDir)
+      .filter((name) => /^phase-\d+-.+\.md$/.test(name))
+      .map((name) => ({ file: `${phasesDir}/${name}`, text: readText(`${phasesDir}/${name}`) }))
+    let indexText = ''
+    try {
+      indexText = planIndex ? readText(planIndex) : ''
+    } catch {
+      // a plan without an index has only the orders of its phases
+    }
+    return nextTask({ phases: readPhases(files), indexText })
+  } catch {
+    return null
+  }
+}
+
 // The message to print for a repository
-export function sessionStartMessage(branch, readText, list, phasesDir, methodPath = 'the method') {
+export function sessionStartMessage(branch, readText, list, phasesDir, methodPath = 'the method', planIndex = null) {
   const lines = [`Branch: ${branch || 'unknown'}`]
   const phases = phasesInProgress(readText, list, phasesDir)
 
   if (!phases.length) {
     lines.push('No phase is in progress.')
+    const next = nextTaskOf(readText, list, phasesDir, planIndex)
+    if (next) {
+      lines.push(
+        `Next task: ${next.id} ${next.title} (${next.file}), by the ${next.source}; check that it has no open pull request first.`
+      )
+    }
   }
   for (const phase of phases) {
     lines.push(`Phase in progress: ${phase.title} (${phase.file})`)
@@ -86,7 +111,8 @@ export function decide(event) {
       readText,
       list,
       profile.paths?.phases ?? 'docs/plan/phases',
-      profile.documents?.method
+      profile.documents?.method,
+      profile.paths?.planIndex
     )
   }
 }
