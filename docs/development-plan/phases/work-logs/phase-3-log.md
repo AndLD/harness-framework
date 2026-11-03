@@ -269,3 +269,11 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none.
 - **Next step:** task 3.3.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — task 3.3 done
+- **Tasks:** 3.3 (done; third task of `0.1.2`).
+- **Branch:** `feature/3.3-symlink` (details: `work-logs/phase-3/3.3.md`).
+- **Decisions / deviations from the plan:** none.
+- **Problems / blockers / findings:** none.
+- **Next step:** task 3.9.
+- **Verify with:** `npm run docs:check`
