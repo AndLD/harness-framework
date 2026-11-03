@@ -42,3 +42,13 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none. Phase 3 is now 15 SP.
 - **Next step:** 3.6 and 3.7, then 3.8, in a patch release (`0.1.1`). The consuming project syncs to it, which closes its Phase 17 ("no regression" of the extraction).
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — task 3.9 added: who owns a claim after its session ends
+- **Tasks:** 3.9 (not started).
+- **Branch:** `docs/claim-and-skill-tasks`
+- **Decisions / deviations from the plan:** finding H-20261103-02 of the closing review of the extraction (AndLD/bot-rts): the claim rule of method §6 and §7
+  does not say whether a resuming session may continue a task that its own earlier session claimed. The owner asked to plan it. It comes before a second
+  person or agent works on a project, since it is the rule that keeps two agents off one task.
+- **Problems / blockers / findings:** none. Phase 3 is now 17 SP.
+- **Next step:** after 3.6 to 3.8 (`0.1.1`), with the other defects of the phase.
+- **Verify with:** `npm run docs:check`
