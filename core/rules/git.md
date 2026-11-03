@@ -73,7 +73,8 @@ Squash merge into the integration branch; a merge commit for release and hotfix 
   merges at once, which is expected. After you push to a pull request, check that auto-merge is still on, and merge a green pull request
   that is still open yourself. The final message lists the pull requests that wait for the owner.
 - **A task that needs the previous one** branches from its branch (one level, no deeper) while that pull request is open; after the squash
-  merge, `harness branch update` brings in the integration branch and resolves the conflicts that only the squash causes. <!-- rule:agent.stack -->
+  merge, retarget the pull request to the integration branch and run `harness branch update`, which brings it in and resolves the conflicts that only
+  the squash causes; push after the retarget, because a retarget alone starts no checks. <!-- rule:agent.stack -->
 {{/if}}
 {{#unless host.autoMerge}}
 - Never enable auto-merge unless the user asks. <!-- rule:agent.no-auto-merge -->
