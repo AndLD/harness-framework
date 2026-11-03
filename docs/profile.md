@@ -90,6 +90,7 @@ Run from the repository root unless a package is named.
 | Every check of the framework (`harness check all`): the vendored copy, the profile file, the layer map, links, backticked paths, the CORE scan, the plan summary, the changelog fragments and the product knowledge | `npm run docs:check` |
 | Take the framework again from its source into `harness/`; regenerate the managed files only; show a local change of `harness/` | `npm run harness -- sync`; `npm run harness -- sync --local`; `npm run harness -- diff` |
 
+A release is refused without the migration note of its version in `migrations/`.
 
 ## 9. Review values
 
@@ -98,7 +99,7 @@ The harness review's term lists (M1, M2 of its method) and the bounded contexts 
 Stack terms (case-insensitive), which must not appear in CORE or DOMAIN text:
 
 ```bash
-STACK='\bjest\b|\bnpm\b|\btypescript\b|\beslint\b|\bprettier\b|istanbul|node_modules|package\.json'
+STACK='\bjest\b|\bnpm\b|\btypescript\b|\beslint\b|\bprettier\b|istanbul|node_modules|package\.json|\b(?:postgres(?:ql)?|mysql|mariadb|sqlite|mongodb|redis|memcached|dynamodb|cassandra|elasticsearch|rabbitmq|kafka)\b|\b(?:prisma|typeorm|sequelize|sqlalchemy|drizzle|hibernate|knex)\b|\b(?:nestjs|nextjs|next\.js|reactjs|react\.js|react native|vue|angular|svelte|django|flask|fastapi|spring boot)\b|\b(?:cypress|playwright|selenium|puppeteer|vitest|mocha|jasmine)\b|\b(?:docker|kubernetes|k8s|terraform|vercel|netlify|heroku|aws|azure|gcp|cloudflare)\b|\b(?:gitlab|bitbucket|gitea|jenkins|circleci|copilot|windsurf|aider|codex)\b'
 ```
 
 Product terms, which must not appear in CORE sections (the CORE scan skips the generic words below):
@@ -119,6 +120,8 @@ Project values, which must not appear in CORE text except on the **Role binding*
 ```bash
 PROJECT_VALUES='`main`|`develop`|AndLD/harness-framework'
 ```
+
+A hit of the CORE scan in the vendored framework core that the project reported upstream and waits for the fix of is recorded in `terms.exceptions` of the profile file (the file, the word, the link to the report and the framework version it holds for); `npm run docs:check` accepts it while the lock is at that version and fails on the exception after a sync to another one.
 
 ## 10. Document map
 

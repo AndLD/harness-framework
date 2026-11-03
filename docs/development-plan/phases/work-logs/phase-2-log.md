@@ -18,3 +18,12 @@ pauses. Newest entry at the bottom.
 ```
 
 ## Entries
+
+### 2026-11-03 — the place of this phase in the order
+- **Tasks:** none changed.
+- **Branch:** `docs/queue-rollback-probes-local-adapters`
+- **Decisions / deviations from the plan:** the owner's order of development puts this phase after `0.3.0` (local adapters), and earlier if the
+  repository goes public or a second person uses the framework.
+- **Problems / blockers / findings:** none.
+- **Next step:** after `0.3.0`.
+- **Verify with:** `npm run docs:check`

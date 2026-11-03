@@ -79,3 +79,12 @@ pauses. Newest entry at the bottom.
 - **Next step:** finish Phase 1 and cut `0.1.0` by the release procedure (the decision of 2026-11-02 is the owner's approval of its merges), then stop.
 - **Verify with:** `npm run docs:check`; `npm test`; `tests/proof/proof.sh <directory>`
 
+### 2026-11-02 — Phase 1 done: `0.1.0` is tagged
+- **Tasks:** 1.1 to 1.5 ✅; the phase ✅.
+- **Branch:** `release/0.1.0` (PR #8 into `main`, merge commit) and `main` merged back into `develop` (PR #9); the tag `v0.1.0` is on the merge commit of `main`, and the release workflow published it.
+- **Decisions / deviations from the plan:** the owner's decision of 2026-11-02 was the approval of the release merges. `harness release` could not parse the development version `0.1.0-dev.1`; the fix was made on the release branch (fixes only), with a changelog fragment.
+- **Exit criteria:** `harness adopt` works on a fixture (1.1 and the proof); the Cursor and Python presets pass the suite (1.2, 1.3); the examples are written into a new project (1.4); the proof of §3.4 holds for each combination and is recorded in the changelog and the task log (1.5); the Cursor preset is documented as unverified in a live session with its checklist open (`adapters/runtime/cursor/README.md`); `0.1.0` is tagged.
+- **Problems / blockers / findings:** two small issues found cutting the release became tasks 3.1 and 3.2 of the open-ended phase. The consuming project syncs to `0.1.0` in its task 17.16 (not done here). The Cursor checklist stays open: whoever runs it reports the result, and a fix ships as `0.1.1`.
+- **Next step:** none in Phase 1; the session stops, as the decision of 2026-11-02 says. The owner's steps: run the Cursor checklist when Cursor is available, and sync the consuming project to `0.1.0`.
+- **Verify with:** `npm run docs:check`; `npm test`; `git tag --list 'v*'`
+

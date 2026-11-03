@@ -74,7 +74,7 @@
     "harnessDiff": "npm run harness -- diff"
   },
   "terms": {
-    "stack": "\\bjest\\b|\\bnpm\\b|\\btypescript\\b|\\beslint\\b|\\bprettier\\b|istanbul|node_modules|package\\.json",
+    "stack": "\\bjest\\b|\\bnpm\\b|\\btypescript\\b|\\beslint\\b|\\bprettier\\b|istanbul|node_modules|package\\.json|\\b(?:postgres(?:ql)?|mysql|mariadb|sqlite|mongodb|redis|memcached|dynamodb|cassandra|elasticsearch|rabbitmq|kafka)\\b|\\b(?:prisma|typeorm|sequelize|sqlalchemy|drizzle|hibernate|knex)\\b|\\b(?:nestjs|nextjs|next\\.js|reactjs|react\\.js|react native|vue|angular|svelte|django|flask|fastapi|spring boot)\\b|\\b(?:cypress|playwright|selenium|puppeteer|vitest|mocha|jasmine)\\b|\\b(?:docker|kubernetes|k8s|terraform|vercel|netlify|heroku|aws|azure|gcp|cloudflare)\\b|\\b(?:gitlab|bitbucket|gitea|jenkins|circleci|copilot|windsurf|aider|codex)\\b",
     "product": "(?!)",
     "productGeneric": "(?!)",
     "projectValues": "`main`|`develop`|AndLD/harness-framework"
@@ -160,12 +160,13 @@
     ]
   },
   "host": {
-    "protection": false
+    "protection": true
   },
   "release": {
     "versionFiles": [
       "package.json",
       "framework.json"
-    ]
+    ],
+    "migrations": "migrations"
   }
 }

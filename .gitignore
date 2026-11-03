@@ -7,3 +7,5 @@ node_modules/
 coverage/
 dist/
 .claude/settings.local.json
+# The owner's scratch notes: an agent writes there only when the owner asks (AGENTS.md, section 9)
+docs/temp/

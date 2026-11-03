@@ -77,8 +77,9 @@ Squash merge into the integration branch; a merge commit for release and hotfix 
 - The production and the integration branch are protected: no direct pushes (for administrators <!-- rule:git.protection -->
   too), no force-push, no deletion, every change through a PR, and the **required checks** green. The required checks are listed with
   what each job runs in the [profile](./docs/profile.md#2-quality-gates); that list is the only statement of the merge gates.
-  The host cannot enforce this for this repository (`host.protection` is off in the profile), so the Git hooks and the agent runtime's
-  hooks hold it where they can, and an agent never merges a PR while a required check is not green.
+  The host enforces this with the repository ruleset that `harness host protect` sets from the profile.
+  An administrator may bypass the rules only when merging a PR, for example past a red check. That bypass is the owner's: an agent <!-- rule:git.admin-bypass -->
+  never uses it unless the owner asks for that specific merge.
 
 ### 7.4 Commit & PR rules
 
@@ -139,5 +140,11 @@ the adapters in `adapters/`, and nothing is vendored. The projects that use the 
   the presets and on deliberately broken copies (`tests/conformance/`). A new adapter follows the [new-adapter guide](./core/contracts/new-adapter.md).
 - **The old repository.** The framework was extracted from the repository `AndLD/bot-rts` (Phase 17 of its plan), which keeps consuming it as a pinned
   copy. A defect found there is fixed here, and `bot-rts` takes the fix with a sync.
-- **Branch protection.** GitHub offers no rulesets for a private repository on a free plan, so `host.protection` is `false` in the profile: the Git hooks and
-  the agent runtime's hooks hold the branch rules, and the merge guard refuses `gh pr merge` while a required check is not green.
+- **Branch protection.** The repository is public (since 2026-11-03), so `host.protection` is `true` in the profile and the `protected-branches` ruleset,
+  set by `harness host protect`, holds the branch rules on GitHub; the Git hooks and the agent runtime's hooks hold them locally too.
+- **`docs/temp/` is the owner's.** It is ignored by Git and holds the owner's scratch notes. An agent writes there only when the owner asks, and never links
+  it from a tracked document.
+- **Auto-merge (the owner's standing request of 2026-11-03).** On every task pull request and plan-related pull request into the integration branch
+  that the rules of section 7 let an agent merge without asking, the agent enables the host's auto-merge (squash) once the task's definition of done
+  holds, and merges the pull request itself if it is green but still open. Never on a pull request into the production branch, a release or hotfix
+  branch, or one that needs the owner's approval. This is the owner asking, as the auto-merge rule of section 7 requires; task 3.18 makes it a core rule.
