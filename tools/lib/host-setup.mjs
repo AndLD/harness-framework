@@ -77,3 +77,17 @@ export const hostAdapterOf = (profile, modules) => {
   const { host } = selectedAdapters(profile)
   return host ? modules.host[host] : undefined
 }
+
+/**
+ * `profile` with `repository.url` from the host adapter's role `repository-address`, when the profile has none: without it `harness release` writes
+ * `undefined` into the compare and tag links of the changelog. An address the profile file has is the owner's.
+ */
+export function withRepositoryUrl(profile, adapter) {
+  const entry = adapter?.manifest.roles['repository-address']
+  const repositoryUrl = entry?.module ? adapter.modules[entry.module]?.[entry.export] : undefined
+  const slug = profile.repository?.slug
+  if (!repositoryUrl || !slug || profile.repository.url) {
+    return profile
+  }
+  return { ...profile, repository: { ...profile.repository, url: repositoryUrl({ slug }) } }
+}

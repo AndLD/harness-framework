@@ -8,6 +8,11 @@
     "repository-identity": {
       "fills": "repository.slug and repository.url of the profile file; the host name is repository.host"
     },
+    "repository-address": {
+      "fills": "the web address of the repository from its slug, which the bootstrap writes into repository.url (the compare and tag links of the changelog)",
+      "module": "repository.mjs",
+      "export": "repositoryUrl"
+    },
     "protection-available": {
       "fills": "detected from the API: the rulesets of the repository are readable, or GitHub answers that they need a public repository or a paid plan",
       "module": "protect.mjs",

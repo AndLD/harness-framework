@@ -270,6 +270,14 @@ pauses. Newest entry at the bottom.
 - **Next step:** task 3.3.
 - **Verify with:** `npm run docs:check`
 
+### 2026-11-03 — task 3.1 done
+- **Tasks:** 3.1 (done; fifth task of `0.1.2`).
+- **Branch:** `feature/3.1-repository-url` (details: `work-logs/phase-3/3.1.md`).
+- **Decisions / deviations from the plan:** the host contract gains an optional role, `repository-address`.
+- **Problems / blockers / findings:** none.
+- **Next step:** task 3.2.
+- **Verify with:** `npm run docs:check`
+
 - **Verify with:** `npm run docs:check`
 
 ### 2026-11-03 — task 3.3 done
