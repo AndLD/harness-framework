@@ -60,3 +60,13 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none.
 - **Next step:** unchanged, after 3.5, 3.12 and 3.10.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — 4.4 verifies a migration; more of Phase 3 comes first
+- **Tasks:** 4.4 (2 → 3 SP).
+- **Branch:** `docs/queue-rollback-probes-local-adapters`
+- **Decisions / deviations from the plan:** `update-framework` ends with a verification: `check all` and the project's gate, the check of every
+  required action, and the probes that 3.15 selects, compared with the project's last review; on a failure, `harness rollback` (3.14). Tasks 3.14,
+  3.13 and 3.15 of Phase 3 join 3.5, 3.12 and 3.10 before this phase.
+- **Problems / blockers / findings:** none. Phase 4 is now 19 SP.
+- **Next step:** unchanged, after the Phase 3 tasks of `0.2.0`.
+- **Verify with:** `npm run docs:check`
