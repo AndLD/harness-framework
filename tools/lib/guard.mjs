@@ -182,16 +182,22 @@ function afterCd(dir, words) {
  * @param {string} command the shell command line
  * @param {string} branch the branch of the directory the command runs in (`cwd`)
  * @param {{ protectedBranches: string[], merge?: { isMerge: (words: string[]) => boolean, check: (words: string[]) => string | null },
+ *   autoMerge?: { isAutoMerge: (words: string[]) => boolean, check: (words: string[]) => string | null },
  *   cwd?: string, branchOf?: (repository: { cwd: string, gitDir: string | null }) => string | null }} options
  *   `merge` is the merge guard of a host that cannot protect its branches: `check` returns the message that refuses the merge, or null;
+ *   `autoMerge` is the guard of turning on the host's auto-merge, where an agent may not: `check` returns the message that refuses it, or null;
  *   `branchOf` answers the branch checked out in a repository, or null when the directory is no repository
  */
 export function refusal(
   command,
   branch,
-  { protectedBranches: PROTECTED, merge, cwd, branchOf } = { protectedBranches: [] }
+  { protectedBranches: PROTECTED, merge, autoMerge, cwd, branchOf } = { protectedBranches: [] }
 ) {
-  return judge(command, { PROTECTED, merge, cwd, branchOf, branches: new Map([[PROJECT, branch]]) }, cwd ?? '.')
+  return judge(
+    command,
+    { PROTECTED, merge, autoMerge, cwd, branchOf, branches: new Map([[PROJECT, branch]]) },
+    cwd ?? '.'
+  )
 }
 
 // The repository a git command acts on: its key, a description for the message, and how to read its branch (null: cannot be told)
@@ -218,7 +224,7 @@ function repositoryOf({ repo }, dir, { cwd, branchOf }) {
 }
 
 function judge(command, context, startDir) {
-  const { PROTECTED, merge, branches } = context
+  const { PROTECTED, merge, autoMerge, branches } = context
   const protectedBranch = (name) => name === null || PROTECTED.includes(name)
   let dir = startDir
   const scopes = []
@@ -239,6 +245,12 @@ function judge(command, context, startDir) {
     }
     if (merge?.isMerge(words)) {
       const message = merge.check(words)
+      if (message) {
+        return message
+      }
+    }
+    if (autoMerge?.isAutoMerge(words)) {
+      const message = autoMerge.check(words)
       if (message) {
         return message
       }

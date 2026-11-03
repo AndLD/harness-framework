@@ -590,6 +590,12 @@ so CI and the local gate cannot disagree about what to skip.
 `adapters/host/github/protect.mjs` (`harness host protect`) replaces `protect-branches.sh` with the same ruleset. It calls `gh api`. Its
 test runs it against a stand-in `gh` and compares the request with the profile file, as today's script test does.
 
+It also allows auto-merge on the repository (`host.autoMerge`, on where `host.protection` is true), and the adapter scaffolds `update-branches.yml`, which brings the
+integration branch into every open pull request that waits on auto-merge when the integration branch moves, because the ruleset requires a pull request to
+be up to date with its base. The bootstrap asks the host (`detectProtection`) before it writes the files and sets `host.protection` from the answer
+(`tools/lib/host-setup.mjs`). The shell guard refuses `gh pr merge --auto` into the production branch, on release and hotfix branches, and where
+`host.autoMerge` is off (`merge-guard.mjs`, `checkAutoMerge`).
+
 ### 7.5 The profile tests
 
 `harness-profile.test.mjs` becomes these checks:

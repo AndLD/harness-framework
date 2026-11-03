@@ -11,7 +11,7 @@ const profile = () => ({
   branches: { integration: 'dev', production: 'prod' },
   plan: { openEndedPhaseNumber: 9 },
   repository: { host: 'SomeHost' },
-  host: { protection: true },
+  host: { protection: true, autoMerge: true },
   paths: { profileDocument: 'docs/profile.md' },
   documents: { rules: 'AGENTS.md', method: 'harness/core/method/method.md', stack: 'docs/stack.md' }
 })
@@ -38,6 +38,8 @@ const IDS = {
     'agent.open-pr',
     'agent.ask-merge',
     'agent.no-rewrite',
+    'agent.auto-merge',
+    'agent.stack',
     'agent.no-auto-merge',
     'agent.ci-fixes'
   ]
@@ -109,10 +111,25 @@ test('the protection rule names the ruleset when the host enforces it, and the h
   assert.match(protectedHost, /harness host protect/)
   assert.match(protectedHost, /rule:git\.admin-bypass/)
 
-  const unprotected = renderEntryBlock('git-rules', { ...profile(), host: { protection: false } })
+  const unprotected = renderEntryBlock('git-rules', { ...profile(), host: { protection: false, autoMerge: false } })
   assert.doesNotMatch(unprotected, /harness host protect|rule:git\.admin-bypass/)
   assert.match(unprotected, /cannot enforce this/)
   assert.match(unprotected, /rule:git\.protection/)
+})
+
+test('the auto-merge rule is on with host.autoMerge, and the old rule (never unasked) is back with it off', () => {
+  const on = renderEntryBlock('git-rules', profile())
+  assert.match(on, /rule:agent\.auto-merge/)
+  assert.match(on, /rule:agent\.stack/)
+  assert.doesNotMatch(on, /Never enable auto-merge unless the user asks|rule:agent\.no-auto-merge/)
+  assert.match(on, /harness branch update/)
+  assert.match(on, /a retarget alone starts no checks/)
+  assert.match(on, /the host merges the pull request \(auto-merge\)/)
+
+  const off = renderEntryBlock('git-rules', { ...profile(), host: { protection: true, autoMerge: false } })
+  assert.match(off, /Never enable auto-merge unless the user asks\. <!-- rule:agent\.no-auto-merge -->/)
+  assert.doesNotMatch(off, /rule:agent\.auto-merge|rule:agent\.stack|harness branch update/)
+  assert.match(off, /merge per the rules above and go on to the next task/)
 })
 
 test('a template is read without its leading comment, from the folder given', () => {
