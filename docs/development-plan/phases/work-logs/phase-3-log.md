@@ -277,3 +277,11 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none.
 - **Next step:** task 3.2.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — task 3.9 done
+- **Tasks:** 3.9 (done; fourth task of `0.1.2`).
+- **Branch:** `feature/3.9-claim-ownership` (details: `work-logs/phase-3/3.9.md`).
+- **Decisions / deviations from the plan:** the session-start hook prints the next task with a reminder to check for an open pull request (it reads files only).
+- **Problems / blockers / findings:** the three probes the task asks for are not run (they need a separate agent); everything else the task lists is verified.
+- **Next step:** task 3.1.
+- **Verify with:** `npm run docs:check`

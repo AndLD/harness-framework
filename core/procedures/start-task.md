@@ -9,7 +9,8 @@ invocation: explicit
 The rules are in the entry file and the [session protocol]({{rel:documents.method}}#6-session-protocol-resuming-and-pausing-a-phase); this procedure is the steps.
 
 1. Read the phase file (task statuses), its work log, and the log of any task in progress (the paths are in the profile, plan section). Check `git status`, `git branch -a` and the open pull requests, and continue from the latest "next step".
-2. Choose the task: the next ⬜ task of the phase named in the request, in the plan's order. A task that has an open pull request belongs to the session that opened it; do not start it.
+   A task with an open pull request belongs to its session while that session works. Continue it only when its log or the phase's work log records a pause or a "next step" that names it, or when the owner says so; any other open claim is another agent's: do not start it, and when you cannot tell, ask.
+2. Choose the task: the next ⬜ task of the phase named in the request **by the order the plan says**: the phase's execution order (the line `Execution order` of its file), and the order of development of the plan index when the phase points there; the order of the table only when neither exists (the numbers of tasks are identities, not an order). The session-start hook prints the next task by this rule when no phase is in progress. Skip a task that has an open pull request (step 1).
 3. Fetch, and branch from the integration branch **as it is on the remote** (`git fetch`, then `git checkout -b <type>/<id>-<slug> origin/<integration branch>`). Branch types and names are in the profile, branches section.
 4. **Claim the task before any other work**: push the branch with an empty commit, and open a draft pull request titled as the claim row of the profile says, with the `Plan: <task id>` line in the body.
 5. Set the task to 🟡 in the phase file, and read the documents the task cites (the reading map of the entry file points to them).
