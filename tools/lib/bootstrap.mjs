@@ -31,7 +31,7 @@ import {
   writeLock
 } from './lock.mjs'
 import { planSummary } from './plan.mjs'
-import { decideHostSetup, hostAdapterOf } from './host-setup.mjs'
+import { decideHostSetup, hostAdapterOf, withRepositoryUrl } from './host-setup.mjs'
 import { PROFILE_FILE, folderOf, loadProfile, readSchema, validate, withDefaults } from './profile.mjs'
 import { render, valueAt } from './render.mjs'
 import { readManifest, resolveSource } from './source.mjs'
@@ -561,12 +561,15 @@ export async function bootstrap({
     if (problems.length) {
       throw new Error(`the profile file is not valid:\n  ${problems.join('\n  ')}`)
     }
-    // The host says what it offers for this repository before the files are written: a workflow is scaffolded only where the host protects
+    // The host gives the address of the repository, and says what it offers for it, before the files are written: a workflow is scaffolded only
+    // where the host protects
+    const hostAdapter = hostAdapterOf(profile, await loadModules(fetched.dir))
+    profile = withRepositoryUrl(profile, hostAdapter)
     let hostPlan = { apply: false, messages: [] }
     if (hostSetup && !self && !adopt) {
       hostPlan = await decideHostSetup({
         profile,
-        adapter: hostAdapterOf(profile, await loadModules(fetched.dir)),
+        adapter: hostAdapter,
         harness: inFramework(withDefaults(schema, profile), 'tools/harness.mjs'),
         cli: hostSetup.cli,
         confirm: hostSetup.confirm

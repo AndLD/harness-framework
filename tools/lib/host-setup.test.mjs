@@ -1,11 +1,14 @@
 import assert from 'node:assert/strict'
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { after, before, test } from 'node:test'
 import { FRAMEWORK_DIR, loadModules } from './bootstrap.mjs'
-import { decideHostSetup, hostAdapterOf } from './host-setup.mjs'
+import { decideHostSetup, hostAdapterOf, withRepositoryUrl } from './host-setup.mjs'
+import { release } from './changelog.mjs'
 import { init } from './init.mjs'
+import { loadProfile } from './profile.mjs'
 
 const dirs = []
 const fresh = () => {
@@ -129,6 +132,10 @@ test("a host that cannot be asked changes nothing and names the command, and a v
   assert.deepEqual(asked.calls, [], 'the host is not asked')
 })
 
+const FLAGS_PROFILE = {
+  project: { name: 'acme' },
+  adapters: { stacks: ['node-ts'], runtimes: ['claude-code'], host: 'github' }
+}
 const FLAGS = { nonInteractive: true, name: 'acme', repository: 'acme/shop', stack: 'node-ts', runtime: 'claude-code' }
 async function bootstrapped(options, hostSetup) {
   const root = fresh()
@@ -189,4 +196,45 @@ test('without the host setup (--no-host-setup, or a caller that gives none) the 
   assert.equal(result.profile.host, undefined)
   assert.equal(result.workflow, true, 'by default the host protects, so the workflow is scaffolded')
   assert.match(result.output, /Protect both branches/)
+})
+
+test('a bootstrapped project has the address of its repository, and its first release writes real compare and tag links', async () => {
+  const root = fresh()
+  const { code } = await init({ root, flags: FLAGS, hostSetup: false })
+  assert.equal(code, 0)
+  const profile = loadProfile(root)
+  assert.equal(profile.repository.url, 'https://github.com/acme/shop')
+
+  const git = (...args) => execFileSync('git', args, { cwd: root, encoding: 'utf8', stdio: 'pipe' })
+  git('checkout', '-q', '-b', 'release/0.1.1')
+  mkdirSync(join(root, profile.paths.changelogFragments), { recursive: true })
+  writeFileSync(join(root, profile.paths.changelogFragments, 'first.md'), 'Added: the first thing.\n')
+  git('add', '-A')
+  git('commit', '-q', '-m', 'docs: a fragment')
+  release({
+    root,
+    profile: { ...profile, release: { ...profile.release, lockCommand: undefined } },
+    date: '2026-01-01'
+  })
+
+  const changelog = readFileSync(join(root, profile.paths.changelog), 'utf8')
+  assert.match(changelog, /^\[Unreleased\]: https:\/\/github\.com\/acme\/shop\/compare\/v0\.1\.1\.\.\.HEAD$/m)
+  assert.match(changelog, /^\[0\.1\.1\]: https:\/\/github\.com\/acme\/shop\/releases\/tag\/v0\.1\.1$/m)
+  assert.doesNotMatch(changelog, /undefined/)
+})
+
+test('an address the profile file has is kept, and one the project has no host adapter for is not invented', async () => {
+  const kept = fresh()
+  writeFileSync(
+    join(kept, 'harness-profile.json'),
+    JSON.stringify({ ...FLAGS_PROFILE, repository: { slug: 'acme/shop', url: 'https://git.example.com/acme/shop' } })
+  )
+  const { code } = await init({ root: kept, flags: { nonInteractive: true }, hostSetup: false })
+  assert.equal(code, 0)
+  assert.equal(loadProfile(kept).repository.url, 'https://git.example.com/acme/shop')
+
+  const profile = { repository: { slug: 'acme/shop' } }
+  assert.deepEqual(withRepositoryUrl(profile, undefined), profile)
+  assert.deepEqual(withRepositoryUrl(profile, { manifest: { roles: {} }, modules: {} }), profile)
+  assert.equal(withRepositoryUrl(profile, adapter).repository.url, 'https://github.com/acme/shop')
 })

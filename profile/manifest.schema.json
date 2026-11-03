@@ -135,6 +135,7 @@
     },
     "host": {
       "repository-identity": "required",
+      "repository-address": "logic-optional",
       "protection-available": "logic",
       "branch-protection": "logic",
       "required-checks": "required",
