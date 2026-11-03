@@ -181,12 +181,15 @@ export function readVersion(file, text) {
   return version
 }
 
-/** The text of a version file with its version set; the rest of a TOML file is kept as it is. */
+/** The text of a version file with its version set; the rest of the file is kept as it is, so that a formatter finds nothing to change. */
 export function writeVersion(file, text, version) {
-  readVersion(file, text)
+  const current = readVersion(file, text)
   return isToml(file)
     ? text.replace(PROJECT_VERSION, `$1$2${version}$2`)
-    : `${JSON.stringify({ ...JSON.parse(text), version }, null, 2)}\n`
+    : text.replace(
+        new RegExp(`("version"\\s*:\\s*)"${current.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`),
+        `$1"${version}"`
+      )
 }
 
 // The release version before `version`, as the changelog's comparison links have it
