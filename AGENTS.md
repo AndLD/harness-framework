@@ -21,6 +21,7 @@ cite by its role (the branches, the coverage gate, the commands) is in the [proj
 <!-- harness:begin procedures -->
 | When | Follow the procedure |
 | ---- | -------------------- |
+| adding a task or a phase to the development plan, recording a defect or an improvement found in use, or splitting a phase | [`core/procedures/change-plan.md`](./core/procedures/change-plan.md) |
 | asked to review the quality of the code (not the diff of one change) | [`core/procedures/code-review.md`](./core/procedures/code-review.md) |
 | a session ends or pauses, and when a task finishes, to leave the state of the work in the repository | [`core/procedures/end-session.md`](./core/procedures/end-session.md) |
 | the last task of a phase is merged, to close the phase and report it | [`core/procedures/finish-phase.md`](./core/procedures/finish-phase.md) |

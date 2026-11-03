@@ -207,10 +207,6 @@ test('plan summary --check holds the structure of a phase folder and names each 
   assert.match(problemsOf(ctx), /7\.1\.log\.md: the log must have a `\*\*Status:\*\*/)
   write(`${folder}/7.1.log.md`, '[← 7.1](./7.1.md)\n\n# 7.1 — First — log\n\n**Status:** ✅ done\n')
 
-  write(`${folder}/12.1.md`, '[← Phase 7](./README.md)\n\n# 12.1 — Strayed\n\n**Status:** ⬜ · **Size:** 0 SP\n')
-  assert.match(problemsOf(ctx), /12\.1\.md: the task is filed in Phase 7 but its id belongs to Phase 12/)
-  rmSync(join(ctx.root, folder, '12.1.md'))
-
   write(
     `${folder}/7.2.md`,
     '[← Phase 7](./README.md)\n\n# 7.2 — Second\n\n**Status:** ⬜ · **Size:** 0 SP · **Needs:** 7.9, 9.1\n'

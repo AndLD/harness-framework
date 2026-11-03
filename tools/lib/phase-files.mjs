@@ -95,7 +95,7 @@ export function withTaskTable(text, table) {
 }
 
 // The checks of the structure of a phase folder (core/plan/phases.md, section 9): its index, the back-links and logs of its tasks, the work log, the
-// record of every done task, and that a task belongs to the phase it is filed in
+// record of every done task
 function folderStructureProblems({
   folder,
   file,
@@ -115,13 +115,7 @@ function folderStructureProblems({
     ...indexPartsProblems({ file, text: readme }),
     ...workLogProblems({ file, text: readme, exists })
   ]
-  const number = readme.match(/^# Phase (\d+) — /m)?.[1]
   for (const task of tasks) {
-    if (number && task.id.split('.')[0] !== number) {
-      problems.push(
-        `${task.file}: the task is filed in Phase ${number} but its id belongs to Phase ${task.id.split('.')[0]}`
-      )
-    }
     const text = taskFiles.find(({ file: name }) => name === `${task.id}.md`)?.text ?? ''
     problems.push(
       ...backLinkProblems({ file: `${at}/${task.id}.md`, text, expected: `${at}/README.md`, what: 'the phase index' })

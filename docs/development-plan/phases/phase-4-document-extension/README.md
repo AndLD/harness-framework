@@ -15,7 +15,7 @@ Planned on 2026-11-03 from an analysis of the documents that a project edits or 
 | - | ---- | ----- | -- | ------ |
 | [4.1](./4.1.md) | `paths.procedures`: a project's own procedures | C2 | 3 | ✅ |
 | [4.2](./4.2.md) | Structure checks for the plan | C2 | 3 | ✅ |
-| [4.3](./4.3.md) | Procedure `change-plan` | C1 | 2 | ⬜ |
+| [4.3](./4.3.md) | Procedure `change-plan` | C1 | 2 | ✅ |
 | [4.4](./4.4.md) | Procedure `update-framework` | C1 | 3 | ⬜ |
 | [4.4a](./4.4a.md) | The agent cannot load most procedures as skills | C2 | 2 | ⬜ |
 | [4.5](./4.5.md) | Measure and budget the procedures block; default probes | C1 | 2 | ⬜ |
