@@ -13,9 +13,9 @@
   },
   "managed": {
     "docs/profile.md": "7ef83e6fe46210857de17f5b3973450fbf05aa4962d53a2b27d8ca0f2267d640",
-    "docs/quality-reviews/harness/bindings.md#layers": "6af8e7333722941cb4c94ec632655903319c7cbd7501a4443ac731a1a41a72d7",
+    "docs/quality-reviews/harness/bindings.md#layers": "3b11a01af0d9af7bdc65ece067d8b461b57b321be2eb2391c6bbbe417a7399f1",
     "docs/engineering/rule-checks.md#rule-map": "720941c4c878d65a6eb695af0ee2e2627901bdd5c6e9f58cf62cfd7ca4bf3b9a",
-    "AGENTS.md#procedures": "d3f0cb543fabbfc006274df3f53291488ddb274a58d0704d0947f6809b7734ea",
+    "AGENTS.md#procedures": "026b3f7236a6d4ca2d37839f0b0662e3670453946131e7f2d5f09ccb3082ea7a",
     "AGENTS.md#non-negotiables": "60bc719e1aa1bbb4ce989385e5c3791bc01d70005a59bae8814cff06c80ec1c0",
     "AGENTS.md#git-rules": "344a2f75fbaf55196a322f703efe03962bd3a4add6fd00417ad03b9c72f7c863",
     ".claude/skills/code-review/SKILL.md": "3a46b3ee03a74b1a464bff2d507dcaba5c739011e531e31a5d507cf11721fd46",
@@ -26,7 +26,8 @@
     ".claude/skills/open-pull-request/SKILL.md": "fee36ad6b22af9805762a67ca570d5781511c2da9e132642647da0fc1e165ddd",
     ".claude/skills/release/SKILL.md": "00dd618427dfd1e8a6a08bee78737da637e95fdb4fd190d79b516032fd2b84e4",
     ".claude/skills/start-task/SKILL.md": "ad41b5fabaa1dd4102dcce6dab66c283800464a669f57dde73014150f5fe3c48",
-    ".claude/skills/triage-reports/SKILL.md": "cbd122e4137cf835d265030b5d33ca54fd71bdc04dc398a846a159d27be01d3f"
+    ".claude/skills/triage-reports/SKILL.md": "cbd122e4137cf835d265030b5d33ca54fd71bdc04dc398a846a159d27be01d3f",
+    ".claude/skills/change-framework/SKILL.md": "e6032cf4adae64efc2b1de6a497f85c0c3537153b51d35a6656fd6b20b1a66d4"
   },
-  "profile": "cab622ce97dd1a5e36e0ee52f1b5ec85e4f53ad451b6aa3db955ad2451ecba18"
+  "profile": "a6a25b6a26cfe0e3f0f1e4bd2887b3d436698d7f836bf1bbd004893ea387c83e"
 }

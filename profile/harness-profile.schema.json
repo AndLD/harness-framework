@@ -233,6 +233,10 @@
           "description": "The folder of the issue queue: defects and improvements found in use, one file per issue (`I-<n>.md`) with its log beside it, an index of the open ones, and `archived/` for the finished ones.",
           "default": "docs/development-plan/issues"
         },
+        "procedures": {
+          "type": "string",
+          "description": "The folder of the project's own procedures, files of the format of `core/procedures/` (`<name>.md` with the frontmatter `name`, `description`, `invocation`). The skill generators and the procedures block of the entry file list them with the framework's; a name that the framework's procedures have too is an error. Optional: a project without the role has none."
+        },
         "changelog": {
           "type": "string",
           "description": "The changelog."

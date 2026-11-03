@@ -2,7 +2,7 @@
 
 # Phase 4 — Reaching and holding the structure of documents (19 SP)
 
-**Status:** ⬜ Not started · **Branches:** see the [implementation log](#implementation-log) · **Work log:** [log](./log.md), and a log beside each task (`<id>.log.md`)
+**Status:** 🟡 In progress · **Branches:** see the [implementation log](#implementation-log) · **Work log:** [log](./log.md), and a log beside each task (`<id>.log.md`)
 
 Planned on 2026-11-03 from an analysis of the documents that a project edits or extends, and of how an agent reaches their templates and rules. The finding: the templates and rules are in the framework, but an agent reaches them only by following three links from the entry file, and `check plan` holds the structure of a phase file only in part, so "add a phase" or "put a defect into the plan" can end in a copy of an old phase that carries its drift. This phase gives a project procedures of its own (4.1), makes the plan checks hold the structure (4.2), adds the two procedures that the analysis ranked first (4.3, 4.4), measures what the procedures cost in the always-loaded entry file (4.5), and leaves the rest to a decision after the data (4.6).
 
@@ -13,7 +13,7 @@ Planned on 2026-11-03 from an analysis of the documents that a project edits or 
 <!-- phase-tasks:start -->
 | # | Task | Agent | SP | Status |
 | - | ---- | ----- | -- | ------ |
-| [4.1](./4.1.md) | `paths.procedures`: a project's own procedures | C2 | 3 | ⬜ |
+| [4.1](./4.1.md) | `paths.procedures`: a project's own procedures | C2 | 3 | ✅ |
 | [4.2](./4.2.md) | Structure checks for the plan | C2 | 3 | ⬜ |
 | [4.3](./4.3.md) | Procedure `change-plan` | C1 | 2 | ⬜ |
 | [4.4](./4.4.md) | Procedure `update-framework` | C1 | 3 | ⬜ |
