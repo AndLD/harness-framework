@@ -311,3 +311,14 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** the issue was not in the list when this session began; it is dated 19:57 UTC.
 - **Next step:** stop; the owner cuts `0.1.2`.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — 0.1.2 is released
+- **Tasks:** 3.17, 3.18, 3.3, 3.9, 3.1, 3.2 (released).
+- **Branch:** `release/0.1.2` — merged into `main` by [#39](https://github.com/AndLD/harness-framework/pull/39), tagged `v0.1.2`; `main` is merged back into `develop` by `chore/merge-release-0.1.2`.
+- **Decisions / deviations from the plan:**
+  - Development versions `0.1.2-dev.1` and `0.1.2-dev.2` were tagged. A scratch clone of the consuming project synced `dev.1`, and its sync stopped half way: the entry-file rules of this version need `host.autoMerge`, which a sync run by the tools of 0.1.1 does not default (`x-sameAs` is unknown to them). The fix is on the release branch (a plain `default` beside `x-sameAs`); `dev.2` synced in one step, `check generated` passed after `sync --local`, and `check all` exited 0. The same run found a hit of the scan of the core ("base" in a contract), which was reworded.
+  - `harness release` rewrote `framework.json` in a way Prettier rejects; it now keeps the format of a JSON version file.
+  - The tag `v0.1.2` was first pushed to the wrong commit (the merge of 0.1.1) because the local `main` was not fetched; its Release workflow failed at the version check and created nothing. With the owner's approval the tag was moved to the merge commit of #39 and the workflow ran green.
+- **Problems / blockers / findings:** the guard refuses a push (a tag too) while the checkout is on a protected branch; tag from a work branch checkout. Task 3.19 (issue 30) is next in `0.2.0`.
+- **Next step:** `0.2.0` begins with 3.19, then 3.5 (plan index), when the owner asks for it.
+- **Verify with:** `npm run docs:check`
