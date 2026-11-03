@@ -269,6 +269,45 @@ test('session-start prints the branch, the phase in progress and its next step, 
   assert.match(JSON.parse(cursor.out).additional_context, /Phase in progress: Phase 3 — X/)
 })
 
+test('session-start with no phase in progress prints the next task by the order of development, and by the execution order of a phase, not by its table', () => {
+  const row = (id, mark) => `| ${id} | **Task ${id}**: text | C1 | 1 | ${mark} |\n`
+  const header = '| # | Task | Agent | SP | Status |\n| --- | --- | --- | --- | --- |\n'
+  const profile = JSON.stringify({
+    branches: { production: 'main', integration: 'develop' },
+    adapters: { stacks: ['node-ts'], host: 'github' },
+    paths: { phases: 'plan/phases', planIndex: 'plan/README.md' }
+  })
+  const run = (files) =>
+    hook(
+      'session-start',
+      sample(
+        'claude-code',
+        'session-start.json',
+        project('develop', { files: { 'harness-profile.json': profile, ...files } }).root
+      )
+    )
+
+  const indexed = run({
+    'plan/README.md':
+      '# Plan\n\n**Order of development** (a date)\n\n| Release | Tasks, in order |\n| --- | --- |\n| `0.1.1` | 1.3, 1.1 |\n',
+    'plan/phases/phase-1-x.md': `# Phase 1 — X\n\n**Status:** ⬜ Not started\n\n**Execution order:** the plan index says.\n\n${header}${row('1.1', '⬜')}${row('1.2', '⬜')}${row('1.3', '⬜')}`
+  })
+  assert.match(
+    indexed.out,
+    /No phase is in progress\.\nNext task: 1\.3 Task 1\.3 \(plan\/phases\/phase-1-x\.md\), by the order of development/
+  )
+
+  const ordered = run({
+    'plan/phases/phase-1-x.md': `# Phase 1 — X\n\n**Status:** ⬜ Not started\n\n**Execution order:** 1.2 first, because 1.1 needs it; then 1.1.\n\n${header}${row('1.1', '⬜')}${row('1.2', '⬜')}`
+  })
+  assert.match(ordered.out, /Next task: 1\.2 Task 1\.2 .*by the execution order/)
+
+  const finished = run({
+    'plan/phases/phase-1-x.md': `# Phase 1 — X\n\n**Status:** ✅ Done\n\n${header}${row('1.1', '✅')}`
+  })
+  assert.match(finished.out, /No phase is in progress\.\nRead the method/)
+})
+
 test('the session start message says what it knows and what it does not', () => {
   const none = sessionStartMessage(
     'develop',
