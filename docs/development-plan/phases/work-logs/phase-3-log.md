@@ -88,3 +88,18 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none.
 - **Next step:** unchanged: 3.6 to 3.8 first (`0.1.1`); then 3.10 at the start of the work toward `0.2.0`.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — migrations: tasks 3.11 and 3.12; 3.5 and 3.10 adjusted; the release order
+- **Tasks:** 3.11 and 3.12 added (not started); 3.5 and 3.10 changed (sizes unchanged).
+- **Branch:** `docs/migration-notes-plan`
+- **Decisions / deviations from the plan:** the owner expects many consumers to skip versions (from `0.1.0` straight to `0.3.0`, or wider), so the
+  framework carries the migration, not the consumer's plan.
+  - 3.11: a migration note for every version from the previous one, in a fixed shape; no release without it. Part of `0.1.1`.
+  - 3.12: migration scripts for the mechanical changes, run in version order with the target's tools, recorded in the lock; a migration test from
+    every released tag. Part of `0.2.0`.
+  - 3.5 gets its fix: `sync` places the files and `harness migrate` (new tools, new process) runs the scripts and regenerates; it comes before 3.12.
+  - 3.10's split is the first migration script; the split command stays for a phase split by choice.
+  - The release order is in the plan index; the consuming project skips `0.1.2` on purpose.
+- **Problems / blockers / findings:** none. Phase 3 is now 28 SP.
+- **Next step:** 3.6 → 3.7 → 3.8 → 3.11, released as `0.1.1`.
+- **Verify with:** `npm run docs:check`

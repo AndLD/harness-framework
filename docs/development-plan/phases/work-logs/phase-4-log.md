@@ -50,3 +50,13 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none.
 - **Next step:** unchanged, after 3.10.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — 4.4 takes a version through the migrations
+- **Tasks:** 4.4 changed (size unchanged).
+- **Branch:** `docs/migration-notes-plan`
+- **Decisions / deviations from the plan:** with tasks 3.5, 3.11 and 3.12 of Phase 3, the procedure `update-framework` takes a version across any number
+  of versions: `sync`, `harness migrate` when the old `sync` did not start it, the migration notes in order. Tasks 3.5 and 3.12 come before this phase
+  with 3.10.
+- **Problems / blockers / findings:** none.
+- **Next step:** unchanged, after 3.5, 3.12 and 3.10.
+- **Verify with:** `npm run docs:check`
