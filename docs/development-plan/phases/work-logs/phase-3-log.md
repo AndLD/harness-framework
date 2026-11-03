@@ -211,3 +211,11 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none.
 - **Next step:** unchanged: 3.6 → 3.7 → 3.8 → 3.11, released as `0.1.1`.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — task 3.6 done: the framework's CORE scan names the tools no adapter covers
+- **Tasks:** 3.6 (done); Phase 3 is 🟡.
+- **Branch:** `feature/3.6-core-scan-tools` — done (details: `work-logs/phase-3/3.6.md`).
+- **Decisions / deviations from the plan:** none.
+- **Problems / blockers / findings:** none.
+- **Next step:** task 3.7.
+- **Verify with:** `npm run docs:check`

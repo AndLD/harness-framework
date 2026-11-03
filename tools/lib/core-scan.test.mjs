@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
 import { coreLeakProblems, frameworkCoreProblems } from './core-scan.mjs'
 import { coreEntries } from './layers.mjs'
@@ -90,4 +91,29 @@ test('the words of the framework adapters are scanned for too, each reported wit
       'f/core/a.md:2: the runtime adapter agentx term "AgentX" does not belong in a CORE file; cite a role of the profile'
     ]
   )
+})
+
+// The tools that no adapter of the framework covers, by class: the framework's own `terms.stack` must refuse each of them in `core/`
+const UNCOVERED_TOOLS = {
+  database: ['PostgreSQL', 'Redis', 'MongoDB', 'SQLite'],
+  orm: ['Prisma', 'TypeORM', 'SQLAlchemy'],
+  'web framework': ['NestJS', 'Next.js', 'React.js', 'Vue', 'Django'],
+  'test framework': ['Cypress', 'Playwright', 'Selenium', 'Vitest'],
+  'container or cloud service': ['Docker', 'Kubernetes', 'Vercel', 'AWS', 'Terraform'],
+  'host or agent runtime': ['GitLab', 'Bitbucket', 'Copilot', 'Jenkins']
+}
+const NEUTRAL_WORDS =
+  'The database and the container hold the data; react to a failure, express the rule, set the helm of the work.'
+
+test('the framework profile refuses a tool name of each class that no adapter covers, and lets neutral words pass', () => {
+  const { terms } = JSON.parse(readFileSync(new URL('../../harness-profile.json', import.meta.url), 'utf8'))
+
+  for (const [kind, names] of Object.entries(UNCOVERED_TOOLS)) {
+    for (const name of names) {
+      const problems = frameworkCoreProblems({ 'core/a.md': `Use ${name} for this.` }, terms, 'core')
+      assert.equal(problems.length, 1, `${kind} "${name}" should be refused`)
+      assert.match(problems[0], /^core\/a\.md:1: the stack term "/)
+    }
+  }
+  assert.deepEqual(frameworkCoreProblems({ 'core/a.md': NEUTRAL_WORDS }, terms, 'core'), [])
 })
