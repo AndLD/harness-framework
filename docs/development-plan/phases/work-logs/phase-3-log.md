@@ -184,3 +184,19 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none. Phase 3 is now 51 SP.
 - **Next step:** unchanged: 3.6 → 3.7 → 3.8 → 3.11, released as `0.1.1`.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — task 3.18: auto-merge, and every consumer set up for it
+- **Tasks:** 3.18 added (not started).
+- **Branch:** `docs/3.18-auto-merge-plan`
+- **Decisions / deviations from the plan:** the owner's decisions:
+  - A session never learns that its checks passed (the desktop app wakes it on failures only, and the rules forbid polling), so plan work waited for the
+    owner after every pull request. The host's auto-merge closes that: an agent enables it on exactly the pull requests it may merge without asking.
+  - The gaps it leaves are part of the task: "clean status", a fix pushed after enabling, a task that needs the previous one (one level of stacking and a
+    script for the squash conflicts), and a pull request behind its base, which a workflow updates when the integration branch moves. The owner chose that
+    workflow over dropping the up-to-date requirement.
+  - Bootstrap sets this up for every consumer by default, with fallbacks for a repository that cannot be protected and a person without admin rights, and
+    an opt-out; existing consumers rerun `harness host protect` from the version's migration note.
+  - On the same day this repository became public, got its ruleset and "allow auto-merge", and #20 was the first pull request merged by the host.
+- **Problems / blockers / findings:** none. Phase 3 is now 56 SP; `0.1.2` is 3.17, 3.18, 3.3, 3.9, 3.1, 3.2.
+- **Next step:** unchanged: 3.6 → 3.7 → 3.8 → 3.11, released as `0.1.1`.
+- **Verify with:** `npm run docs:check`
