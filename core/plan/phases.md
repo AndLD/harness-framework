@@ -4,14 +4,27 @@
 
 How one phase of a development plan is written. This file is the **method** and is project-neutral. The project's values
 (identifiers, symbols, scale, branch naming, how the specification is cited) are in the phase bindings (the project's `bindings.md` next to its phase files). The template
-for a new phase is [`phase-template.md`](./phase-template.md).
+for a new phase is [`phase-index-template.md`](./phase-index-template.md), and for a task [`task-template.md`](./task-template.md).
 
 A **phase** is a coherent stretch of work with a theme, a list of tasks, exit criteria, and a record of the changes that delivered
-it. One phase is one file in the plan's `phases/` folder.
+it. One phase is a **folder** in the plan's `phases/` folder, `phase-<n>-<slug>/` (a phase of the older layout is one file `phase-<n>-<slug>.md`; the
+tools read both, so a finished phase need not be split, and `harness plan split <n>` splits one by choice).
 
 ---
 
 ## 1. Anatomy
+
+A phase folder holds:
+
+| File | Content |
+| ---- | ------- |
+| `README.md` | the **phase index**: the parts of the table below, with the task table generated from the task files |
+| `<id>.md` | one **task**: its title (`# <id> — <title>`), a status line (`**Status:**`, `**Agent:**`, `**Size:**`, optional `**Needs:**` and `**Log:**`) and its description, from the [task template](./task-template.md) |
+| `<id>.log.md` | the task's append-only log (the [task-log template](./task-log-template.md)), kept beside the task and separate from it, since a log is several times its task and most readers need only the task |
+| `log.md` | the phase's work log, for what concerns the whole phase only (decisions, pauses, the close of the phase) |
+
+A resuming agent reads the phase index and the file of the task it works on, never the other tasks. The phase index follows
+the [phase index template](./phase-index-template.md):
 
 | Part | Content |
 | ---- | ------- |
@@ -20,7 +33,7 @@ it. One phase is one file in the plan's `phases/` folder.
 | Status line | Status, branches (or a link to the implementation log), link to the phase's work log |
 | Introduction | Optional: one paragraph on the goal and, if relevant, why this phase exists |
 | Execution order | Optional: the order of tasks when it differs from their ids, with the reason |
-| Task table | One row per task: id, description, agent-complexity marker (where the plan uses them), size, status |
+| Task table | Generated from the task files (`harness plan summary`) between two markers: id (linking the task file), title, agent-complexity marker (where the plan uses them), size, status. In a phase of the older layout, one row per task with its whole description |
 | Task legend | The status symbols, one line |
 | Exit criteria | Observable conditions that make the phase done |
 | Implementation log | A table of the changes (branch, tasks, pull request, status) that delivered the tasks |
@@ -70,14 +83,15 @@ A phase file holds the plan and its outcome, nothing else. There is no free-form
 
 ## 7. Work log
 
-Each phase has an append-only log in `work-logs/` next to the phase files, with the entry template inside it. The phase file links
-to it from the status line; the log links back to the phase file. The log records sessions, the exact next step and the commands
+Each phase has an append-only `log.md` in its folder (older layout: a log in `work-logs/` next to the phase files), with the entry template inside it. The phase index links
+to it from the status line; the log links back to the phase index. The log records sessions, the exact next step and the commands
 that verify the state; the phase file records only the plan and its outcome.
 
-**In the phases that use per-task records, a task writes its own fragment** `work-logs/phase-<n>/<task id>.md` (start from the framework's [`task-log-template.md`](./task-log-template.md)), so
+**A task writes its own log** `<task id>.log.md` beside its task file (start from the framework's [`task-log-template.md`](./task-log-template.md); older layout: a fragment in `work-logs/phase-<n>/<task id>.md`), so
 that tasks worked on in parallel never edit the same file. The phase's own log keeps only what concerns the whole phase (decisions before
-the start, pauses, the hand-over between waves). The fragment starts with a `**Status:**` line (🟡 while the task is in progress, ✅ when
-it is done); the session-start hook prints the "Next step" of every fragment in progress. The logs of the other phases stay as they are.
+the start, pauses, the hand-over between waves). The log starts with a `**Status:**` line (🟡 while the task is in progress, ✅ when
+it is done). **A finished task writes only its own log**, and its "next step" names what follows; the session-start hook prints the newest "next step" across the
+phase log and the task logs, by the date of the entry, and the open tasks of the phase. The logs of a phase kept as one file stay as they are.
 
 ## 8. Splitting and merging phases
 
@@ -87,6 +101,6 @@ it is done); the session-start hook prints the "Next step" of every fragment in 
 
 ## 9. Checks
 
-A phase file is conformant when: the anatomy parts that apply are present and in order; every task has an id, a size and a status;
+A phase is conformant when: the anatomy parts that apply are present and in order; every task has an id, a size and a status (in a folder: in its task file, which `harness check plan` reads);
 every open task carries an agent-complexity marker where the plan uses them; the title size equals the sum of the task sizes; the status agrees with the index; the work-log link resolves; every task cited
 elsewhere exists here; every done task has a row in the implementation log.

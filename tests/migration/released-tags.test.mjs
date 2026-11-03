@@ -2,7 +2,16 @@
 // `check all` passes on it, with the tools the project holds. The tags are exported from the Git history, so a clone without its tags cannot run it.
 import assert from 'node:assert/strict'
 import { execFileSync, spawnSync } from 'node:child_process'
-import { cpSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
+import {
+  cpSync,
+  existsSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  realpathSync,
+  rmSync,
+  writeFileSync
+} from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { after, before, test } from 'node:test'
@@ -124,6 +133,12 @@ for (const tag of TAGS) {
     assert.equal(next.status, 0, `${oldSync.stderr}\n${next.stdout}${next.stderr}`)
 
     assert.equal(readLock(root).version, version)
+    // The script of 0.2.0 split the open phase the scaffold made into a folder
+    const phases = join(root, 'docs/development-plan/phases')
+    assert.ok(
+      readdirSync(phases).some((name) => /^phase-\d+-issues$/.test(name) && existsSync(join(phases, name, 'README.md')))
+    )
+    assert.ok(!readdirSync(phases).some((name) => /^phase-\d+-issues\.md$/.test(name)))
     const checked = node(projectTools, ['check', 'all', '--root', root])
     assert.equal(checked.status, 0, checked.stdout + checked.stderr)
 

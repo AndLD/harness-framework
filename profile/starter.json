@@ -40,7 +40,7 @@
     },
     "plan": {
       "taskId": "`<phase>.<number>`, with an optional letter suffix (`2.1`, `2.1a`)",
-      "phasesWithFragments": "every phase: each task writes one log fragment `work-logs/phase-<n>/<task id>.md` next to the phase files (template: `harness/core/plan/task-log-template.md`)",
+      "phasesWithFragments": "every phase: each task writes its own log `<task id>.log.md` beside its task file in the phase folder (template: `harness/core/plan/task-log-template.md`); a phase of the older layout keeps its fragments in `work-logs/phase-<n>/`",
       "logCommand": "`node harness/tools/harness.mjs plan log <n>`",
       "estimationScale": "story points (SP), Fibonacci; 1 SP is about half a developer-day or one focused agent session; estimates include the tests the definition of done requires",
       "resumePhrases": "\"Start Phase N\", \"Continue Phase N\"; the phrase approves the pull requests of the named phases",

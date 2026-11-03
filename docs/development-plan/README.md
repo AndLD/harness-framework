@@ -52,7 +52,7 @@ Task 3.13 turns this plan's open-ended phase into a normal phase that keeps ever
 
 <!-- plan-contents:start -->
 - [Phase 1 — Adoption, presets, examples and the proof (12 SP)](./phases/phase-1-adoption-presets-proof.md)
-- [Phase 2 — Security and review automation (17 SP)](./phases/phase-2-security.md)
-- [Phase 3 — Issues and stabilization (58 SP, grows as issues are added)](./phases/phase-3-issues.md)
-- [Phase 4 — Reaching and holding the structure of documents (19 SP)](./phases/phase-4-document-extension.md)
+- [Phase 2 — Security and review automation (17 SP)](./phases/phase-2-security/README.md)
+- [Phase 3 — Issues and stabilization (58 SP, grows as issues are added)](./phases/phase-3-issues/README.md)
+- [Phase 4 — Reaching and holding the structure of documents (19 SP)](./phases/phase-4-document-extension/README.md)
 <!-- plan-contents:end -->
