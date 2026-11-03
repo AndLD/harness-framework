@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { test } from 'node:test'
-import { coreLeakProblems, frameworkCoreProblems } from './core-scan.mjs'
+import { coreLeakProblems, frameworkCoreProblems, loadVocabulary } from './core-scan.mjs'
 import { coreEntries } from './layers.mjs'
 
 const PROFILE = {
@@ -117,3 +117,75 @@ test('the framework profile refuses a tool name of each class that no adapter co
   }
   assert.deepEqual(frameworkCoreProblems({ 'core/a.md': NEUTRAL_WORDS }, terms, 'core'), [])
 })
+
+test('the words of the vocabulary, and their plurals, are not reported; the other matches on the same line are', () => {
+  const vocabulary = new Set(['script', 'bot'])
+  const profile = { ...PROFILE, product: '\\bscripts?\\b|\\bbots?\\b|\\bcart\\b', productGeneric: '(?!)' }
+  const files = { 'f/core/a.md': 'Run the scripts and the script.\nThe Scripts and a cart.' }
+  assert.deepEqual(frameworkCoreProblems(files, profile, 'f/core', [], { vocabulary }), [
+    'f/core/a.md:2: the product term "cart" does not belong in a CORE file; cite a role of the profile'
+  ])
+  assert.equal(
+    frameworkCoreProblems(files, profile, 'f/core').length,
+    2,
+    'without a vocabulary both lines are reported'
+  )
+  assert.deepEqual(
+    coreLeakProblems({ 'AGENTS.md': AGENTS('The bots run.'), 'docs/method.md': '' }, profile, BINDINGS, { vocabulary }),
+    []
+  )
+})
+
+test("the vendored scan words each hit with the way out of its term list; an adapter word is the framework's own", () => {
+  const adapters = [{ source: 'host adapter somehost', pattern: '\\bsomehost\\b' }]
+  const files = { 'h/core/a.md': 'Postgres.\nA bot.\nIn Phase 4.\nSomeHost.' }
+  const messages = frameworkCoreProblems(files, PROFILE, 'h/core', adapters, { vendored: true }).map((text) =>
+    text.replace(/^h\/core\/a\.md:\d: /, '')
+  )
+  assert.deepEqual(messages, [
+    'the stack term "Postgres" is in the vendored framework core, which you cannot edit; an ordinary word: make `terms.stack` of the profile file narrower; a product or tool word: report it upstream (an issue of the framework repository) and stay on the current version',
+    'the product term "bot" is in the vendored framework core, which you cannot edit; an ordinary word: add it to `terms.productGeneric` of the profile file; a product or tool word: report it upstream (an issue of the framework repository) and stay on the current version',
+    'the project value "Phase 4" is in the vendored framework core, which you cannot edit; an ordinary word: make `terms.projectValues` of the profile file narrower; a product or tool word: report it upstream (an issue of the framework repository) and stay on the current version',
+    'the host adapter somehost term "SomeHost" is in the vendored framework core, which you cannot edit; report it upstream (an issue of the framework repository) and stay on the current version'
+  ])
+})
+
+test("the vocabulary of the framework core is sorted, plain, used by the core, and hides nothing of the framework's own terms", () => {
+  const coreDir = new URL('../../core/', import.meta.url)
+  const words = JSON.parse(readFileSync(new URL('vocabulary.json', coreDir), 'utf8')).words
+  assert.deepEqual(words, [...words].sort(), 'sorted, so a duplicate or a new word is easy to see')
+  assert.equal(new Set(words).size, words.length)
+  assert.deepEqual(
+    words.filter(
+      (word) =>
+        !/^[a-z]+$/.test(word) || (words.includes(word.replace(/e?s$/, '')) && word.replace(/e?s$/, '') !== word)
+    ),
+    [],
+    'lower case, one word, and no plural next to its singular (the scan strips an s)'
+  )
+  assert.equal(loadVocabulary(coreDir.pathname).size, words.length)
+  assert.equal(loadVocabulary('/no/such/folder').size, 0, 'a version of the framework with no vocabulary has none')
+
+  const text = readCoreText(coreDir).toLowerCase()
+  assert.deepEqual(
+    words.filter((word) => !new RegExp(`\\b${word}`).test(text)),
+    [],
+    'a word that core does not use does not belong'
+  )
+
+  // The vocabulary must not hide a tool name or a value of this repository: none of its words matches the framework's own term lists
+  const { terms } = JSON.parse(readFileSync(new URL('../../harness-profile.json', import.meta.url), 'utf8'))
+  for (const pattern of [terms.stack, terms.projectValues]) {
+    assert.deepEqual(
+      words.filter((word) => new RegExp(pattern, 'i').test(word)),
+      []
+    )
+  }
+})
+
+function readCoreText(dir) {
+  return readdirSync(dir, { withFileTypes: true, recursive: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.md'))
+    .map((entry) => readFileSync(new URL(`${entry.parentPath ?? entry.path}/${entry.name}`, 'file://'), 'utf8'))
+    .join('\n')
+}

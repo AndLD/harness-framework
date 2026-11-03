@@ -7,7 +7,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { afterEach, test } from 'node:test'
 import { checkChangelog, release } from './changelog.mjs'
-import { checkCore, frameworkCoreFolder } from './core-scan.mjs'
+import { checkCore, frameworkCoreFolder, frameworkCoreScan } from './core-scan.mjs'
 import { checkLinks } from './links.mjs'
 import { checkPaths } from './paths.mjs'
 import { planLog, planSummary } from './plan.mjs'
@@ -188,6 +188,37 @@ test('core: the CORE documents and their sections, the one binding line, and the
   assert.match(
     checkCore({ root, profile: profileOf(root) }).problems.join('\n'),
     /framework\/core\/rules\.md:1: the product term "cart"/
+  )
+})
+
+test('core, pinned: the vendored framework core is scanned with the project terms, and a hit names the ways out', () => {
+  const lock = JSON.stringify({ mode: 'pinned', source: { type: 'git', url: 'https://example.com/framework.git' } })
+  const root = project({ 'harness.lock.json': lock, 'harness/core/rules.md': 'Each cart is checked.\n' })
+  assert.deepEqual(frameworkCoreScan(root), { folder: 'harness/core', vendored: true })
+
+  const problems = checkCore({ root, profile: profileOf(root) }).problems
+  assert.equal(problems.length, 1)
+  assert.match(problems[0], /^harness\/core\/rules\.md:1: the product term "cart" is in the vendored framework core/)
+  assert.match(problems[0], /add it to `terms\.productGeneric`/)
+  assert.match(problems[0], /report it upstream.*stay on the current version/)
+
+  // Way out 1: an ordinary word is listed in productGeneric
+  const generic = { ...PROFILE, terms: { ...PROFILE.terms, productGeneric: '\\border\\b|\\bcart\\b' } }
+  write(root, { 'harness-profile.json': JSON.stringify(generic) })
+  assert.deepEqual(checkCore({ root, profile: profileOf(root) }).problems, [])
+
+  // Way out 2: the word is in the vocabulary of the framework's core, whatever the terms say
+  write(root, {
+    'harness-profile.json': JSON.stringify(PROFILE),
+    'harness/core/vocabulary.json': JSON.stringify({ words: ['cart'] })
+  })
+  assert.deepEqual(checkCore({ root, profile: profileOf(root) }).problems, [])
+
+  // A tool word the vocabulary does not hold is still reported, also on a line with a vocabulary word
+  write(root, { 'harness/core/rules.md': 'Each cart waits for Postgres.\n' })
+  assert.match(
+    checkCore({ root, profile: profileOf(root) }).problems.join('\n'),
+    /the stack term "Postgres" is in the vendored/
   )
 })
 

@@ -2,7 +2,9 @@
 // kinds of CORE are scanned: the project's own CORE documents (the `layers.core` entries, some only in numbered sections, where the entry file's
 // one "Role binding" line may name the project's values; a project that uses the framework has none, since its entry file's rules are managed
 // blocks rendered from `core/rules/`); and the framework's `core/` folder where the project owns it, whole: the staging folder of a framework
-// built inside the project, the vendored copy of a detached project, or the framework's own repository (mode "self").
+// built inside the project, the vendored copy of a detached project, or the framework's own repository (mode "self"); and the vendored copy of a
+// pinned project, which the project scans with its own terms (`VENDORED`): the framework cannot know a project's product words, so only the project
+// can. The words the framework's core uses on purpose (`core/vocabulary.json`) are never reported, whatever the terms say.
 import { existsSync, readFileSync } from 'node:fs'
 import { dirname, isAbsolute, join } from 'node:path'
 import { DEFAULT_ENTRY_FILE } from './entry.mjs'
@@ -12,6 +14,7 @@ import { MODES, readLock, VENDOR_DIR } from './lock.mjs'
 import { walk } from './tree.mjs'
 
 export const BINDING_MARKER = '**Role binding.**'
+export const VOCABULARY_FILE = 'vocabulary.json'
 
 // The product terms without the generic words (productGeneric), which are judged in context and not scanned
 function productPattern(terms) {
@@ -34,24 +37,46 @@ function inSections(text, numbers) {
   })
 }
 
-// `adapters` are the term patterns of the framework's adapters (`adapterTerms`): words of a stack, a runtime or a host, which core must not use either
+// `adapters` are the term patterns of the framework's adapters (`adapterTerms`): words of a stack, a runtime or a host, which core must not use either.
+// A pattern of the profile file's `terms` has a `field` (the term list a project edits to change what it reports); the adapters' words are the framework's own.
 function leakPatterns(terms, adapters = []) {
   return [
-    ['stack term', new RegExp(terms.stack, 'i')],
-    ['product term', new RegExp(productPattern(terms), 'i')],
-    ['project value', new RegExp(terms.projectValues, 'i')],
-    ...adapters.map(({ source, pattern }) => [`${source} term`, new RegExp(pattern, 'i')])
+    ['stack term', new RegExp(terms.stack, 'gi'), 'stack'],
+    ['product term', new RegExp(productPattern(terms), 'gi'), 'productGeneric'],
+    ['project value', new RegExp(terms.projectValues, 'gi'), 'projectValues'],
+    ...adapters.map(({ source, pattern }) => [`${source} term`, new RegExp(pattern, 'gi'), null])
   ]
 }
 
-function lineProblems(path, line, index, patterns) {
+// A word of the vocabulary, or its plural, is not reported (a term pattern such as `\\bscripts?\\b` matches both)
+const inVocabulary = (vocabulary, term) => {
+  const word = term.toLowerCase()
+  return vocabulary.has(word) || vocabulary.has(word.replace(/e?s$/, ''))
+}
+
+// What a project can do about a hit in the vendored copy of the framework's core, which it cannot edit
+function wayOut(field) {
+  if (!field) {
+    return 'report it upstream (an issue of the framework repository) and stay on the current version'
+  }
+  const ordinary =
+    field === 'productGeneric'
+      ? 'an ordinary word: add it to `terms.productGeneric` of the profile file'
+      : `an ordinary word: make \`terms.${field}\` of the profile file narrower`
+  return `${ordinary}; a product or tool word: report it upstream (an issue of the framework repository) and stay on the current version`
+}
+
+function lineProblems(path, line, index, patterns, { vocabulary = new Set(), vendored = false } = {}) {
   const problems = []
-  for (const [kind, pattern] of patterns) {
-    const term = line.match(pattern)?.[0]
+  for (const [kind, pattern, field] of patterns) {
+    const term = [...line.matchAll(pattern)]
+      .map((match) => match[0])
+      .find((found) => !field || !inVocabulary(vocabulary, found))
     if (term) {
-      problems.push(
-        `${path}:${index + 1}: the ${kind} "${term}" does not belong in a CORE file; cite a role of the profile`
-      )
+      const what = vendored
+        ? `is in the vendored framework core, which you cannot edit; ${wayOut(field)}`
+        : 'does not belong in a CORE file; cite a role of the profile'
+      problems.push(`${path}:${index + 1}: the ${kind} "${term}" ${what}`)
     }
   }
   return problems
@@ -59,9 +84,10 @@ function lineProblems(path, line, index, patterns) {
 
 /**
  * The problems of the framework's `core/` folder, every file whole (no binding line, no sections); `files` maps a path to its text. With no file
- * at all the scan would prove nothing, so an empty `files` is a problem.
+ * at all the scan would prove nothing, so an empty `files` is a problem. `vendored` says that the folder is the pinned copy a project cannot edit, so a
+ * hit names the ways out; `vocabulary` is the set of the words the core uses on purpose (`loadVocabulary`).
  */
-export function frameworkCoreProblems(files, terms, folder, adapters = []) {
+export function frameworkCoreProblems(files, terms, folder, adapters = [], { vocabulary, vendored = false } = {}) {
   const patterns = leakPatterns(terms, adapters)
   const paths = Object.keys(files).sort()
 
@@ -69,7 +95,9 @@ export function frameworkCoreProblems(files, terms, folder, adapters = []) {
     return [`${folder}: no file found, so the CORE scan of the framework would prove nothing`]
   }
   return paths.flatMap((path) =>
-    files[path].split('\n').flatMap((line, index) => lineProblems(path, line, index, patterns))
+    files[path]
+      .split('\n')
+      .flatMap((line, index) => lineProblems(path, line, index, patterns, { vocabulary, vendored }))
   )
 }
 
@@ -77,7 +105,7 @@ export function frameworkCoreProblems(files, terms, folder, adapters = []) {
  * The problems of the project's CORE documents. `files` maps a path to its text; `entries` are the CORE entries (`coreEntries`); a listed path
  * missing from `files` is a problem. The entry file must hold exactly one binding line in its CORE sections.
  */
-export function coreLeakProblems(files, terms, entries, { entryFile = DEFAULT_ENTRY_FILE } = {}) {
+export function coreLeakProblems(files, terms, entries, { entryFile = DEFAULT_ENTRY_FILE, vocabulary } = {}) {
   const patterns = leakPatterns(terms)
   const problems = []
   let bindings = 0
@@ -95,7 +123,7 @@ export function coreLeakProblems(files, terms, entries, { entryFile = DEFAULT_EN
         bindings += 1
         return
       }
-      problems.push(...lineProblems(path, line, index, patterns))
+      problems.push(...lineProblems(path, line, index, patterns, { vocabulary }))
     })
   }
 
@@ -106,14 +134,28 @@ export function coreLeakProblems(files, terms, entries, { entryFile = DEFAULT_EN
   return problems
 }
 
-/** The framework `core/` folder that the project scans itself, or null when the framework scans it upstream (pinned to a Git source, or to a folder outside the project). */
-export function frameworkCoreFolder(root) {
+/**
+ * The framework `core/` folder that the project scans itself, and whether it is the pinned copy (`vendored`: the project cannot edit it, so a hit
+ * is reported with the ways out). Null when the framework scans it upstream: a pinned source folder outside the project, which is scanned where it lives.
+ */
+export function frameworkCoreScan(root) {
   const lock = readLock(root)
-  if (lock?.mode === MODES.self) return 'core'
-  if (lock?.mode === MODES.detached) return `${VENDOR_DIR}/core`
+  if (lock?.mode === MODES.self) return { folder: 'core', vendored: false }
+  if (lock?.mode === MODES.detached) return { folder: `${VENDOR_DIR}/core`, vendored: false }
   // A folder source inside the project is the staging folder of a framework built there; a folder elsewhere is scanned where it lives
-  if (lock?.source?.type === 'path' && !isAbsolute(lock.source.location)) return `${lock.source.location}/core`
-  return null
+  if (lock?.source?.type === 'path') {
+    return isAbsolute(lock.source.location) ? null : { folder: `${lock.source.location}/core`, vendored: false }
+  }
+  // Pinned to a Git source: the framework scanned its core with its own words, the project scans the copy with its own
+  return lock?.mode === MODES.pinned ? { folder: `${VENDOR_DIR}/core`, vendored: true } : null
+}
+
+export const frameworkCoreFolder = (root) => frameworkCoreScan(root)?.folder ?? null
+
+/** The words the framework's core uses on purpose (`vocabulary.json` of its `core/` folder), lower case; empty for a version that has none. */
+export function loadVocabulary(coreDir) {
+  const path = join(coreDir, VOCABULARY_FILE)
+  return new Set(existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')).words.map((word) => word.toLowerCase()) : [])
 }
 
 /**
@@ -124,6 +166,8 @@ export function checkCore({ root, profile }) {
   if (!profile.terms) {
     return { problems: [], message: 'The profile file has no `terms`, so there is nothing to scan the CORE files for.' }
   }
+  const scan = frameworkCoreScan(root)
+  const vocabulary = scan ? loadVocabulary(join(root, scan.folder)) : new Set()
   const entries = coreEntries(profile.layers?.core)
   const files = {}
   for (const { path } of entries) {
@@ -131,11 +175,14 @@ export function checkCore({ root, profile }) {
       files[path] = readFileSync(join(root, path), 'utf8')
     }
   }
-  const problems = coreLeakProblems(files, profile.terms, entries, { entryFile: profile.paths?.entryFile })
+  const problems = coreLeakProblems(files, profile.terms, entries, {
+    entryFile: profile.paths?.entryFile,
+    vocabulary
+  })
 
-  const folder = frameworkCoreFolder(root)
   const frameworkFiles = {}
-  if (folder) {
+  if (scan) {
+    const { folder, vendored } = scan
     for (const path of walk(join(root, folder))) {
       frameworkFiles[`${folder}/${path}`] = readFileSync(join(root, folder, path), 'utf8')
     }
@@ -144,12 +191,13 @@ export function checkCore({ root, profile }) {
         frameworkFiles,
         profile.terms,
         folder,
-        adapterTerms(join(root, dirname(folder), 'adapters'))
+        adapterTerms(join(root, dirname(folder), 'adapters')),
+        { vocabulary, vendored }
       )
     )
   }
 
-  const scope = folder ? ` and ${Object.keys(frameworkFiles).length} files of ${folder}` : ''
+  const scope = scan ? ` and ${Object.keys(frameworkFiles).length} files of ${scan.folder}` : ''
   return {
     problems,
     message: `Checked ${Object.keys(files).length} CORE files${scope} for stack terms, product terms and project values.`

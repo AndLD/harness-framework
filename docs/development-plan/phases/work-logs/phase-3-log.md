@@ -219,3 +219,11 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none.
 - **Next step:** task 3.7.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-03 — task 3.7 done: a pinned project scans its vendored core
+- **Tasks:** 3.7 (done).
+- **Branch:** `feature/3.7-pinned-core-scan` — done (details: `work-logs/phase-3/3.7.md`).
+- **Decisions / deviations from the plan:** the vocabulary of the words the core uses on purpose is `core/vocabulary.json`, so it travels with the core.
+- **Problems / blockers / findings:** none.
+- **Next step:** task 3.8.
+- **Verify with:** `npm run docs:check`
