@@ -18,8 +18,8 @@
 //   harness detach --reason <why>                                 the project takes the copy over; no more versions
 //   harness profile get <role>                                    print a value of the profile file (a list one item per line)
 //   harness layers                                                print the layer map
-//   harness check <name>                                          one check: vendored, generated, profile, adapters, values, layers, links, paths, core,
-//                                                                 plan, changelog, probes, product-knowledge
+//   harness check <name>                                          one check: vendored, generated, profile, scaffold, adapters, local-adapters, values,
+//                                                                 layers, links, paths, core, plan, changelog, probes, product-knowledge
 //   harness check all                                             every check, then the project's own (`checks.project`)
 //   harness plan summary [--check]                                write (or compare) the summary of the plan index
 //   harness plan split <phase>                                    split a phase kept as one file into a folder: the phase index, a file per task and the logs beside them
@@ -56,6 +56,7 @@ import { layerConfig, renderLayerMap } from './lib/layers.mjs'
 import { planLog, planSummary } from './lib/plan.mjs'
 import { splitPhases } from './lib/phase-split.mjs'
 import { isMain } from './lib/main-module.mjs'
+import { registerLocalAdapters } from './lib/local-adapters.mjs'
 import { migrate } from './lib/migrate.mjs'
 import { probesReport } from './lib/probe-areas.mjs'
 import { promoteItem } from './lib/backlog-promote.mjs'
@@ -190,6 +191,8 @@ export async function run(argv, { out = console.log, err = console.error, input 
   const { words, flags } = parsed
   const root = projectRoot(flags.root)
   const command = words.join(' ')
+  // The adapters of the project's own repository (`harness-adapters/`), which the profile file selects as `local:<name>`
+  await registerLocalAdapters(root)
 
   try {
     if (command === 'init' || command === 'bootstrap' || command === 'adopt') {

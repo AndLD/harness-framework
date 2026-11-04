@@ -421,7 +421,7 @@ The procedure is `core/contracts/new-adapter.md`. It is also packaged as the pro
 same for the runtime and host axes.
 
 1. **Copy** `adapters/<axis>/_skeleton/` to `adapters/<axis>/<name>/` in the framework source. A project that cannot wait for a release
-   copies it to `harness-adapters/<axis>/<name>/` in its own repository, and the profile file names it as `local:harness-adapters/<axis>/<name>`.
+   copies it to `harness-adapters/<axis>/<name>/` in its own repository, and the profile file names it `local:<name>` on the axis where it lists it (section 5.1).
 2. **Fill the manifest**, one role at a time, from the contract. Leave an optional role empty only with the fallback its row names.
    Write the logic modules (`gate.mjs`, `coverage.mjs`) as pure functions with `node --test` tests next to them, like the presets.
 3. **Write the adapter's documents** from the skeleton: the stack-file section, the commands and the stack terms.
@@ -448,9 +448,29 @@ The python preset (task 1.3 of the framework's own plan, section 11) is written 
 holds the framework's tests of it. The skeletons are vendored for the same reason. The checks run the adapter's logic against the framework's own gate driver,
 coverage gate and hooks, in a copy of the framework that holds the adapter; they never run a stack's tools (a formatter, a test runner), call the host or start the
 runtime, so "the format hook never downloads a formatter" is a rule on the command the adapter returns, and "a push with a failing test fails" is the plan holding
-a test step and the coverage gate. The samples a suite cannot derive are the adapter's `conformance.json`. Selecting an adapter that lives in the project's own
-repository (`local:harness-adapters/…`, step 1) is not built: the tools load the adapters of the framework tree, so a new adapter is developed in a checkout of the
-framework and offered upstream.
+a test step and the coverage gate. The samples a suite cannot derive are the adapter's `conformance.json`. An adapter that lives in the project's own repository is loaded by the tools since 3.4 (section 5.1).
+
+### 5.1 Adapters of the project's own repository (`local:<name>`)
+
+A folder `harness-adapters/<axis>/<name>/` of the project, outside `harness/`, selected in the profile file as `local:<name>` in `adapters.stacks`, `adapters.runtimes`
+or `adapters.host` (a stack entry may be the object `{ "adapter": "local:<name>", "packages": [...] }`). It fills the same contract as a preset and passes the same suite.
+
+- **Loading.** `registerLocalAdapters` (`tools/lib/local-adapters.mjs`) loads the folder into the registries of the adapters (`STACKS`, `ADAPTER_RUNTIMES`, `HOSTS`) under the
+  name `local:<name>`, so every tool that finds an adapter by its profile name finds it; the runtime adapters among them add their skill and block generators to the managed
+  files. The command line, the runtime hooks and the session start call it before they read the profile. An adapter whose module cannot be loaded is left out and reported by
+  `harness check adapters`, and the commands that do not need it still run.
+- **Left alone.** `harness sync` takes the adapters of the framework only (`frameworkAdapters`): the lock records no local adapter and a sync neither copies nor removes the folder.
+  `harness check vendored` reads `harness/` only. `harness migrate` may leave the folder changed (the fix of an adapter that a version rejected), and the migration commit then
+  holds it, so `harness rollback` restores it with the rest.
+- **Judged.** `harness check adapters` holds the manifest of each local adapter to the contract and each `local:<name>` of the profile file to a folder on its axis. The check
+  `local-adapters` (part of `check all`) runs the conformance suite on every folder, each in a process of its own. `harness migrate` runs it after the managed files are
+  regenerated, with the new version's suite, and stops before it commits when an adapter fails: the message names the adapter and the failed checks, and points to the
+  migration notes of the versions taken, which say what changed in the contract. The adapter is fixed and the command run again; the fix is allowed in the working tree.
+- **Self-contained.** The suite copies the adapter into a copy of the framework, where its path differs from the project's, so a local adapter imports nothing from the framework's
+  tools by a relative path (the presets do, because they live in the framework tree). The skeleton imports nothing.
+- **The CORE scan** reads the `terms` of the local adapters too, so a core document stays neutral about the project's own stack.
+- **Not built.** `harness init` and `harness adopt` select presets: a project that needs a local adapter from its first day bootstraps with the nearest preset, adds the folder, and
+  switches the profile file to `local:<name>` with `harness sync --local`.
 
 ---
 

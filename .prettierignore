@@ -7,3 +7,4 @@ harness-profile.json
 harness.lock.json
 package-lock.json
 .claude/settings.json
+.claude/worktrees
