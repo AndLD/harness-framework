@@ -14,4 +14,5 @@ It is read to find out whether a new report is a problem that was fixed already.
 | [I-4](./I-4.md) | The migration keeps a task that a branch claims, though it is still ⬜ | plan format | 2 | [issue 63](https://github.com/AndLD/harness-framework/issues/63) |
 | [I-5](./I-5.md) | A probe table of the older shape fails `check probes` without saying which columns it expects, and the note does not list the action | checks | 2 | [issue 64](https://github.com/AndLD/harness-framework/issues/64) |
 | [I-8](./I-8.md) | A push from a linked worktree runs the gate's tests with the hook's `GIT_DIR`, and they rewrite the repository's Git config | Git rules | 2 | — |
+| [I-9](./I-9.md) | A condition inside a line (`{{#if role}}…{{/if}}`) is left unrendered in the generated skills | procedures | 2 | — |
 <!-- issue-queue:end -->

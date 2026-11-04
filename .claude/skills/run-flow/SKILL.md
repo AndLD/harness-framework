@@ -7,7 +7,7 @@ description: Use when the owner asks to run or continue a flow of the plan ("Run
 
 # Run a flow
 
-A flow is a file of the plan's flows folder (the profile, plan section): an ordered chain of steps that delivers one or more releases, with a settings block and an append-only log beside it ({{#if documents.planMethod}}the [plan method](../../../core/plan/README.md), section 10, and {{/if}}the flow and flow-log templates). You are its **orchestrator**: you hand each step to a worker, read what comes back, decide or ask, and log. You never build a step yourself, and you read reports and state checks, never diffs.
+A flow is a file of the plan's flows folder (the profile, plan section): an ordered chain of steps that delivers one or more releases, with a settings block and an append-only log beside it (the [plan method](../../../core/plan/README.md), section 10, and the flow and flow-log templates). You are its **orchestrator**: you hand each step to a worker, read what comes back, decide or ask, and log. You never build a step yourself, and you read reports and state checks, never diffs.
 
 ## Decision levels
 

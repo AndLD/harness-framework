@@ -13,7 +13,7 @@ The reports are on the repository host. A report is **never added as a new issue
 
 1. List the reports not yet triaged: `harness reports list --untriaged`. A report that a `Reported:` line of an issue, or a task, already records is triaged. Take the first ones, up to the limit.
 2. For each report, read it (`reports show <n>`) and then look for what it may be about, **indexes first**: `reports candidates <n>` compares its title and body with the titles and areas of the open issues of the queue ([open index](../../../docs/development-plan/issues/README.md)), of its archive, and with the open tasks of the phases. Open the files of the candidates only after that.
-3. Decide how the report relates to the best candidate, and read what that means with `reports plan --relation <same|close|different|not-a-defect{{#if paths.backlog}}|feature{{/if}}> [--candidate <id>] [--version <reporter's version>]`:
+3. Decide how the report relates to the best candidate, and read what that means with `reports plan --relation <same|close|different|not-a-defect|feature> [--candidate <id>] [--version <reporter's version>]`:
    - **The same problem, still open:** add the report to the `Reported:` line of that issue, and answer the report as a duplicate.
    - **The same problem, fixed already:** answer with the version that has the fix. When the reporter's version already has it, it is a **regression**: add a new issue that links the old one.
    - **Close but different:** add a new issue that names the related one.
