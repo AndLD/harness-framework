@@ -75,7 +75,7 @@ export function lastNextStep(logText) {
 }
 
 // The next task of the plan, by its order (`lib/next-task.mjs`), or null when the plan cannot be read or has no task left
-function nextTaskOf(readText, list, phasesDir, planIndex) {
+function nextTaskOf(readText, list, phasesDir, planIndex, releasesPath = null) {
   try {
     const files = loadPhaseEntries({ list, readText, phasesDir }).map((entry) => ({
       file: `${phasesDir}/${entry.file}`,
@@ -88,7 +88,14 @@ function nextTaskOf(readText, list, phasesDir, planIndex) {
     } catch {
       // a plan without an index has only the orders of its phases
     }
-    return nextTask({ phases: readPhases(files), indexText })
+    // A plan with a releases file takes its order from there; a missing file leaves the section of the index in charge
+    let releasesText = null
+    try {
+      releasesText = releasesPath ? readText(releasesPath) : null
+    } catch {
+      // the check of the plan names a releases file that is missing
+    }
+    return nextTask({ phases: readPhases(files), indexText, releasesText })
   } catch {
     return null
   }
@@ -123,14 +130,15 @@ export function sessionStartMessage(
   planIndex = null,
   issuesDir = null,
   reportLines = [],
-  backlogDir = null
+  backlogDir = null,
+  releasesPath = null
 ) {
   const lines = [`Branch: ${branch || 'unknown'}`]
   const phases = phasesInProgress(readText, list, phasesDir)
 
   if (!phases.length) {
     lines.push('No phase is in progress.')
-    const next = nextTaskOf(readText, list, phasesDir, planIndex)
+    const next = nextTaskOf(readText, list, phasesDir, planIndex, releasesPath)
     if (next) {
       lines.push(
         `Next task: ${next.id} ${next.title} (${next.file}), by the ${next.source}; check that it has no open pull request first.`
@@ -234,7 +242,8 @@ export async function decide(event) {
       profile.paths?.planIndex,
       profile.paths?.issues,
       reportLines,
-      profile.paths?.backlog
+      profile.paths?.backlog,
+      profile.paths?.releases
     )
   }
 }

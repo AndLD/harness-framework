@@ -39,6 +39,7 @@
     "plan": "docs/development-plan",
     "phases": "docs/development-plan/phases",
     "planIndex": "docs/development-plan/README.md",
+    "releases": "docs/development-plan/releases.md",
     "issues": "docs/development-plan/issues",
     "backlog": "docs/development-plan/backlog",
     "procedures": "docs/procedures",

@@ -38,6 +38,10 @@
       "path": "{{paths.backlog}}/archived/README.md"
     },
     {
+      "template": "releases.md",
+      "path": "{{paths.releases}}"
+    },
+    {
       "template": "changelog.md",
       "path": "{{paths.changelog}}"
     },

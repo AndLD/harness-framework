@@ -14,12 +14,12 @@ continues the workers (5.5); the orchestrator reads usage before each step, esti
 flows (5.9), and the projects that use it get the templates, the procedure and the tools with `0.3.0`. Parallel steps (waves) are not in
 scope; the format keeps room for them.
 
-**Execution order:** when the order of development in the [plan index](../../README.md) says (release `0.3.0`, after 3.4); inside the phase, the order of the ids.
+**Execution order:** when the release order in [`releases.md`](../../releases.md) says (release `0.3.0`, after 3.4); inside the phase, the order of the ids.
 
 <!-- phase-tasks:start -->
 | # | Task | Agent | SP | Status |
 | - | ---- | ----- | -- | ------ |
-| [5.1](./5.1.md) | The release order in a file of its own (`releases.md`) | C2 | 5 | ⬜ |
+| [5.1](./5.1.md) | The release order in a file of its own (`releases.md`) | C2 | 5 | ✅ |
 | [5.2](./5.2.md) | Flows: files of the plan that an orchestrator runs, with the procedure `run-flow` | C3 | 5 | ⬜ |
 | [5.3](./5.3.md) | The authority of a flow: release cuts and answers to reports at their levels | C3 | 3 | ⬜ |
 | [5.4](./5.4.md) | `harness flow`: check, status, next and prompt | C2 | 8 | ⬜ |
