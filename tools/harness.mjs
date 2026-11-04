@@ -57,6 +57,7 @@ import { splitPhases } from './lib/phase-split.mjs'
 import { isMain } from './lib/main-module.mjs'
 import { migrate } from './lib/migrate.mjs'
 import { probesReport } from './lib/probe-areas.mjs'
+import { probeAdvice, probeMode } from './lib/probe-mode.mjs'
 import { reportsCommand } from './lib/reports-command.mjs'
 import { rollback } from './lib/rollback.mjs'
 import { loadProfile, lookup } from './lib/profile.mjs'
@@ -219,7 +220,9 @@ export async function run(argv, { out = console.log, err = console.error, input 
       return 0
     }
     if (words[0] === 'probes' && words.length === 3) {
-      probesReport({ root, profile: loadProfile(root), from: words[1], to: words[2] }).forEach((line) => out(line))
+      const profile = loadProfile(root)
+      probesReport({ root, profile, from: words[1], to: words[2] }).forEach((line) => out(line))
+      probeAdvice({ ...probeMode({ profile, root }), from: words[1], to: words[2] }).forEach((line) => out(line))
       return 0
     }
     if (words[0] === 'reports') {
