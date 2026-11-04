@@ -11,6 +11,8 @@ import { runHook } from './io.mjs'
 import { isMain } from '../lib/main-module.mjs'
 import { BACKLOG, readQueue } from '../lib/issue-queue.mjs'
 import { intakeLines, recordedReports, reportSettings } from '../lib/reports.mjs'
+import { flowSessionLines } from '../lib/flow-session.mjs'
+import { readFlowsOf } from '../lib/flows.mjs'
 
 const IN_PROGRESS = /\*\*Status:\*\*\s*🟡/
 
@@ -131,7 +133,8 @@ export function sessionStartMessage(
   issuesDir = null,
   reportLines = [],
   backlogDir = null,
-  releasesPath = null
+  releasesPath = null,
+  flowLines = []
 ) {
   const lines = [`Branch: ${branch || 'unknown'}`]
   const phases = phasesInProgress(readText, list, phasesDir)
@@ -186,6 +189,7 @@ export function sessionStartMessage(
   if (backlog) {
     lines.push(backlog)
   }
+  lines.push(...flowLines)
   lines.push(...reportLines)
   lines.push(`Read the method, section "Session protocol" (${methodPath}), before you start or resume a phase.`)
   return lines.join('\n')
@@ -232,6 +236,12 @@ export async function decide(event) {
     // not a git checkout
   }
   const reportLines = await reportLinesOf({ root, profile, readText, list })
+  let flowLines = []
+  try {
+    flowLines = flowSessionLines(readFlowsOf(root, profile))
+  } catch {
+    // a flow that cannot be read is a problem of `harness flow check`, not of the session start
+  }
   return {
     context: sessionStartMessage(
       branch,
@@ -243,7 +253,8 @@ export async function decide(event) {
       profile.paths?.issues,
       reportLines,
       profile.paths?.backlog,
-      profile.paths?.releases
+      profile.paths?.releases,
+      flowLines
     )
   }
 }
