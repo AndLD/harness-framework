@@ -358,3 +358,26 @@ test('a task that a branch claims stays in its phase though it is not started, a
   git('update-ref', 'refs/remotes/origin/feature/12.7-remote', 'HEAD')
   assert.deepEqual(claimedTaskIds(root), new Set(['12.5', '12.7']))
 })
+
+test('a project with a layer map of its own gets the phase folders and the issue queue in the layer of its one-file phases', async () => {
+  const { root, profile, write, read } = oldProject()
+  write(
+    'harness-profile.json',
+    OLD_PROFILE.replace(
+      '"paths": {',
+      '"layers": {\n    "scope": ["plan/**"],\n    "state": [\n      "plan/phases/phase-*.md",\n      "plan/README.md"\n    ]\n  },\n  "paths": {'
+    )
+  )
+  const messages = await migration({ root, profile })
+  assert.match(
+    messages.join('\n'),
+    /Added plan\/phases\/phase-\*\/\*\* and plan\/issues\/\*\* to the layer of the one-file phases/
+  )
+  assert.deepEqual(JSON.parse(read('harness-profile.json')).layers.state, [
+    'plan/phases/phase-*.md',
+    'plan/issues/**',
+    'plan/phases/phase-*/**',
+    'plan/README.md'
+  ])
+  assert.doesNotMatch((await migration({ root, profile })).join('\n'), /Added/, 'a second run adds nothing')
+})
