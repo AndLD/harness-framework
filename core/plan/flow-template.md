@@ -51,4 +51,6 @@ Rules (the plan method, section 10; delete this comment in a real flow):
 - A step inserted midway takes a suffix id (`6c` after `6b`) and never renumbers the others; inserting one is a logged decision of level D2.
 - "Stops for": a level (`D2`) or a named reason (`owner review`) at which the orchestrator stops at this step whatever the mode, or —.
 - "Executor" and "Model" may be overridden per step in the scope's cell: `(executor: manual)`.
+- `harness flow check` holds this shape, `harness flow status <n>` recomputes the State column from the repository, and `harness flow prompt <n> <step>` renders the prompt of a step from the
+  standard wording of the step prompts (the plan folder of the framework); only a `custom` step writes its own.
 -->

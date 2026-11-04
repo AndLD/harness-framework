@@ -5,6 +5,7 @@
 // Pure functions on texts; the reading of the folder is `readFlows`, whose seams are `list` and `readText`.
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join, relative } from 'node:path'
+import { parseSteps } from './flow-steps.mjs'
 import { inFramework } from './lock.mjs'
 import { render } from './render.mjs'
 
@@ -91,8 +92,8 @@ export function flowStatus(states) {
 }
 
 /**
- * The flow in `text` (the file `file`): `{ number, title, file, releases, needs, settings, size, usage, status, problems }`. The size is the sum of the SP
- * column; the usage the sum of the estimates in percent of the weekly window, `null` when no step has one, marked partial when some lack one.
+ * The flow in `text` (the file `file`): `{ number, title, file, text, releases, needs, settings, steps, size, usage, status, problems }`. The `steps` are
+ * those of `flow-steps.mjs`; the size is the sum of the SP column; the usage the sum of the estimates in percent of the weekly window, `null` when no step has one, marked partial when some lack one.
  */
 export function parseFlow(file, text) {
   const problems = []
@@ -124,9 +125,11 @@ export function parseFlow(file, text) {
     number: Number(name?.[1] ?? title?.[1] ?? 0),
     title: title?.[2]?.trim() ?? file,
     file,
+    text,
     releases,
     needs,
     settings,
+    steps: parseSteps(rows),
     size: sp.reduce((sum, n) => sum + (n ?? 0), 0),
     usage: known.length
       ? { percent: known.reduce((sum, n) => sum + n, 0), partial: known.length < steps.length }

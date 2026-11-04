@@ -886,5 +886,9 @@ local list of prompts, one session per step, and the order of the releases was a
 - **Executors are adapter work.** A controlled session by default, a subagent for short analysis, manual (the owner pastes) as the fallback; whether a worker session is reused
   is decided by conditions (same repository, model and effort, related steps, small context, a warm prompt cache, at most three steps) and measured so the default can change
   (tasks 5.5, 5.7). Usage is read and estimated before each step (5.6), and a flow may drive another repository, such as a consuming project (5.8).
+- **The tools read the repository, not the cache** (task 5.4). `harness flow status` recomputes each step's state from the plan, the merged pull requests (the `Plan:` lines of the squash
+  commits), the tags and a consumer's lock, so an orchestrator that stopped in the middle of a step resumes from the truth; the State column is only a cache and the log the record. Checks are pure
+  functions on the parsed flows and on facts, with the Git command and the lock of a consuming repository as seams. The wording of a worker's prompt lives once, in a template of `core/plan/`, so a
+  change of the standard wording reaches every flow.
 - **Not yet.** Parallel steps (waves); the `Needs` column keeps room for them.
 

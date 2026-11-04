@@ -5,6 +5,7 @@ import { spawnSync } from 'node:child_process'
 import { checkAdapters } from './adapters.mjs'
 import { checkChangelog } from './changelog.mjs'
 import { checkCore } from './core-scan.mjs'
+import { checkFlows } from './flow-check.mjs'
 import { checkLayers } from './layers.mjs'
 import { listLocalAdapters, localAdapterProblems, localLoadErrors, localSuiteProblems } from './local-adapters.mjs'
 import { checkLinks } from './links.mjs'
@@ -67,6 +68,7 @@ export const CHECKS = {
   paths: (context) => single(checkPaths(context)),
   core: (context) => single(checkCore(context)),
   plan: (context) => single(planSummary({ ...context, check: true })),
+  flows: (context) => single(checkFlows(context)),
   changelog: (context) => single(checkChangelog(context)),
   probes: (context) => single(checkProbes(context)),
   'product-knowledge': (context) => checkProductKnowledge(context)

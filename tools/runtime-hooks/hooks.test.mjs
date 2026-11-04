@@ -409,3 +409,20 @@ test('the session start message says what it knows and what it does not', () => 
     'Branch: develop\nNo phase is in progress.\nRead the method, section "Session protocol" (docs/method.md), before you start or resume a phase.'
   )
 })
+
+test('the session start message names a flow under way, between the queue lines and the reports', () => {
+  const message = sessionStartMessage(
+    'develop',
+    () => '',
+    () => [],
+    'plan/phases',
+    'docs/method.md',
+    null,
+    null,
+    ['Reports: 1 open'],
+    null,
+    null,
+    ['Flow in progress: 1 — Ship (plan/flows/flow-1-ship.md)']
+  )
+  assert.match(message, /No phase is in progress\.\nFlow in progress: 1 — Ship .*\nReports: 1 open\nRead the method/)
+})
