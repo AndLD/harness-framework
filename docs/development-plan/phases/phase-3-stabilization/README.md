@@ -2,7 +2,7 @@
 
 # Phase 3 — Stabilization, migrations and local adapters (71 SP)
 
-**Status:** 🟡 In progress · **Work log:** [log](./log.md), and a log beside each task (`<id>.log.md`)
+**Status:** ✅ Done · **Work log:** [log](./log.md), and a log beside each task (`<id>.log.md`)
 
 What the framework needed after its first release and its first consumer: the fixes found while taking `0.1.0`, the way a version is taken (`sync`,
 `migrate`, migration scripts and notes, rollback), the layout of the plan itself, the intake of reports, and local adapters. It was the open-ended phase of the
