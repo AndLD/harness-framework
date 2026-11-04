@@ -4,7 +4,9 @@
 // archives an issue that is done (moving its file and its log, and following every link to them) and writes both indexes.
 //
 // The backlog (task 3.20) is the same queue for the feature requests: `paths.backlog`, items `B-<n>.md`, and a `Source:` field in place of `Reported:`. A
-// queue is read with a `kind` (`ISSUES` or `BACKLOG`), which the queue carries, so the functions below serve both.
+// queue is read with a `kind` (`ISSUES` or `BACKLOG`), which the queue carries, so the functions below serve both. An item of the backlog is a proposal the
+// owner has not approved (task 3.21): it is `Proposed` and never started as it is, and when the owner promotes it into a task of a phase it is `Promoted`
+// (`Promoted to: <task id>`) and moves to the archive, which is where a finished issue goes; `finished` says which statuses end an entry in each queue.
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { followMoves, replacePaths, rewriteLinks } from './link-moves.mjs'
@@ -41,6 +43,13 @@ const SOURCE_START = new RegExp(`^(?:${SOURCES.join('|')})\\b`)
 export const ISSUE_FILE = /^(I-\d+)\.md$/
 export const ISSUE_LOG_FILE = /^(I-\d+)\.log\.md$/
 
+/** The statuses of an item of the backlog: it waits for the owner's decision, or it became a task of a phase. */
+export const PROPOSED = 'Proposed'
+export const PROMOTED = 'Promoted'
+
+/** Whether an entry has left the open index of its queue: an issue that is done, an item that was promoted. */
+export const finished = (item, kind = ISSUES) => item.status === (kind === BACKLOG ? PROMOTED : '✅')
+
 const itemFile = (kind) => new RegExp(`^(${kind.prefix}-\\d+)\\.md$`)
 const kindOf = (queue) => queue.kind ?? ISSUES
 const SYMBOL = /(⬜|🟡|✅)/
@@ -55,8 +64,13 @@ export const issueNumber = (id) => Number(id.slice(2))
  */
 export function parseIssueFile(file, text, kind = ISSUES) {
   const heading = new RegExp(`^# (${kind.prefix}-\\d+) — (.+?)\\s*$`, 'm').exec(text)
-  const size = field(text, 'Size')?.match(/^(\d+) SP$/)
-  const status = field(text, 'Status')?.match(SYMBOL)?.[1] ?? null
+  const sized = field(text, 'Size')
+  const size = sized?.match(/^(\d+) SP$/)
+  const status =
+    kind === BACKLOG
+      ? (field(text, 'Status')?.match(/^(Proposed|Promoted)\b/)?.[1] ?? null)
+      : (field(text, 'Status')?.match(SYMBOL)?.[1] ?? null)
+  const promotedTo = field(text, 'Promoted to')?.match(/^\d+\.\d+[a-z]?$/)?.[0] ?? null
   const area = field(text, 'Area')
   const reported =
     new RegExp(`\\*\\*${kind.sourceField}:\\*\\*\\s*(.+?)\\s*(?:\\s·\\s\\*\\*|$)`, 'm').exec(text)?.[1] ?? null
@@ -66,8 +80,19 @@ export function parseIssueFile(file, text, kind = ISSUES) {
   } else if (`${heading[1]}.md` !== file.split('/').at(-1)) {
     problems.push(`${file}: the title names ${kind.noun} ${heading[1]}, but the file is named for another`)
   }
-  if (!status) problems.push(`${file}: the status line must hold "**Status:** ⬜|🟡|✅"`)
-  if (!size) problems.push(`${file}: the status line must hold "**Size:** <n> SP"`)
+  if (kind === BACKLOG) {
+    if (!status) problems.push(`${file}: the status line must hold "**Status:** ${PROPOSED}|${PROMOTED}"`)
+    if (sized && sized !== '—' && !size) problems.push(`${file}: the size, when given, reads "<n> SP"`)
+    if (status === PROMOTED && !promotedTo) {
+      problems.push(`${file}: a promoted item must hold "**Promoted to:** <the id of the task it became>"`)
+    }
+    if (status === PROPOSED && field(text, 'Promoted to')) {
+      problems.push(`${file}: a proposed item has not been promoted, so it holds no "Promoted to"`)
+    }
+  } else {
+    if (!status) problems.push(`${file}: the status line must hold "**Status:** ⬜|🟡|✅"`)
+    if (!size) problems.push(`${file}: the status line must hold "**Size:** <n> SP"`)
+  }
   if (!area)
     problems.push(`${file}: the status line must hold "**Area:** <an area of the migration notes, or ${UNCLASSIFIED}>"`)
   if (!reported) {
@@ -88,6 +113,7 @@ export function parseIssueFile(file, text, kind = ISSUES) {
     area,
     reported,
     formerly: field(text, 'Formerly'),
+    promotedTo,
     fixedIn: field(text, 'Fixed in'),
     log: /\*\*Log:\*\*\s*\[[^\]]*\]\(([^)]+)\)/.exec(text)?.[1] ?? null,
     file,
@@ -98,7 +124,9 @@ export function parseIssueFile(file, text, kind = ISSUES) {
 const cell = (text) => (text ?? '—').replace(/\|/g, '\\|')
 
 /** The table of the open issues, in order of id. */
-export function openTable(issues, { marked, kind = ISSUES }) {
+export function openTable(issues, { marked: withMarkers, kind = ISSUES }) {
+  // An item of the backlog is not approved work, so it has no marker: the estimate, when given, is a hint for the task it may become
+  const marked = withMarkers && kind !== BACKLOG
   const [name, source] = [kind.heading, kind.sourceField === 'Source' ? 'Source' : 'Reported']
   const line = (cells) => `| ${cells.join(' | ')} |`
   const head = marked
@@ -121,14 +149,15 @@ export function openTable(issues, { marked, kind = ISSUES }) {
 
 /** The table of the archived issues. */
 export function archiveTable(issues, kind = ISSUES) {
+  const [name, source] = [kind.heading, kind.sourceField]
+  const third = kind === BACKLOG ? 'Promoted to' : 'SP'
   const rows = issues.map(
     (issue) =>
-      `| [${issue.id}](./${issue.id}.md) | ${cell(issue.title)} | ${cell(issue.area)} | ${issue.points ?? '—'} | ${cell(issue.reported)} |`
+      `| [${issue.id}](./${issue.id}.md) | ${cell(issue.title)} | ${cell(issue.area)} | ${kind === BACKLOG ? cell(issue.promotedTo) : (issue.points ?? '—')} | ${cell(issue.reported)} |`
   )
-  const [name, source] = [kind.heading, kind.sourceField]
   return [
-    `| ${name} | Title | Area | SP | ${source} |`,
-    `| ${'-'.repeat(name.length)} | ----- | ---- | -- | ${'-'.repeat(source.length)} |`,
+    `| ${name} | Title | Area | ${third} | ${source} |`,
+    `| ${'-'.repeat(name.length)} | ----- | ---- | ${'-'.repeat(third.length)} | ${'-'.repeat(source.length)} |`,
     ...rows
   ].join('\n')
 }
@@ -209,9 +238,11 @@ export function queueProblems(queue, { areas = null, scale = [], exists }) {
     }
   }
   for (const issue of queue.open) {
-    if (issue.status === '✅')
-      problems.push(`${queue.dir}/${issue.file}: the ${noun} is done and not archived; run \`harness plan summary\``)
-    if (scale.length && issue.status && issue.status !== '✅') {
+    if (finished(issue, kind))
+      problems.push(
+        `${queue.dir}/${issue.file}: the ${noun} is ${kind === BACKLOG ? 'promoted' : 'done'} and not archived; run \`harness plan summary\``
+      )
+    if (kind !== BACKLOG && scale.length && issue.status && issue.status !== '✅') {
       if (!issue.agent)
         problems.push(`${queue.dir}/${issue.file}: an open ${noun} needs "**Agent:** <marker>" (${scale.join(', ')})`)
       else if (!scale.includes(issue.agent))
@@ -219,8 +250,10 @@ export function queueProblems(queue, { areas = null, scale = [], exists }) {
     }
   }
   for (const issue of queue.archived) {
-    if (issue.status && issue.status !== '✅') {
-      problems.push(`${queue.dir}/${issue.file}: an archived ${noun} must be done (✅)`)
+    if (issue.status && !finished(issue, kind)) {
+      problems.push(
+        `${queue.dir}/${issue.file}: an archived ${noun} must be ${kind === BACKLOG ? `promoted (${PROMOTED})` : 'done (✅)'}`
+      )
     }
   }
   const expectedOpen = withQueueBlock(queue.readme, openTable(queue.open, { marked: scale.length > 0, kind }), kind)
@@ -243,8 +276,12 @@ export function queueProblems(queue, { areas = null, scale = [], exists }) {
   return problems
 }
 
-/** The line of the plan index about the queue: the open issues and their size, apart from the phases' totals. */
+/** The line of the plan index about the queue: the open issues and their size, apart from the phases' totals (for the backlog: how many proposals wait and how many were promoted). */
 export function queueSummary(queue, link) {
+  if (kindOf(queue) === BACKLOG) {
+    const waiting = queue.open.filter((item) => !finished(item, BACKLOG)).length
+    return `**Backlog** (proposals the owner has not approved; not a phase, and not in the totals above): [${waiting} proposed](${link}); ${queue.archived.length} promoted.`
+  }
   const open = queue.open.filter((issue) => issue.status !== '✅')
   const points = open.reduce((sum, issue) => sum + (issue.points ?? 0), 0)
   const started = open.filter((issue) => issue.status === '🟡').length
@@ -260,7 +297,7 @@ export function queueSummary(queue, link) {
  * @returns {{ moves: Map<string, string>, touched: string[] }}
  */
 export function archiveDone({ root, queue }) {
-  const done = queue.open.filter((issue) => issue.status === '✅')
+  const done = queue.open.filter((issue) => finished(issue, kindOf(queue)))
   const archiveTitle = kindOf(queue).archiveTitle
   const moves = new Map()
   for (const issue of done) {

@@ -1,6 +1,6 @@
 [← Development plan](../../README.md)
 
-# Phase 3 — Stabilization, migrations and local adapters (66 SP)
+# Phase 3 — Stabilization, migrations and local adapters (71 SP)
 
 **Status:** 🟡 In progress · **Work log:** [log](./log.md), and a log beside each task (`<id>.log.md`)
 
@@ -33,7 +33,8 @@ plan until task 3.13; it is a normal phase now, keeps every id, and ends with 3.
 | [3.17](./3.17.md) | The Git guard checks the project's branch, not the branch of the repository a command acts on | C2 | 2 | ✅ |
 | [3.18](./3.18.md) | Nothing merges a green pull request unless someone comes back, and a consumer is never set up for it | C2 | 5 | ✅ |
 | [3.20](./3.20.md) | A feature request from a user has no place in the plan but the issue queue, which is for defects | C2 | 5 | ✅ |
-| [3.21](./3.21.md) | A backlog item can be started as it is, though it is a request nobody has approved or placed in a phase | C2 | 5 | ⬜ |
+| [3.21](./3.21.md) | A backlog item can be started as it is, though it is a request nobody has approved or placed in a phase | C2 | 5 | ✅ |
+| [3.22](./3.22.md) | A profile switch for the probes of a migration: `auto`, `ask` (the default) or `disabled` | C1 | 5 | ✅ |
 <!-- phase-tasks:end -->
 
 Task status: ⬜ not started · 🟡 in progress (branch noted in the work log) · ✅ done.

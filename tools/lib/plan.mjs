@@ -8,6 +8,7 @@ import {
   BACKLOG,
   archiveDone,
   archiveTable,
+  finished,
   openTable,
   queueProblems,
   queueSummary,
@@ -268,6 +269,14 @@ function queueIds(...queues) {
   return known
 }
 
+// The ids of the backlog items that wait for the owner's decision: no order, no execution order and no `Needs` may name one (task 3.21)
+const proposedIds = (backlog) =>
+  new Set(
+    (backlog?.open ?? [])
+      .filter((item) => !finished(item, BACKLOG))
+      .flatMap((item) => [item.id, ...(item.formerly?.match(/I-\d+/g) ?? [])])
+  )
+
 // The areas of the migration notes (the names of `areas.json` of the framework tree); null where the project has no such list
 function areasOf(root, profile) {
   const path = join(root, inFramework(profile, 'migrations'), 'areas.json')
@@ -309,9 +318,14 @@ export function orderProblems({ root, profile, indexText }) {
     ...phases.flatMap((phase) => phase.tasks.map((task) => task.id)),
     ...queueIds(readQueueOf(root, profile), readBacklogOf(root, profile))
   ])
+  const proposed = proposedIds(readBacklogOf(root, profile))
+  const notApproved = (where, id) =>
+    `${where} names the backlog item ${id}, which is not approved work: the owner promotes it into a task of a phase first (\`harness plan promote ${id} --phase <n>\`), and the plan names that task`
   const problems = []
   for (const token of orderOfDevelopment(indexText)) {
-    if (typeof token === 'string' ? !known.has(token) : !phases.some((phase) => phase.number === token.phase)) {
+    if (typeof token === 'string' && proposed.has(token)) {
+      problems.push(notApproved(`${planIndex}: the order of development`, token))
+    } else if (typeof token === 'string' ? !known.has(token) : !phases.some((phase) => phase.number === token.phase)) {
       problems.push(
         `${planIndex}: the order of development names ${typeof token === 'string' ? `task ${token}` : `Phase ${token.phase}`}, which exists in no phase and not in the issue queue or the backlog (nor their archives, under its old id)`
       )
@@ -319,7 +333,9 @@ export function orderProblems({ root, profile, indexText }) {
   }
   for (const phase of phases.filter((item) => item.order !== null && !item.points)) {
     for (const id of new Set(phaseSequenceIds(phase.order))) {
-      if (!known.has(id)) {
+      if (proposed.has(id)) {
+        problems.push(notApproved(`${phase.file}: the execution order`, id))
+      } else if (!known.has(id)) {
         problems.push(
           `${phase.file}: the execution order names task ${id}, which exists in no phase and not in the issue queue or the backlog (nor their archives, under its old id)`
         )
@@ -335,7 +351,21 @@ function needProblems(phases, queue, backlog) {
     ...phases.flatMap((phase) => phase.tasks?.map((task) => task.id) ?? phase.ids ?? []),
     ...queueIds(queue, backlog)
   ])
-  return phases.flatMap((phase) => needsProblems({ tasks: phase.tasks ?? [], known, phase: phase.number }))
+  const proposed = proposedIds(backlog)
+  const notApproved = phases.flatMap((phase) =>
+    (phase.tasks ?? []).flatMap((task) =>
+      (task.needs?.match(/[IB]-\d+/g) ?? [])
+        .filter((id) => proposed.has(id))
+        .map(
+          (id) =>
+            `${phase.file}: task ${task.id} needs the backlog item ${id}, which is not approved work: promote it into a task of a phase first`
+        )
+    )
+  )
+  return [
+    ...phases.flatMap((phase) => needsProblems({ tasks: phase.tasks ?? [], known, phase: phase.number })),
+    ...notApproved
+  ]
 }
 
 // An issue that moved to the backlog keeps its number (`B-1, formerly I-6`): the issue queue must not give that number to another issue
