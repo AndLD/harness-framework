@@ -107,6 +107,25 @@ test('the scaffold joins the ignore lines of every part and renders the core fil
   assert.ok(files['.github/workflows/ci.yml'] && files['CLAUDE.md'] && files['package.json'])
 })
 
+test('the scaffold writes a backlog only for a project that names the role, with its block in the plan index', () => {
+  const plain = withDefaults(readSchema(), completeProfile(ANSWERS))
+  const without = Object.fromEntries(
+    scaffoldPlan({ profile: plain, modules }).map(({ path, content }) => [path, content])
+  )
+  assert.ok(!Object.keys(without).some((path) => path.includes('backlog/')), 'the backlog is optional')
+  assert.doesNotMatch(without['docs/development-plan/README.md'], /plan-backlog/)
+
+  const profile = withDefaults(
+    readSchema(),
+    completeProfile({ ...ANSWERS, paths: { backlog: 'docs/development-plan/backlog' } })
+  )
+  const files = Object.fromEntries(scaffoldPlan({ profile, modules }).map(({ path, content }) => [path, content]))
+  assert.ok(files['docs/development-plan/backlog/README.md'].startsWith('[← Development plan](../README.md)'))
+  assert.match(files['docs/development-plan/backlog/README.md'], /<!-- backlog:start -->[\s\S]*<!-- backlog:end -->/)
+  assert.ok(files['docs/development-plan/backlog/archived/README.md'].startsWith('[← Backlog](../README.md)'))
+  assert.match(files['docs/development-plan/README.md'], /<!-- plan-backlog:start -->\n<!-- plan-backlog:end -->/)
+})
+
 test('the scaffold writes the product-knowledge skeleton, which the entry file points to and the product-knowledge check accepts', () => {
   const profile = withDefaults(readSchema(), completeProfile(ANSWERS))
   const files = Object.fromEntries(scaffoldPlan({ profile, modules }).map(({ path, content }) => [path, content]))

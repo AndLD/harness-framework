@@ -9,10 +9,10 @@ when `harness plan summary` runs, so an agent that works the queue reads this fi
 
 Before adding an issue, look for the same or a close problem in this index and the archive (title and area first, then the files); the same problem is added to
 the `Reported:` line of the issue that holds it.
+A request for something new, which is not a defect, is an item of the [backlog](../backlog/README.md), not an issue.
 
 <!-- issue-queue:start -->
 | Issue | Title | Area | Agent | SP | Status | Reported |
 | ----- | ----- | ---- | ----- | -- | ------ | -------- |
 | [I-1](./I-1.md) | The framework's tests that `harness sync` copies fail in a pinned project | bootstrap and sync | C1 | 2 | ⬜ | [issue 30](https://github.com/AndLD/harness-framework/issues/30) |
-| [I-6](./I-6.md) | A profile switch for the probes of a migration: `auto`, `ask` (the default) or `disabled` | procedures | C1 | 5 | ⬜ | [issue 65](https://github.com/AndLD/harness-framework/issues/65) |
 <!-- issue-queue:end -->
