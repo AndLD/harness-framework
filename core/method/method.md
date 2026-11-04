@@ -132,7 +132,7 @@ Sessions can end at any time, so the repository, not the chat, carries the state
   owner says so; otherwise it asks, and starts nothing. The same state is therefore read one way: a claim that the log of a paused
   session names is continued, any other open claim is another agent's.
 - **Which task is next:** the order the plan says, not the order of the table: the phase's execution order (the line of its file),
-  and the plan index's order of development when the phase points there; the table's order only when neither exists.
+  and the release order when the phase points there (the releases file of the profile, else the plan index's order of development); the table's order only when neither exists.
 - **While working:** set a task to 🟡 in its task file (the phase file of the older layout) when you start it and to ✅ when its definition of done holds; `harness plan summary` regenerates the task table of the phase index. Commit
   often and push the task branch, so unfinished work is in git and not only in a working tree.
 - **When a session ends or pauses, and when a task finishes:** write an entry in the log of the task (its own file beside the task

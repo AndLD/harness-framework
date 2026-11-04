@@ -9,7 +9,7 @@ What the framework needed after its first release and its first consumer: the fi
 plan until task 3.13; it is a normal phase now, keeps every id, and ends with 3.4. The defects and improvements found in use are issues of the
 [issue queue](../../issues/README.md).
 
-**Execution order:** **not the order of the table.** Work the earliest release in the order of development of the [plan index](../../README.md) that is not finished, in the order of its row; a task of a later release waits, even when its id is lower.
+**Execution order:** **not the order of the table.** Work the earliest release in the release order of [`releases.md`](../../releases.md) that is not finished, in the order of its row; a task of a later release waits, even when its id is lower.
 
 <!-- phase-tasks:start -->
 | # | Task | Agent | SP | Status |
