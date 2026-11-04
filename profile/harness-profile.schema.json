@@ -667,6 +667,14 @@
         "frameworkPlan": {
           "type": "string",
           "description": "The harness-to-framework plan."
+        },
+        "riskRegister": {
+          "type": "string",
+          "description": "The risk register (the plan method, section 4). Optional: the bootstrap writes the framework's template there once; a project that leaves it empty has no such file."
+        },
+        "rfcs": {
+          "type": "string",
+          "description": "The index of the design records (RFCs) with their template (the plan method, section 4). Optional: the bootstrap writes the framework's template there once, and the records sit in its folder; a project that leaves it empty has no such file."
         }
       },
       "additionalProperties": false,

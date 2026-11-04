@@ -22,7 +22,7 @@ is updated in the change that starts or finishes it.
 <!-- plan-summary:end -->
 
 <!-- plan-issues:start -->
-**Issue queue** (not a phase; its size is not in the totals above): [1 open](./issues/README.md), 2 SP; 0 archived.
+**Issue queue** (not a phase; its size is not in the totals above): [2 open](./issues/README.md), 7 SP; 4 archived.
 <!-- plan-issues:end -->
 
 **Order of development** (the owner's decision of 2026-11-03). The framework is developed first; the project it was extracted from, AndLD/bot-rts,

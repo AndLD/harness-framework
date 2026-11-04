@@ -20,7 +20,7 @@ Planned on 2026-11-03 from an analysis of the documents that a project edits or 
 | [4.4a](./4.4a.md) | The agent cannot load most procedures as skills | C2 | 2 | ✅ |
 | [4.5](./4.5.md) | Measure and budget the procedures block; default probes | C1 | 2 | ✅ |
 | [4.6](./4.6.md) | The next procedures, decided after the closing review | C2 | 4 | ⬜ |
-| [4.7](./4.7.md) | Templates for an RFC and a risk register | C2 | 3 | ⬜ |
+| [4.7](./4.7.md) | Templates for an RFC and a risk register | C2 | 3 | ✅ |
 | [4.8](./4.8.md) | A migration note for every version, development versions included | C2 | 5 | ✅ |
 <!-- phase-tasks:end -->
 

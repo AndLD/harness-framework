@@ -215,6 +215,8 @@ Bounded contexts (files of the product specification):
 | Plan index | {{link:paths.planIndex}} |
 | Plan method | {{link:documents.planMethod}} |
 | Plan bindings (the values of the plan method) | {{link:documents.planBindings}} |
+| Risk register | {{link:documents.riskRegister}} |
+| Design records (RFCs) | {{link:documents.rfcs}} |
 | Definition of done | {{link:documents.definitionOfDone}} |
 | Guiding principles | {{link:documents.guidingPrinciples}} |
 | Testing guide | {{link:documents.testing}} |
