@@ -21,7 +21,7 @@ Planned on 2026-11-03 from an analysis of the documents that a project edits or 
 | [4.5](./4.5.md) | Measure and budget the procedures block; default probes | C1 | 2 | ✅ |
 | [4.6](./4.6.md) | The next procedures, decided after the closing review | C2 | 4 | ⬜ |
 | [4.7](./4.7.md) | Templates for an RFC and a risk register | C2 | 3 | ⬜ |
-| [4.8](./4.8.md) | A migration note for every version, development versions included | C2 | 5 | ⬜ |
+| [4.8](./4.8.md) | A migration note for every version, development versions included | C2 | 5 | ✅ |
 <!-- phase-tasks:end -->
 
 Task status: ⬜ not started · 🟡 in progress (branch noted in the work log) · ✅ done. Agent: the task's agent-complexity marker (plan method, section 7).

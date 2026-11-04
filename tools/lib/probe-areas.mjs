@@ -4,9 +4,8 @@
 // list, and an area no probe covers is run from the framework's starting probe for it (`core/reviews/harness/starting-probes.md`).
 import { existsSync, readFileSync } from 'node:fs'
 import { inFramework } from './lock.mjs'
-import { AREAS_BEGIN, AREAS_END } from './migration-notes.mjs'
+import { AREAS_BEGIN, AREAS_END, selectNotes } from './migration-notes.mjs'
 import { listMigrations } from './migrate.mjs'
-import { baseVersion, compareVersions } from './versions.mjs'
 
 const cells = (line) =>
   line
@@ -89,10 +88,8 @@ export function probePlan({ probes, touched }) {
 /** The areas the notes of the versions after `from`, up to `to`, list, in the order of the areas of the first note that names them. */
 export function touchedAreas({ folder, from, to }) {
   const areas = []
-  for (const { version, note } of listMigrations(folder)) {
-    if (note && compareVersions(version, from) > 0 && compareVersions(version, baseVersion(to)) <= 0) {
-      for (const area of areasOfNote(readFileSync(note, 'utf8'))) if (!areas.includes(area)) areas.push(area)
-    }
+  for (const { note } of selectNotes(listMigrations(folder), from, to)) {
+    for (const area of areasOfNote(readFileSync(note, 'utf8'))) if (!areas.includes(area)) areas.push(area)
   }
   return areas
 }

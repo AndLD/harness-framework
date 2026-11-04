@@ -9,7 +9,7 @@ import { after, before, test } from 'node:test'
 import { run } from '../harness.mjs'
 import { FRAMEWORK_DIR } from './bootstrap.mjs'
 import { readLock, writeLock } from './lock.mjs'
-import { migrate } from './migrate.mjs'
+import { listMigrations, migrate } from './migrate.mjs'
 import { baseVersion, compareVersions, isDevelopment } from './versions.mjs'
 import { sync } from './vendor.mjs'
 
@@ -223,6 +223,70 @@ test('migrate runs the scripts of every version after the project\u2019s own, in
   const again = await migrate({ root, generators: [] })
   assert.equal(logOf(root), '0.2.0\n0.3.0\n0.4.0\n')
   assert.equal(again.messages.filter((line) => /^Migration (script|note)/.test(line)).length, 0, 'nothing is pending')
+})
+
+// The notes of a line of development versions: dev.1, dev.2 and the final 0.2.0, each tree holding the notes up to its own version
+const NOTES = ['0.1.1.md', '0.2.0-dev.1.md', '0.2.0-dev.2.md', '0.2.0.md']
+const notesUpTo = (last) =>
+  Object.fromEntries(NOTES.slice(0, NOTES.indexOf(`${last}.md`) + 1).map((name) => [name, `# Migration to ${name}\n`]))
+const noteVersions = (messages) =>
+  messages
+    .filter((line) => line.startsWith('Migration note of'))
+    .map((line) => /^Migration note of (\S+) /.exec(line)[1])
+
+test('a development version has a note of its own: a project that follows the development versions reads each one, and the final note replaces them', async () => {
+  const root = scriptedProject(scriptedFramework('0.2.0-dev.1', notesUpTo('0.2.0-dev.1')))
+  assert.deepEqual(noteVersions((await migrate({ root, generators: [] })).messages), ['0.1.1', '0.2.0-dev.1'])
+
+  sync({
+    root,
+    from: scriptedFramework('0.2.0-dev.2', notesUpTo('0.2.0-dev.2')),
+    generators: [],
+    startMigrate: () => []
+  })
+  assert.deepEqual(
+    noteVersions((await migrate({ root, generators: [] })).messages),
+    ['0.2.0-dev.2'],
+    'only what the project has not read'
+  )
+
+  sync({ root, from: scriptedFramework('0.2.0', notesUpTo('0.2.0')), generators: [], startMigrate: () => [] })
+  assert.deepEqual(
+    noteVersions((await migrate({ root, generators: [] })).messages),
+    ['0.2.0'],
+    'the final note is the complete story'
+  )
+})
+
+test('a jump over the development versions reads the final note and not the development notes it covers', async () => {
+  const fromStart = scriptedProject(scriptedFramework('0.2.0', notesUpTo('0.2.0')))
+  assert.deepEqual(noteVersions((await migrate({ root: fromStart, generators: [] })).messages), ['0.1.1', '0.2.0'])
+
+  const fromDev = scriptedProject(scriptedFramework('0.2.0-dev.1', notesUpTo('0.2.0-dev.1')))
+  await migrate({ root: fromDev, generators: [] })
+  sync({ root: fromDev, from: scriptedFramework('0.2.0', notesUpTo('0.2.0')), generators: [], startMigrate: () => [] })
+  assert.deepEqual(noteVersions((await migrate({ root: fromDev, generators: [] })).messages), ['0.2.0'])
+})
+
+test('the script of a development version is not run, and the notes are listed with the development versions in order', () => {
+  const source = scriptedFramework('0.2.0', {
+    ...notesUpTo('0.2.0'),
+    '0.2.0-dev.1.mjs': script('dev'),
+    '0.2.0.mjs': script('0.2.0')
+  })
+  assert.deepEqual(
+    listMigrations(join(source, 'migrations')).map(({ version, note, script }) => [
+      version,
+      Boolean(note),
+      Boolean(script)
+    ]),
+    [
+      ['0.1.1', true, false],
+      ['0.2.0-dev.1', true, false],
+      ['0.2.0-dev.2', true, false],
+      ['0.2.0', true, true]
+    ]
+  )
 })
 
 test('a script runs twice without change, and a run that stopped resumes with the scripts not yet applied', async () => {
