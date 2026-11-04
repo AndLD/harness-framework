@@ -70,3 +70,15 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none. Phase 4 is now 19 SP.
 - **Next step:** unchanged, after the Phase 3 tasks of `0.2.0`.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-04 — tasks 4.1 to 4.5 merged; the decision of 4.6 is the owner's, and the development version is next
+- **Tasks:** 4.1, 4.2, 4.3, 4.4, 4.4a, 4.5 done (pull requests #49 to #54); 4.6 not started: the decision is brought to the owner first, nothing is built.
+- **Branch:** `docs/phase-4-decision-brief` — the record only.
+- **Decisions / deviations from the plan:**
+  - *The numbers for 4.6.* The `procedures` block of the entry file costs about 23 words a row. This repository's block has 12 rows and 277 words in an entry file of 2454 words; a bootstrapped project's has 10 rows and 233 words in 1973 (about 12 %). The ceilings of the bindings are 16 rows and 400 words (4.5), so there is room for four rows and about 120 words.
+  - *The evidence.* The extension probes of the closing review (add a phase; put a defect into the plan) passed with detours that 4.2 (structure checks) and 4.3 (`change-plan`) answer. No probe has run since, and none exists for the other documents: the product knowledge (a glossary term, an open question, a backlog item) and a change of the harness of a project. The product-knowledge documents that have a template (the glossary, the register of open items, the backlog) are held by `check product-knowledge`, so a copy that drifts is found; the specification sections, the RFCs and the risks have no template in the framework. A project can now write the procedures of its own (4.1), as this repository did for `change-framework`.
+  - *The options for 4.6.* (A) `record-product-knowledge` and `change-harness`, two rows, about 46 words. (B) one router `extend-document`, one row, about 23 words, that sends the agent from the document map to the template, the rules and the check of a document; it adds a hop. (C) build neither now: run the extension probes (P5 and P6 of the stub, plus one for the product knowledge and one for a change of the harness) on the `0.2.0` development version, and build what the detours name.
+  - *Recommendation:* (C), with `record-product-knowledge` as the first one to build if the product-knowledge probe shows a detour (it is the one family whose documents have templates and a check). `change-harness` is better written by each project in its own `paths.procedures`.
+- **Problems / blockers / findings:** the dev version has no migration note for `0.2.0` (it is written with the release), so a consuming project that takes `0.2.0-dev.1` is shown the notes of `0.1.1` and `0.1.2` only and no area of the plan format; write `migrations/0.2.0.md` before the development tag, or with it. The probe in which "continue Phase 1" loads `start-task` as a skill (4.4a) and the probes P5 and P6 (4.3, 4.5) were not run by an agent: a headless session could not authenticate.
+- **Next step:** the owner decides 4.6 (A, B or C) and cuts `0.2.0-dev.1` (with the note of `0.2.0`); the consuming project takes it and runs the probes.
+- **Verify with:** `npm run docs:check`
