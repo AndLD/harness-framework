@@ -121,6 +121,10 @@ Squash merge into the integration branch; a merge commit for release and hotfix 
   release and hotfix branches into the production branch) without asking.
 - **Ask the user before merging any other pull request:** documentation or chore PRs that are not related to the development plan of a named phase, anything <!-- rule:agent.ask-merge -->
   targeting the production branch, and release and hotfix branches. Approval for one merge does not carry over to another.
+  The one exception is a **flow the owner started** (the procedure `run-flow`): its orchestrator approves the merges of a release or a hotfix itself when the
+  flow's settings let it decide that cut: its level (by default a development version D1, a final release or a hotfix D3) is below the flow's `askAt`, or the flow is seamless. It merges them by merge commit once the
+  required checks are green, never by the host's auto-merge and never by an administrator's bypass, tags the version, and logs the cut as a decision with its level
+  (the procedure `release`). Otherwise, and for every other merge this rule names, it asks the owner like any agent.
 - Never delete a remote branch, never force-push to the production or the integration branch, never rewrite published history. <!-- rule:agent.no-rewrite -->
 - **Auto-merge merges a task's pull request; nothing waits for you to come back.** As the last step of a task, once its definition of done holds, <!-- rule:agent.auto-merge -->
   enable the host's auto-merge (squash) on exactly the pull requests this section lets you merge without asking: the task and plan-related
@@ -138,7 +142,7 @@ Squash merge into the integration branch; a merge commit for release and hotfix 
   When CI is green, the host merges the pull request (auto-merge); go on to the next task, so work flows across phases.
 - **Triage the open reports of users before other work**, by the procedure `triage-reports` of the reading map, at most `reports.triageLimit` of the
   [profile](./docs/profile.md) a session. Never add a report as a new issue before looking for the same or a close problem already recorded.
-  Answers and closings on the host need the owner's approval.
+  Answers and closings on the host need the owner's approval, or that of a flow the owner started when its settings let its orchestrator decide them (the procedure `run-flow`: D4 by default, decided below the flow's `askAt` or in seamless mode).
 <!-- harness:end git-rules -->
 
 ---

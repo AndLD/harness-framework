@@ -22,7 +22,7 @@ A flow is a file of the plan's flows folder (the profile, plan section): an orde
 The flow's `levels` setting may move a decision kind to another level. **Brainstorm** (the default mode) decides below `askAt` and asks the owner from `askAt` up. **Seamless** decides every level and keeps a "review later" digest of its D2 to D4 decisions. In either mode:
 
 - **Hard limits** that no mode and no setting crosses: an administrator's bypass of the host's rules, a cut on a red check, the non-negotiables of the entry file, a force-push or the deletion of a remote branch.
-- **What the entry file keeps for the owner stays the owner's.** A change of the meaning of a core rule or a non-negotiable, a merge into the production branch, a release cut, an answer on the host: decide it only where the Git rules of the entry file give it to a flow at that level; otherwise stop and ask, whatever the mode.
+- **What the entry file keeps for the owner stays the owner's**, except where its rules give it to a flow at a level: a release or hotfix cut (the procedure `release`, "When a flow cuts") and an answer or a closing of a report (the procedure `triage-reports`), each by the flow's `levels`. Anything else they keep for the owner (a change of the meaning of a core rule or a non-negotiable, another merge into the production branch, creating a report on the host): stop and ask, whatever the mode.
 - A step's "Stops for" column stops the flow at that step whatever the mode.
 
 ## Steps
