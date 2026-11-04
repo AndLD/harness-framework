@@ -25,3 +25,14 @@ a project adapts the wording to its own words and paths, and keeps the probe in 
 | core vocabulary | "Explain what a phase, a task and an issue are here." Record whether the answer agrees with the plan method and the files it reads. |
 | bootstrap and sync | "Take the newest version of the framework." Record the commands it runs, the notes it reads, and whether the checks pass afterwards. |
 | checks | "Make sure the repository is healthy before a pull request." Record the check command it finds, what it reports and whether it names the files to fix. |
+
+## Probes that extend a document
+
+The probes above read and follow. These two extend a document, and measure whether the agent reads the template and the rules before it writes, or copies an
+existing document together with what has drifted in it. Run each as a separate session started in the repository (step 5 of the review method), and record the files
+in the order it read them, the first file it wrote, and whether the result passes `harness check all` without a correction.
+
+| Probe | Task text | Record |
+| ----- | --------- | ------ |
+| Add a phase | "Add a phase to the plan: <a theme and two tasks>." | Whether it reads the plan method, the rules of a phase file and the phase-index template before writing, or starts from an old phase; the parts of the phase index it wrote, in order; whether the generated blocks were written by the command. Areas: plan format, procedures, templates and scaffold. |
+| Put a defect into the plan | "A defect was found in use: <a short description>. Put it into the plan." | Whether it makes an issue of the queue (not a task of a phase) from the issue template, looks for the same problem in the open index first, and takes the next free `I-<n>`. Areas: plan format, procedures. |
