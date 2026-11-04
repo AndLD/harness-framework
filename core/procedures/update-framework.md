@@ -11,7 +11,7 @@ invocation: explicit
 ## Take the version
 
 1. Know the two versions: the one in `harness.lock.json` (`version`) and the target (a final version, or a development version `<x.y.z>-dev.<n>` to try it before the final tag). Several versions in a row are taken in one jump.
-2. Branch from the integration branch as it is on the remote, on a chore branch of its own (the branch types are in the profile). `sync` refuses on a protected branch and with uncommitted changes, so that the whole migration is one commit that `harness rollback` can undo.
+2. Branch from the integration branch as it is on the remote, on a chore branch of its own (the branch types are in the profile). `sync` refuses on a protected branch and with uncommitted changes, so that the whole migration is one commit that `harness rollback` can undo. Set the task you have in hand (claimed by a draft pull request) to 🟡 in its task file first: a migration that converts the plan reads a task that is still ⬜ as not started.
 3. `{{commands.harnessSync}} --from <source> --to <target>`. It places the new files, updates the lock and starts `harness migrate` of the new version in a new process. A `sync` of a version before `0.2.0` does not start it: run `harness migrate` yourself, with the new tools, when the output does not say it ran. `migrate` runs the scripts of every version between (the mechanical changes), regenerates the managed files, commits the migration as one commit, and prints the migration notes of those versions in order.
 4. A project that copied the first harness (its scripts and hooks in its own folders, no `harness.lock.json`) is not synced: adopt it (`harness adopt`, which keeps its files and adds the managed blocks), then take versions as above.
 

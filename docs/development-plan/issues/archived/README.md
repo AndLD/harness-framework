@@ -9,4 +9,5 @@ It is read to find out whether a new report is a problem that was fixed already.
 | Issue | Title | Area | SP | Reported |
 | ----- | ----- | ---- | -- | -------- |
 | [I-2](./I-2.md) | `migrate` counts a project that an older `sync` updated as `0.1.0` | bootstrap and sync | 2 | [issue 61](https://github.com/AndLD/harness-framework/issues/61) |
+| [I-4](./I-4.md) | The migration keeps a task that a branch claims, though it is still ⬜ | plan format | 2 | [issue 63](https://github.com/AndLD/harness-framework/issues/63) |
 <!-- issue-queue:end -->
