@@ -1,6 +1,6 @@
 [← Development plan](../../README.md)
 
-# Phase 3 — Stabilization, migrations and local adapters (56 SP)
+# Phase 3 — Stabilization, migrations and local adapters (61 SP)
 
 **Status:** 🟡 In progress · **Work log:** [log](./log.md), and a log beside each task (`<id>.log.md`)
 
@@ -32,6 +32,7 @@ plan until task 3.13; it is a normal phase now, keeps every id, and ends with 3.
 | [3.16](./3.16.md) | Reports from users are neither taken in nor sent upstream by any procedure | C2 | 6 | ✅ |
 | [3.17](./3.17.md) | The Git guard checks the project's branch, not the branch of the repository a command acts on | C2 | 2 | ✅ |
 | [3.18](./3.18.md) | Nothing merges a green pull request unless someone comes back, and a consumer is never set up for it | C2 | 5 | ✅ |
+| [3.20](./3.20.md) | A feature request from a user has no place in the plan but the issue queue, which is for defects | C2 | 5 | ⬜ |
 <!-- phase-tasks:end -->
 
 Task status: ⬜ not started · 🟡 in progress (branch noted in the work log) · ✅ done.
