@@ -33,14 +33,14 @@ is updated in the change that starts or finishes it.
 **Releases** (the order of the releases and of their tasks is the file [releases](./releases.md), not a section of this index; the line below is written by `harness plan summary`)
 
 <!-- plan-releases:start -->
-Current release: `0.3.0` (🟡 developing). Next: next (⬜ planned). The order of the releases and of their tasks: [releases](./releases.md).
+Current release: `0.3.0` (🟡 developing). Next: next (⬜ planned). The order of the releases and of their tasks: [releases](./releases.md). The flows that run them: [flows](./flows/README.md).
 <!-- plan-releases:end -->
 
 ---
 
 ## Resuming work in a new session
 
-"Start Phase N", "Continue Phase N", "Work the issue queue", "Fix I-<n>"; the phrase approves the pull requests of the named phases and issues. The session reads the phase index and the file of its task first, not the other tasks (to work the queue: the [open issues](./issues/README.md) and the file of the issue, never the archive), as the session protocol of the method says.
+"Start Phase N", "Continue Phase N", "Work the issue queue", "Fix I-<n>", "Run flow N", "Run flows N–M", "Continue flow N"; the phrase approves the pull requests of the named phases and issues, and of a named flow what its settings let its orchestrator decide (the procedure `run-flow`; the flows are in [flows](./flows/README.md)). The session reads the phase index and the file of its task first, not the other tasks (to work the queue: the [open issues](./issues/README.md) and the file of the issue, never the archive), as the session protocol of the method says.
 
 **Reports from consumers come first.** This repository's switch is `reports.intake: auto` with a limit of 3 (task 3.16): at the session start the hook lists the open reports and those not triaged yet, and the agent triages at most three before other work by the procedure `triage-reports` (never as a new issue before looking for the same or a close problem in the open index, the archive and the open tasks; answers and closings on the host need the owner's approval). The owner pauses the intake at once by `{ "reports": { "intake": "off" } }` in the ignored `harness-profile.local.json`. A release is cut only with the owner's approval, so a session stops when the tasks of a release are merged, and the owner hands the release to the consuming project.
 

@@ -863,3 +863,28 @@ a report template, project bindings, dated reports that stay in each project, sc
 - **Cadence.** A full review before a first release and once per major version. A targeted review after a change to authentication, the CI, the
   agent runtime's permissions, or a dependency with a known vulnerability.
 
+## 12. Releases and flows (Phase 5)
+
+Planned with the owner on 2026-11-04 ([Phase 5 log](./development-plan/phases/phase-5-release-flows/log.md)). Until then the owner ran each release by hand from a
+local list of prompts, one session per step, and the order of the releases was a section of the plan index.
+
+- **The release order is a file** (task 5.1): `releases.md` beside the plan index, one table of the releases and of the tasks in each, read by the tools. The index stays
+  the one entry point and links to it; the other way round (the releases file as the primary plan) was rejected, since it would move every project's entry point and be empty
+  for a project that ships no versions.
+- **A flow is a file of the plan** (task 5.2), in a folder of flows like the folder of phases: an ordered chain of steps (prompts to workers) that delivers one or more
+  releases, with a settings block, a steps table and an append-only log. Several flows per project; a release belongs to at most one. The flow names ids, never what a release
+  holds, so the releases file stays the one owner of that fact. The plan method (section 10) and its templates hold the format; the procedure `run-flow` holds the running.
+- **An orchestrator runs a flow; workers do the steps.** The orchestrator reads step reports and state checks, never diffs, so its context stays small and it can run a whole
+  release; it restarts when its context grows and always between two flows. Its own state changes go by one pull request per step, plan-related, so the Git rules need no
+  new kind of change.
+- **Decisions are levelled, not all-or-nothing.** D0 mechanical, D1 local, D2 plan-shaping, D3 contract or scope, D4 external communication. Brainstorm asks the owner from a
+  threshold (`askAt`, D2 by default) up; seamless decides everything and leaves a digest to review later. Hard limits (an administrator's bypass, a cut on a red check, the
+  non-negotiables, a force-push or a deleted remote branch) are outside every mode, and what the entry file keeps for the owner stays the owner's until a rule gives it to a
+  flow at a level (task 5.3: release cuts and answers to reports).
+- **Unbiased analysis.** A worker's recommendation anchors whoever reads it first, so the orchestrator writes its own pick from the plan and the design before it reads the
+  worker's, and answers the worker's argument when they differ. The log keeps both, so the owner can audit a seamless run.
+- **Executors are adapter work.** A controlled session by default, a subagent for short analysis, manual (the owner pastes) as the fallback; whether a worker session is reused
+  is decided by conditions (same repository, model and effort, related steps, small context, a warm prompt cache, at most three steps) and measured so the default can change
+  (tasks 5.5, 5.7). Usage is read and estimated before each step (5.6), and a flow may drive another repository, such as a consuming project (5.8).
+- **Not yet.** Parallel steps (waves); the `Needs` column keeps room for them.
+

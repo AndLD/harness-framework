@@ -12,12 +12,12 @@
     "host": "github"
   },
   "managed": {
-    "docs/profile.md": "574d615b2dda334f47077c23516baaad94ab90bd3b6d9aabd8e0aecd33f7b49d",
+    "docs/profile.md": "183c76ece8cd4d0fd8b403bb0920dd45902a121e50278b7b4b3539de92f5fbd1",
     "docs/quality-reviews/harness/bindings.md#layers": "3b11a01af0d9af7bdc65ece067d8b461b57b321be2eb2391c6bbbe417a7399f1",
-    "docs/engineering/rule-checks.md#rule-map": "720941c4c878d65a6eb695af0ee2e2627901bdd5c6e9f58cf62cfd7ca4bf3b9a",
-    "AGENTS.md#procedures": "f047ae9617fe699ae88b0805af77f29f9851eb4f8fe365d3a7faaeffee26a9de",
+    "docs/engineering/rule-checks.md#rule-map": "43c86a2dca95cd4c165f3baca02355916a68f5edaa0586f9573e97e162fed520",
+    "AGENTS.md#procedures": "21df0a29be988664932920d05f335913ee0ae7e6049d2d671779f7a5d0b9479e",
     "AGENTS.md#non-negotiables": "60bc719e1aa1bbb4ce989385e5c3791bc01d70005a59bae8814cff06c80ec1c0",
-    "AGENTS.md#git-rules": "344a2f75fbaf55196a322f703efe03962bd3a4add6fd00417ad03b9c72f7c863",
+    "AGENTS.md#git-rules": "1ed35f904f6dbeb59f57be88ca6546e28156ff1a06ed5aa7c05abe2c55d8976a",
     ".claude/skills/change-plan/SKILL.md": "1beaf939f7af9d978bc1518459307f9b97d1688d12d070a011e547e531741c9a",
     ".claude/skills/code-review/SKILL.md": "3a46b3ee03a74b1a464bff2d507dcaba5c739011e531e31a5d507cf11721fd46",
     ".claude/skills/end-session/SKILL.md": "fa99f024fddf2859b9b57cc9c17040daa3ebe6e478c213d0426e4b9227b2e779",
@@ -26,10 +26,11 @@
     ".claude/skills/new-adapter/SKILL.md": "59c45440c88897a90b3dcc5cdd59b6cd4143dd3b1d2853b64e80b655994ef81b",
     ".claude/skills/open-pull-request/SKILL.md": "fee36ad6b22af9805762a67ca570d5781511c2da9e132642647da0fc1e165ddd",
     ".claude/skills/release/SKILL.md": "ade0483af9663bef78b2adc75da6e5d33e4fb4d2162af0d6cf077025b59f04b5",
+    ".claude/skills/run-flow/SKILL.md": "74f5788c32b138b9a116d224c875437f2d76c9ec8cdd6f8fc0d42b47f07876e2",
     ".claude/skills/start-task/SKILL.md": "cabbb344263eadd49b7983f4bca27cf075be14ae0e267f7c2ab5c861913e039e",
     ".claude/skills/triage-reports/SKILL.md": "d3c48b22208398df01b64c8a67770c0e182a88a768386004e1056d893dca655c",
     ".claude/skills/update-framework/SKILL.md": "8d8e4d60107ac8a7d9c03168700d8f2afb5eb2e1178514c59801811386647c56",
     ".claude/skills/change-framework/SKILL.md": "e6032cf4adae64efc2b1de6a497f85c0c3537153b51d35a6656fd6b20b1a66d4"
   },
-  "profile": "79fbdf78135899e052a67daae25c919aadfe1e33cc562ead63750c21628fd1e6"
+  "profile": "6babb35353048932d44f187053944efdd00cc9ba2a821e0ea7346a921d9d4a32"
 }

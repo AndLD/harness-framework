@@ -20,7 +20,7 @@ scope; the format keeps room for them.
 | # | Task | Agent | SP | Status |
 | - | ---- | ----- | -- | ------ |
 | [5.1](./5.1.md) | The release order in a file of its own (`releases.md`) | C2 | 5 | ✅ |
-| [5.2](./5.2.md) | Flows: files of the plan that an orchestrator runs, with the procedure `run-flow` | C3 | 5 | ⬜ |
+| [5.2](./5.2.md) | Flows: files of the plan that an orchestrator runs, with the procedure `run-flow` | C3 | 5 | ✅ |
 | [5.3](./5.3.md) | The authority of a flow: release cuts and answers to reports at their levels | C3 | 3 | ⬜ |
 | [5.4](./5.4.md) | `harness flow`: check, status, next and prompt | C2 | 8 | ⬜ |
 | [5.5](./5.5.md) | Executors in the runtime-adapter contract, and the reuse of a worker session | C3 | 8 | ⬜ |

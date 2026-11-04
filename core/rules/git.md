@@ -46,14 +46,15 @@ Squash merge into the integration branch; a merge commit for release and hotfix 
 - Committing and pushing to a feature/bugfix/docs/chore branch is routine and **needs no confirmation**. Never commit or <!-- rule:agent.routine-push -->
   push directly to the production or the integration branch.
 - **Plan work (approval given by the request):** when the user asks to start or continue one or more phases, to work the issue queue or to fix issues (the resume phrases <!-- rule:agent.plan-approval -->
-  of the [profile]({{rel:paths.profileDocument}}#4-plan), for example "Start Phase N", "Work the issue queue" or "Fix I-<n>"), that request is the approval for **every task PR of the named phases and every PR of the named issues**. Create each
+  of the [profile]({{rel:paths.profileDocument}}#4-plan), for example "Start Phase N", "Work the issue queue" or "Fix I-<n>"), that request is the approval for **every task PR of the named phases and every PR of the named issues**.
+  A request to run or continue a flow of the plan ("Run flow N") names the phases and issues of its steps, and approves only what the flow's settings let its orchestrator decide (the procedure `run-flow`); it never approves a merge or an answer that this section keeps for the owner. Create each
   task's pull request into the integration branch and squash-merge it **without asking**, once the required checks pass (before CI
   exists: once lint, typecheck and tests pass locally). Do not pause between tasks, and when a named phase's exit criteria are
-  met, record it and start the next named phase. Stop after the last named phase with a summary, and earlier only when
+  met, record it and start the next named phase. Stop after the last named phase (or flow) with a summary, and earlier only when
   blocked or when a decision is needed that only the user can make. The approval does not extend to phases that were not named.
-- **Plan-related PRs merge the same way.** Every PR that belongs to a named phase or issue is covered by the same approval: its task <!-- rule:agent.plan-related -->
+- **Plan-related PRs merge the same way.** Every PR that belongs to a named phase, issue or flow is covered by the same approval: its task <!-- rule:agent.plan-related -->
   PRs, and also the documentation and chore PRs that exist because of the plan (the phase's implementation log, task and
-  status updates in the phase file and the development plan, the work log, the matching specification updates, and
+  status updates in the phase file and the development plan, the work log, a flow's state and log, the matching specification updates, and
   the fixes of tooling or tests that block a task). Merge them without asking once the required checks pass. A PR counts as
   plan-related only when it serves a named phase; anything else follows the next rule.
 - **Claim a task before working on it.** Push its branch and open a **draft** pull request for it first (title and body as in the claim row of the <!-- rule:agent.claim -->

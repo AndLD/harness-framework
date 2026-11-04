@@ -243,7 +243,8 @@ test('the procedures that every agent starts unasked are auto, and the explicit 
     'finish-phase',
     'open-pull-request',
     'change-plan',
-    'triage-reports'
+    'triage-reports',
+    'run-flow'
   ]) {
     assert.equal(invocation[name], 'auto', name)
   }
