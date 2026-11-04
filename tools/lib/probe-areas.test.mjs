@@ -111,6 +111,8 @@ function project() {
     writeFileSync(join(root, path), text)
   }
   write('migrations/0.1.1.md', note('0.1.1', ['checks']))
+  write('migrations/0.2.0-dev.1.md', note('0.2.0-dev.1', ['plan format']))
+  write('migrations/0.2.0-dev.2.md', note('0.2.0-dev.2', ['review method']))
   write('migrations/0.2.0.md', note('0.2.0', ['plan format', 'review method']))
   write('migrations/0.3.0.md', note('0.3.0', ['host adapters']))
   write('migrations/areas.json', readFileSync(join(FRAMEWORK, 'migrations/areas.json'), 'utf8'))
@@ -138,8 +140,17 @@ test('taking a version that touches the plan format: the probes that exercise it
     /^ {2}review method: "Review the code of the project\."/
   )
 
-  // A development version counts as its final one; a range with no area has nothing to run
-  assert.match(probesReport({ root, profile, from: '0.1.2', to: '0.2.0-dev.1' })[0], /plan format, review method/)
+  // A development version has a note of its own, which the final note replaces; a range with no area has nothing to run
+  assert.deepEqual(touchedAreas({ folder: join(root, 'migrations'), from: '0.1.2', to: '0.2.0-dev.1' }), [
+    'plan format'
+  ])
+  assert.deepEqual(touchedAreas({ folder: join(root, 'migrations'), from: '0.2.0-dev.1', to: '0.2.0-dev.2' }), [
+    'review method'
+  ])
+  assert.deepEqual(touchedAreas({ folder: join(root, 'migrations'), from: '0.2.0-dev.1', to: '0.2.0' }), [
+    'plan format',
+    'review method'
+  ])
   assert.match(
     probesReport({ root, profile, from: '0.3.0', to: '0.3.5' })[0],
     /list no area, so no probe needs to run again/

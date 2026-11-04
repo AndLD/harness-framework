@@ -92,32 +92,37 @@ test('the tags of the released versions are present', () => {
   )
 })
 
+// A project bootstrapped from the tag with the tools of that tag
+function bootstrapFrom(tag) {
+  const old = exportTag(tag)
+  const root = fresh()
+  const oldTools = join(old, 'tools/harness.mjs')
+  // The flag exists from 0.1.2 on; before it the bootstrap never asked the host
+  const noHostSetup = readFileSync(oldTools, 'utf8').includes('--no-host-setup') ? ['--no-host-setup'] : []
+  const init = node(oldTools, [
+    'init',
+    '--non-interactive',
+    '--name',
+    'acme',
+    '--repository',
+    'acme/shop',
+    '--stack',
+    'node-ts',
+    '--runtime',
+    'claude-code',
+    '--from',
+    old,
+    ...noHostSetup,
+    '--root',
+    root
+  ])
+  assert.equal(init.status, 0, init.stdout + init.stderr)
+  return root
+}
+
 for (const tag of TAGS) {
   test(`a project bootstrapped from ${tag} takes the current tree, migrates, passes check all, and rolls back to an empty diff`, () => {
-    const old = exportTag(tag)
-    const root = fresh()
-    const oldTools = join(old, 'tools/harness.mjs')
-    // The flag exists from 0.1.2 on; before it the bootstrap never asked the host
-    const noHostSetup = readFileSync(oldTools, 'utf8').includes('--no-host-setup') ? ['--no-host-setup'] : []
-    const init = node(oldTools, [
-      'init',
-      '--non-interactive',
-      '--name',
-      'acme',
-      '--repository',
-      'acme/shop',
-      '--stack',
-      'node-ts',
-      '--runtime',
-      'claude-code',
-      '--from',
-      old,
-      ...noHostSetup,
-      '--root',
-      root
-    ])
-    assert.equal(init.status, 0, init.stdout + init.stderr)
-
+    const root = bootstrapFrom(tag)
     // A version is taken on a branch of its own, and the migration is one commit on the commit it starts from
     projectGit(root, 'checkout', '-q', '-b', 'chore/take-version')
     const start = projectGit(root, 'rev-parse', 'HEAD')
@@ -159,3 +164,53 @@ for (const tag of TAGS) {
     assert.equal(projectGit(root, 'ls-files', '--others', '--exclude-standard'), '', 'no added file is left over')
   })
 }
+
+// The current tree as the version `version`, with the migration notes of a line of development: one per development version and the final one
+function developmentTree(version, notes) {
+  const { dir } = currentTree()
+  const manifest = JSON.parse(readFileSync(join(dir, 'framework.json'), 'utf8'))
+  writeFileSync(join(dir, 'framework.json'), JSON.stringify({ ...manifest, version }, null, 2))
+  for (const name of readdirSync(join(dir, 'migrations')).filter((file) => /^\d+\.\d+\.\d+-dev\.\d+\.md$/.test(file))) {
+    rmSync(join(dir, 'migrations', name))
+  }
+  for (const note of notes) {
+    writeFileSync(join(dir, 'migrations', `${note}.md`), `# Migration to ${note}\n`)
+  }
+  return dir
+}
+
+const notesRead = (output) => [...output.matchAll(/^Migration note of (\S+) /gm)].map((match) => match[1])
+
+test('a project takes a development version, then the next one, then the final one, and reads the right notes at each step', () => {
+  const root = bootstrapFrom(TAGS.at(-1))
+  const { version } = currentTree()
+  const tools = join(root, 'harness/tools/harness.mjs')
+  projectGit(root, 'checkout', '-q', '-b', 'chore/take-version')
+  const take = (target, notes) => {
+    const source = developmentTree(target, notes)
+    // The first jump leaves the old tools in place for the sync, and the project then migrates with the new ones
+    const synced = node(tools, ['sync', '--from', source, '--root', root])
+    const result =
+      synced.status === 0
+        ? node(tools, ['migrate', '--root', root])
+        : node(tools, ['sync', '--from', source, '--root', root])
+    assert.equal(result.status, 0, `${synced.stderr}\n${result.stdout}${result.stderr}`)
+    assert.equal(readLock(root).version, target)
+    const checked = node(tools, ['check', 'all', '--root', root])
+    assert.equal(checked.status, 0, checked.stdout + checked.stderr)
+    return `${synced.stdout}${result.stdout}`
+  }
+  const dev1 = `${version}-dev.1`
+  const dev2 = `${version}-dev.2`
+
+  assert.deepEqual(
+    notesRead(take(dev1, [dev1])).filter((note) => note.startsWith(version)),
+    [dev1]
+  )
+  assert.deepEqual(notesRead(take(dev2, [dev1, dev2])), [dev2], 'the second development version adds only its own note')
+  assert.deepEqual(
+    notesRead(take(version, [dev1, dev2, version])),
+    [version],
+    'the final note replaces the development notes'
+  )
+})

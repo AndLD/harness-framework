@@ -3,7 +3,8 @@
 //   1. runs the migration scripts (`migrations/<version>.mjs` of the vendored tree) of every version after the project's own up to the target that
 //      are not recorded as applied, in version order, and records each in the lock (`migrations.applied`), so that a stopped run resumes;
 //   2. regenerates the managed files;
-//   3. prints the migration notes of those versions, in order, for the agent or the person to follow.
+//   3. prints the migration notes of the versions after the project's own up to the target, in order, for the agent or the person to follow (task 4.8): a
+//      development version has a note of its own, and the notes of the development versions of an `x.y.z` are left out when its final note is among them.
 // A lock without the record counts as `0.1.0` with nothing applied. A script is `export default ({ root, profile }) => string[] | void` (it may be
 // async); it checks its starting state, and it is run again without harm. The script of a development version's final version runs for the
 // development version too, and is not recorded as applied, so each next development version runs it again.
@@ -11,11 +12,15 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { inFramework, MODES, readLock, writeLock } from './lock.mjs'
+import { selectNotes } from './migration-notes.mjs'
 import { loadProfile } from './profile.mjs'
 import { regenerate } from './vendor.mjs'
 import { commitEverything, isRepository } from './migration-git.mjs'
 import { startOfMigrate } from './migration-guard.mjs'
 import { baseVersion, compareVersions, FIRST_VERSION, isDevelopment } from './versions.mjs'
+
+// A script is named for a final version (`0.2.0.mjs`); a note for any version, a development one included (`0.2.0-dev.1.md`)
+const MIGRATION_FILE = /^(\d+\.\d+\.\d+(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?)\.(mjs|md)$/
 
 /** The versions that have a script or a note in the migrations folder, with which of the two, oldest first. */
 export function listMigrations(folder) {
@@ -24,8 +29,8 @@ export function listMigrations(folder) {
   }
   const found = new Map()
   for (const file of readdirSync(folder)) {
-    const match = /^(\d+\.\d+\.\d+)\.(mjs|md)$/.exec(file)
-    if (match) {
+    const match = MIGRATION_FILE.exec(file)
+    if (match && !(match[2] === 'mjs' && isDevelopment(match[1]))) {
       found.set(match[1], {
         ...found.get(match[1]),
         version: match[1],
@@ -61,7 +66,8 @@ export async function migrate({ root, generators, profile = loadProfile(root) })
   const record = (version) => ({ version, applied, ...(start ? { start } : {}) })
   const from = lock.migrations?.version ?? FIRST_VERSION
   const applied = [...(lock.migrations?.applied ?? [])]
-  const pending = listMigrations(join(root, inFramework(profile, 'migrations'))).filter(
+  const listed = listMigrations(join(root, inFramework(profile, 'migrations')))
+  const pending = listed.filter(
     ({ version }) => compareVersions(version, from) > 0 && compareVersions(version, baseVersion(target)) <= 0
   )
 
@@ -97,7 +103,7 @@ export async function migrate({ root, generators, profile = loadProfile(root) })
     )
   }
 
-  for (const { version, note } of pending.filter(({ note }) => note)) {
+  for (const { version, note } of selectNotes(listed, from, target)) {
     messages.push(`Migration note of ${version} (follow its required actions):`, readFileSync(note, 'utf8').trimEnd())
   }
   messages.push(`Migrated to ${next.framework} ${target}.`)
