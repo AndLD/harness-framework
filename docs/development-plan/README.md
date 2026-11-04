@@ -33,7 +33,9 @@ says only the order inside the phase, and a task only what it needs first. Relea
 | ------- | --------------- | ------------------ |
 | `0.1.1` | 3.6, 3.7, 3.8, then 3.11 (the first migration note) | takes it; it closes the consumer's extraction phase |
 | `0.1.2` | 3.17, 3.18, 3.3, 3.9, 3.1, 3.2 | skips it on purpose, so that `0.2.0` is the first chained migration |
-| `0.2.0` | 3.5 (`migrate`), 3.12 (scripts and the migration test), 3.14 (rollback), 3.10 (task files), 3.13 (the issue queue), 3.16 (reports: intake and upstream), 3.15 (probe areas), then Phase 4 (4.1 to 4.6; 4.8, a note for every version, before `0.2.0-dev.1` is cut; 4.7, the RFC and risk-register templates, arrives in `0.2.0-dev.2` and moves to `0.3.0` if the run of `dev.1` finds a blocker) | takes the development version before the final tag, then the release |
+| `0.2.0-dev.1` | 3.5 (`migrate`), 3.12 (scripts and the migration test), 3.14 (rollback), 3.10 (task files), 3.13 (the issue queue), 3.16 (reports: intake and upstream), 3.15 (probe areas); then Phase 4: 4.1, 4.2, 4.3, 4.4, 4.4a, 4.5, the decision of 4.6 (nothing is built for it before the owner decides), and 4.8 (a note for every version, so that this version has its own) | takes it on a draft pull request, to find what blocks the release |
+| `0.2.0-dev.2` | 4.7 (the RFC and risk-register templates; it moves to `0.3.0` if the run of `dev.1` finds a blocker), and the fixes of the blockers that run found; more development versions follow while blockers remain | takes it again when a blocker was fixed |
+| `0.2.0` | the final cut of the tasks above, with its note complete from the previous final version | moves its branch to it and finishes the task |
 | `0.3.0` | 3.4 (local adapters) | takes it |
 | next | Phase 2 (earlier if the repository goes public or a second person uses the framework) | takes it |
 
