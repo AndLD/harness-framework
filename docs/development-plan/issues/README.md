@@ -15,5 +15,4 @@ A request for something new, which is not a defect, is an item of the [backlog](
 | Issue | Title | Area | Agent | SP | Status | Reported |
 | ----- | ----- | ---- | ----- | -- | ------ | -------- |
 | [I-7](./I-7.md) | `harness branch update` left merge conflict markers in a file it reported as resolved, and no check refuses them | Git rules | C1 | 2 | ⬜ | — |
-| [I-8](./I-8.md) | A push from a linked worktree runs the gate's tests with the hook's `GIT_DIR`, and they rewrite the repository's Git config | Git rules | C1 | 2 | 🟡 | — |
 <!-- issue-queue:end -->

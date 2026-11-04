@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { execFileSync, spawnSync } from 'node:child_process'
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { after, test } from 'node:test'
@@ -52,13 +52,13 @@ const dirs = []
 after(() => dirs.forEach((dir) => rmSync(dir, { recursive: true, force: true })))
 
 // A repository on `branch`, with the Git hooks of the framework installed and a profile naming the protected branches
-function repository(branch) {
+function repository(branch, overrides = {}) {
   const root = mkdtempSync(join(tmpdir(), 'git-guards-'))
   dirs.push(root)
   const git = (...args) =>
     spawnSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', ...args], { cwd: root, encoding: 'utf8' })
   git('init', '--quiet', '--initial-branch', branch)
-  writeFileSync(join(root, 'harness-profile.json'), JSON.stringify(profile))
+  writeFileSync(join(root, 'harness-profile.json'), JSON.stringify({ ...profile, ...overrides }))
   git('config', 'core.hooksPath', HOOKS)
   return { root, git }
 }
@@ -124,4 +124,46 @@ test('the pre-push hook given the arguments Git gives it (the remote name and ad
   })
   assert.equal(result.status, 0, result.stderr)
   assert.match(result.stdout, /pre-push: no check needed, the push changes no file/)
+})
+
+test('a push from a linked worktree runs the gate without the Git variables of the hook, so a test that runs Git in its own folder leaves the repository alone', () => {
+  // Git runs the hook of a linked worktree with GIT_DIR=<repo>/.git/worktrees/<name>; a step that kept it and ran `git init` in another folder
+  // made the repository bare, and one that set core.hooksPath rewrote the repository's hooks (I-8)
+  const elsewhere = mkdtempSync(join(tmpdir(), 'git-guards-elsewhere-'))
+  const remote = mkdtempSync(join(tmpdir(), 'git-guards-remote-'))
+  dirs.push(elsewhere, remote)
+  const step = 'cd "$1" && git init --quiet && git config core.hooksPath harness/tools/git-hooks'
+  const { root, git } = repository('develop', {
+    adapters: { stacks: [], host: 'github' },
+    gate: { steps: [{ label: 'tests', run: [['sh', '-c', step, 'sh', elsewhere]] }] }
+  })
+  execFileSync('git', ['init', '--quiet', '--bare', remote])
+  writeFileSync(join(root, 'a.txt'), 'a')
+  git('add', '.')
+  git('commit', '--quiet', '-m', 'root')
+  git('remote', 'add', 'origin', remote)
+  assert.equal(
+    git('push', '--quiet', '--no-verify', 'origin', 'develop').status,
+    0,
+    'the setup of the test, without the hook'
+  )
+
+  const worktree = join(root, '.claude', 'worktrees', 'w')
+  mkdirSync(join(root, '.claude', 'worktrees'), { recursive: true })
+  git('worktree', 'add', '--quiet', '-b', 'bugfix/I-1-x', worktree)
+  const inWorktree = (...args) =>
+    spawnSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', ...args], { cwd: worktree, encoding: 'utf8' })
+  writeFileSync(join(worktree, 'b.txt'), 'b')
+  inWorktree('add', 'b.txt')
+  inWorktree('commit', '--quiet', '-m', 'change')
+
+  const pushed = inWorktree('push', '--quiet', 'origin', 'bugfix/I-1-x')
+  assert.equal(pushed.status, 0, pushed.stderr)
+  assert.equal(git('config', 'core.bare').stdout.trim(), 'false')
+  assert.equal(git('config', 'core.hooksPath').stdout.trim(), HOOKS)
+  assert.equal(
+    spawnSync('git', ['config', 'core.hooksPath'], { cwd: elsewhere, encoding: 'utf8' }).stdout.trim(),
+    'harness/tools/git-hooks',
+    'the step acted on its own folder'
+  )
 })
