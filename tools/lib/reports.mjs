@@ -201,11 +201,11 @@ export function triagePlan({ relation, candidate, version = null }) {
       steps: candidate
         ? [
             `add the report to the \`Source:\` of the backlog item ${candidate.id}`,
-            `answer the report: it is recorded as ${candidate.id} in the backlog, and nothing is built until the owner puts it into a release`
+            `answer the report: it is recorded as ${candidate.id} in the backlog and waits for the owner’s decision; nothing is started until the owner promotes it into a task of a phase`
           ]
         : [
-            'add a new item to the backlog (from the backlog template), with `Source: report` and the link of the report',
-            'answer the report with the item, and say that nothing is built until the owner puts it into a release'
+            'add a new item to the backlog, as proposed (from the backlog template), with `Source: report` and the link of the report',
+            'answer the report with the item: it waits for the owner’s decision, and nothing is started until the owner promotes it into a task of a phase'
           ],
       approval: true
     }

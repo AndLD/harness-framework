@@ -34,7 +34,7 @@ It is an issue of the queue, not a task and not a phase.
 
 ## Record a feature request
 
-A request for something that is not there is an item of the backlog, not an issue. Read the open index ([`{{paths.backlog}}/README.md`]({{rel:paths.backlog}}/README.md)) for the same request first, and add the report to its `Source:` if there is one. The id is `B-<n>`: the next free number over the open index, the names in `archived/`, and the `Formerly:` ids of the items that came from the issue queue. Create `B-<n>.md` from the backlog template (`Source:` is `report` with the link of each report, `owner` or `agent`), and run the plan-summary command. Build nothing from it until the owner names it in a release or asks for it by name.
+A request for something that is not there is an item of the backlog, not an issue and not a task: a proposal the owner has not approved. Read the open index ([`{{paths.backlog}}/README.md`]({{rel:paths.backlog}}/README.md)) for the same request first, and add the report to its `Source:` if there is one. The id is `B-<n>`: the next free number over the open index, the names in `archived/`, and the `Formerly:` ids of the items that came from the issue queue. Create `B-<n>.md` from the backlog template (`Status: Proposed`; `Source:` is `report` with the link of each report, `owner` or `agent`), and run the plan-summary command. **Never start an item**: it has no branch and no claim, and no order of the plan may name it. When the owner decides to do it, `harness plan promote <B-n> --phase <n> --approved` turns it into a task of a phase; work that task.
 {{/if}}
 
 ## Split or merge phases

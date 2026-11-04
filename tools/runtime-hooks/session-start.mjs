@@ -110,7 +110,7 @@ export function backlogLine(readText, list, backlogDir) {
     return null
   }
   const open = list(backlogDir).filter((name) => /^B-\d+\.md$/.test(name))
-  return `Backlog: ${open.length} open item(s) (${backlogDir}/README.md); an item is built only when the owner puts it into a release or asks for it by name.`
+  return `Backlog: ${open.length} proposed item(s) (${backlogDir}/README.md); none is started as it is: the owner promotes an item into a task of a phase first.`
 }
 
 export function sessionStartMessage(
