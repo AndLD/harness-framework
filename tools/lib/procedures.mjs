@@ -1,5 +1,5 @@
 // The neutral procedures (design §8.1, B6): `core/procedures/<name>.md`, steps an agent follows for a recurring piece of work. Each has frontmatter (`name`,
-// `description` — the trigger: when to use it —, `invocation`: `auto` or `explicit`, and optional `paths` and `when`) and a body that names roles of the profile file and
+// `description` — the trigger: when to use it —, `invocation`: `auto`, or `explicit` only for a procedure that an agent must not start on its own judgment (design §8.1), and optional `paths` and `when`) and a body that names roles of the profile file and
 // commands as `{{commands.lint}}`. An agent-runtime adapter packages them for its runtime (a skill, for Claude Code); a project without such a runtime reads
 // them from the reading map of its entry file. The body is rendered with the profile file, and a role it needs that the profile lacks is an error.
 import { existsSync, readdirSync, readFileSync } from 'node:fs'

@@ -1,7 +1,7 @@
 ---
 name: end-session
 description: Use when a session ends or pauses, and when a task finishes, to leave the state of the work in the repository.
-invocation: explicit
+invocation: auto
 ---
 
 # End or pause a session
