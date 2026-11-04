@@ -26,7 +26,7 @@ is updated in the change that starts or finishes it.
 <!-- plan-issues:end -->
 
 <!-- plan-backlog:start -->
-**Backlog** (not a phase; its size is not in the totals above): [1 open](./backlog/README.md), 5 SP; 0 archived.
+**Backlog** (not a phase; its size is not in the totals above): [0 open](./backlog/README.md), 0 SP; 1 archived.
 <!-- plan-backlog:end -->
 
 **Order of development** (the owner's decision of 2026-11-03). The framework is developed first; the project it was extracted from, AndLD/bot-rts,

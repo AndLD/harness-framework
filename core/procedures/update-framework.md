@@ -22,7 +22,7 @@ For each version between the two, in order (`migrate` prints them; a development
 ## Verify
 
 1. `{{commands.docsCheck}}` (every check of the framework and the project's own), then the project's gate: `{{commands.lint}}` and `{{commands.testCoverage}}`.
-2. `harness probes <from> <to>` lists the probes of the project whose areas the versions touched, with the words each read at the last review, and the starting probe of an area no probe covers. Run each as a separate session started in this repository (it then loads this entry file and its session-start hook, as a real task would) and compare what it reads with the last review: a probe that reads more, or reads a document that changed, is a finding of the version.
+2. `harness probes <from> <to>` lists the probes of the project whose areas the versions touched, with the words each read at the last review, and the starting probe of an area no probe covers. Whether to run them is the project's choice, `probes.run` of the profile file (the ignored local file overrides it on one machine), and the end of the output of `migrate` and of `harness probes` says which: `auto` runs them; `ask` (the default) asks the owner first and runs them only on a yes; `disabled` does not run them. Run each as a separate session started in this repository (it then loads this entry file and its session-start hook, as a real task would) and compare what it reads with the last review: a probe that reads more, or reads a document that changed, is a finding of the version.
 3. Write in the pull request what the notes missed: a step you had to take that no note named, a check that did not prove its action, a probe that read more. Report each to the framework so that the note is corrected (an issue in its repository with the template; the procedure `report-upstream` does it where the project has it).
 
 ## When it fails
@@ -33,7 +33,7 @@ For each version between the two, in order (`migrate` prints them; a development
 
 ## The pull request
 
-Open it by the procedure `open-pull-request`, titled `chore(framework): take <target>`; list the versions taken, the required actions done and their checks, the probes run, and what the notes missed.
+Open it by the procedure `open-pull-request`, titled `chore(framework): take <target>`; list the versions taken, the required actions done and their checks, the probes run (or that `probes.run` left them out), and what the notes missed.
 
 ## A defect found in the framework
 

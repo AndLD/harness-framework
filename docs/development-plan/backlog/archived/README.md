@@ -8,4 +8,5 @@ It is read to find out whether a new request was built already.
 <!-- backlog:start -->
 | Item | Title | Area | SP | Source |
 | ---- | ----- | ---- | -- | ------ |
+| [B-1](./B-1.md) | A profile switch for the probes of a migration: `auto`, `ask` (the default) or `disabled` | procedures | 5 | report — [GitHub issue 65](https://github.com/AndLD/harness-framework/issues/65) |
 <!-- backlog:end -->

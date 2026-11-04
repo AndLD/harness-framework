@@ -365,6 +365,20 @@
       },
       "additionalProperties": false
     },
+    "probes": {
+      "type": "object",
+      "description": "How taking a version of the framework handles the cold-start probes of the project (report 65): each probe whose areas the version touched is a session of its own that reads thousands of words, for every release. A local, ignored file, `harness-profile.local.json`, may override `run` on one machine without a pull request.",
+      "default": {},
+      "properties": {
+        "run": {
+          "type": "string",
+          "enum": ["auto", "ask", "disabled"],
+          "default": "ask",
+          "description": "`auto`: whoever takes the version runs the probes `harness probes` lists, each as a separate session, and reports what each read against the last review. `ask` (the default): the owner is asked first and the probes run only on a yes; where nobody can be asked it behaves as `disabled`. `disabled`: the probes are not run, and the output of `migrate` and `harness probes` only says how to run them. No command starts a probe itself yet, so `auto` and `ask` are instructions to the one who takes the version."
+        }
+      },
+      "additionalProperties": false
+    },
     "api": {
       "type": "object",
       "description": "The public API, for projects that have one.",

@@ -14,5 +14,4 @@ the `Source:` line of the item that holds it. A defect found in use is an issue 
 <!-- backlog:start -->
 | Item | Title | Area | Agent | SP | Status | Source |
 | ---- | ----- | ---- | ----- | -- | ------ | ------ |
-| [B-1](./B-1.md) | A profile switch for the probes of a migration: `auto`, `ask` (the default) or `disabled` | procedures | C1 | 5 | ⬜ | report — [GitHub issue 65](https://github.com/AndLD/harness-framework/issues/65) |
 <!-- backlog:end -->
