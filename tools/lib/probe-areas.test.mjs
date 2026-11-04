@@ -61,9 +61,11 @@ test('the scaffold’s bindings stub has starting probes that each name areas of
   const probes = parseProbes(stub)
   assert.deepEqual(
     probes.map((probe) => probe.id),
-    ['P1', 'P2', 'P3', 'P4']
+    ['P1', 'P2', 'P3', 'P4', 'P5', 'P6']
   )
   assert.deepEqual(probeProblems(probes, AREAS, 'stub'), [])
+  assert.match(probes.find((probe) => probe.id === 'P5').scenario, /Add a phase to the plan/)
+  assert.match(probes.find((probe) => probe.id === 'P6').scenario, /Put a defect found in use into the plan/)
   assert.ok(probes.every((probe) => probe.areas.length >= 2))
   assert.deepEqual(
     probeProblems(
