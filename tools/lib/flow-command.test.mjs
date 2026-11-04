@@ -1,4 +1,4 @@
-// `harness flow check | status | next | prompt` (task 5.4) on a scratch project with a plan, a releases file, a flow and its log, through the command line.
+// `harness flow check | status | next | prompt | dispatch` (tasks 5.4, 5.5) on a scratch project with a plan, a releases file, a flow and its log, through the command line.
 import assert from 'node:assert/strict'
 import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -154,7 +154,9 @@ test('a flow waits for the flows it needs; an unknown flow, a flow with problems
   assert.match(call(['status', '3'], scratch).lines[0], /plan\/flows\/flow-3-bad\.md: .*run `harness flow check`/)
   for (const words of [[], ['status'], ['status', 'x'], ['prompt', '1'], ['next', '1', '2'], ['unknown']]) {
     assert.deepEqual(call(words, scratch), {
-      lines: ['usage: harness flow check | status <n> | next <n> | prompt <n> <step>'],
+      lines: [
+        'usage: harness flow check | status <n> | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--at <YYYY-MM-DD HH:MM>]'
+      ],
       code: 2
     })
   }
@@ -166,6 +168,108 @@ test('a flow waits for the flows it needs; an unknown flow, a flow with problems
     }).lines[0],
     /names no flows folder/
   )
+})
+
+// A runtime registry with one adapter whose session executor names its means plainly
+const RUNTIMES = {
+  demo: {
+    manifest: { roles: { executors: { module: 'executors.mjs', export: 'executorsFor' } } },
+    modules: {
+      'executors.mjs': {
+        executorsFor: () => ({
+          session: {
+            means: 'a demo session',
+            wakeups: true,
+            cacheMinutes: 60,
+            start: ({ prompt, model, effort, name }) => [
+              { via: 'demo', command: ['demo', 'start', name, model ?? '-', effort ?? '-', prompt] }
+            ],
+            continue: ({ worker, prompt }) => [{ via: 'demo', command: ['demo', 'resume', worker, prompt] }],
+            report: ({ worker }) => [{ via: 'demo', tool: 'report', input: { worker } }],
+            context: ({ worker }) => [{ via: 'demo', tool: 'context', input: { worker } }]
+          }
+        })
+      }
+    }
+  }
+}
+
+test('flow dispatch hands a step to a fresh worker, then continues the warm one, and says why', () => {
+  const scratch = project()
+  const profile = {
+    ...scratch.profile,
+    adapters: { runtimes: ['demo'] },
+    plan: { complexity: { scale: { C1: 'a', C2: 'b' }, models: { C2: 'Sonnet 5.5 at high effort' } } }
+  }
+  const dispatch = (words, flags, log) => {
+    if (log) scratch.write('plan/flows/flow-1-ship-one.log.md', log)
+    return flowCommand({
+      words,
+      flags,
+      root: scratch.root,
+      profile,
+      git: gitOf('Plan: 1.1\n'),
+      runtimes: RUNTIMES,
+      now: '2026-11-04 10:30'
+    })
+  }
+  const fresh = dispatch(['dispatch', '1', '1'], {}, LOG.replace('### 2026-11-04 10:01 — step 1 started\n', ''))
+  assert.equal(fresh.code, 0)
+  const first = fresh.lines.join('\n')
+  assert.match(first, /the session executor \(the flow's setting\) of the runtime demo: a demo session/)
+  assert.match(first, /Model: Sonnet 5\.5 at high effort\./)
+  assert.match(first, /Worker: a fresh one \(no previous worker is named in the log\)/)
+  assert.match(
+    first,
+    /demo: run `demo start flow-1-step-1 'Sonnet 5\.5' high "\$\(node tools\/harness\.mjs flow prompt 1 1\)"`/
+  )
+  assert.match(
+    first,
+    /\*\*Executor:\*\* session · \*\*Worker:\*\* <the id the start returns> · \*\*Model:\*\* Sonnet 5\.5 at high effort/
+  )
+
+  const ran = `${LOG.replace('### 2026-11-04 10:01 — step 1 started\n', '')}
+### 2026-11-04 10:01 — step 1 started
+- **Executor:** session · **Worker:** w-1 · **Model:** Sonnet 5.5 at high effort · **Estimate:** 1 SP, —
+
+### 2026-11-04 10:20 — step 1 ended: done
+- **Usage after:** —
+`
+  const warm = dispatch(['dispatch', '1', '2'], { context: '12' }, ran).lines.join('\n')
+  assert.match(
+    warm,
+    /Worker: continue w-1, the worker of step 1 \(warm: the same repository; the step needs the previous one;/
+  )
+  assert.match(
+    warm,
+    /the step leaves the model to the orchestrator, so it keeps the worker's, Sonnet 5\.5 at high effort/
+  )
+  assert.match(warm, /Decision D0 to log: step 2 keeps the model of step 1/)
+  assert.match(warm, /demo: run `demo resume w-1 "\$\(node tools\/harness\.mjs flow prompt 1 2\)"`/)
+  assert.match(warm, /\*\*Executor:\*\* session, reused from step 1 · \*\*Worker:\*\* w-1/)
+
+  const cold = dispatch(['dispatch', '1', '2'], { context: '55', at: '2026-11-04 12:00' }).lines.join('\n')
+  assert.match(
+    cold,
+    /Worker: a fresh one \(not w-1: the worker's context is 55% of its window, not below 40%; its last turn was 100 minutes ago, past the 60 minutes/
+  )
+
+  assert.match(dispatch(['dispatch', '1', '9'], {}).lines[0], /Flow 1 has no step 9; its steps are 1, 2\./)
+  assert.match(dispatch(['dispatch', '1', '2'], { context: '140' }).lines[0], /--context is a percent from 0 to 100/)
+  const manual = flowCommand({
+    words: ['dispatch', '1', '1'],
+    root: scratch.root,
+    profile: scratch.profile,
+    git: gitOf(''),
+    runtimes: {},
+    now: '2026-11-04 10:30'
+  })
+  assert.match(manual.lines.join('\n'), /the manual executor \(the flow's setting\) of the framework/)
+  assert.match(
+    manual.lines.join('\n'),
+    /Note: the runtime offers no session executor, so the step goes to the manual one/
+  )
+  assert.match(manual.lines.join('\n'), /not readable: the next step starts a fresh worker/)
 })
 
 test('the command line routes flow check through the check "flows" and the other commands to the same tools', async () => {

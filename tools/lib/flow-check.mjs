@@ -42,6 +42,17 @@ function settingsProblems(settings) {
     if (!allowed.includes(settings[name]))
       problems.push(`the setting ${name} "${settings[name]}" is not one of ${allowed.join(', ')}`)
   }
+  const limits = settings.reuseLimits
+  if (limits !== undefined && (typeof limits !== 'object' || limits === null || Array.isArray(limits)))
+    problems.push('the setting reuseLimits is not an object')
+  else {
+    if (limits?.context !== undefined && !(limits.context > 0 && limits.context <= 100))
+      problems.push('the reuse limit context must be a percent from 1 to 100')
+    if (limits?.steps !== undefined && !(Number.isInteger(limits.steps) && limits.steps >= 1))
+      problems.push('the reuse limit steps must be a whole number from 1')
+    if (limits?.cacheMinutes !== undefined && !(Number.isFinite(limits.cacheMinutes) && limits.cacheMinutes >= 0))
+      problems.push('the reuse limit cacheMinutes must be a number of minutes')
+  }
   const stop = settings.usage?.stopAt ?? {}
   for (const window of ['fiveHour', 'weekly']) {
     if (!(stop[window] > 0 && stop[window] <= 100))

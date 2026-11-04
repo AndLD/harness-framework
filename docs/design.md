@@ -365,6 +365,7 @@ stacks that claim the same path are a profile error.
 | Pull-request tools | optional (none: the agent checks the required checks with the host's command before it merges, and the rule "CI monitoring with automatic fixes" is "not applicable") | attach a pull request: `bind_pr`; CI monitoring with fixes: `set_monitor` with `auto_fix` (the Claude desktop app) | none known; the fallback applies |
 | Waiting advice | optional | the notes of today's stack §6 (done-files, stale events) | none |
 | Model map | optional: the default of `plan.complexity.models` (section 3.4) | `C1` Sonnet 5.5, medium effort · `C2` Sonnet 5.5, high · `C3` Opus 5.5, high | none: Cursor offers many vendors' models, so the project sets its own |
+| Executors | logic (contract 2, task 5.5): `executorsFor(profile)`, how an orchestrator of a flow starts a worker with a model and an effort, continues it, fetches its full report and reads its context (`core/contracts/runtime.md`) | `session`: the desktop app's sessions (`start_session`, `SendMessage`, `list_events`, `get_usage`) or the command line (`claude -p --model --effort --output-format json`, `--resume`); `subagent`: the agent tool | `manual` only, a stub: no verified way for an agent to drive another Cursor agent |
 | Runtime terms | required | `CLAUDE.md`, `.claude/`, `bind_pr`, … (joined into the CORE scan) | `.cursor/`, `.mdc`, … |
 
 ### 4.3 Host adapter
@@ -883,9 +884,15 @@ local list of prompts, one session per step, and the order of the releases was a
   flow at a level (task 5.3: release cuts and answers to reports).
 - **Unbiased analysis.** A worker's recommendation anchors whoever reads it first, so the orchestrator writes its own pick from the plan and the design before it reads the
   worker's, and answers the worker's argument when they differ. The log keeps both, so the owner can audit a seamless run.
-- **Executors are adapter work.** A controlled session by default, a subagent for short analysis, manual (the owner pastes) as the fallback; whether a worker session is reused
-  is decided by conditions (same repository, model and effort, related steps, small context, a warm prompt cache, at most three steps) and measured so the default can change
-  (tasks 5.5, 5.7). Usage is read and estimated before each step (5.6), and a flow may drive another repository, such as a consuming project (5.8).
+- **Executors are adapter work** (task 5.5). A controlled session by default, a subagent for short analysis, manual (the owner pastes) as the fallback. The runtime contract
+  gains the logic role `executors` (contract 2): the adapter returns *means* (a tool call, a command, an answer to read, or what the owner does), never runs a worker itself, so the
+  tools stay free of the runtime and an agent orchestrator carries the means out. It is required, because the plan's verification holds an adapter without an executor to fail;
+  no adapter outside this repository exists yet on that axis (the adapters of a project's own repository arrive in the same version), and a runtime without automation returns the
+  manual executor only. Whether a worker is reused is a pure rule (`decideReuse`): same repository, model and effort, related steps, its context below 40% of its window, no stop
+  and no pause longer than the prompt cache lives, fewer than three steps. The reason is the prompt cache: a fresh worker still reads the shared prefix (system prompt, tools, entry
+  file) from the cache and pays for its orientation reads, while a reused one reads its whole context from the cache only while the cache lives; after that the long context is
+  written again at full price, and a change of model or effort drops the cache anyway. The worker's id is written in the log (`Worker:`), so a restarted orchestrator continues it.
+  The limits are settings (`reuseLimits`), measured so the defaults can change (task 5.7). Usage is read and estimated before each step (5.6), and a flow may drive another repository, such as a consuming project (5.8).
 - **The tools read the repository, not the cache** (task 5.4). `harness flow status` recomputes each step's state from the plan, the merged pull requests (the `Plan:` lines of the squash
   commits), the tags and a consumer's lock, so an orchestrator that stopped in the middle of a step resumes from the truth; the State column is only a cache and the log the record. Checks are pure
   functions on the parsed flows and on facts, with the Git command and the lock of a consuming repository as seams. The wording of a worker's prompt lives once, in a template of `core/plan/`, so a

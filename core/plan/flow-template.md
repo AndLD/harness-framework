@@ -23,6 +23,7 @@ The orchestrator reads this block (the procedure `run-flow`); a setting left out
   },
   "executor": "session",
   "reuse": "auto",
+  "reuseLimits": { "context": 40, "steps": 3 },
   "commits": "per-step",
   "usage": {
     "subscription": "local",
@@ -50,7 +51,8 @@ Rules (the plan method, section 10; delete this comment in a real flow):
   a release holds changes the releases file in the same commit.
 - A step inserted midway takes a suffix id (`6c` after `6b`) and never renumbers the others; inserting one is a logged decision of level D2.
 - "Stops for": a level (`D2`) or a named reason (`owner review`) at which the orchestrator stops at this step whatever the mode, or —.
-- "Executor" and "Model" may be overridden per step in the scope's cell: `(executor: manual)`.
+- "Executor" and "Model" may be overridden per step in the scope's cell: `(executor: manual)`. `harness flow dispatch <n> <step>` says how the executor hands the step to a worker,
+  and whether the previous step's worker continues it (`reuse: auto` within `reuseLimits`).
 - `harness flow check` holds this shape, `harness flow status <n>` recomputes the State column from the repository, and `harness flow prompt <n> <step>` renders the prompt of a step from the
   standard wording of the step prompts (the plan folder of the framework); only a `custom` step writes its own.
 -->

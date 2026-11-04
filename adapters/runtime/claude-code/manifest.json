@@ -1,9 +1,9 @@
 {
   "axis": "runtime",
   "name": "claude-code",
-  "contract": 1,
+  "contract": 2,
   "description": "Claude Code: CLAUDE.md that imports the entry file, hooks in .claude/settings.json, Read deny rules, skills in .claude/skills.",
-  "terms": "claude code|claude\\.md|\\.claude/|bind_pr|set_monitor|claude_project_dir",
+  "terms": "claude code|claude\\.md|\\.claude/|bind_pr|set_monitor|claude_project_dir|start_session|list_events|get_usage|claude -p\\b",
   "roles": {
     "entry-file": {
       "fills": "CLAUDE.md with `@AGENTS.md`: the import works in every session",
@@ -39,6 +39,11 @@
     },
     "model-map": {
       "fills": "C1 Sonnet 5.5 at medium effort, C2 Sonnet 5.5 at high, C3 Opus 5.5 at high"
+    },
+    "executors": {
+      "fills": "session: a session of the Claude desktop app (`start_session`, continued by `SendMessage`, its full report by `list_events`, its context by `get_usage`) or of the command line (`claude -p --model --effort --output-format json`, continued with `--resume`; the JSON answer carries the report and the context); subagent: the agent tool, its full result returned, no CI wake-ups, no context reading. The prompt cache is counted as an hour (a subscription); a flow on an API key sets `reuseLimits.cacheMinutes` to 5",
+      "module": "executors.mjs",
+      "export": "executorsFor"
     },
     "scaffold-files": {
       "fills": "`CLAUDE.md` importing the entry file, `.claude/settings.json` from `settingsFor`, and the ignore line of the local settings",
