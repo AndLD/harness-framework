@@ -6,6 +6,7 @@ import { join } from 'node:path'
 import { nextTask, readPhases } from '../lib/next-task.mjs'
 import { compareIds, loadPhaseEntries, parseTaskFile, TASK_LOG_FILE } from '../lib/phase-files.mjs'
 import { loadProfile } from '../lib/profile.mjs'
+import { registerLocalAdapters } from '../lib/local-adapters.mjs'
 import { runHook } from './io.mjs'
 import { isMain } from '../lib/main-module.mjs'
 import { BACKLOG, readQueue } from '../lib/issue-queue.mjs'
@@ -239,5 +240,11 @@ export async function decide(event) {
 }
 
 if (isMain(import.meta.url)) {
-  await runHook((event) => decide(event), { kind: 'session-start' })
+  await runHook(
+    async (event) => {
+      await registerLocalAdapters(process.env.CLAUDE_PROJECT_DIR ?? process.env.CURSOR_PROJECT_DIR ?? event.cwd)
+      return decide(event)
+    },
+    { kind: 'session-start' }
+  )
 }
