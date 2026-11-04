@@ -78,6 +78,8 @@ phase and is not a rule of the product. Typical kinds:
 | Risk register | Risks with likelihood, impact and mitigation, reviewed at each milestone |
 | Decision records | A design record (RFC) that a phase task requires before implementation, kept with the decision and its date |
 
+The bootstrap writes a template for two of them once into a new project: a risk register and the index of the decision records with the template of a record (the roles `documents.riskRegister` and `documents.rfcs` of the document map; a project that leaves a role empty has no such file, and one that has the documents already adds nothing).
+
 Each cross-cutting document has one owner and is linked from the index. A decision record is immutable after acceptance; a later
 decision supersedes it with a new record and a link.
 
