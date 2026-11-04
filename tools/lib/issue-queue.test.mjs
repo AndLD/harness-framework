@@ -1,12 +1,13 @@
 // The issue queue (task 3.13): issue files, the two indexes, the archive of the issues that are done, the line in the plan index, the check that an order names
 // only ids that exist, and the migration of the open-ended phase.
 import assert from 'node:assert/strict'
+import { execFileSync } from 'node:child_process'
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { after, test } from 'node:test'
 import migration from '../../migrations/0.2.0.mjs'
-import { convertOpenEndedPhase, profileWithQueue } from './issue-migration.mjs'
+import { claimedTaskIds, convertOpenEndedPhase, profileWithQueue } from './issue-migration.mjs'
 import {
   archiveTable,
   nextIssueNumber,
@@ -333,6 +334,29 @@ test('the open-ended phase becomes a normal phase that keeps its ids; only its d
 test('convertOpenEndedPhase has nothing to do for a profile without the open-ended phase', () => {
   const { root, profile } = oldProject()
   assert.deepEqual(convertOpenEndedPhase({ root, profile: { ...profile, plan: {} } }), [])
+})
+
+test('a task that a branch claims stays in its phase though it is not started, and the claims are read from the branches of the repository', async () => {
+  const { root, profile, read } = oldProject()
+  const messages = convertOpenEndedPhase({ root, profile, claimed: new Set(['5.5']) })
+  assert.match(messages.join('\n'), /Moved to the issue queue plan\/issues: 5\.4 became I-1\./)
+  assert.match(messages.join('\n'), /Kept in the phase, because a branch claims it: 5\.5\. Set it to 🟡/)
+  assert.match(
+    read('plan/phases/phase-5-issues/README.md'),
+    /\*\*Exit criteria:\*\* the tasks of this phase are done \(5\.1, 5\.2, 5\.3, 5\.5\)\./
+  )
+  assert.ok(existsSync(join(root, 'plan/phases/phase-5-issues/5.5.md')))
+
+  assert.deepEqual(claimedTaskIds(root), new Set(), 'no repository, no claim')
+  const git = (...args) =>
+    execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', ...args], { cwd: root, stdio: 'ignore' })
+  git('init', '-q')
+  git('commit', '-q', '--allow-empty', '-m', 'x')
+  for (const branch of ['feature/12.5-a-task', 'bugfix/I-3-not-a-task', 'docs/triage-reports']) {
+    git('branch', branch)
+  }
+  git('update-ref', 'refs/remotes/origin/feature/12.7-remote', 'HEAD')
+  assert.deepEqual(claimedTaskIds(root), new Set(['12.5', '12.7']))
 })
 
 test('a project with a layer map of its own gets the phase folders and the issue queue in the layer of its one-file phases', async () => {
