@@ -62,6 +62,14 @@
       "path": "{{productKnowledge.specification}}/{{productKnowledge.backlog}}"
     },
     {
+      "template": "risk-register.md",
+      "path": "{{documents.riskRegister}}"
+    },
+    {
+      "template": "rfc-index.md",
+      "path": "{{documents.rfcs}}"
+    },
+    {
       "template": "gitignore",
       "path": ".gitignore",
       "lines": true
