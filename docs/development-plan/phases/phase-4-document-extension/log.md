@@ -82,3 +82,11 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** the dev version has no migration note for `0.2.0` (it is written with the release), so a consuming project that takes `0.2.0-dev.1` is shown the notes of `0.1.1` and `0.1.2` only and no area of the plan format; write `migrations/0.2.0.md` before the development tag, or with it. The probe in which "continue Phase 1" loads `start-task` as a skill (4.4a) and the probes P5 and P6 (4.3, 4.5) were not run by an agent: a headless session could not authenticate.
 - **Next step:** the owner decides 4.6 (A, B or C) and cuts `0.2.0-dev.1` (with the note of `0.2.0`); the consuming project takes it and runs the probes.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-04 — task 4.7 added: templates for an RFC and a risk register
+- **Tasks:** 4.7 added (not started), 3 SP; Phase 4 is now 22 SP.
+- **Branch:** `docs/phase-4-templates-task`
+- **Decisions / deviations from the plan:** the discussion of 4.6 found that the framework names an owner for a design record (RFC) and for risks (the plan method) but ships no template for either, so a procedure for them would have nothing neutral to point at. The owner agreed to add the templates as a task of their own, not inside 4.6 (a decision task). It ships in `0.2.0-dev.2`: it is independent of the consuming project's run of `dev.1`, so a framework session builds it while that run goes on; if the run finds a blocker, 4.7 moves to `0.3.0` rather than hold `0.2.0`. The owner does not want the RFC and risk extension probes run now, so the choice among the options of 4.6 stays open and nothing for it is built.
+- **Problems / blockers / findings:** none.
+- **Next step:** the owner cuts `0.2.0-dev.1` (with the note of `0.2.0`); a framework session does 4.7 meanwhile.
+- **Verify with:** `npm run docs:check`
