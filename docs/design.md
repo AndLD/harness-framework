@@ -832,7 +832,7 @@ After 17.15 the framework is a project of its own, run by its own method:
 - **Where changes come from.** A finding of kind "fix in the framework" in a consuming project's review, a defect found in use, or a new adapter.
   Each becomes an issue or a pull request in the framework repository (section 1.3). Consuming projects take a release with a sync pull request
   of their own.
-- **Who decides.** The owner approves every major version and every change to the meaning of a core rule (section 1.4). Minor and patch
+- **Who decides.** The owner approves every major version and every change to the meaning of a core rule (section 1.4); a flow the owner started may cut a release or answer a report at the level its settings give it (section 12). Minor and patch
   releases follow the framework's own merge rules, as plan work does here.
 - **Releases.** A tag and its changelog section; the release workflow also rebuilds the template repository (section 6.2).
 - **Sessions.** Framework work runs in a session opened in the framework repository. A session in `bot-rts` pushes there only with the
