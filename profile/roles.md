@@ -83,6 +83,9 @@ Branch types:
 | Estimation scale | {{plan.estimationScale}} |
 | Resume phrases | {{plan.resumePhrases}} |
 | Issue queue | {{link:paths.issues}}: the defects and improvements found in use, not a phase; a file `I-<n>.md` per issue with its log beside it, branch `bugfix/I-<n>-<slug>`, the open ones in the folder's `README.md`, the finished ones in `archived/` |
+{{#if paths.backlog}}
+| Backlog | {{link:paths.backlog}}: the feature requests, not a phase and not defects; a file `B-<n>.md` per item with its `Source:` (`report` with the link of each report, `owner` or `agent`), branch `feature/B-<n>-<slug>`, built only when the owner puts it into a release or asks for it by name, the open ones in the folder's `README.md`, the finished ones in `archived/` |
+{{/if}}
 | Specification citation | {{plan.specificationCitation}} |
 | Agent complexity | every open task carries a marker in the `Agent` column of its phase file: {{derived.complexityScale}} |
 | Agent models | {{derived.complexityModels}} |

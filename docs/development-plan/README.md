@@ -22,8 +22,12 @@ is updated in the change that starts or finishes it.
 <!-- plan-summary:end -->
 
 <!-- plan-issues:start -->
-**Issue queue** (not a phase; its size is not in the totals above): [2 open](./issues/README.md), 7 SP; 4 archived.
+**Issue queue** (not a phase; its size is not in the totals above): [1 open](./issues/README.md), 2 SP; 4 archived.
 <!-- plan-issues:end -->
+
+<!-- plan-backlog:start -->
+**Backlog** (not a phase; its size is not in the totals above): [1 open](./backlog/README.md), 5 SP; 0 archived.
+<!-- plan-backlog:end -->
 
 **Order of development** (the owner's decision of 2026-11-03). The framework is developed first; the project it was extracted from, AndLD/bot-rts,
 is its first consumer and takes releases to prove them. This table is the only place that says which release a task belongs to and in what order the releases come; a phase file
@@ -35,7 +39,7 @@ says only the order inside the phase, and a task only what it needs first. Relea
 | `0.1.2` | 3.17, 3.18, 3.3, 3.9, 3.1, 3.2 | skips it on purpose, so that `0.2.0` is the first chained migration |
 | `0.2.0-dev.1` | 3.5 (`migrate`), 3.12 (scripts and the migration test), 3.14 (rollback), 3.10 (task files), 3.13 (the issue queue), 3.16 (reports: intake and upstream), 3.15 (probe areas); then Phase 4: 4.1, 4.2, 4.3, 4.4, 4.4a, 4.5, the decision of 4.6 (nothing is built for it before the owner decides), and 4.8 (a note for every version, so that this version has its own) | takes it on a draft pull request, to find what blocks the release |
 | `0.2.0-dev.2` | 4.7 (the RFC and risk-register templates; it moves to `0.3.0` if the run of `dev.1` finds a blocker), and the fixes of the blockers that run found (I-2 to I-5, reports 61 to 64); more development versions follow while blockers remain | takes it again when a blocker was fixed |
-| `0.2.0-dev.3` | 3.20 (the backlog queue for feature requests), then I-6 (report 65, a feature request: 3.20 moves it to the backlog, where it is built) and I-1 (report 30) | takes it again |
+| `0.2.0-dev.3` | 3.20 (the backlog queue for feature requests), then B-1 (formerly I-6, report 65, a feature request that 3.20 moved to the backlog) and I-1 (report 30) | takes it again |
 | `0.2.0` | the final cut of the tasks above, with its note complete from the previous final version | moves its branch to it and finishes the task |
 | `0.3.0` | 3.4 (local adapters) | takes it |
 | next | Phase 2 (earlier if the repository goes public or a second person uses the framework) | takes it |

@@ -30,6 +30,12 @@ It is an issue of the queue, not a task and not a phase.
 1. Read the open index of the queue ([`{{paths.issues}}/README.md`]({{rel:paths.issues}}/README.md)) for the same or a close problem first; if there is one, add the new report or fact to it.
 2. The id is `I-<n>`: the next free number, counted over the open index and the names of the files in `archived/` (list the folder; do not read the archive's files).
 3. Create `I-<n>.md` from the issue template (an area of the migration notes or `Unclassified`, `Reported:` for the reports that point to it), and run the plan-summary command.
+{{#if paths.backlog}}
+
+## Record a feature request
+
+A request for something that is not there is an item of the backlog, not an issue. Read the open index ([`{{paths.backlog}}/README.md`]({{rel:paths.backlog}}/README.md)) for the same request first, and add the report to its `Source:` if there is one. The id is `B-<n>`: the next free number over the open index, the names in `archived/`, and the `Formerly:` ids of the items that came from the issue queue. Create `B-<n>.md` from the backlog template (`Source:` is `report` with the link of each report, `owner` or `agent`), and run the plan-summary command. Build nothing from it until the owner names it in a release or asks for it by name.
+{{/if}}
 
 ## Split or merge phases
 
