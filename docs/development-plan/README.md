@@ -18,7 +18,8 @@ is updated in the change that starts or finishes it.
 | 2 | Security and review automation | 17 | C2–C3 | ⬜ Not started |
 | 3 | Stabilization, migrations and local adapters | 71 | C1–C2 | 🟡 In progress |
 | 4 | Reaching and holding the structure of documents | 27 | C1–C2 | 🟡 In progress |
-|  | **Total of Phases 1–4** | **127** | | |
+| 5 | Releases in a file of their own, and flows run by an orchestrator | 43 | C2–C3 | ⬜ Not started |
+|  | **Total of Phases 1–5** | **170** | | |
 <!-- plan-summary:end -->
 
 <!-- plan-issues:start -->
@@ -41,7 +42,7 @@ says only the order inside the phase, and a task only what it needs first. Relea
 | `0.2.0-dev.2` | 4.7 (the RFC and risk-register templates; it moves to `0.3.0` if the run of `dev.1` finds a blocker), and the fixes of the blockers that run found (I-2 to I-5, reports 61 to 64); more development versions follow while blockers remain | takes it again when a blocker was fixed |
 | `0.2.0-dev.3` | 3.20 (the backlog queue for feature requests), then 3.22 (the probe switch of report 65: issue I-6, then backlog item B-1, built before 3.21 and promoted to this task), I-1 (report 30), and 3.21 (a backlog item is never started as it is: the owner promotes it into a task of a phase first) | takes it again |
 | `0.2.0` | the final cut of the tasks above, with its note complete from the previous final version | moves its branch to it and finishes the task |
-| `0.3.0` | 3.4 (local adapters) | takes it |
+| `0.3.0` | 3.4 (local adapters), then Phase 5 (the release order in a file of its own, and flows run by an orchestrator; added on 2026-11-04), in the order of its ids | takes it |
 | next | Phase 2 (earlier if the repository goes public or a second person uses the framework) | takes it |
 
 Task 3.13 turned this plan's open-ended phase into a normal phase that keeps every id, so the order above stays valid: Phase 3 ends with 3.4 in
@@ -64,4 +65,5 @@ Task 3.13 turned this plan's open-ended phase into a normal phase that keeps eve
 - [Phase 2 — Security and review automation (17 SP)](./phases/phase-2-security/README.md)
 - [Phase 3 — Stabilization, migrations and local adapters (71 SP)](./phases/phase-3-stabilization/README.md)
 - [Phase 4 — Reaching and holding the structure of documents (27 SP)](./phases/phase-4-document-extension/README.md)
+- [Phase 5 — Releases in a file of their own, and flows run by an orchestrator (43 SP)](./phases/phase-5-release-flows/README.md)
 <!-- plan-contents:end -->
