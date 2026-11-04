@@ -19,7 +19,7 @@ disable-model-invocation: true
 
 ## Follow the notes
 
-For each version between the two, in order, read its note (`migrations/<version>.md` of the vendored copy: what changed, the areas touched, the required actions each with its check, the optional actions). Do every required action, then run its check; a check that does not pass is not done. The optional actions are the owner's choice. Commit what you change apart from the migration commit.
+For each version between the two, in order (`migrate` prints them; a development version has a note of its own, and the notes of the development versions of an `x.y.z` are left out when its final note is among them), read its note (`migrations/<version>.md` of the vendored copy: what changed, the areas touched, the required actions each with its check, the optional actions). Do every required action, then run its check; a check that does not pass is not done. The optional actions are the owner's choice. Commit what you change apart from the migration commit.
 
 ## Verify
 

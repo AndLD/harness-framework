@@ -12,7 +12,7 @@
     "host": "github"
   },
   "managed": {
-    "docs/profile.md": "7ef83e6fe46210857de17f5b3973450fbf05aa4962d53a2b27d8ca0f2267d640",
+    "docs/profile.md": "a26491b5fa61cf952ce3b5df44a1e552376694c577a9340354c2ff5ac781efe3",
     "docs/quality-reviews/harness/bindings.md#layers": "3b11a01af0d9af7bdc65ece067d8b461b57b321be2eb2391c6bbbe417a7399f1",
     "docs/engineering/rule-checks.md#rule-map": "720941c4c878d65a6eb695af0ee2e2627901bdd5c6e9f58cf62cfd7ca4bf3b9a",
     "AGENTS.md#procedures": "f047ae9617fe699ae88b0805af77f29f9851eb4f8fe365d3a7faaeffee26a9de",
@@ -25,10 +25,10 @@
     ".claude/skills/harness-review/SKILL.md": "9807ed551c0c0a7c1137d305b34faac5b90b0a5230527f37776d14d58b4fc950",
     ".claude/skills/new-adapter/SKILL.md": "abf372f55fe41b78c86db30776c4425156f4832c5aef56ae85dd79d6d88f7d1d",
     ".claude/skills/open-pull-request/SKILL.md": "fee36ad6b22af9805762a67ca570d5781511c2da9e132642647da0fc1e165ddd",
-    ".claude/skills/release/SKILL.md": "00dd618427dfd1e8a6a08bee78737da637e95fdb4fd190d79b516032fd2b84e4",
+    ".claude/skills/release/SKILL.md": "ade0483af9663bef78b2adc75da6e5d33e4fb4d2162af0d6cf077025b59f04b5",
     ".claude/skills/start-task/SKILL.md": "cdf89312dd183cee2604cc5504da93d9bff8815ba4cc0c55185ae230c46af94a",
     ".claude/skills/triage-reports/SKILL.md": "fdcf0fbed952b89dc526272fc198de994b7ae0fa0c4b6101c3729aabc66afe2c",
-    ".claude/skills/update-framework/SKILL.md": "b05079a42b43d292a8fc8bdc6d0621fca8504940f9002797d2191d6502692031",
+    ".claude/skills/update-framework/SKILL.md": "1bb48e61b92ac8003444ef828ea394e17125d2fba50d15f793ce55b685d16933",
     ".claude/skills/change-framework/SKILL.md": "e6032cf4adae64efc2b1de6a497f85c0c3537153b51d35a6656fd6b20b1a66d4"
   },
   "profile": "a6a25b6a26cfe0e3f0f1e4bd2887b3d436698d7f836bf1bbd004893ea387c83e"
