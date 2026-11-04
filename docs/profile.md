@@ -58,17 +58,18 @@ Branch types:
 | Role | Value |
 | ---- | ----- |
 | Plan index | [`development-plan/README.md`](./development-plan/README.md) |
-| Milestone | a phase, one file `docs/development-plan/phases/phase-<n>-<slug>.md` |
+| Milestone | a phase, a folder `docs/development-plan/phases/phase-<n>-<slug>/` (its index `README.md`, a file `<id>.md` per task); a phase of the older layout is one file `docs/development-plan/phases/phase-<n>-<slug>.md` |
 | Task id | `<phase>.<number>`, with an optional letter suffix (`2.1`, `2.1a`) |
-| Session log | `docs/development-plan/phases/work-logs/phase-<n>-log.md`, one per phase, append-only: the phase-wide entries (decisions before the start, pauses) |
-| Phases with per-task records | every phase: each task writes one log fragment `work-logs/phase-<n>/<task id>.md` next to the phase files (template: `core/plan/task-log-template.md`) |
+| Session log | `docs/development-plan/phases/phase-<n>-<slug>/log.md`, one per phase, append-only: the phase-wide entries (decisions before the start, pauses); a phase of the older layout keeps `docs/development-plan/phases/work-logs/phase-<n>-log.md` |
+| Phases with per-task records | every phase: each task writes its own log `<task id>.log.md` beside its task file in the phase folder (template: `core/plan/task-log-template.md`); a phase of the older layout keeps its fragments in `work-logs/phase-<n>/` |
 | Plan-log command | `node tools/harness.mjs plan log <n>` |
 | Implementation log | printed from the merged pull requests by the plan-log command (the `Plan: <task id>` lines of the squash commits); the phases with one log keep the table written in the phase file |
 | Task claim | a draft pull request titled `chore(plan): claim task <task id>` with `Plan: <task id>` in the body, opened before any other work on the task |
 | Status symbols | ⬜ not started · 🟡 in progress · ✅ done |
 | Estimation scale | story points (SP), Fibonacci; 1 SP is about half a developer-day or one focused agent session; estimates include the tests the definition of done requires |
-| Resume phrases | "Start Phase N", "Continue Phase N"; the phrase approves the pull requests of the named phases |
-| Open-ended phase | Phase 3 (issues found in use); its size grows |
+| Resume phrases | "Start Phase N", "Continue Phase N", "Work the issue queue", "Fix I-<n>"; the phrase approves the pull requests of the named phases and issues |
+| Issue queue | [`development-plan/issues`](./development-plan/issues): the defects and improvements found in use, not a phase; a file `I-<n>.md` per issue with its log beside it, branch `bugfix/I-<n>-<slug>`, the open ones in the folder's `README.md`, the finished ones in `archived/` |
+| Backlog | [`development-plan/backlog`](./development-plan/backlog): the feature requests, not a phase and not defects; a file `B-<n>.md` per item with its `Source:` (`report` with the link of each report, `owner` or `agent`), branch `feature/B-<n>-<slug>`, built only when the owner puts it into a release or asks for it by name, the open ones in the folder's `README.md`, the finished ones in `archived/` |
 | Agent complexity | every open task carries a marker in the `Agent` column of its phase file: `C1` routine: mechanical, fully specified, obvious to verify; `C2` standard engineering: a component to a clear specification with tests, tools to work out; `C3` judgment: research, correctness-critical design, synthesis |
 | Agent models | `C1` Sonnet 5.5 at medium effort; `C2` Sonnet 5.5 at high effort; `C3` Opus 5.5 at high effort |
 
@@ -90,7 +91,7 @@ Run from the repository root unless a package is named.
 | Every check of the framework (`harness check all`): the vendored copy, the profile file, the layer map, links, backticked paths, the CORE scan, the plan summary, the changelog fragments and the product knowledge | `npm run docs:check` |
 | Take the framework again from its source into `harness/`; regenerate the managed files only; show a local change of `harness/` | `npm run harness -- sync`; `npm run harness -- sync --local`; `npm run harness -- diff` |
 
-A release is refused without the migration note of its version in `migrations/`.
+A release, a development version included, is refused without the migration note of its version in `migrations/`.
 
 ## 9. Review values
 

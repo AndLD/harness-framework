@@ -53,10 +53,11 @@ workflows (section 11, assumptions); shells other than `sh` for the Git hooks.
   `runtime/claude-code`, `host/github`), `framework.json`, `README.md`, `CHANGELOG.md` and `LICENSE`. It does not hold the other presets,
   `examples/` or the conformance fixtures.
 - **Pin.** `harness.lock.json` at the root records the framework version, the source (a local path while staging, later a Git URL and
-  tag) and the commit the tag pointed to, the selected adapters, the SHA-256 of every vendored file and of every managed file it generates (section 6.3), and the hash of
+  tag) and the commit the tag pointed to, the selected adapters, the migrations record (`migrations`: the version the project's files are at and the migration scripts applied; see `migrations/README.md`), the SHA-256 of every vendored file and of every managed file it generates (section 6.3), and the hash of
   the profile file used for the generation.
-- **Update.** `node harness/tools/harness.mjs sync [--to <version>] [--from <path or URL>]` replaces the vendored tree, regenerates
-  the managed files and rewrites the lock. A sync is a chore pull request of its own, with the framework changelog of the versions it
+- **Update.** `node harness/tools/harness.mjs sync [--to <version>] [--from <path or URL>]` replaces the vendored tree and rewrites the lock, then
+  starts `harness migrate` of the new tree in a new process, which regenerates the managed files with the new version's tools (the tools that ran
+  `sync` are the old ones, and would write the old version's text). A sync is a chore pull request of its own, with the framework changelog of the versions it
   crosses in its body. A sync refuses a version it has seen before whose tag now points to another commit (a moved tag).
   `harness sync --local` only regenerates the managed files from the vendored tree, with no network, in every mode.
 - **Guard.** `harness check vendored` is part of the documentation check and of CI. It fails when a vendored or managed file differs from
@@ -162,7 +163,7 @@ framework/                      staging: docs/harness-framework/framework/; late
   README.md                     what it is, how to bootstrap, how to sync, how to upgrade
   BOOTSTRAP.md                  the agent-neutral bootstrap prompt (section 6)
   CHANGELOG.md  LICENSE         MIT
-  framework.json                name, version, the adapters and their axes, and the distributable paths a sync copies
+  framework.json                name, version, the adapters and their axes, the distributable paths a sync copies, and the endings of file names it leaves out (`excluded`: the framework's tests)
   core/                         project-, stack-, runtime- and host-neutral
     rules/                      non-negotiables and Git rules (the managed blocks of the entry file), with stable rule ids
     method/                     principles, SOLID checklist, testing, definition-of-done skeleton, Git workflow, session protocol, several agents
@@ -508,8 +509,7 @@ trees byte for byte, apart from the lock's timestamp. The template repository is
   the stack's config files (`.nvmrc`, the formatter's config). The core files are the templates of `core/templates/scaffold/`, rendered with the
   profile, and their paths are roles (`scaffold.json`); each adapter adds its own with the optional role `scaffold-files`, and a file that
   several of them name is a list of lines (`.gitignore`). As built in 17.13: the entry file with its reading map and empty managed blocks, the
-  README, the stack file, the rule-to-check map, the plan index, the open-ended phase as the first phase (`plan.openEndedPhaseNumber` 1, no
-  task yet) and its work log, the changelog and its fragments folder, a releasing guide, and the harness-review bindings as a stub that the
+  README, the stack file, the rule-to-check map, the plan index, the issue queue (`paths.issues`, empty; before 0.2.0 an open-ended phase) with its archive, the changelog and its fragments folder, a releasing guide, and the harness-review bindings as a stub that the
   first harness review fills; node-ts adds a package manifest whose lint and test scripts say that no tool is installed yet (so CI is green on
   a project with no code) and an empty lock file. The product-knowledge skeleton comes with task 1.4 of the framework's plan, as the templates `core/templates/scaffold/product-*.md` (they must travel with the vendored copy and the
   template repository, which hold no `examples/`); `examples/product/` is the same skeleton filled for a fictitious project. The bindings of the plan, the phases and the code review are not written
@@ -616,7 +616,12 @@ be up to date with its base. The bootstrap asks the host (`detectProtection`) be
 ### 8.1 B6: skills as neutral procedures, packaged per runtime
 
 - **Source.** `core/procedures/<name>.md`. Frontmatter: `name`, `description` (the trigger: when to use it), `invocation` (`auto` or
-  `explicit`), and optional `paths`. The body names roles, and commands as `{{commands.lint}}`. No runtime words.
+  `explicit`), and optional `paths` and `when`. The body names roles, and commands as `{{commands.lint}}`. No runtime words.
+  - **`auto`** is the default: the agent may load the procedure on its own judgment, from its trigger line, and must for work the method requires of
+    every agent unasked (starting a task, ending a session, finishing a phase, triaging the reports of users).
+  - **`explicit`** is only for a procedure that an agent must not start on its own judgment: one a person starts (a release, a review, a new adapter,
+    taking a version of the framework) or one that acts outside the repository on its own (reporting upstream). A runtime that packages an explicit
+    procedure makes it invocable by name only; its trigger line is then written for the person, and the agent reaches it from the entry file's table.
 - **Packaging** is done by the runtime adapter at sync:
   - Claude Code: `.claude/skills/<name>/SKILL.md`, rendered, with `disable-model-invocation: true` for `explicit`.
   - Cursor (native): `.cursor/skills/<name>/SKILL.md`, the same fields plus `paths`.
@@ -630,8 +635,12 @@ be up to date with its base. The bootstrap asks the host (`detectProtection`) be
   - `release`;
   - `harness-review` and `code-review`, the start prompts of the bindings as procedures;
   - `new-adapter` (section 5).
-- **Project procedures.** `bot-rts`'s own procedures (add an endpoint, add a migration, add a catalogue key) use the same format in
-  `docs/procedures/` (the profile's `paths.procedures`), and the same tool packages them.
+- **Project procedures** (built in task 4.1). `bot-rts`'s own procedures (add an endpoint, add a migration, add a catalogue key) use the same format in
+  `docs/procedures/` (the profile's `paths.procedures`, optional), and the same tool packages them: the skill of each is written for the selected
+  runtimes (its note of origin names the project's file), and the `procedures` block of the entry file lists them after the framework's. The two sets
+  share one namespace: a name that both have is an error, because a skill and a row of the reading map would name two procedures. The folder is the
+  project's, not CORE: the CORE scan does not read it, and a layer of the project's own map classifies it. This repository uses it for its own recurring
+  work (`docs/procedures/change-framework.md`).
 - **Two owners avoided.** The entry file states each rule once and links the procedure. The procedure holds the steps, not the rule.
 
 ### 8.2 B7: the layer map from one source

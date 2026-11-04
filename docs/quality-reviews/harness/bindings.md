@@ -17,7 +17,7 @@ tools already know.
 | ----- | ------------------ |
 | **CORE** | `AGENTS.md` (the managed blocks non-negotiables, git-rules), `harness/**` (the vendored copy) |
 | **DOMAIN** | – |
-| **ADAPTER** | `docs/engineering/**`, `docs/operations/**`, `.github/**`, `.claude/**`, `scripts/**` |
+| **ADAPTER** | `docs/engineering/**`, `docs/operations/**`, `docs/procedures/**`, `.github/**`, `.claude/**`, `scripts/**` |
 | **PROFILE** | `harness-profile.json`, `harness.lock.json`, `docs/profile.md`, `**/bindings.md` |
 | **STATE** | `docs/development-plan/**`, `docs/design.md`, `docs/quality-reviews/harness/20*.md`, `CHANGELOG.md`, `changelog.d/**` |
 | **ENTRY** | `AGENTS.md`, `CLAUDE.md`, `README.md` |
@@ -25,3 +25,28 @@ tools already know.
 Not in the map: nothing.
 The map covers the tracked files that match `AGENTS.md`, `CLAUDE.md`, `README.md`, `CHANGELOG.md`, `changelog.d/**`, `docs/**`, `.github/**`, `.claude/**`, `scripts/**`, `harness-profile.json`, `harness.lock.json`.
 <!-- harness:end layers -->
+
+## Cold-start probes
+
+The probes of this repository, each naming the areas it exercises (the areas of the [migration notes](../../../migrations/README.md#areas); `harness check probes` holds the names), so that a version taken
+by a project that uses the same probes reruns the ones it touches (`harness probes <from> <to>`). The first harness review writes the words each read.
+
+| Probe | Scenario                                         | Areas                                                            | Words read at the last review |
+| ----- | ------------------------------------------------ | ---------------------------------------------------------------- | ----------------------------- |
+| P1    | Start the next task of the plan                  | entry rules, Git rules, plan format, procedures                  | —                             |
+| P2    | Resume a phase or a task that a session left     | plan format, procedures, engineering method                      | —                             |
+| P3    | Open the pull request for a finished branch      | Git rules, procedures, host adapters                             | —                             |
+| P4    | Take the newest version of the framework         | bootstrap and sync, profile file, templates and scaffold, checks | —                             |
+| P5    | Add a phase to the plan                          | plan format, procedures, templates and scaffold                  | —                             |
+| P6    | Put a defect found in use into the plan          | plan format, procedures                                          | —                             |
+
+Run a probe as a separate session started in this repository (method, step 5): a subagent of the reviewing session inherits that session's entry file and gets no session-start hook. P5 and P6 extend a document; the starting probes of the framework (`core/reviews/harness/starting-probes.md`) say what to record.
+
+## Budgets
+
+The ceilings of the numbers the method budgets (section 3). Task 4.5 of the plan measured the baseline on 2026-11-04 and set the ceilings with room for the procedures Phase 4 and the next releases add; the first harness review confirms or changes them.
+
+| Number | Baseline | Ceiling |
+| ------ | -------- | ------- |
+| Rows of the `procedures` block of `AGENTS.md` (M6, M20) | 12 | 16 |
+| Words of the `procedures` block of `AGENTS.md` (M6) | 277 | 400 |

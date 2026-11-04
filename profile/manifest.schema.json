@@ -151,6 +151,7 @@
       "auto-merge": "optional",
       "release": "required",
       "ci-timings": "optional",
+      "reports": "logic-optional",
       "values-in-host-files": "logic",
       "scaffold-files": "logic-optional"
     }

@@ -12,10 +12,18 @@
       "tools/git-hooks/**",
       "tools/lib/git-guards.mjs",
       "tools/lib/guard.mjs",
-      "tools/lib/branch-update.mjs"
+      "tools/lib/branch-update.mjs",
+      "core/rules/reports/**"
     ],
-    "plan format": ["core/plan/**", "tools/lib/plan.mjs"],
-    "procedures": ["core/procedures/**", "tools/lib/procedures.mjs", "tools/lib/skills.mjs"],
+    "plan format": [
+      "core/plan/**",
+      "tools/lib/plan.mjs",
+      "tools/lib/phase-*.mjs",
+      "tools/lib/issue-*.mjs",
+      "tools/lib/link-moves.mjs",
+      "tools/lib/next-task.mjs"
+    ],
+    "procedures": ["core/procedures/**", "tools/lib/procedures.mjs", "tools/lib/skills.mjs", "tools/lib/reports*.mjs"],
     "review method": ["core/reviews/**"],
     "engineering method": ["core/method/**"],
     "adapter contract": [
@@ -38,7 +46,12 @@
       "tools/lib/vendor.mjs",
       "tools/lib/source.mjs",
       "tools/lib/lock.mjs",
-      "tools/lib/managed.mjs"
+      "tools/lib/managed.mjs",
+      "tools/lib/migrate.mjs",
+      "tools/lib/migration-*.mjs",
+      "tools/lib/rollback.mjs",
+      "tools/lib/versions.mjs",
+      "tools/lib/changelog.mjs"
     ],
     "checks": ["tools/lib/**", "tools/harness.mjs"]
   }

@@ -12,25 +12,28 @@ const STATUS_SECTION = /\*\*Status:\*\*\s*(⬜|🟡|✅)/
 const idsIn = (text) => [...text.replace(VERSION, ' ').matchAll(TASK_ID)].map((match) => match[0])
 const markdownText = (text) => text.replace(/\*\*|`|\[([^\]]*)\]\([^)]*\)/g, '$1')
 // The title of a task: its bold lead, else the start of its cell
+const shorten = (title) => (title.length > 100 ? `${title.slice(0, 97)}…` : title)
 const titleOf = (cell) => {
   const text = cell.split('|')[0].trim()
-  const title = markdownText(text.match(/\*\*(.+?)\*\*/)?.[1] ?? text).trim()
-  return title.length > 100 ? `${title.slice(0, 97)}…` : title
+  return shorten(markdownText(text.match(/\*\*(.+?)\*\*/)?.[1] ?? text).trim())
 }
 
 /**
  * The phases of the plan from their files: `{ number, file, status, order, tasks: [{ id, title, status }] }`; `order` is the `Execution order` line of
  * the file (`null` when it has none), and `points` says that the line sends the reader to the plan index.
- * @param {{ file: string, text: string }[]} files
+ * @param {{ file: string, text: string, tasks?: { id: string, title: string, status: string }[] }[]} files
  */
 export function readPhases(files) {
   return files
-    .map(({ file, text }) => {
+    .map(({ file, text, tasks: given }) => {
       const order = text.match(/^\*\*Execution order:\*\*\s*(.*)$/m)?.[1] ?? null
-      const tasks = text.split('\n').flatMap((line) => {
-        const row = line.match(ROW)
-        return row ? [{ id: row[1], title: titleOf(row[2]), status: row[3] }] : []
-      })
+      // A phase kept as a folder brings its tasks from the task files; a phase file has them as the rows of its table
+      const tasks =
+        given?.map((task) => ({ id: task.id, title: shorten(task.title ?? ''), status: task.status ?? '⬜' })) ??
+        text.split('\n').flatMap((line) => {
+          const row = line.match(ROW)
+          return row ? [{ id: row[1], title: titleOf(row[2]), status: row[3] }] : []
+        })
       return {
         number: Number(
           text.match(/^# Phase (\d+)\b/m)?.[1] ?? file.match(/phase-(\d+)/)?.[1] ?? Number.MAX_SAFE_INTEGER
@@ -72,8 +75,8 @@ export function orderOfDevelopment(indexText) {
     line.startsWith('|') ? (/^\|\s*[-: |]+\|?\s*$/.test(line) ? [] : [line.split('|').slice(1, -1)[1] ?? '']) : [line]
   )
   return cells.flatMap((cell) =>
-    [...cell.replace(VERSION, ' ').matchAll(/\b(?:Phase (\d+)|(\d+\.\d+[a-z]?))\b/g)].map((match) =>
-      match[1] ? { phase: Number(match[1]) } : match[2]
+    [...cell.replace(VERSION, ' ').matchAll(/\b(?:Phase (\d+)|(\d+\.\d+[a-z]?)|([IB]-\d+))\b/g)].map((match) =>
+      match[1] ? { phase: Number(match[1]) } : (match[2] ?? match[3])
     )
   )
 }

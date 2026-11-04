@@ -3,6 +3,10 @@
     "name": "harness-framework",
     "title": "harness-framework"
   },
+  "reports": {
+    "intake": "auto",
+    "triageLimit": 3
+  },
   "repository": {
     "slug": "AndLD/harness-framework",
     "url": "https://github.com/AndLD/harness-framework"
@@ -35,17 +39,19 @@
     "plan": "docs/development-plan",
     "phases": "docs/development-plan/phases",
     "planIndex": "docs/development-plan/README.md",
+    "issues": "docs/development-plan/issues",
+    "backlog": "docs/development-plan/backlog",
+    "procedures": "docs/procedures",
     "changelog": "CHANGELOG.md",
     "changelogFragments": "changelog.d",
     "frameworkDir": "."
   },
   "plan": {
     "taskId": "`<phase>.<number>`, with an optional letter suffix (`2.1`, `2.1a`)",
-    "phasesWithFragments": "every phase: each task writes one log fragment `work-logs/phase-<n>/<task id>.md` next to the phase files (template: `core/plan/task-log-template.md`)",
+    "phasesWithFragments": "every phase: each task writes its own log `<task id>.log.md` beside its task file in the phase folder (template: `core/plan/task-log-template.md`); a phase of the older layout keeps its fragments in `work-logs/phase-<n>/`",
     "logCommand": "`node tools/harness.mjs plan log <n>`",
     "estimationScale": "story points (SP), Fibonacci; 1 SP is about half a developer-day or one focused agent session; estimates include the tests the definition of done requires",
-    "resumePhrases": "\"Start Phase N\", \"Continue Phase N\"; the phrase approves the pull requests of the named phases",
-    "openEndedPhase": "Phase 3 (issues found in use); its size grows",
+    "resumePhrases": "\"Start Phase N\", \"Continue Phase N\", \"Work the issue queue\", \"Fix I-<n>\"; the phrase approves the pull requests of the named phases and issues",
     "complexity": {
       "scale": {
         "C1": "routine: mechanical, fully specified, obvious to verify",
@@ -57,8 +63,7 @@
         "C2": "Sonnet 5.5 at high effort",
         "C3": "Opus 5.5 at high effort"
       }
-    },
-    "openEndedPhaseNumber": 3
+    }
   },
   "versions": {
     "runtime": "Node.js 22 LTS"
@@ -110,6 +115,7 @@
     "adapter": [
       "docs/engineering/**",
       "docs/operations/**",
+      "docs/procedures/**",
       ".github/**",
       ".claude/**",
       "scripts/**"
