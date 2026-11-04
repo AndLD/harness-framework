@@ -1,7 +1,7 @@
 ---
 name: finish-phase
 description: Use when the last task of a phase is merged, to close the phase and report it.
-invocation: explicit
+invocation: auto
 ---
 
 # Finish a phase

@@ -1,7 +1,7 @@
 ---
 name: triage-reports
 description: Use when the open reports of users have to be triaged: the session start lists them, or the owner asks.
-invocation: explicit
+invocation: auto
 when: reports.intake
 ---
 

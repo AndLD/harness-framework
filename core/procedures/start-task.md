@@ -1,7 +1,7 @@
 ---
 name: start-task
 description: Use when starting or resuming a phase or a task of the development plan, before any other work on it.
-invocation: explicit
+invocation: auto
 ---
 
 # Start or resume a task

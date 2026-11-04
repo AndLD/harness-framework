@@ -616,7 +616,12 @@ be up to date with its base. The bootstrap asks the host (`detectProtection`) be
 ### 8.1 B6: skills as neutral procedures, packaged per runtime
 
 - **Source.** `core/procedures/<name>.md`. Frontmatter: `name`, `description` (the trigger: when to use it), `invocation` (`auto` or
-  `explicit`), and optional `paths`. The body names roles, and commands as `{{commands.lint}}`. No runtime words.
+  `explicit`), and optional `paths` and `when`. The body names roles, and commands as `{{commands.lint}}`. No runtime words.
+  - **`auto`** is the default: the agent may load the procedure on its own judgment, from its trigger line, and must for work the method requires of
+    every agent unasked (starting a task, ending a session, finishing a phase, triaging the reports of users).
+  - **`explicit`** is only for a procedure that an agent must not start on its own judgment: one a person starts (a release, a review, a new adapter,
+    taking a version of the framework) or one that acts outside the repository on its own (reporting upstream). A runtime that packages an explicit
+    procedure makes it invocable by name only; its trigger line is then written for the person, and the agent reaches it from the entry file's table.
 - **Packaging** is done by the runtime adapter at sync:
   - Claude Code: `.claude/skills/<name>/SKILL.md`, rendered, with `disable-model-invocation: true` for `explicit`.
   - Cursor (native): `.cursor/skills/<name>/SKILL.md`, the same fields plus `paths`.

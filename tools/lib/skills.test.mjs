@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'nod
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { after, test } from 'node:test'
-import { listProjectProcedures, parseProcedure } from './procedures.mjs'
+import { listProcedures, listProjectProcedures, parseProcedure } from './procedures.mjs'
 import { proceduresBlock, projectSkillGenerator, renderProceduresBlock, skillGenerators } from './skills.mjs'
 import { checkGenerated, sync } from './vendor.mjs'
 
@@ -232,4 +232,37 @@ test('check generated fails on a stale skill of a procedure of the project and p
     () => sync({ root, local: true, generators: [...generators, proceduresBlock] }),
     /has the name of a procedure of the framework/
   )
+})
+
+// The invocation of the procedures of the framework: the work the method requires of every agent unasked can be loaded by the agent (design §8.1)
+test('the procedures that every agent starts unasked are auto, and the explicit ones are those a person starts or that act outside the repository', () => {
+  const invocation = Object.fromEntries(listProcedures().map(({ name, invocation }) => [name, invocation]))
+  for (const name of [
+    'start-task',
+    'end-session',
+    'finish-phase',
+    'open-pull-request',
+    'change-plan',
+    'triage-reports'
+  ]) {
+    assert.equal(invocation[name], 'auto', name)
+  }
+  for (const name of [
+    'release',
+    'code-review',
+    'harness-review',
+    'new-adapter',
+    'update-framework',
+    'report-upstream'
+  ]) {
+    assert.equal(invocation[name], 'explicit', name)
+  }
+  for (const procedure of listProcedures().filter(({ invocation: kind }) => kind === 'auto')) {
+    const packaged = ADAPTER_RUNTIMES['claude-code'].modules['packaging.mjs'].packageProcedure(procedure, 'Body.')
+    assert.doesNotMatch(packaged, /disable-model-invocation/, procedure.name)
+  }
+  for (const procedure of listProcedures().filter(({ invocation: kind }) => kind === 'explicit')) {
+    const packaged = ADAPTER_RUNTIMES['claude-code'].modules['packaging.mjs'].packageProcedure(procedure, 'Body.')
+    assert.match(packaged, /disable-model-invocation: true/, procedure.name)
+  }
 })
