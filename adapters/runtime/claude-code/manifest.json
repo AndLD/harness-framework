@@ -79,6 +79,12 @@
       "by": "`guard-shell` refuses `gh pr merge --auto` into the production branch, on a release or hotfix branch and on a pull request not into the integration branch"
     },
     {
+      "rule": "agent.ask-merge",
+      "when": "early",
+      "by": "`guard-shell` refuses `gh pr merge --auto` on a release or hotfix pull request, so a flow's cut is merged by merge commit, by hand; whether the flow's level lets it cut is judgment",
+      "partial": true
+    },
+    {
       "rule": "agent.no-auto-merge",
       "when": "early",
       "by": "`guard-shell` refuses `gh pr merge --auto` where `host.autoMerge` is off"

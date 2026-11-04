@@ -100,6 +100,13 @@
       "condition": "host-protected"
     },
     {
+      "rule": "agent.ask-merge",
+      "when": "remote",
+      "by": "the ruleset requires the checks of `requiredChecks` before a release or hotfix pull request merges, so a flow cannot cut on a red check",
+      "partial": true,
+      "condition": "host-protected"
+    },
+    {
       "rule": "git.green-checks",
       "when": "early",
       "by": "the merge guard of the shell hook refuses `gh pr merge` while a required check is not green",
