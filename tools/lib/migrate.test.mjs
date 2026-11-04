@@ -439,4 +439,9 @@ test('after the sync of an older version, which keeps no record of where the pro
   const { lock: migrated, messages } = await migrate({ root, generators: [] })
   assert.deepEqual(migrated.migrations.start, { commit: start, version: '1.0.0' })
   assert.deepEqual(noteVersions(messages), ['1.1.0'], 'the project had taken 1.0.0 and the notes before it')
+  assert.match(
+    messages.at(-2),
+    /^Probes \(probes\.run is ask\): do not run them yet\./,
+    'the end of the output says what the probes ask'
+  )
 })
