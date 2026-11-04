@@ -163,7 +163,7 @@ framework/                      staging: docs/harness-framework/framework/; late
   README.md                     what it is, how to bootstrap, how to sync, how to upgrade
   BOOTSTRAP.md                  the agent-neutral bootstrap prompt (section 6)
   CHANGELOG.md  LICENSE         MIT
-  framework.json                name, version, the adapters and their axes, and the distributable paths a sync copies
+  framework.json                name, version, the adapters and their axes, the distributable paths a sync copies, and the endings of file names it leaves out (`excluded`: the framework's tests)
   core/                         project-, stack-, runtime- and host-neutral
     rules/                      non-negotiables and Git rules (the managed blocks of the entry file), with stable rule ids
     method/                     principles, SOLID checklist, testing, definition-of-done skeleton, Git workflow, session protocol, several agents

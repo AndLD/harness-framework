@@ -14,5 +14,4 @@ A request for something new, which is not a defect, is an item of the [backlog](
 <!-- issue-queue:start -->
 | Issue | Title | Area | Agent | SP | Status | Reported |
 | ----- | ----- | ---- | ----- | -- | ------ | -------- |
-| [I-1](./I-1.md) | The framework's tests that `harness sync` copies fail in a pinned project | bootstrap and sync | C1 | 2 | ⬜ | [issue 30](https://github.com/AndLD/harness-framework/issues/30) |
 <!-- issue-queue:end -->
