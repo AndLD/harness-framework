@@ -18,5 +18,6 @@
     "BOOTSTRAP.md",
     "CHANGELOG.md",
     "LICENSE"
-  ]
+  ],
+  "excluded": [".test.mjs"]
 }

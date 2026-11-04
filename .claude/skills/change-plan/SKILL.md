@@ -32,6 +32,10 @@ It is an issue of the queue, not a task and not a phase.
 2. The id is `I-<n>`: the next free number, counted over the open index and the names of the files in `archived/` (list the folder; do not read the archive's files).
 3. Create `I-<n>.md` from the issue template (an area of the migration notes or `Unclassified`, `Reported:` for the reports that point to it), and run the plan-summary command.
 
+## Record a feature request
+
+A request for something that is not there is an item of the backlog, not an issue and not a task: a proposal the owner has not approved. Read the open index ([`docs/development-plan/backlog/README.md`](../../../docs/development-plan/backlog/README.md)) for the same request first, and add the report to its `Source:` if there is one. The id is `B-<n>`: the next free number over the open index, the names in `archived/`, and the `Formerly:` ids of the items that came from the issue queue. Create `B-<n>.md` from the backlog template (`Status: Proposed`; `Source:` is `report` with the link of each report, `owner` or `agent`), and run the plan-summary command. **Never start an item**: it has no branch and no claim, and no order of the plan may name it. When the owner decides to do it, `harness plan promote <B-n> --phase <n> --approved` turns it into a task of a phase; work that task.
+
 ## Split or merge phases
 
 Split a phase when its theme has two exit criteria that can be reached independently: the new phase takes the next free number and its tasks keep their ids, or the old ids are recorded in its notes. Never merge phases: finished history is not rewritten. A phase kept as one file (the older layout) is split into a folder by `harness plan split <n>`, which rewrites every link into it. A changed order of development is recorded in the plan index, not by renumbering.

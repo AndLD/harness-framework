@@ -19,6 +19,7 @@ import { regenerate } from './vendor.mjs'
 import { commitEverything, isRepository } from './migration-git.mjs'
 import { startOfMigrate } from './migration-guard.mjs'
 import { baseVersion, compareVersions, FIRST_VERSION, isDevelopment } from './versions.mjs'
+import { probeAdvice, probeMode } from './probe-mode.mjs'
 
 // A script is named for a final version (`0.2.0.mjs`); a note for any version, a development one included (`0.2.0-dev.1.md`)
 const MIGRATION_FILE = /^(\d+\.\d+\.\d+(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?)\.(mjs|md)$/
@@ -107,6 +108,7 @@ export async function migrate({ root, generators, profile = loadProfile(root) })
   for (const { version, note } of selectNotes(listed, from, target)) {
     messages.push(`Migration note of ${version} (follow its required actions):`, readFileSync(note, 'utf8').trimEnd())
   }
+  messages.push(...probeAdvice({ ...probeMode({ profile, root }), from, to: target }))
   messages.push(`Migrated to ${next.framework} ${target}.`)
   return { lock: next, messages }
 }
