@@ -57,6 +57,7 @@ test('the procedures of the framework are all well formed, and each is named by 
       'open-pull-request',
       'release',
       'report-upstream',
+      'run-flow',
       'start-task',
       'triage-reports',
       'update-framework'

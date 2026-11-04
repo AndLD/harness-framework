@@ -42,6 +42,10 @@
       "path": "{{paths.releases}}"
     },
     {
+      "template": "flows-index.md",
+      "path": "{{paths.flows}}/README.md"
+    },
+    {
       "template": "changelog.md",
       "path": "{{paths.changelog}}"
     },

@@ -17,6 +17,7 @@ import {
   ARCHIVE_FOLDER
 } from './issue-queue.mjs'
 import { ensureBacklog } from './backlog-setup.mjs'
+import { ensureFlows, flowsLink, flowsProblems, readFlowsOf, withFlowsTable } from './flows.mjs'
 import { inFramework } from './lock.mjs'
 import { orderOfDevelopment, readPhases } from './next-task.mjs'
 import { RELEASES_END, RELEASES_START, readReleases, releaseOrder, releasesLine } from './releases.mjs'
@@ -424,7 +425,45 @@ function releasesOf({ root, profile, indexText }) {
   }
   const link = relative(dirname(planIndex), releases).split('\\').join('/')
   const block = read.problems.length ? null : releasesLine(read.rows, link.startsWith('.') ? link : `./${link}`)
-  return { text, block, problems }
+  return { text, block, problems, names: read.rows.map((row) => row.release.replace(/`/g, '')) }
+}
+
+/**
+ * The flows of a plan whose profile has the role `paths.flows` (task 5.2): their problems, and the sentence of the releases block that links their index. The
+ * index is rewritten from the flow files, or with `check` only compared. Flows deliver releases, so the role needs `paths.releases`.
+ */
+function flowsOf({ root, profile, releases, check }) {
+  const dir = profile.paths.flows
+  if (!dir) return { problems: [], link: null }
+  if (!profile.paths.releases) {
+    return {
+      problems: [
+        `the profile names a flows folder (\`paths.flows\`) but no releases file (\`paths.releases\`); a flow delivers the releases of that file`
+      ],
+      link: null
+    }
+  }
+  const read = readFlowsOf(root, profile)
+  if (!read) {
+    return {
+      problems: [
+        `${dir}: the profile names this folder for the flows, but it has no index (README.md); run \`harness plan summary\``
+      ],
+      link: null
+    }
+  }
+  const problems = flowsProblems(read, releases.names ?? null)
+  const expected = withFlowsTable(read.readme, read.flows)
+  if (expected === null)
+    problems.push(
+      `${dir}/README.md: the flows table must sit between <!-- flows-index:start --> and <!-- flows-index:end -->`
+    )
+  else if (expected !== read.readme) {
+    if (check)
+      problems.push(`${dir}/README.md: the flows table disagrees with the flow files; run \`harness plan summary\``)
+    else writeFileSync(join(root, dir, 'README.md'), expected)
+  }
+  return { problems, link: flowsLink(profile.paths.planIndex, dir) }
 }
 
 /**
@@ -438,7 +477,7 @@ export function planSummary({ root, profile, check = false }) {
   const { phases: phasesDir, planIndex } = profile.paths
   const complexity = profile.plan?.complexity
   const scale = Object.keys(complexity?.scale ?? {})
-  const setup = check ? [] : ensureBacklog({ root, profile })
+  const setup = check ? [] : [...ensureBacklog({ root, profile }), ...ensureFlows({ root, profile })]
   let phases = readPhaseFiles({ root, phasesDir, complexity, planIndex })
   let queue = readQueueOf(root, profile)
   let backlog = readBacklogOf(root, profile)
@@ -483,6 +522,8 @@ export function planSummary({ root, profile, check = false }) {
   problems.push(...releases.problems)
   problems.push(...orderProblems({ root, profile, indexText: current, releasesText: releases.text }))
   problems.push(...needProblems(phases, queue, backlog))
+  const flows = flowsOf({ root, profile, releases, check })
+  problems.push(...flows.problems)
   const link = relative(dirname(planIndex), phasesDir).split('\\').join('/')
   const lineOf = (each) => {
     if (!each) return null
@@ -494,7 +535,7 @@ export function planSummary({ root, profile, check = false }) {
     complexity,
     queueLine: lineOf(queue),
     backlogLine: lineOf(backlog),
-    releasesBlock: releases.block
+    releasesBlock: releases.block && flows.link ? `${releases.block} ${flows.link}` : releases.block
   })
 
   if (check) {
