@@ -138,22 +138,26 @@ for (const tag of TAGS) {
     assert.equal(next.status, 0, `${oldSync.stderr}\n${next.stdout}${next.stderr}`)
 
     assert.equal(readLock(root).version, version)
-    // The script of 0.2.0 split the open phase the scaffold made into a folder
-    const phases = join(root, 'docs/development-plan/phases')
-    assert.ok(
-      readdirSync(phases).some((name) => /^phase-\d+-issues$/.test(name) && existsSync(join(phases, name, 'README.md')))
-    )
-    assert.ok(!readdirSync(phases).some((name) => /^phase-\d+-issues\.md$/.test(name)))
-    // The script of 0.2.0 made the open-ended phase a normal one and gave the project its issue queue
-    assert.ok(existsSync(join(root, 'docs/development-plan/issues/README.md')))
-    // The procedures whose switch is off carry no skill, though a sync by the old tools wrote them
-    assert.ok(
-      !existsSync(join(root, '.claude/skills/triage-reports')) &&
-        !existsSync(join(root, '.claude/skills/report-upstream'))
-    )
-    const profile = JSON.parse(readFileSync(join(root, 'harness-profile.json'), 'utf8'))
-    assert.equal(profile.plan.openEndedPhaseNumber, undefined)
-    assert.equal(profile.paths.issues, 'docs/development-plan/issues')
+    // The script of 0.2.0 runs for a project that starts before 0.2.0: it split the open phase the scaffold made into a folder, made the open-ended
+    // phase a normal one and gave the project its issue queue. A project bootstrapped from 0.2.0 or later has them from its scaffold, and no script applies.
+    if (compareVersions(tag, '0.2.0') < 0) {
+      const phases = join(root, 'docs/development-plan/phases')
+      assert.ok(
+        readdirSync(phases).some(
+          (name) => /^phase-\d+-issues$/.test(name) && existsSync(join(phases, name, 'README.md'))
+        )
+      )
+      assert.ok(!readdirSync(phases).some((name) => /^phase-\d+-issues\.md$/.test(name)))
+      assert.ok(existsSync(join(root, 'docs/development-plan/issues/README.md')))
+      // The procedures whose switch is off carry no skill, though a sync by the old tools wrote them
+      assert.ok(
+        !existsSync(join(root, '.claude/skills/triage-reports')) &&
+          !existsSync(join(root, '.claude/skills/report-upstream'))
+      )
+      const profile = JSON.parse(readFileSync(join(root, 'harness-profile.json'), 'utf8'))
+      assert.equal(profile.plan.openEndedPhaseNumber, undefined)
+      assert.equal(profile.paths.issues, 'docs/development-plan/issues')
+    }
     const checked = node(projectTools, ['check', 'all', '--root', root])
     assert.equal(checked.status, 0, checked.stdout + checked.stderr)
 
