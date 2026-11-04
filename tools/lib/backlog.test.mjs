@@ -218,3 +218,38 @@ test('the session start says how many items the backlog holds and that none is b
     /Backlog/
   )
 })
+
+test('a project that names the role after its plan exists gets the folder, its two indexes and the block of the plan index from plan summary, once', () => {
+  const { root, profile, write, read } = project()
+  const FRAMEWORK = new URL('../..', import.meta.url).pathname
+  for (const name of ['backlog-queue.md', 'backlog-archive.md']) {
+    write(`core/templates/scaffold/${name}`, readFileSync(join(FRAMEWORK, 'core/templates/scaffold', name), 'utf8'))
+  }
+  rmSync(join(root, 'plan/backlog'), { recursive: true })
+  write(
+    'plan/README.md',
+    read('plan/README.md').replace(/<!-- plan-backlog:start -->\n<!-- plan-backlog:end -->\n\n/, '')
+  )
+  write('plan/README.md', read('plan/README.md').replace('5.1, B-1, I-6', '5.1'))
+  const bare = { ...profile, paths: { ...profile.paths, backlog: undefined } }
+  assert.equal(planSummary({ root, profile: bare }).message, 'Wrote the plan summary of 1 phases.')
+  assert.ok(!existsSync(join(root, 'plan/backlog')), 'no role, no backlog')
+
+  const named = { ...profile, paths: { ...profile.paths, backlog: 'plan/backlog', issues: 'plan/issues' } }
+  assert.deepEqual(planSummary({ root, profile: named, check: true }).problems, [])
+  const { message, problems } = planSummary({ root, profile: named })
+  assert.match(
+    message,
+    /Set up the backlog: created plan\/backlog\/README\.md, plan\/backlog\/archived\/README\.md, the block of the backlog in plan\/README\.md\./
+  )
+  assert.deepEqual(problems, [])
+  assert.match(read('plan/backlog/README.md'), /^\[← Development plan\]\(\.\.\/README\.md\)\n\n# Backlog/)
+  assert.match(read('plan/backlog/archived/README.md'), /^\[← Backlog\]\(\.\.\/README\.md\)/)
+  assert.match(read('plan/README.md'), /<!-- plan-issues:end -->\n\n<!-- plan-backlog:start -->\n\*\*Backlog\*\*/)
+  assert.deepEqual(planSummary({ root, profile: named, check: true }).problems, [])
+  assert.equal(
+    planSummary({ root, profile: named }).message,
+    'Wrote the plan summary of 1 phases.',
+    'the second run creates nothing'
+  )
+})

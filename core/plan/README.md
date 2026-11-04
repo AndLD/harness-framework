@@ -162,7 +162,7 @@ a folder named by the profile (`paths.issues`) in the layout of a phase folder:
 
 A **backlog** is a second queue, beside the issue queue and optional like it, for the **feature requests**: what someone asked for that is not there. It keeps them out of
 the issue queue, which a session works through on the phrase "Work the issue queue", and out of the phases, which have a goal and an end. A folder named by the profile
-(`paths.backlog`; a project without the role has no backlog) in the layout of the issue queue:
+(`paths.backlog`; a project without the role has no backlog; a project that sets it later has the folder, its two indexes and the block of the plan index created by `harness plan summary`) in the layout of the issue queue:
 
 | File | Content |
 | ---- | ------- |

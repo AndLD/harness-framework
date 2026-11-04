@@ -15,6 +15,7 @@ import {
   withQueueBlock,
   ARCHIVE_FOLDER
 } from './issue-queue.mjs'
+import { ensureBacklog } from './backlog-setup.mjs'
 import { inFramework } from './lock.mjs'
 import { orderOfDevelopment, readPhases } from './next-task.mjs'
 import { loadPhaseEntries, parsePhaseFolder, parseTaskFile } from './phase-files.mjs'
@@ -366,6 +367,7 @@ export function planSummary({ root, profile, check = false }) {
   const { phases: phasesDir, planIndex } = profile.paths
   const complexity = profile.plan?.complexity
   const scale = Object.keys(complexity?.scale ?? {})
+  const setup = check ? [] : ensureBacklog({ root, profile })
   let phases = readPhaseFiles({ root, phasesDir, complexity, planIndex })
   let queue = readQueueOf(root, profile)
   let backlog = readBacklogOf(root, profile)
@@ -430,7 +432,7 @@ export function planSummary({ root, profile, check = false }) {
     return { problems, message: `Checked the plan summary against ${phases.length} phase files.` }
   }
   writeFileSync(join(root, planIndex), expected)
-  return { problems, message: `Wrote the plan summary of ${phases.length} phases.` }
+  return { problems, message: [...setup, `Wrote the plan summary of ${phases.length} phases.`].join('\n') }
 }
 
 /** `harness plan log <phase> [ref]`: the implementation log of a phase from the commits of `ref` (default: the integration branch on the remote). */
