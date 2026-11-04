@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { placeholderPaths, relativeTo, render, valueAt } from './render.mjs'
+import { placeholderPaths, relativeTo, render, requiredPaths, valueAt } from './render.mjs'
 
 const options = { document: 'docs/profile.md' }
 const run = (template, context) => render(template, context, options)
@@ -66,6 +66,32 @@ test('blocks nest', () => {
   assert.equal(run(template, { rows: [{ name: 'a', on: 1 }, { name: 'b' }, { name: 'c', on: 1 }] }), 'a\nc')
 })
 
+test('a condition inside a line keeps or leaves out the text between its tags, and the rest of the line stays', () => {
+  const line = 'Read the rules{{#if doc}}: the [method]({{rel:doc}}){{/if}}. Then work.'
+  assert.equal(run(line, { doc: 'docs/m.md' }), 'Read the rules: the [method](./m.md). Then work.')
+  assert.equal(run(line, {}), 'Read the rules. Then work.')
+  assert.equal(run(line, { doc: false }), 'Read the rules. Then work.')
+  assert.equal(run('a{{#unless on}} without{{/unless}}, b', { on: 1 }), 'a, b')
+  assert.equal(run('a{{#unless on}} without{{/unless}}, b', {}), 'a without, b')
+  assert.equal(run('<x{{#if a}}|a{{/if}}{{#if b}}|b{{/if}}>', { b: 1 }), '<x|b>')
+})
+
+test('conditions inside a line nest, and a line that holds only a condition left out is left out too', () => {
+  const line = 'x{{#if a}} a{{#unless b}} not-b{{/unless}}{{/if}} y'
+  assert.equal(run(line, { a: 1 }), 'x a not-b y')
+  assert.equal(run(line, { a: 1, b: 1 }), 'x a y')
+  assert.equal(run(line, { b: 1 }), 'x y')
+  assert.equal(run('before\n  {{#if a}}only a{{/if}}\nafter', {}), 'before\nafter')
+  assert.equal(run('before\n\nafter', {}), 'before\n\nafter')
+})
+
+test('a block tag inside a line that is not a condition closed on the same line is an error, never copied', () => {
+  assert.throws(() => run('x {{#if a}} y', { a: 1 }), /the tag \{\{#if a\}\} stands inside a line/)
+  assert.throws(() => run('x {{/if}} y', {}), /the tag \{\{\/if\}\} stands inside a line/)
+  assert.throws(() => run('x {{#if a}}y{{/unless}}', { a: 1 }), /stands inside a line/)
+  assert.throws(() => run('x {{#each rows}}{{item}}{{/each}}', { rows: ['a'] }), /stands inside a line/)
+})
+
 test('an unclosed block and a stray closing tag are errors', () => {
   assert.throws(() => run('{{#if a}}\nx', { a: 1 }), /never closed/)
   assert.throws(() => run('x\n{{/if}}', {}), /closing tag without an opening one/)
@@ -80,4 +106,11 @@ test('valueAt and placeholderPaths read the paths of a context and a template', 
     'e',
     'f'
   ])
+  assert.deepEqual(placeholderPaths('x{{#if g}}{{h}}{{/if}}').sort(), ['g', 'h'])
+})
+
+test('requiredPaths are the placeholders outside every block and every condition inside a line', () => {
+  const template =
+    '{{a}} {{#if b}}{{c}}{{/if}} {{link:d}}\n{{#if e}}\n{{f}}\n{{/if}}\n{{#each g}}\n{{h}}\n{{/each}}\n{{i}}'
+  assert.deepEqual(requiredPaths(template).sort(), ['a', 'd', 'i'])
 })

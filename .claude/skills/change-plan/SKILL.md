@@ -7,7 +7,7 @@ description: Use when adding a task or a phase to the development plan, recordin
 
 # Change the development plan
 
-**Read first, write after.** Read the rules and the template of what you add before you create a file{{#if documents.planMethod}}: the [plan method](../../../core/plan/README.md) (structure, maintaining the plan, the issue queue), the rules of a phase file (`phases.md`) and the templates (`phase-index-template.md`, `task-template.md`, `task-log-template.md`, `issue-template.md`), all in the folder of the plan method{{/if}}. **Never copy an old phase, task or issue as the start of a new one**: it carries what has drifted since the template. A generated block (the task table of a phase index, the summary and contents of the plan index, the index of the issue queue) is written by the plan-summary command (`harness plan summary`), never by hand.
+**Read first, write after.** Read the rules and the template of what you add before you create a file: the [plan method](../../../core/plan/README.md) (structure, maintaining the plan, the issue queue), the rules of a phase file (`phases.md`) and the templates (`phase-index-template.md`, `task-template.md`, `task-log-template.md`, `issue-template.md`), all in the folder of the plan method. **Never copy an old phase, task or issue as the start of a new one**: it carries what has drifted since the template. A generated block (the task table of a phase index, the summary and contents of the plan index, the index of the issue queue) is written by the plan-summary command (`harness plan summary`), never by hand.
 
 Ids are permanent: never renumber, never reuse. A task keeps its id wherever the plan moves it.
 
