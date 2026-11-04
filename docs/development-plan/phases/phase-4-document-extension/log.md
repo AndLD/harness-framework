@@ -90,3 +90,11 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none.
 - **Next step:** the owner cuts `0.2.0-dev.1` (with the note of `0.2.0`); a framework session does 4.7 meanwhile.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-04 — task 4.8 added: a migration note for every version, development versions included
+- **Tasks:** 4.8 added (not started), 5 SP; Phase 4 is now 27 SP.
+- **Branch:** `docs/phase-4-dev-notes-task`
+- **Decisions / deviations from the plan:** the note of a version was written at the final cut, after the development version, so `0.2.0-dev.1` had none and the tools did not require it. The owner chose a note per version, development versions included, over one note extended between development versions: a shipped note is never changed under a project that followed it. The tools know only `x.y.z` notes today, so 4.8 teaches `migrate` and `release` the development notes and makes the release refuse a version without its note; it comes before `0.2.0-dev.1`, whose note is its first use. The final note stays the complete story from the previous final version and the scripts stay per final version.
+- **Problems / blockers / findings:** none.
+- **Next step:** a framework session does 4.8; then the owner cuts `0.2.0-dev.1`.
+- **Verify with:** `npm run docs:check`
