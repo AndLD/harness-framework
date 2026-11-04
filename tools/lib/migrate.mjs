@@ -5,7 +5,8 @@
 //   2. regenerates the managed files;
 //   3. prints the migration notes of the versions after the project's own up to the target, in order, for the agent or the person to follow (task 4.8): a
 //      development version has a note of its own, and the notes of the development versions of an `x.y.z` are left out when its final note is among them.
-// A lock without the record counts as `0.1.0` with nothing applied. A script is `export default ({ root, profile }) => string[] | void` (it may be
+// A lock without the record counts as `0.1.0` with nothing applied, unless the last commit holds the lock the project had before an older `sync`
+// replaced its version: that version is where the project is. A script is `export default ({ root, profile }) => string[] | void` (it may be
 // async); it checks its starting state, and it is run again without harm. The script of a development version's final version runs for the
 // development version too, and is not recorded as applied, so each next development version runs it again.
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
@@ -64,7 +65,7 @@ export async function migrate({ root, generators, profile = loadProfile(root) })
   const undoable = isRepository(root) && lock.migrations?.version !== target
   const start = undoable ? startOfMigrate({ root, profile, lock }) : lock.migrations?.start
   const record = (version) => ({ version, applied, ...(start ? { start } : {}) })
-  const from = lock.migrations?.version ?? FIRST_VERSION
+  const from = lock.migrations?.version ?? start?.version ?? FIRST_VERSION
   const applied = [...(lock.migrations?.applied ?? [])]
   const listed = listMigrations(join(root, inFramework(profile, 'migrations')))
   const pending = listed.filter(
