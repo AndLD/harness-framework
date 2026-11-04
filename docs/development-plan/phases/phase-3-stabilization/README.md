@@ -17,7 +17,7 @@ plan until task 3.13; it is a normal phase now, keeps every id, and ends with 3.
 | [3.1](./3.1.md) | `repository.url` is not filled by the bootstrap | C1 | 1 | ✅ |
 | [3.2](./3.2.md) | A new Python project is red in CI until `uv.lock` exists | C1 | 1 | ✅ |
 | [3.3](./3.3.md) | The command line and the runtime hooks do nothing, with exit code 0, when started through a symbolic link | C1 | 2 | ✅ |
-| [3.4](./3.4.md) | Adapters of a project's own repository (`local:`) | C2 | 5 | ⬜ |
+| [3.4](./3.4.md) | Adapters of a project's own repository (`local:`) | C2 | 5 | ✅ |
 | [3.5](./3.5.md) | `harness sync` generates the managed files with the tools of the old version | C2 | 2 | ✅ |
 | [3.6](./3.6.md) | The framework's own CORE scan knows only the tools of its adapters | C1 | 1 | ✅ |
 | [3.7](./3.7.md) | A pinned project does not scan its copy of `core/` with its own terms | C2 | 3 | ✅ |

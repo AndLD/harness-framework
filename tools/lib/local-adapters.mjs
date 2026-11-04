@@ -163,5 +163,5 @@ function failureLines(adapter, output) {
   const where = `${LOCAL_DIR}/${adapter.axis}/${adapter.name}`
   return failed.length
     ? failed.map((check) => `${where}: fails the conformance suite of the ${adapter.axis} contract: ${check}`)
-    : [`${where}: the conformance suite could not run: ${output.trim().split('\n').at(-1) ?? 'no output'}`]
+    : [`${where}: the conformance suite could not run: ${output.trim().split('\n').at(-1) || 'no output'}`]
 }
