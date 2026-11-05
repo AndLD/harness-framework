@@ -39,6 +39,8 @@
     "plan": "docs/development-plan",
     "phases": "docs/development-plan/phases",
     "planIndex": "docs/development-plan/README.md",
+    "releases": "docs/development-plan/releases.md",
+    "flows": "docs/development-plan/flows",
     "issues": "docs/development-plan/issues",
     "backlog": "docs/development-plan/backlog",
     "procedures": "docs/procedures",
@@ -51,7 +53,7 @@
     "phasesWithFragments": "every phase: each task writes its own log `<task id>.log.md` beside its task file in the phase folder (template: `core/plan/task-log-template.md`); a phase of the older layout keeps its fragments in `work-logs/phase-<n>/`",
     "logCommand": "`node tools/harness.mjs plan log <n>`",
     "estimationScale": "story points (SP), Fibonacci; 1 SP is about half a developer-day or one focused agent session; estimates include the tests the definition of done requires",
-    "resumePhrases": "\"Start Phase N\", \"Continue Phase N\", \"Work the issue queue\", \"Fix I-<n>\"; the phrase approves the pull requests of the named phases and issues",
+    "resumePhrases": "\"Start Phase N\", \"Continue Phase N\", \"Work the issue queue\", \"Fix I-<n>\", \"Run flow N\", \"Run flows N–M\", \"Continue flow N\"; the phrase approves the pull requests of the named phases and issues, and of a named flow what its settings let its orchestrator decide (the procedure `run-flow`)",
     "complexity": {
       "scale": {
         "C1": "routine: mechanical, fully specified, obvious to verify",

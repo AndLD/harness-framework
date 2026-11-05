@@ -330,3 +330,11 @@ pauses. Newest entry at the bottom.
 - **Problems / blockers / findings:** none.
 - **Next step:** none for this change; `0.2.0` begins with 3.5 when the owner asks for it.
 - **Verify with:** `npm run docs:check`
+
+### 2026-11-04 — Phase 3 is done
+- **Tasks:** 3.4 (the last one), and every other task of the table (21 of 21 ✅).
+- **Branch:** `docs/phase-3-done` — done.
+- **Decisions / deviations from the plan:** the exit criteria hold: every task of the table is done, and the last one is 3.4 (local adapters, [PR #85](https://github.com/AndLD/harness-framework/pull/85)). The task delivered the loading of `harness-adapters/<axis>/<name>/` as `local:<name>`, the check `local-adapters` in `check all`, the suite run by `harness migrate` before it commits, and both ways in the guide and the procedure `new-adapter`. Deferred: bootstrapping with `--stack local:<name>` (a project bootstraps with a preset and switches its profile file; design §5.1); the old task 3.19 lives on as issue I-1 of the queue. What ships: 3.4 and Phase 5 are in `0.3.0` of the order of development, which the owner cuts.
+- **Problems / blockers / findings:** none open for this phase. The three agent probes of task 3.9 were never run (said in its entry above).
+- **Next step:** stop. Phase 5 is next in the order of development, when the owner asks for it; the owner cuts `0.3.0` after it.
+- **Verify with:** `npm run docs:check`

@@ -8,8 +8,10 @@ import {
   listProcedures,
   listProjectProcedures,
   parseProcedure,
+  procedureApplies,
   renderProcedure
 } from './procedures.mjs'
+import { loadProfile } from './profile.mjs'
 
 const text = (header, body = 'Step one.\n') => `---\n${header}\n---\n\n${body}`
 
@@ -57,6 +59,7 @@ test('the procedures of the framework are all well formed, and each is named by 
       'open-pull-request',
       'release',
       'report-upstream',
+      'run-flow',
       'start-task',
       'triage-reports',
       'update-framework'
@@ -95,6 +98,34 @@ test('a block of an optional role is left out without it, and a required role th
     () => renderProcedure(procedure, { documents: profile.documents }, 'x.md'),
     /the procedure "p" needs the profile roles commands\.lint/
   )
+})
+
+test('a role inside a condition within a line is optional: the condition is rendered, never copied', () => {
+  const inline = parseProcedure(
+    text(
+      'name: q\ndescription: d\ninvocation: auto',
+      'Read first{{#if documents.plan}}: the [plan]({{rel:documents.plan}}){{/if}}.\n'
+    )
+  )
+  assert.equal(renderProcedure(inline, profile, 'x.md'), 'Read first.\n')
+  assert.equal(
+    renderProcedure(inline, { documents: { plan: 'docs/plan.md' } }, 'x.md'),
+    'Read first: the [plan](./docs/plan.md).\n'
+  )
+})
+
+test("the framework's procedures render without a template tag left, with this repository's profile and without its optional roles", () => {
+  const repository = loadProfile(join(import.meta.dirname, '..', '..'))
+  const lean = structuredClone(repository)
+  delete lean.documents.planMethod
+  delete lean.paths.backlog
+  delete lean.host.autoMerge
+  for (const each of [repository, lean]) {
+    for (const procedure of listProcedures().filter((one) => procedureApplies(one, each))) {
+      const rendered = renderProcedure(procedure, each, `.claude/skills/${procedure.name}/SKILL.md`)
+      assert.doesNotMatch(rendered, /\{\{/, procedure.name)
+    }
+  }
 })
 
 const own = (root, files) =>

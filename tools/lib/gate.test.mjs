@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { after, test } from 'node:test'
 import { isDocumentationOnly } from './changes.mjs'
-import { changedFiles, planPush, rangesOfPush, runGate, UNREADABLE } from './gate.mjs'
+import { changedFiles, planPush, rangesOfPush, runGate, UNREADABLE, withoutRepositoryEnv } from './gate.mjs'
 import { STACKS } from './stacks.mjs'
 
 const profile = (overrides = {}) => ({
@@ -289,4 +289,78 @@ test('--dry-run prints the plan and runs nothing', async () => {
   assert.equal(code, 0)
   assert.deepEqual(ran, [])
   assert.match(out[0], /the push changes no file/)
+})
+
+test('the variables that point Git at a repository are left out of the environment of the steps, and the others kept', () => {
+  const env = withoutRepositoryEnv({
+    PATH: '/bin',
+    GIT_DIR: '/repo/.git/worktrees/w',
+    GIT_WORK_TREE: '/w',
+    GIT_INDEX_FILE: '/repo/.git/worktrees/w/index',
+    GIT_COMMON_DIR: '/repo/.git',
+    GIT_OBJECT_DIRECTORY: '/repo/.git/objects',
+    GIT_CONFIG_COUNT: '1',
+    GIT_CONFIG_KEY_0: 'core.bare',
+    GIT_CONFIG_VALUE_0: 'true',
+    GIT_AUTHOR_NAME: 't'
+  })
+  assert.deepEqual(env, { PATH: '/bin', GIT_AUTHOR_NAME: 't' })
+})
+
+test('a step of the gate started with the GIT_DIR of a linked worktree runs Git in its own folder and leaves the repository alone', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'gate-linked-'))
+  const elsewhere = mkdtempSync(join(tmpdir(), 'gate-elsewhere-'))
+  dirs.push(root, elsewhere)
+  const git = (cwd, ...args) =>
+    execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', ...args], { cwd, encoding: 'utf8' }).trim()
+  git(root, 'init', '--quiet', '--initial-branch', 'develop')
+  git(root, 'config', 'core.hooksPath', 'tools/git-hooks')
+  writeFileSync(join(root, 'a.txt'), 'a')
+  git(root, 'add', '.')
+  git(root, 'commit', '--quiet', '-m', 'start')
+  const base = git(root, 'rev-parse', 'HEAD')
+  const worktree = join(root, '.claude', 'worktrees', 'w')
+  mkdirSync(dirname(worktree), { recursive: true })
+  git(root, 'worktree', 'add', '--quiet', '-b', 'bugfix/x', worktree)
+  writeFileSync(join(worktree, 'b.txt'), 'b')
+  git(worktree, 'add', 'b.txt')
+  git(worktree, 'commit', '--quiet', '-m', 'change')
+  const head = git(worktree, 'rev-parse', 'HEAD')
+
+  const err = []
+  const code = await runGate({
+    root: worktree,
+    profile: {
+      branches: { production: 'main', integration: 'develop' },
+      adapters: { stacks: [] },
+      gate: {
+        steps: [
+          {
+            label: 'tests',
+            run: [
+              [
+                'sh',
+                '-c',
+                'cd "$1" && git init --quiet && git config core.hooksPath harness/tools/git-hooks',
+                'sh',
+                elsewhere
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    stdin: `refs/heads/bugfix/x ${head} refs/heads/bugfix/x ${base}`,
+    env: { ...process.env, GIT_DIR: git(worktree, 'rev-parse', '--absolute-git-dir') },
+    out: () => {},
+    err: (line) => err.push(line)
+  })
+  assert.equal(code, 0, err.join('\n'))
+  assert.equal(git(root, 'config', 'core.bare'), 'false')
+  assert.equal(git(root, 'config', 'core.hooksPath'), 'tools/git-hooks')
+  assert.equal(
+    git(elsewhere, 'config', 'core.hooksPath'),
+    'harness/tools/git-hooks',
+    'the step acted on its own folder'
+  )
 })

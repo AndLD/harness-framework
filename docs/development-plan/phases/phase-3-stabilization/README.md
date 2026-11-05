@@ -2,14 +2,14 @@
 
 # Phase 3 — Stabilization, migrations and local adapters (71 SP)
 
-**Status:** 🟡 In progress · **Work log:** [log](./log.md), and a log beside each task (`<id>.log.md`)
+**Status:** ✅ Done · **Work log:** [log](./log.md), and a log beside each task (`<id>.log.md`)
 
 What the framework needed after its first release and its first consumer: the fixes found while taking `0.1.0`, the way a version is taken (`sync`,
 `migrate`, migration scripts and notes, rollback), the layout of the plan itself, the intake of reports, and local adapters. It was the open-ended phase of the
 plan until task 3.13; it is a normal phase now, keeps every id, and ends with 3.4. The defects and improvements found in use are issues of the
 [issue queue](../../issues/README.md).
 
-**Execution order:** **not the order of the table.** Work the earliest release in the order of development of the [plan index](../../README.md) that is not finished, in the order of its row; a task of a later release waits, even when its id is lower.
+**Execution order:** **not the order of the table.** Work the earliest release in the release order of [`releases.md`](../../releases.md) that is not finished, in the order of its row; a task of a later release waits, even when its id is lower.
 
 <!-- phase-tasks:start -->
 | # | Task | Agent | SP | Status |
@@ -17,7 +17,7 @@ plan until task 3.13; it is a normal phase now, keeps every id, and ends with 3.
 | [3.1](./3.1.md) | `repository.url` is not filled by the bootstrap | C1 | 1 | ✅ |
 | [3.2](./3.2.md) | A new Python project is red in CI until `uv.lock` exists | C1 | 1 | ✅ |
 | [3.3](./3.3.md) | The command line and the runtime hooks do nothing, with exit code 0, when started through a symbolic link | C1 | 2 | ✅ |
-| [3.4](./3.4.md) | Adapters of a project's own repository (`local:`) | C2 | 5 | ⬜ |
+| [3.4](./3.4.md) | Adapters of a project's own repository (`local:`) | C2 | 5 | ✅ |
 | [3.5](./3.5.md) | `harness sync` generates the managed files with the tools of the old version | C2 | 2 | ✅ |
 | [3.6](./3.6.md) | The framework's own CORE scan knows only the tools of its adapters | C1 | 1 | ✅ |
 | [3.7](./3.7.md) | A pinned project does not scan its copy of `core/` with its own terms | C2 | 3 | ✅ |

@@ -365,6 +365,8 @@ stacks that claim the same path are a profile error.
 | Pull-request tools | optional (none: the agent checks the required checks with the host's command before it merges, and the rule "CI monitoring with automatic fixes" is "not applicable") | attach a pull request: `bind_pr`; CI monitoring with fixes: `set_monitor` with `auto_fix` (the Claude desktop app) | none known; the fallback applies |
 | Waiting advice | optional | the notes of today's stack §6 (done-files, stale events) | none |
 | Model map | optional: the default of `plan.complexity.models` (section 3.4) | `C1` Sonnet 5.5, medium effort · `C2` Sonnet 5.5, high · `C3` Opus 5.5, high | none: Cursor offers many vendors' models, so the project sets its own |
+| Executors | logic (contract 2, task 5.5): `executorsFor(profile)`, how an orchestrator of a flow starts a worker with a model and an effort, continues it, fetches its full report and reads its context (`core/contracts/runtime.md`) | `session`: the desktop app's sessions (`start_session`, `SendMessage`, `list_events`, `get_usage`) or the command line (`claude -p --model --effort --output-format json`, `--resume`); `subagent`: the agent tool | `manual` only, a stub: no verified way for an agent to drive another Cursor agent |
+| Usage | logic-optional (task 5.6): `usageFor(profile)`, how an orchestrator of a flow reads the account's usage windows, and the table of coefficients (percent of a window per SP, by subscription, model family and step kind) that estimates a step (`core/contracts/runtime.md`) | the desktop app's `get_usage` (5-hour and weekly window in whole percent with their reset times, and the plan's name) or the owner; provisional coefficients for Pro, Max 5x, Max 20x and the API (money) | the owner reads it; a mock subscription |
 | Runtime terms | required | `CLAUDE.md`, `.claude/`, `bind_pr`, … (joined into the CORE scan) | `.cursor/`, `.mdc`, … |
 
 ### 4.3 Host adapter
@@ -421,7 +423,7 @@ The procedure is `core/contracts/new-adapter.md`. It is also packaged as the pro
 same for the runtime and host axes.
 
 1. **Copy** `adapters/<axis>/_skeleton/` to `adapters/<axis>/<name>/` in the framework source. A project that cannot wait for a release
-   copies it to `harness-adapters/<axis>/<name>/` in its own repository, and the profile file names it as `local:harness-adapters/<axis>/<name>`.
+   copies it to `harness-adapters/<axis>/<name>/` in its own repository, and the profile file names it `local:<name>` on the axis where it lists it (section 5.1).
 2. **Fill the manifest**, one role at a time, from the contract. Leave an optional role empty only with the fallback its row names.
    Write the logic modules (`gate.mjs`, `coverage.mjs`) as pure functions with `node --test` tests next to them, like the presets.
 3. **Write the adapter's documents** from the skeleton: the stack-file section, the commands and the stack terms.
@@ -448,9 +450,29 @@ The python preset (task 1.3 of the framework's own plan, section 11) is written 
 holds the framework's tests of it. The skeletons are vendored for the same reason. The checks run the adapter's logic against the framework's own gate driver,
 coverage gate and hooks, in a copy of the framework that holds the adapter; they never run a stack's tools (a formatter, a test runner), call the host or start the
 runtime, so "the format hook never downloads a formatter" is a rule on the command the adapter returns, and "a push with a failing test fails" is the plan holding
-a test step and the coverage gate. The samples a suite cannot derive are the adapter's `conformance.json`. Selecting an adapter that lives in the project's own
-repository (`local:harness-adapters/…`, step 1) is not built: the tools load the adapters of the framework tree, so a new adapter is developed in a checkout of the
-framework and offered upstream.
+a test step and the coverage gate. The samples a suite cannot derive are the adapter's `conformance.json`. An adapter that lives in the project's own repository is loaded by the tools since 3.4 (section 5.1).
+
+### 5.1 Adapters of the project's own repository (`local:<name>`)
+
+A folder `harness-adapters/<axis>/<name>/` of the project, outside `harness/`, selected in the profile file as `local:<name>` in `adapters.stacks`, `adapters.runtimes`
+or `adapters.host` (a stack entry may be the object `{ "adapter": "local:<name>", "packages": [...] }`). It fills the same contract as a preset and passes the same suite.
+
+- **Loading.** `registerLocalAdapters` (`tools/lib/local-adapters.mjs`) loads the folder into the registries of the adapters (`STACKS`, `ADAPTER_RUNTIMES`, `HOSTS`) under the
+  name `local:<name>`, so every tool that finds an adapter by its profile name finds it; the runtime adapters among them add their skill and block generators to the managed
+  files. The command line, the runtime hooks and the session start call it before they read the profile. An adapter whose module cannot be loaded is left out and reported by
+  `harness check adapters`, and the commands that do not need it still run.
+- **Left alone.** `harness sync` takes the adapters of the framework only (`frameworkAdapters`): the lock records no local adapter and a sync neither copies nor removes the folder.
+  `harness check vendored` reads `harness/` only. `harness migrate` may leave the folder changed (the fix of an adapter that a version rejected), and the migration commit then
+  holds it, so `harness rollback` restores it with the rest.
+- **Judged.** `harness check adapters` holds the manifest of each local adapter to the contract and each `local:<name>` of the profile file to a folder on its axis. The check
+  `local-adapters` (part of `check all`) runs the conformance suite on every folder, each in a process of its own. `harness migrate` runs it after the managed files are
+  regenerated, with the new version's suite, and stops before it commits when an adapter fails: the message names the adapter and the failed checks, and points to the
+  migration notes of the versions taken, which say what changed in the contract. The adapter is fixed and the command run again; the fix is allowed in the working tree.
+- **Self-contained.** The suite copies the adapter into a copy of the framework, where its path differs from the project's, so a local adapter imports nothing from the framework's
+  tools by a relative path (the presets do, because they live in the framework tree). The skeleton imports nothing.
+- **The CORE scan** reads the `terms` of the local adapters too, so a core document stays neutral about the project's own stack.
+- **Not built.** `harness init` and `harness adopt` select presets: a project that needs a local adapter from its first day bootstraps with the nearest preset, adds the folder, and
+  switches the profile file to `local:<name>` with `harness sync --local`.
 
 ---
 
@@ -812,7 +834,7 @@ After 17.15 the framework is a project of its own, run by its own method:
 - **Where changes come from.** A finding of kind "fix in the framework" in a consuming project's review, a defect found in use, or a new adapter.
   Each becomes an issue or a pull request in the framework repository (section 1.3). Consuming projects take a release with a sync pull request
   of their own.
-- **Who decides.** The owner approves every major version and every change to the meaning of a core rule (section 1.4). Minor and patch
+- **Who decides.** The owner approves every major version and every change to the meaning of a core rule (section 1.4); a flow the owner started may cut a release or answer a report at the level its settings give it (section 12). Minor and patch
   releases follow the framework's own merge rules, as plan work does here.
 - **Releases.** A tag and its changelog section; the release workflow also rebuilds the template repository (section 6.2).
 - **Sessions.** Framework work runs in a session opened in the framework repository. A session in `bot-rts` pushes there only with the
@@ -842,4 +864,41 @@ a report template, project bindings, dated reports that stay in each project, sc
   that the automation still holds.
 - **Cadence.** A full review before a first release and once per major version. A targeted review after a change to authentication, the CI, the
   agent runtime's permissions, or a dependency with a known vulnerability.
+
+## 12. Releases and flows (Phase 5)
+
+Planned with the owner on 2026-11-04 ([Phase 5 log](./development-plan/phases/phase-5-release-flows/log.md)). Until then the owner ran each release by hand from a
+local list of prompts, one session per step, and the order of the releases was a section of the plan index.
+
+- **The release order is a file** (task 5.1): `releases.md` beside the plan index, one table of the releases and of the tasks in each, read by the tools. The index stays
+  the one entry point and links to it; the other way round (the releases file as the primary plan) was rejected, since it would move every project's entry point and be empty
+  for a project that ships no versions.
+- **A flow is a file of the plan** (task 5.2), in a folder of flows like the folder of phases: an ordered chain of steps (prompts to workers) that delivers one or more
+  releases, with a settings block, a steps table and an append-only log. Several flows per project; a release belongs to at most one. The flow names ids, never what a release
+  holds, so the releases file stays the one owner of that fact. The plan method (section 10) and its templates hold the format; the procedure `run-flow` holds the running.
+- **An orchestrator runs a flow; workers do the steps.** The orchestrator reads step reports and state checks, never diffs, so its context stays small and it can run a whole
+  release; it restarts when its context grows and always between two flows. Its own state changes go by one pull request per step, plan-related, so the Git rules need no
+  new kind of change.
+- **Decisions are levelled, not all-or-nothing.** D0 mechanical, D1 local, D2 plan-shaping, D3 contract or scope, D4 external communication. Brainstorm asks the owner from a
+  threshold (`askAt`, D2 by default) up; seamless decides everything and leaves a digest to review later. Hard limits (an administrator's bypass, a cut on a red check, the
+  non-negotiables, a force-push or a deleted remote branch) are outside every mode, and what the entry file keeps for the owner stays the owner's until a rule gives it to a
+  flow at a level (task 5.3: release cuts and answers to reports).
+- **Unbiased analysis.** A worker's recommendation anchors whoever reads it first, so the orchestrator writes its own pick from the plan and the design before it reads the
+  worker's, and answers the worker's argument when they differ. The log keeps both, so the owner can audit a seamless run.
+- **Executors are adapter work** (task 5.5). A controlled session by default, a subagent for short analysis, manual (the owner pastes) as the fallback. The runtime contract
+  gains the logic role `executors` (contract 2): the adapter returns *means* (a tool call, a command, an answer to read, or what the owner does), never runs a worker itself, so the
+  tools stay free of the runtime and an agent orchestrator carries the means out. It is required, because the plan's verification holds an adapter without an executor to fail;
+  no adapter outside this repository exists yet on that axis (the adapters of a project's own repository arrive in the same version), and a runtime without automation returns the
+  manual executor only. Whether a worker is reused is a pure rule (`decideReuse`): same repository, model and effort, related steps, its context below 40% of its window, no stop
+  and no pause longer than the prompt cache lives, fewer than three steps. The reason is the prompt cache: a fresh worker still reads the shared prefix (system prompt, tools, entry
+  file) from the cache and pays for its orientation reads, while a reused one reads its whole context from the cache only while the cache lives; after that the long context is
+  written again at full price, and a change of model or effort drops the cache anyway. The worker's id is written in the log (`Worker:`), so a restarted orchestrator continues it.
+  So is its account (`Account:`, issue I-10): a worker lives in its account's data and cache, so a flow continued from another account (an owner with two subscriptions)
+  starts a fresh worker, and a continue that fails anyway falls back to a fresh start that `dispatch` prints beside it, rather than stopping the flow.
+  The limits are settings (`reuseLimits`), measured so the defaults can change (task 5.7). Usage is read and estimated before each step (5.6: `harness flow gate` starts a step only when the use plus its estimate times a safety factor stays under the flow's thresholds, waits for a window's reset when that is near and stops for the owner when it is not; `flow sample` appends measurements to `usage.jsonl` for the calibration of 5.7: `harness flow calibrate` proposes new coefficients from them, drops the windows a reset cut, converts tokens to percent where the runtime reports them and says whether a warm start pays off, and never writes), and a flow may drive another repository, such as a consuming project (5.8: a `repos` row names it, its folder is in the ignored local profile file, the orchestrator only starts a worker there, and `flow status` reads its lock and pull requests through the host's role `remote-state`).
+- **The tools read the repository, not the cache** (task 5.4). `harness flow status` recomputes each step's state from the plan, the merged pull requests (the `Plan:` lines of the squash
+  commits), the tags and a consumer's lock, so an orchestrator that stopped in the middle of a step resumes from the truth; the State column is only a cache and the log the record. Checks are pure
+  functions on the parsed flows and on facts, with the Git command and the lock of a consuming repository as seams. The wording of a worker's prompt lives once, in a template of `core/plan/`, so a
+  change of the standard wording reaches every flow.
+- **Not yet.** Parallel steps (waves); the `Needs` column keeps room for them.
 
