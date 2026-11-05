@@ -4,13 +4,13 @@
 
 **Releases:** `0.5.0` · **Needs:** flow 2 · **Log:** [`flow-3-context-release.log.md`](./flow-3-context-release.log.md)
 
-Phase 6 (context optimization for agents and consumers), in the release `0.5.0` (named by the owner on 2026-11-05, who put it before the security release so that the security work runs on quiet output and short reports), after `0.4.0`: the audit and the baseline (6.1), quiet output of the framework's commands and hooks (6.2) and of the stack's commands (6.3), output budgets and a short step-report schema (6.4), a restart threshold for the orchestrator (6.5), delegated verbose reading (6.6), the decision about document briefs on the audit's numbers (6.7), and the consumers taking it with the fall measured (6.8). The steps follow the order of the phase: 6.1 first, since its baseline is the figure the others are judged by. 6.7 is C3 (Opus) and the other tasks C2 (Sonnet). Tasks 6.4 and 6.5 change what the procedures `run-flow` and others mean and the runtime contract, which needs the owner's approval in their pull requests, so those two steps stop for the owner's review. The flow ends in a decision that inserts the cut step and the consumer's take. The estimates are the provisional Claude Pro coefficients (`harness flow estimate 3`). The mode is the default (brainstorm), until the owner sets another one. Flow 4 (the security release, `0.6.0`) runs after this flow.
+Phase 6 (context optimization for agents and consumers), in the release `0.5.0` (named by the owner on 2026-11-05, who put it before the security release so that the security work runs on quiet output and short reports), after `0.4.0`: the audit and the baseline (6.1), quiet output of the framework's commands and hooks (6.2) and of the stack's commands (6.3), output budgets and a short step-report schema (6.4), a restart threshold for the orchestrator (6.5), delegated verbose reading (6.6), the decision about document briefs on the audit's numbers (6.7), and the consumers taking it with the fall measured (6.8). The steps follow the order of the phase: 6.1 first, since its baseline is the figure the others are judged by. 6.7 is C3 (Opus) and the other tasks C2 (Sonnet). Tasks 6.4 and 6.5 change what the procedures `run-flow` and others mean and the runtime contract, which needs the owner's approval in their pull requests, so those two steps stop for the owner's review. The flow ends in a decision that inserts the cut step and the consumer's take. The estimates are the provisional Claude Pro coefficients (`harness flow estimate 3`). The owner set the mode to seamless on 2026-11-06, as for flows 2 and 4. Flow 4 (the security release, `0.6.0`) runs after this flow.
 
 ## Settings
 
 ```json
 {
-  "mode": "brainstorm",
+  "mode": "seamless",
   "askAt": "D2",
   "permissions": { "mode": "acceptEdits", "allow": ["Bash(git *)", "Bash(gh *)", "Bash(npm *)", "Bash(node *)", "Bash(sed *)", "Bash(ls *)"] }
 }
