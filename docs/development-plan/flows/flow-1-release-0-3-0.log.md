@@ -175,3 +175,24 @@ Entries are written from the entry templates of the [flow-log template](../../..
 
 ### 2026-11-05 16:45 — stop: waits for the owner
 - **Digest:** done: step 1 (the cut of `0.3.0-dev.1`), 1a (the first take, draft #297 in AndLD/bot-rts), 1b (I-12 and I-13), 1c (the cut of `0.3.0-dev.2`), 1d (the second take, draft #298) and 1e (the preparation of the final cut: #101 ready for review); decided alone, the D2 to D4 decisions of this flow in seamless mode, for the owner's "review later": the insertion of the development version into the flow (11:05), the plan after the first take (13:40: issues I-12 and I-13, steps 1b to 1e, the row `0.3.0-dev.2`), I-14 recorded and left out of the releases (14:10), the two recommendations of step 1b not recorded (14:50), the decision to ship without a third development version, with I-15 and I-16 recorded and named in the note (16:15: the one to look at first); the D1 cuts of both development versions, tagged `0.3.0-dev.1` (on `003d02a`) and `0.3.0-dev.2` (on `9639125`); usage: 5-hour 28% (resets 17:30 UTC), weekly 18%, the steps used a fraction of what the provisional coefficients estimate; next: step 1e's stop for the owner's review: **the merge of #101 into `main` by merge commit, the tag `v0.3.0` on the merge commit, and the merge of `main` back into `develop` by a second pull request** (the final cut is D3; the hard limits stay: no auto-merge, no administrator's bypass), then step 2 (the consumer takes `0.3.0`) and step 3 (the close of Phase 5 and the `0.3.0` row).
+
+### 2026-11-05 17:05 — running
+- **Orchestrator:** the desktop-app session of andrey.larionov.me@gmail.com, which asked the owner at the stop of 16:45 and carries on at the owner's answer (the stop entry of 16:45 ended the earlier claim) · **Mode:** seamless · **Steps:** 1e (re-scoped) to 3
+- **Usage:** 5-hour 30% (resets 2026-11-05T17:30:00Z) · weekly 19% (resets 2026-11-10T07:00:00Z) (Pro)
+
+### 2026-11-05 17:05 — decision D2: ship `0.3.0` after the fix of I-15, in a third development version
+- **Options:** (a) merge #101 and tag `v0.3.0` with I-15 and I-16 named as known limits (my pick of 16:15); (b) fix I-15 first, cut `0.3.0-dev.3` and have the consumer take it, then cut the final version.
+- **Own analysis:** see the entry of 16:15 (pick (a), with the note that (b) was the owner's choice after the first take and that I-15 was the fix I would do first).
+- **Worker's recommendation:** none.
+- **Choice:** (b) · **Decided by:** the owner ("Fix I-15 first"), at the stop of 16:45; the owner's pick differs from mine, and my argument (a third round finds the next layer of small things) is answered by the owner's reason of 11:05: what a consumer's take finds is cheaper to fix before a tag. I-16 stays recorded and out of `0.3.0`; the owner named only I-15.
+
+### 2026-11-05 17:05 — decision D2: the plan after the owner's choice
+- **Options:** (a) re-scope step 1e (the preparation of the final cut, ended and waiting at the stop, whose pull request #101 stays open) to the fix of I-15, and insert 1f (cut `0.3.0-dev.3`), 1g (the consumer takes it) and 1h (the final cut again, with the stop for the owner's review); (b) leave 1e and add the steps after it with suffixes.
+- **Own analysis:** (a), for the reason of 11:05: a suffix step must stand after its base and the new cut must come before the final cut. The entries of 16:45 stay as the record of what step 1e did then (the final cut was prepared at `167a421`); the State of the step returns to ⬜ with its new meaning. The releases file gains the row `0.3.0-dev.3` and the row `0.3.0` names I-15, in the same commit; step 2 now needs 1h.
+- **Worker's recommendation:** none.
+- **Choice:** (a) · **Decided by:** orchestrator (seamless), as a consequence of the owner's choice. **What happens to the final preparation on `release/0.3.0`:** it is taken off by a revert commit in step 1f (a development version leaves the changelog and the fragments, as in step 1 and 1c), and put back by 1h. The release pull request #101 is the one pull request for all of it: step 1f turns it back into a draft titled for dev.3.
+
+### 2026-11-05 17:05 — step 1e started
+- **Executor:** session, a fresh worker started by the app on the owner's message · **Worker:** see the next entry · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at medium effort · **Estimate:** 2 SP, 3.2% (gate: 5-hour 24%, weekly 3.2% with the safety factor)
+- **Usage before:** 5-hour 30% (resets 2026-11-05T17:30:00Z) · weekly 19% (resets 2026-11-10T07:00:00Z)
+- **Prompt:** the standard prompt of the step (the scope: I-15) with the orchestrator's additions: start from `origin/develop`, the issue file I-15, the real data in the consumer's draft #298 (read only), a made-up test of the migration with a phase mentioned in words beside ids, a changelog fragment, the note of `0.3.0` is not touched (the final cut rewrites it).
