@@ -5,7 +5,7 @@
 The order of the releases and of the tasks in each. The tools read it to choose the next task and to check the plan; the plan index links to it and shows the
 current release in a block that `harness plan summary` writes. A project that ships no versions has no such file.
 
-**Status:** ⬜ planned · 🟡 developing · 🏷 a development version cut (`dev.N`) · ✅ released.
+**Status:** ⬜ planned · 🟡 developing · 🏷 a development version cut (`dev.N`) · ✅ released · ⏭ skipped on purpose (a release the project does not take; it is never the next one).
 
 | Release | Status | Tasks, in order | Consumers | Notes |
 | ------- | ------ | --------------- | --------- | ----- |

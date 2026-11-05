@@ -55,7 +55,7 @@ test('a table without a status or a tasks column, a row without a status and a f
     'its table has no column "Tasks, in order"'
   ])
   assert.deepEqual(readReleases('| Release | Status | Tasks |\n| - | - | - |\n| `1.0.0` | soon | 1.1 |\n').problems, [
-    'the release `1.0.0` has no status: one of ⬜ 🟡 🏷 ✅ in the column "Status"'
+    'the release `1.0.0` has no status: one of ⬜ 🟡 🏷 ✅ ⏭ in the column "Status"'
   ])
 })
 
@@ -299,7 +299,7 @@ test('the migration moves the table of the index into the file, sets the role, r
   const file = read('plan/releases.md')
   assert.match(file, /^\[← Development plan index\]\(\.\/README\.md\)/)
   assert.match(file, /\| `0\.1\.0` \| ✅ \| 5\.1 \| takes it \| {2}\|/)
-  assert.match(file, /\| `0\.2\.0` \| ⬜ \| 5\.2 \(not built\) \| {2}\|  \|/)
+  assert.match(file, /\| `0\.2\.0` \| ⬜ \| 5\.2 \| {2}\| 5\.2 \(not built\) \|/)
   assert.match(file, /## Notes\n\n\*\*Order of development\*\* \(the decision of a day\)\. The framework first\./)
   assert.match(file, /A note after the table\./)
   assert.deepEqual(readReleases(file).problems, [])
@@ -314,6 +314,50 @@ test('the migration moves the table of the index into the file, sets the role, r
   const snapshot = [read('plan/README.md'), read('plan/releases.md'), read('harness-profile.json')]
   assert.deepEqual(migration({ root, profile: after }), [])
   assert.deepEqual([read('plan/README.md'), read('plan/releases.md'), read('harness-profile.json')], snapshot)
+})
+
+const PROSE_INDEX = `# Plan
+
+<!-- plan-summary:start -->
+<!-- plan-summary:end -->
+
+**Order of development.** Notes of the owner.
+
+| Release | Tasks, in order |
+| ------- | --------------- |
+| \`0.1.0\` | 5.1, and a word; Phase 5 holds more (5.2), 9.9 is not a task |
+| \`0.1.1\` | skipped on purpose, so that the next one is the first chained |
+| \`0.2.0\` | 5.2 |
+
+**5 → 6 → 5**
+
+---
+
+<!-- plan-contents:start -->
+<!-- plan-contents:end -->
+`
+
+test('the migration writes only ids the tools read into the column of the tasks, marks a skipped release and says that an order of arrows is not read', () => {
+  const { root, profile, read, write } = project({ index: PROSE_INDEX, withRole: false })
+  write('plan/phases/phase-5-five.md', PHASE_5.replace('(1 SP)', '(2 SP)') + '| 5.2 | y | C1 | 1 | ⬜ |\n')
+  const messages = migration({ root, profile })
+  const file = read('plan/releases.md')
+  assert.match(
+    file,
+    /\| `0\.1\.0` \| 🟡 \| 5\.1, Phase 5, 5\.2 \| {2}\| 5\.1, and a word; Phase 5 holds more \(5\.2\), 9\.9 is not a task \|/
+  )
+  assert.match(
+    file,
+    /\| `0\.1\.1` \| ⏭ \| {2}\| {2}\| skipped on purpose, so that the next one is the first chained \|/
+  )
+  assert.deepEqual(readReleases(file).problems, [])
+  const rows = readReleases(file).rows
+  assert.equal(currentAndNext(rows).next?.release, '`0.2.0`')
+  assert.match(read('plan/README.md'), /Next: `0\.2\.0` \(⬜ planned\)/)
+  assert.ok(messages.some((message) => /as arrows; it was kept as text in the "Notes"/.test(message)))
+  assert.ok(messages.some((message) => /words besides task ids/.test(message)))
+  const after = { ...profile, paths: { ...profile.paths, releases: 'plan/releases.md' } }
+  assert.deepEqual(planSummary({ root, profile: after, check: true }).problems, [])
 })
 
 test('the migration leaves an order written in prose where it is and says what to do by hand', () => {
