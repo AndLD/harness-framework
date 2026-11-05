@@ -1,6 +1,8 @@
-[← Flow 3 — The security release](./flow-3-security-release.md)
+[← Flow 4 — The security release](./flow-4-security-release.md)
 
-# Flow 3 — The security release — log
+# Flow 4 — The security release — log
+
+This flow was **flow 3** until the entry of 23:59 of 2026-11-05: the entries above that one call it flow 3 and the context optimization flow does not exist in them (it is now flow 3).
 
 Append-only log of this flow, written by its orchestrator (the procedure `run-flow`); newest entry at the bottom. It is the record of the flow: a
 session that continues the flow reads the flow file, the tail of this log and the current step report, nothing older.
@@ -26,3 +28,9 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis:** none was needed: both are the owner's answers to the note of the entry above. The version `0.5.0` was named by the owner, so a stop to confirm it asks nothing new; the rules of task 2.10 are changes of core, which need the owner's approval in their pull request, and a stop that is written in the "Stops for" column holds whatever the mode, so the table now says what the entry file says anyway.
 - **Worker's recommendation:** none (no worker is involved).
 - **Choice:** (b): "Stops for" of step 6 is `owner review`, of step 7 is — · **Decided by:** the owner ("Drop of Step 7 is unnecessary indeed. But I agree with the drop during Step 6", read as: drop the stop at step 7, keep the stop at step 6); if "drop" was meant for step 6 too, say so and (c) follows.
+
+### 2026-11-05 23:59 — decision D2: Phase 6 comes first, so the security release is `0.6.0` and this flow is renumbered to flow 4
+- **Options:** (a) keep this flow for `0.5.0` and run Phase 6 after it; (b) put Phase 6 in `0.5.0` and a flow of its own, move this release to `0.6.0`, and keep the numbers (this flow stays flow 3, the new one is flow 4, and the order is the `Needs` line); (c) the same, and renumber the flows so that the numbers follow the order: the context optimization flow is flow 3, this one is flow 4.
+- **Own analysis** (written by the session that recorded it, before the owner's answer): the owner asked for the order, so that the security work (long research tasks) runs on quiet output, short reports and an audit of where the tokens go. First (b), since a flow's number is an identity that documents and the owner's words cite; then (c), at the owner's question whether the numbering is relevant: the phrase "Run flows N–M" reads by number, and with (b) "Run flows 3–4" would start with a flow that needs the next one; no flow has run, and the only citations are in the logs and the plan of today, so renumbering costs a few edits now and more after the flows have run. This flow's steps and its owner-review stop are unchanged; only the version and the number change.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (c): `Releases:` is `0.6.0`, `Needs:` is flow 3 (the context optimization flow), the decision step names `0.6.0`; the files are `flow-4-security-release`; the order of running is flow 2, flow 3, flow 4 · **Decided by:** the owner ("make security release to be 0.6.0, and put phase 6 as 0.5.0"; then "Go" to the renumbering).
