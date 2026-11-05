@@ -53,7 +53,16 @@ function settingsProblems(settings) {
     if (limits?.cacheMinutes !== undefined && !(Number.isFinite(limits.cacheMinutes) && limits.cacheMinutes >= 0))
       problems.push('the reuse limit cacheMinutes must be a number of minutes')
   }
-  const stop = settings.usage?.stopAt ?? {}
+  const usage = settings.usage ?? {}
+  if (usage.subscription !== undefined && !(typeof usage.subscription === 'string' && usage.subscription.trim()))
+    problems.push('the usage subscription must be a name, or "local"')
+  if (usage.safetyFactor !== undefined && !(Number.isFinite(usage.safetyFactor) && usage.safetyFactor >= 1))
+    problems.push('the usage safetyFactor must be a number from 1')
+  if (usage.maxWaitMinutes !== undefined && !(Number.isFinite(usage.maxWaitMinutes) && usage.maxWaitMinutes >= 0))
+    problems.push('the usage maxWaitMinutes must be a number of minutes')
+  const stop = usage.stopAt ?? {}
+  if (stop.cost !== undefined && !(Number.isFinite(stop.cost) && stop.cost > 0))
+    problems.push('the usage threshold cost must be an amount of money above 0')
   for (const window of ['fiveHour', 'weekly']) {
     if (!(stop[window] > 0 && stop[window] <= 100))
       problems.push(`the usage threshold ${window} must be a percent from 1 to 100`)

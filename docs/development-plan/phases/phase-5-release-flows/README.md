@@ -24,7 +24,7 @@ scope; the format keeps room for them.
 | [5.3](./5.3.md) | The authority of a flow: release cuts and answers to reports at their levels | C3 | 3 | ✅ |
 | [5.4](./5.4.md) | `harness flow`: check, status, next and prompt | C2 | 8 | ✅ |
 | [5.5](./5.5.md) | Executors in the runtime-adapter contract, and the reuse of a worker session | C3 | 8 | ✅ |
-| [5.6](./5.6.md) | Usage: read it, estimate each step, and gate the next one | C2 | 5 | ⬜ |
+| [5.6](./5.6.md) | Usage: read it, estimate each step, and gate the next one | C2 | 5 | ✅ |
 | [5.7](./5.7.md) | Calibrate the usage estimate from what flows used | C2 | 3 | ⬜ |
 | [5.8](./5.8.md) | Flows across repositories: one home repository and external ones | C2 | 3 | ⬜ |
 | [5.9](./5.9.md) | The first flows of this repository, and a probe of each mode | C2 | 3 | ⬜ |

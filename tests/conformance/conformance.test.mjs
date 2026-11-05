@@ -265,3 +265,37 @@ test('describeRun reports a skipped check as skipped and does not count it as a 
     'The stack adapter x passes 1 checks (1 skipped).'
   ])
 })
+
+test('a usage role that cannot be read or has an incomplete table fails the usage check; a runtime without the role skips it', async () => {
+  for (const [replace, problem] of [
+    ['read: () => [', /usage `read\(\)` returns no means/],
+    ["unit: 'percent'", /unit must be "percent" or "usd"/],
+    ['opus: row(20, 2.7),', /defaultModel "sonnet" is missing|has no default row|needs a positive/]
+  ]) {
+    const dir = broken('runtime', 'claude-code', {
+      'usage.mjs': (text) => {
+        if (replace === 'read: () => [')
+          return text.replace(/read: \(\) => \[[\s\S]*?\n {2}\],\n {2}plans/, 'read: () => [],\n  plans')
+        if (replace === "unit: 'percent'")
+          return text.replace(
+            "unit: 'percent', provisional: true, kinds: KINDS, perSp: PRO",
+            "unit: 'weeks', provisional: true, kinds: KINDS, perSp: PRO"
+          )
+        return text.replace('opus: row(20, 2.7),', 'opus: row(0, 2.7),')
+      }
+    })
+    const suite = await runSuite({ dir, only: /^usage/ })
+    assert.deepEqual(failedNames(suite), [
+      'usage: a way to read the account and a table of coefficients that is complete'
+    ])
+    assert.match(failed(suite)[0].message, problem)
+  }
+  const dir = broken('runtime', 'claude-code', {
+    'manifest.json': json((manifest) => {
+      delete manifest.roles.usage
+      return manifest
+    })
+  })
+  const suite = await runSuite({ dir, only: /^usage/ })
+  assert.deepEqual(failedNames(suite), [])
+})

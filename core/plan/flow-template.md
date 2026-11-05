@@ -27,7 +27,9 @@ The orchestrator reads this block (the procedure `run-flow`); a setting left out
   "commits": "per-step",
   "usage": {
     "subscription": "local",
-    "stopAt": { "fiveHour": 85, "weekly": 90 }
+    "stopAt": { "fiveHour": 85, "weekly": 90 },
+    "safetyFactor": 1.2,
+    "maxWaitMinutes": 300
   },
   "repos": { "home": "." }
 }
@@ -37,7 +39,7 @@ The orchestrator reads this block (the procedure `run-flow`); a setting left out
 
 | # | Kind | Repo | Scope | Needs | Stops for | SP | Est. usage | Model | State |
 | - | ---- | ---- | ----- | ----- | --------- | -- | ---------- | ----- | ----- |
-| 1 | tasks | home | <a release (`<version>`: its tasks in the order of the releases file), or task and issue ids> | — | — | <SP> | <% of the weekly window, or —> | <from the markers, or a model> | ⬜ |
+| 1 | tasks | home | <a release (`<version>`: its tasks in the order of the releases file), or task and issue ids> | — | — | <SP> | <% of the weekly window (`harness flow estimate <n>` prints it), or —> | <from the markers, or a model> | ⬜ |
 | 2 | cut | home | `<version>` | 1 | — | 1 | — | — | ⬜ |
 
 State: ⬜ not started · 🟡 running · ⏸ waits for the owner · ⛔ blocked · ✅ done. The State column is a cache of the repository's state; the log is the record.

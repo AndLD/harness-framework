@@ -38,6 +38,11 @@
       "module": "executors.mjs",
       "export": "executorsFor"
     },
+    "usage": {
+      "fills": "a mock: the owner reads the use, and one invented subscription spends one percent of each window per SP",
+      "module": "usage.mjs",
+      "export": "usageFor"
+    },
     "managed-blocks": {
       "fills": "the deny-read block of .cursorignore, added at the end of the project's file by the sync when it is missing",
       "module": "ignore.mjs",
