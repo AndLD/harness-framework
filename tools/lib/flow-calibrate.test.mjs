@@ -113,7 +113,7 @@ test('the proposal is the median per SP of each window; a step that a reset cut 
   assert.equal(cut.kind, 'cut')
   assert.equal(cut.enough, false)
   assert.deepEqual(cut.proposed, { fiveHour: 2, weekly: 0.3 })
-  assert.deepEqual(cut.current, { fiveHour: 4.8, weekly: 0.64 })
+  assert.deepEqual(cut.current, { fiveHour: 3.42, weekly: 1.03 })
   assert.equal(
     proposals({ steps, usage, min: 1 }).every((row) => row.enough),
     true

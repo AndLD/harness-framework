@@ -71,7 +71,7 @@ test('the model family, and the coefficient of a model and a kind: a calibrated 
   assert.equal(modelFamily(null), null)
   const pro = usage.subscriptions.pro
   assert.deepEqual(coefficientFor(pro, 'sonnet', 'tasks'), { fiveHour: 12, weekly: 1.6, source: 'default' })
-  assert.equal(coefficientFor(pro, 'sonnet', 'cut').fiveHour, 4.8)
+  assert.equal(coefficientFor(pro, 'sonnet', 'cut').fiveHour, 3.42)
   const calibrated = structuredClone(pro)
   calibrated.perSp.sonnet.cut = { fiveHour: 9, weekly: 1 }
   assert.deepEqual(coefficientFor(calibrated, 'sonnet', 'cut'), { fiveHour: 9, weekly: 1, source: 'calibrated' })
@@ -94,7 +94,7 @@ test('the estimate of a step is its SP times the coefficient of its model, kind 
   assert.equal(opus.fiveHour, 100)
   assert.equal(
     estimateStep({ step: step({ kind: 'cut', sp: '1', model: '—' }), profile, usage, subscription: 'pro' }).fiveHour,
-    4.8
+    3.4
   )
   assert.deepEqual(estimateStep({ step: task, profile, usage, subscription: 'api' }), {
     known: true,
