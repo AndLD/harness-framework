@@ -14,13 +14,14 @@ Claude Pro coefficients of the runtime adapter (`harness flow estimate 1`).
 {
   "mode": "brainstorm",
   "askAt": "D2",
+  "permissions": { "mode": "acceptEdits", "allow": ["Bash(git *)", "Bash(gh *)", "Bash(npm *)", "Bash(node *)"] },
   "repos": {
     "consumer": { "remote": "AndLD/bot-rts", "role": "consumer", "kinds": ["consumer-take"] }
   }
 }
 ```
 
-The folder of `consumer` on this machine is `repos.consumer` of the ignored `harness-profile.local.json`, never of this file.
+`permissions` is what a worker started on the command line may do (issue I-11): edits, and the commands of Git, the host's command line and the project's checks; the owner's choice of 2026-11-05. The folder of `consumer` on this machine is `repos.consumer` of the ignored `harness-profile.local.json`, never of this file.
 
 ## Steps
 
