@@ -18,7 +18,7 @@ is updated in the change that starts or finishes it.
 | 2 | Security and review automation | 17 | C2–C3 | ⬜ Not started |
 | 3 | Stabilization, migrations and local adapters | 71 | C1–C2 | ✅ Done |
 | 4 | Reaching and holding the structure of documents | 27 | C1–C2 | 🟡 In progress |
-| 5 | Releases in a file of their own, and flows run by an orchestrator | 43 | C2–C3 | ⬜ Not started |
+| 5 | Releases in a file of their own, and flows run by an orchestrator | 43 | C2–C3 | ✅ Done |
 |  | **Total of Phases 1–5** | **170** | | |
 <!-- plan-summary:end -->
 
@@ -33,7 +33,7 @@ is updated in the change that starts or finishes it.
 **Releases** (the order of the releases and of their tasks is the file [releases](./releases.md), not a section of this index; the line below is written by `harness plan summary`)
 
 <!-- plan-releases:start -->
-Current release: `0.3.0-dev.1` (🏷 a development version cut). Next: next (⬜ planned). The order of the releases and of their tasks: [releases](./releases.md). The flows that run them: [flows](./flows/README.md).
+No release is being developed. Next: next (⬜ planned). The order of the releases and of their tasks: [releases](./releases.md). The flows that run them: [flows](./flows/README.md).
 <!-- plan-releases:end -->
 
 ---
