@@ -9,7 +9,7 @@ import assert from 'node:assert/strict'
 import { execFileSync, spawnSync } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
 import { isAbsolute, join, resolve } from 'node:path'
-import { OPERATIONS, OPTIONAL_OPERATIONS, PROMPT_SLOT } from '../lib/flow-executors.mjs'
+import { OPERATIONS, OPTIONAL_OPERATIONS, PERMISSIONS_OPERATION, PROMPT_SLOT } from '../lib/flow-executors.mjs'
 import { EXECUTORS } from '../lib/flow-steps.mjs'
 import { usageProblems } from '../lib/flow-usage.mjs'
 import { Skip } from './skip.mjs'
@@ -113,6 +113,11 @@ export function executorProblems(executors) {
     for (const operation of OPTIONAL_OPERATIONS.filter((each) => executor[each] !== undefined)) {
       if (typeof executor[operation] !== 'function') problems.push(`${kind}: \`${operation}\` is not an operation`)
       else problems.push(...meansProblems(`${kind}.${operation}`, executor[operation]()))
+    }
+    if (executor[PERMISSIONS_OPERATION] !== undefined) {
+      const said = typeof executor[PERMISSIONS_OPERATION] === 'function' ? executor[PERMISSIONS_OPERATION]({}) : null
+      if (typeof said !== 'string' || !said.trim())
+        problems.push(`${kind}: \`${PERMISSIONS_OPERATION}\` returns no text saying what a worker is allowed`)
     }
     try {
       assert.deepEqual(JSON.parse(JSON.stringify(start)), start)

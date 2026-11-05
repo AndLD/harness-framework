@@ -16,6 +16,8 @@ export const OPERATIONS = Object.freeze(['start', 'continue', 'report', 'context
  * the reuse rule does not compare accounts.
  */
 export const OPTIONAL_OPERATIONS = Object.freeze(['account'])
+/** The optional executor operation that says in one line what a worker will be allowed to do under the flow's `permissions` setting (a text, not means). */
+export const PERMISSIONS_OPERATION = 'permissions'
 /** The limits of `reuse: auto` when the flow's `reuseLimits` leaves one out: the worker's context in percent of its window, and the steps it has run. */
 export const REUSE_LIMITS = Object.freeze({ context: 40, steps: 3 })
 
@@ -345,6 +347,7 @@ export function dispatchStep({
   const promptCommand = `${harness} flow prompt ${flow.number} ${step.id}`
   const repo = repoPaths[step.repo] ?? '.'
   const name = `flow-${flow.number}-step-${step.id}`
+  const permissions = flow.settings.permissions
   const startFresh = (text) => {
     const split = splitModel(text)
     return picked.executor.start({
@@ -352,7 +355,8 @@ export function dispatchStep({
       model: split?.model ?? null,
       effort: split?.effort ?? null,
       cwd: repo,
-      name
+      name,
+      permissions
     })
   }
   const start = decision.reuse
@@ -361,9 +365,11 @@ export function dispatchStep({
         prompt: PROMPT_SLOT,
         model: parts?.model ?? null,
         effort: parts?.effort ?? null,
-        cwd: repo
+        cwd: repo,
+        permissions
       })
     : startFresh(model)
+  const permissionsLine = picked.executor.permissions?.({ permissions })
   const id = decision.reuse ? worker.id : '<the id the start returns>'
   const reading = picked.executor.context({ worker: id })
   const accountMeans = picked.executor.account?.() ?? []
@@ -390,6 +396,7 @@ export function dispatchStep({
             ...render(accountMeans)
           ]
         : []),
+    ...(permissionsLine ? [`Permissions: ${permissionsLine}.`] : []),
     `${decision.reuse ? 'Continue' : 'Start'} it:`,
     ...render(start),
     ...(decision.reuse

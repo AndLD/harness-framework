@@ -54,6 +54,22 @@ function settingsProblems(settings) {
     if (limits?.cacheMinutes !== undefined && !(Number.isFinite(limits.cacheMinutes) && limits.cacheMinutes >= 0))
       problems.push('the reuse limit cacheMinutes must be a number of minutes')
   }
+  const permissions = settings.permissions
+  if (permissions !== undefined) {
+    if (typeof permissions !== 'object' || permissions === null || Array.isArray(permissions))
+      problems.push('the setting permissions is not an object ({ "mode", "allow" })')
+    else {
+      if (permissions.mode !== undefined && !(typeof permissions.mode === 'string' && permissions.mode.trim()))
+        problems.push('the permissions mode must be a name of the runtime')
+      if (
+        permissions.allow !== undefined &&
+        !(
+          Array.isArray(permissions.allow) && permissions.allow.every((tool) => typeof tool === 'string' && tool.trim())
+        )
+      )
+        problems.push('the permissions allow must be a list of tools by name')
+    }
+  }
   const usage = settings.usage ?? {}
   if (usage.subscription !== undefined && !(typeof usage.subscription === 'string' && usage.subscription.trim()))
     problems.push('the usage subscription must be a name, or "local"')

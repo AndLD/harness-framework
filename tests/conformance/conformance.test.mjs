@@ -156,7 +156,11 @@ test('executors that offer none, a session that cannot be continued, or an accou
       /session\.start: a means does not carry the prompt/
     ],
     ["({ session: { ...session, account: () => 'one@example.com' } })", /session\.account returns no list of means/],
-    ["({ session: { ...session, account: 'one@example.com' } })", /session: `account` is not an operation/]
+    ["({ session: { ...session, account: 'one@example.com' } })", /session: `account` is not an operation/],
+    [
+      "({ session: { ...session, permissions: () => '' } })",
+      /session: `permissions` returns no text saying what a worker is allowed/
+    ]
   ]) {
     const dir = broken('runtime', 'claude-code', {
       'executors.mjs': (text) =>
