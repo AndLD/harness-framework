@@ -46,3 +46,8 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Worker's recommendation:** none (a decision of the flow's shape; no worker was asked).
 - **Choice:** (b) · **Decided by:** orchestrator, as a consequence of the owner's choice above.
 - **What happens to the work already done:** the release branch `release/0.3.0` (pull request #101, final versions and changelog prepared at commit `ea544d9`, the note of the I-11 story at `b002db3`) is the starting point of the new step 1: the worker takes the final preparation off the branch (the fragments and the `Unreleased` section back, the versions to a development version), writes `migrations/0.3.0-dev.1.md`, runs `harness release --dev`, and leaves #101 a draft. The final preparation comes back in step 1b. The entry of 10:50 ("step 1 ended: done") stands as what it was, the first preparation of the final cut, which this decision supersedes; the State of step 1 returns to ⬜.
+
+### 2026-11-05 11:15 — step 1 started
+- **Executor:** session · **Worker:** local_bb4b1578-6bf1-45bd-8cd4-7e6ad621786f · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Estimate:** 1 SP, 0.6% (gate: 5-hour 4.8%, weekly 0.6% with the safety factor); the scope is now the cut `0.3.0-dev.1` (see the decision of 11:05)
+- **Usage before:** 5-hour 75% (resets 2026-11-05T12:29:59Z) · weekly 14% (resets 2026-11-10T06:59:59Z)
+- **Prompt:** the standard prompt of the step, with the orchestrator's additions: reuse `release/0.3.0` and PR #101, take off the final preparation by a revert commit, run `harness release --dev`, write `migrations/0.3.0-dev.1.md`, make #101 a draft.
