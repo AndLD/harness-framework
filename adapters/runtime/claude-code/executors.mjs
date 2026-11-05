@@ -1,8 +1,9 @@
 // The executors of Claude Code (the runtime contract, role `executors`): how an orchestrator of a flow starts a worker with a model and an effort, continues
-// it with a next prompt, fetches its full final report and reads its context. A `session` worker runs in the Claude desktop app (a session the orchestrator
-// starts, which the owner can open and steer, with the hooks and the CI monitoring of a session) or on the command line (`claude -p`, continued with
-// `--resume`); a `subagent` runs in the orchestrator's process, gets no CI wake-ups and cannot report its context. Each operation lists its means, the
-// desktop app first. The prompt goes where the slot `<prompt>` is; the tools of the framework fill it.
+// it with a next prompt, fetches its full final report and reads its context. In the order of the executors (task 2.7): a `session` worker runs in the
+// Claude desktop app (a session the orchestrator starts, which the owner can open and steer, with the hooks and the CI monitoring of a session); a `cli`
+// worker runs on the command line (`claude -p`, continued with `--resume`), the fallback for one step when the app refuses the start, and the executor of a
+// step in another repository; a `subagent` runs in the orchestrator's process, gets no CI wake-ups and cannot report its context. The prompt goes where the
+// slot `<prompt>` is; the tools of the framework fill it.
 
 const SLOT = '<prompt>'
 const APP = 'the Claude desktop app'
@@ -53,10 +54,10 @@ const BACKGROUND =
 
 const session = {
   means:
-    'a session of its own that the orchestrator starts and the owner can open and steer, with the hooks and the CI monitoring of a session',
+    'a session of the desktop app that the orchestrator starts and the owner can open and steer, with the hooks and the CI monitoring of a session',
   wakeups: true,
   cacheMinutes: CACHE_MINUTES,
-  start: ({ prompt = SLOT, model, effort, cwd, name, permissions }) => [
+  start: ({ prompt = SLOT, model, effort, cwd, name }) => [
     {
       via: APP,
       tool: 'start_session',
@@ -73,8 +74,53 @@ const session = {
         use_worktree: true
       }),
       reads:
-        "the `local_…` id of the result is the worker; when it ends its turn the app continues the orchestrator with a note of its first 400 characters. A model above the orchestrator's is lowered to it"
-    },
+        "the `local_…` id of the result is the worker; when it ends its turn the app continues the orchestrator with a note of its first 400 characters. A model above the orchestrator's is lowered to it. The app may refuse the start on a turn that a worker's end began, and a start in another folder without the owner's message"
+    }
+  ],
+  continue: ({ worker, prompt = SLOT }) => [
+    {
+      via: APP,
+      tool: 'SendMessage',
+      input: { to: worker, message: prompt },
+      reads: 'the app continues the orchestrator when the worker ends its turn'
+    }
+  ],
+  report: ({ worker }) => [
+    {
+      via: APP,
+      tool: 'list_events',
+      input: { session_id: worker, limit: 6 },
+      reads: "the worker's last assistant message is its full step report (the app's note is cut at 400 characters)"
+    }
+  ],
+  context: ({ worker }) => [
+    {
+      via: APP,
+      tool: 'get_usage',
+      input: { session_id: worker },
+      reads:
+        '`context.percentUsed` is the context in percent of its window; "unavailable" (an idle or archived session) counts as not read'
+    }
+  ],
+  // What a session of the app is allowed, in one line for `harness flow dispatch`
+  permissions: () =>
+    "a session of the desktop app runs under the app's own permission settings, not the flow's `permissions` setting",
+  // A desktop app's session runs on the app's account, which it names in `CLAUDE_CODE_USER_EMAIL`
+  account: () => [
+    {
+      via: APP,
+      command: ['printenv', 'CLAUDE_CODE_USER_EMAIL'],
+      reads: 'the account of the session, which a worker it starts runs on'
+    }
+  ]
+}
+
+const cli = {
+  means:
+    "a worker on the command line (`claude -p`) that the orchestrator runs in the background in the step's repository; the owner cannot open it in the desktop app, and it gets no wake-up after its run ends",
+  wakeups: false,
+  cacheMinutes: CACHE_MINUTES,
+  start: ({ prompt = SLOT, model, effort, cwd, name, permissions }) => [
     {
       via: CLI,
       command: [
@@ -88,16 +134,10 @@ const session = {
         name,
         prompt
       ],
-      reads: `run it in the step's repository, in the background (it returns when the step ends); ${PERMISSIONS_READS}; ${JSON_ANSWER}`
+      reads: `run it in ${cwd && cwd !== '.' ? `the folder ${cwd}` : "the step's repository"}, in the background (it returns when the step ends); ${PERMISSIONS_READS}; ${JSON_ANSWER}`
     }
   ],
   continue: ({ worker, prompt = SLOT, model, effort, permissions }) => [
-    {
-      via: APP,
-      tool: 'SendMessage',
-      input: { to: worker, message: prompt },
-      reads: 'the app continues the orchestrator when the worker ends its turn'
-    },
     {
       via: CLI,
       command: [
@@ -114,23 +154,8 @@ const session = {
       reads: JSON_ANSWER
     }
   ],
-  report: ({ worker }) => [
-    {
-      via: APP,
-      tool: 'list_events',
-      input: { session_id: worker, limit: 6 },
-      reads: "the worker's last assistant message is its full step report (the app's note is cut at 400 characters)"
-    },
-    { via: CLI, from: 'the `result` field of the JSON answer of the last call is the full step report' }
-  ],
-  context: ({ worker }) => [
-    {
-      via: APP,
-      tool: 'get_usage',
-      input: { session_id: worker },
-      reads:
-        '`context.percentUsed` is the context in percent of its window; "unavailable" (an idle or archived session) counts as not read'
-    },
+  report: () => [{ via: CLI, from: 'the `result` field of the JSON answer of the last call is the full step report' }],
+  context: () => [
     {
       via: CLI,
       from: 'the context of the last call: `usage.input_tokens` + `usage.cache_read_input_tokens` + `usage.cache_creation_input_tokens`, over `modelUsage.<model>.contextWindow`, in percent'
@@ -139,16 +164,11 @@ const session = {
   // What a worker on the command line will be allowed, in one line for `harness flow dispatch`
   permissions: ({ permissions }) =>
     permissions?.mode || permissions?.allow?.length
-      ? `a worker on the command line runs with ${[permissions.mode ? `the permission mode ${permissions.mode}` : null, permissions.allow?.length ? `these tools allowed: ${permissions.allow.join(', ')}` : null].filter(Boolean).join(' and ')}; a session of the desktop app runs under the app's own permission settings`
-      : 'none set (the flow\'s `permissions` setting): a worker on the command line is refused every edit and command, so it reports itself blocked (issue I-11); set `permissions` to `{ "mode": "<a mode of the runtime>", "allow": [<tools by name>] }`; a session of the desktop app runs under the app\'s own permission settings',
-  // A desktop app's session runs on the app's account, which it names in `CLAUDE_CODE_USER_EMAIL`; a `claude -p` worker runs on the account of the
-  // command line's configuration folder, which `claude auth status` names (with two accounts on one machine, the folders differ).
+      ? `a worker on the command line runs with ${[permissions.mode ? `the permission mode ${permissions.mode}` : null, permissions.allow?.length ? `these tools allowed: ${permissions.allow.join(', ')}` : null].filter(Boolean).join(' and ')}`
+      : 'none set (the flow\'s `permissions` setting): a worker on the command line is refused every edit and command, so it reports itself blocked (issue I-11); set `permissions` to `{ "mode": "<a mode of the runtime>", "allow": [<tools by name>] }`',
+  // A `claude -p` worker runs on the account of the command line's configuration folder, which `claude auth status` names (with two accounts on one
+  // machine, the folders differ)
   account: () => [
-    {
-      via: APP,
-      command: ['printenv', 'CLAUDE_CODE_USER_EMAIL'],
-      reads: 'the account of the session, which a worker it starts runs on'
-    },
     {
       via: CLI,
       command: ['claude', 'auth', 'status'],
@@ -183,5 +203,5 @@ const subagent = {
   context: () => []
 }
 
-/** The executors of Claude Code for a project (`profile` is unused: the means are the runtime's own). */
-export const executorsFor = () => ({ session, subagent })
+/** The executors of Claude Code for a project, in the order of the executors (`profile` is unused: the means are the runtime's own). */
+export const executorsFor = () => ({ session, cli, subagent })
