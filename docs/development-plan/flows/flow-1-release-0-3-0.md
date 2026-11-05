@@ -31,7 +31,7 @@ Claude Pro coefficients of the runtime adapter (`harness flow estimate 1`).
 | 1a | consumer-take | consumer | `0.3.0-dev.1` | 1 | — | 2 | 1.6% | C2 | 🟡 |
 | 1b | tasks | home | I-12, I-13 | 1a | — | 5 | 8% | C1 | ✅ |
 | 1c | cut | home | `0.3.0-dev.2` | 1b | — | 1 | 0.6% | C2 | ✅ |
-| 1d | consumer-take | consumer | `0.3.0-dev.2` | 1c | — | 2 | 1.6% | C2 | ⬜ |
+| 1d | consumer-take | consumer | `0.3.0-dev.2` | 1c | — | 2 | 1.6% | C2 | 🟡 |
 | 1e | cut | home | `0.3.0` | 1d | owner review (D3) | 1 | 0.6% | C2 | ⬜ |
 | 2 | consumer-take | consumer | `0.3.0` | 1e | — | 2 | 1.6% | C2 | ⬜ |
 | 3 | custom | home | close Phase 5 and the `0.3.0` row | 2 | — | 1 | 1.6% | C2 | ⬜ |
