@@ -30,7 +30,7 @@ which is the agent-neutral minimum. The machine form is the `manifest.json` of t
 | `subagent` | a worker in the orchestrator's own process, for a short step of analysis; its full result comes back | no |
 | `manual` | the owner pastes the prompt into a session of their own and pastes back the report: the fallback of a runtime without automation | no |
 
-Each executor is `{ means, wakeups, cacheMinutes, start, continue, report, context }`: `means` says in one line what the worker is, `wakeups` whether it gets the CI
+Each executor is `{ means, wakeups, cacheMinutes, start, continue, report, context, account? }`: `means` says in one line what the worker is, `wakeups` whether it gets the CI
 wake-ups of a session, and `cacheMinutes` how long the runtime's prompt cache lives between two prompts of one worker (0 when nothing can be counted on). Each operation
 returns a list of **means**, the first preferred, empty when the runtime cannot do it:
 
@@ -40,13 +40,15 @@ returns a list of **means**, the first preferred, empty when the runtime cannot 
 | `continue` | `{ worker, prompt, model, effort, cwd }` | gives the worker that ran the previous step its next prompt |
 | `report` | `{ worker }` | fetches the worker's full final report (the notice of its end may be cut short) |
 | `context` | `{ worker }` | reads the worker's context in percent of its window; empty: never reused |
+| `account` (optional) | none | reads the account the orchestrator runs on, which a worker it starts runs on; absent or empty: accounts are not compared |
 
 A means is one of `{ via, tool, input, reads? }` (a tool of the runtime the orchestrator calls), `{ via, command, reads? }` (a command, as a list of words),
 `{ via, from }` (read from an answer it already has) or `{ via, owner }` (what the owner does); `via` names where it applies, `reads` what to take from the answer.
 `prompt` is a slot (`<prompt>`): the adapter puts it where the prompt goes, and the tools fill it with the command that prints the step's prompt. The model is the
 text of `plan.complexity.models` without its effort (`Sonnet 5.5`), and the adapter maps it to the runtime's own name. The framework's own manual executor stands in for
 every executor a runtime does not return, and for a project with no runtime adapter. `harness flow dispatch` picks the executor of a step, decides whether the
-previous worker continues it (`reuse: auto`: the plan method, section 10), and prints the means.
+previous worker continues it (`reuse: auto`: the plan method, section 10; a worker of another account than the orchestrator's never), and prints the means; beside a
+continue, it prints the fresh start to fall back on when the continue fails.
 
 **Defaults for a new project.** The manifest's `defaults` are values of the profile file that the adapter gives a project it bootstraps: the bootstrap writes them where the answers leave a role empty, and an answer always wins. The scaffolded files are the adapter's `scaffold-files` role.
 

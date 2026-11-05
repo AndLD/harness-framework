@@ -9,7 +9,7 @@ import assert from 'node:assert/strict'
 import { execFileSync, spawnSync } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
 import { isAbsolute, join, resolve } from 'node:path'
-import { OPERATIONS, PROMPT_SLOT } from '../lib/flow-executors.mjs'
+import { OPERATIONS, OPTIONAL_OPERATIONS, PROMPT_SLOT } from '../lib/flow-executors.mjs'
 import { EXECUTORS } from '../lib/flow-steps.mjs'
 import { Skip } from './skip.mjs'
 
@@ -109,6 +109,10 @@ export function executorProblems(executors) {
       problems.push(`${kind}.start: a means does not carry the prompt (the slot ${PROMPT_SLOT})`)
     if (kind === 'session' && Array.isArray(resume) && !resume.length)
       problems.push('session: continue offers no means')
+    for (const operation of OPTIONAL_OPERATIONS.filter((each) => executor[each] !== undefined)) {
+      if (typeof executor[operation] !== 'function') problems.push(`${kind}: \`${operation}\` is not an operation`)
+      else problems.push(...meansProblems(`${kind}.${operation}`, executor[operation]()))
+    }
     try {
       assert.deepEqual(JSON.parse(JSON.stringify(start)), start)
     } catch {

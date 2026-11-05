@@ -13,7 +13,7 @@ import { readFlowsOf } from './flows.mjs'
 import { inFramework } from './lock.mjs'
 
 const USAGE =
-  'usage: harness flow check | status <n> | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--at <YYYY-MM-DD HH:MM>]'
+  'usage: harness flow check | status <n> | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--account <id>] [--at <YYYY-MM-DD HH:MM>]'
 
 const pad = (number) => String(number).padStart(2, '0')
 /** The time now as the log writes it, `YYYY-MM-DD HH:MM`, local. */
@@ -66,7 +66,8 @@ function statusLines(flow, truth, blocked) {
 /**
  * Runs one `harness flow` command.
  * @param {{ words: string[], flags?: object, root: string, profile: object, git?: Function, lockOf?: Function, template?: string, runtimes?: object, now?: string }} options
- *   `flags.context` is the previous worker's context in percent of its window (dispatch), `flags.at` or `now` the time it runs.
+ *   `flags.context` is the previous worker's context in percent of its window (dispatch), `flags.account` the account the orchestrator runs on (dispatch),
+ *   `flags.at` or `now` the time it runs.
  * @returns {{ lines: string[], code: number }}
  */
 export function flowCommand({ words, flags = {}, root, profile, git, lockOf, template, runtimes, now }) {
@@ -112,6 +113,7 @@ export function flowCommand({ words, flags = {}, root, profile, git, lockOf, tem
       runtimes,
       logText: logTextOf(root, read.dir, flow),
       context,
+      account: typeof flags.account === 'string' && flags.account.trim() ? flags.account.trim() : null,
       now: flags.at ?? now ?? logTime(),
       facts,
       harness: `node ${inFramework(profile, 'tools/harness.mjs')}`

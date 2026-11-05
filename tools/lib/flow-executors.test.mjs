@@ -126,7 +126,7 @@ const LOG = `# Flow 1 — Demo — log
 ### 2026-11-04 10:20 — step 1 ended: done
 
 ### 2026-11-04 10:21 — step 2 started
-- **Executor:** session, reused from step 1 · **Worker:** w-1 · **Model:** Sonnet 5.5 at high effort · **Estimate:** 1 SP, —
+- **Executor:** session, reused from step 1 · **Worker:** w-1 · **Account:** one@example.com · **Model:** Sonnet 5.5 at high effort · **Estimate:** 1 SP, —
 
 ### 2026-11-04 10:40 — step 2 ended: done
 `
@@ -141,6 +141,7 @@ test('the log names the previous worker, the steps it ran, its last turn and a s
     id: 'w-1',
     kind: 'session',
     step: '2',
+    account: 'one@example.com',
     model: 'Sonnet 5.5 at high effort',
     steps: ['1', '2'],
     lastAt: '2026-11-04 10:40',
@@ -149,6 +150,11 @@ test('the log names the previous worker, the steps it ran, its last turn and a s
   assert.equal(previousWorker(`${LOG}\n### 2026-11-04 10:41 — stop: waits for the owner\n`, '3').paused, true)
   assert.equal(previousWorker(LOG.replace(/\*\*Worker:\*\* w-1/g, '**Worker:** —'), '3'), null)
   assert.equal(previousWorker('', '1'), null)
+  assert.equal(
+    previousWorker(LOG.replace(/ · \*\*Account:\*\* one@example\.com/g, ''), '3').account,
+    null,
+    'an older log'
+  )
 })
 
 test('a related step of the same repository, model and effort, with a small context and a warm cache, continues the worker', () => {
@@ -191,12 +197,31 @@ test('each condition alone forbids the reuse, with its reason', () => {
     [{ worker: { ...worker, paused: true } }, /the flow stopped for the owner or a usage reset since its last turn/],
     [{ now: '2026-11-04 11:30' }, /its last turn was 90 minutes ago, past the 60 minutes its prompt cache lives/],
     [{ worker: { ...worker, steps: ['a', 'b', 'c'] } }, /it has run 3 steps, the limit is 3/],
-    [{ worker: { ...worker, step: '7' } }, /the log names step 7, which the flow does not have/]
+    [{ worker: { ...worker, step: '7' } }, /the log names step 7, which the flow does not have/],
+    [
+      { worker: { ...worker, account: 'one@example.com' }, account: 'two@example.com' },
+      /another account \(one@example\.com, then two@example\.com\)/
+    ]
   ]
   for (const [overrides, reason] of cases) {
     const decision = decide(overrides)
     assert.equal(decision.reuse, false, String(reason))
     assert.match(decision.reasons.join('; '), reason)
+  }
+})
+
+test('the account counts only when both are known: the same one is warm, an unknown one leaves it to the other conditions', () => {
+  const known = { ...worker, account: 'one@example.com' }
+  const same = decide({ worker: known, account: 'one@example.com' })
+  assert.equal(same.reuse, true)
+  assert.ok(same.reasons.includes('the same account'))
+  for (const [logged, current] of [
+    [known, null],
+    [worker, 'two@example.com']
+  ]) {
+    const decision = decide({ worker: logged, account: current })
+    assert.equal(decision.reuse, true)
+    assert.ok(!decision.reasons.some((reason) => reason.includes('account')))
   }
 })
 

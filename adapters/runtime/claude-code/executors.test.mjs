@@ -58,6 +58,18 @@ test('a session starts in the desktop app or on the command line with the model 
   assert.equal(session.wakeups, true)
 })
 
+test("a session reads the account it runs on: the desktop app's from its session, a command-line worker's from the sign-in of its folder", () => {
+  const [app, cli] = executorsFor({}).session.account()
+  assert.deepEqual(app.command, ['printenv', 'CLAUDE_CODE_USER_EMAIL'])
+  assert.deepEqual(cli.command, ['claude', 'auth', 'status'])
+  assert.match(cli.reads, /`email`/)
+  assert.equal(
+    executorsFor({}).subagent.account,
+    undefined,
+    'a subagent is never reused, so its account is not compared'
+  )
+})
+
 test('a subagent gets no CI wake-ups and cannot report its context, so it is never reused', () => {
   const { subagent } = executorsFor({})
   assert.equal(subagent.wakeups, false)

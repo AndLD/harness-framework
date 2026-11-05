@@ -155,7 +155,7 @@ test('a flow waits for the flows it needs; an unknown flow, a flow with problems
   for (const words of [[], ['status'], ['status', 'x'], ['prompt', '1'], ['next', '1', '2'], ['unknown']]) {
     assert.deepEqual(call(words, scratch), {
       lines: [
-        'usage: harness flow check | status <n> | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--at <YYYY-MM-DD HH:MM>]'
+        'usage: harness flow check | status <n> | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--account <id>] [--at <YYYY-MM-DD HH:MM>]'
       ],
       code: 2
     })
@@ -186,7 +186,8 @@ const RUNTIMES = {
             ],
             continue: ({ worker, prompt }) => [{ via: 'demo', command: ['demo', 'resume', worker, prompt] }],
             report: ({ worker }) => [{ via: 'demo', tool: 'report', input: { worker } }],
-            context: ({ worker }) => [{ via: 'demo', tool: 'context', input: { worker } }]
+            context: ({ worker }) => [{ via: 'demo', tool: 'context', input: { worker } }],
+            account: () => [{ via: 'demo', command: ['demo', 'whoami'] }]
           }
         })
       }
@@ -194,7 +195,7 @@ const RUNTIMES = {
   }
 }
 
-test('flow dispatch hands a step to a fresh worker, then continues the warm one, and says why', () => {
+test('flow dispatch hands a step to a fresh worker, then continues the warm one with a fresh start to fall back on, and says why', () => {
   const scratch = project()
   const profile = {
     ...scratch.profile,
@@ -225,12 +226,17 @@ test('flow dispatch hands a step to a fresh worker, then continues the warm one,
   )
   assert.match(
     first,
-    /\*\*Executor:\*\* session · \*\*Worker:\*\* <the id the start returns> · \*\*Model:\*\* Sonnet 5\.5 at high effort/
+    /\*\*Executor:\*\* session · \*\*Worker:\*\* <the id the start returns> · \*\*Account:\*\* — · \*\*Model:\*\* Sonnet 5\.5 at high effort/
   )
+  assert.match(
+    first,
+    /Account: not read, so the reuse rule did not compare accounts\.[^\n]*\n {2}- demo: run `demo whoami`/
+  )
+  assert.doesNotMatch(first, /If the continue fails/, 'a fresh worker needs no fallback')
 
   const ran = `${LOG.replace('### 2026-11-04 10:01 — step 1 started\n', '')}
 ### 2026-11-04 10:01 — step 1 started
-- **Executor:** session · **Worker:** w-1 · **Model:** Sonnet 5.5 at high effort · **Estimate:** 1 SP, —
+- **Executor:** session · **Worker:** w-1 · **Account:** one@example.com · **Model:** Sonnet 5.5 at high effort · **Estimate:** 1 SP, —
 
 ### 2026-11-04 10:20 — step 1 ended: done
 - **Usage after:** —
@@ -247,6 +253,20 @@ test('flow dispatch hands a step to a fresh worker, then continues the warm one,
   assert.match(warm, /Decision D0 to log: step 2 keeps the model of step 1/)
   assert.match(warm, /demo: run `demo resume w-1 "\$\(node tools\/harness\.mjs flow prompt 1 2\)"`/)
   assert.match(warm, /\*\*Executor:\*\* session, reused from step 1 · \*\*Worker:\*\* w-1/)
+  assert.match(
+    warm,
+    /If the continue fails for any reason \(the runtime cannot find w-1, as from another account, or the call errs\), do not retry it: start a fresh worker instead/
+  )
+  assert.match(warm, /demo: run `demo start flow-1-step-2 - - "\$\(node tools\/harness\.mjs flow prompt 1 2\)"`/)
+  assert.match(warm, /then log: - \*\*Executor:\*\* session · \*\*Worker:\*\* <the id the start returns>/)
+
+  const same = dispatch(['dispatch', '1', '2'], { context: '12', account: 'one@example.com' }).lines.join('\n')
+  assert.match(same, /Account: one@example\.com\./)
+  assert.match(same, /warm: the same repository; the same account;/)
+  assert.match(same, /reused from step 1 · \*\*Worker:\*\* w-1 · \*\*Account:\*\* one@example\.com/)
+  const other = dispatch(['dispatch', '1', '2'], { context: '12', account: 'two@example.com' }).lines.join('\n')
+  assert.match(other, /Worker: a fresh one \(not w-1: another account \(one@example\.com, then two@example\.com\)\)/)
+  assert.doesNotMatch(other, /If the continue fails/)
 
   const cold = dispatch(['dispatch', '1', '2'], { context: '55', at: '2026-11-04 12:00' }).lines.join('\n')
   assert.match(
