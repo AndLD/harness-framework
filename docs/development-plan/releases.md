@@ -24,7 +24,7 @@ Status: ⬜ planned · 🟡 developing · 🏷 a development version cut · ✅ 
 
 ## Not scheduled
 
-- None.
+- Phase 6 (context optimization for agents and consumers, 24 SP, added on 2026-11-05): the owner has not named its release yet.
 
 ## Notes
 
