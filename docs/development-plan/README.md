@@ -27,7 +27,7 @@ is updated in the change that starts or finishes it.
 <!-- plan-issues:end -->
 
 <!-- plan-backlog:start -->
-**Backlog** (proposals the owner has not approved; not a phase, and not in the totals above): [0 proposed](./backlog/README.md); 2 promoted.
+**Backlog** (proposals the owner has not approved; not a phase, and not in the totals above): [1 proposed](./backlog/README.md); 2 promoted.
 <!-- plan-backlog:end -->
 
 **Releases** (the order of the releases and of their tasks is the file [releases](./releases.md), not a section of this index; the line below is written by `harness plan summary`)
