@@ -892,6 +892,8 @@ local list of prompts, one session per step, and the order of the releases was a
   and no pause longer than the prompt cache lives, fewer than three steps. The reason is the prompt cache: a fresh worker still reads the shared prefix (system prompt, tools, entry
   file) from the cache and pays for its orientation reads, while a reused one reads its whole context from the cache only while the cache lives; after that the long context is
   written again at full price, and a change of model or effort drops the cache anyway. The worker's id is written in the log (`Worker:`), so a restarted orchestrator continues it.
+  So is its account (`Account:`, issue I-10): a worker lives in its account's data and cache, so a flow continued from another account (an owner with two subscriptions)
+  starts a fresh worker, and a continue that fails anyway falls back to a fresh start that `dispatch` prints beside it, rather than stopping the flow.
   The limits are settings (`reuseLimits`), measured so the defaults can change (task 5.7). Usage is read and estimated before each step (5.6), and a flow may drive another repository, such as a consuming project (5.8).
 - **The tools read the repository, not the cache** (task 5.4). `harness flow status` recomputes each step's state from the plan, the merged pull requests (the `Plan:` lines of the squash
   commits), the tags and a consumer's lock, so an orchestrator that stopped in the middle of a step resumes from the truth; the State column is only a cache and the log the record. Checks are pure

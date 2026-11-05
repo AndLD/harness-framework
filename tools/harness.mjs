@@ -23,7 +23,7 @@
 //   harness check all                                             every check, then the project's own (`checks.project`)
 //   harness plan summary [--check]                                write (or compare) the summary of the plan index
 //   harness flow check | status <n> | next <n> | prompt <n> <step>   the flows of the plan (the procedure run-flow): check them (`check flows`), recompute the state of
-//     | dispatch <n> <step> [--context <percent>] [--at <time>]     a flow's steps from the repository, print its next step with its prompt, the prompt of a step, or
+//     | dispatch <n> <step> [--context <percent>] [--account <id>] [--at <time>]     a flow's steps from the repository, print its next step with its prompt, the prompt of a step, or
 //                                                                 how to hand a step to a worker: its executor, a fresh or the previous worker (reuse), the means
 //   harness plan split <phase>                                    split a phase kept as one file into a folder: the phase index, a file per task and the logs beside them
 //   harness plan promote <B-n> --phase <n> [--agent <m>] [--size <n>] --approved   the owner's decision: a backlog item becomes a task of a phase
@@ -90,7 +90,7 @@ const USAGE = `usage: harness <command>
   layers
   check <${Object.keys(CHECKS).join('|')}|all>
   plan summary [--check]
-  flow check | status <n> | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--at <time>]
+  flow check | status <n> | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--account <id>] [--at <time>]
   plan split <phase>
   plan promote <B-n> --phase <n> [--agent <marker>] [--size <n>] --approved
   plan log <phase> [ref]
@@ -130,6 +130,7 @@ const FLAGS_WITH_VALUE = new Set([
   '--agent',
   '--size',
   '--context',
+  '--account',
   '--at'
 ])
 // Flags that may be given several times; their values are collected in a list

@@ -13,7 +13,7 @@ session that continues the flow reads the flow file, the tail of this log and th
 - **Usage:** <5-hour and weekly window, in %, with their reset times, or "not read">
 
 ### YYYY-MM-DD HH:MM — step <#> started
-- **Executor:** <session | subagent | manual> <, reused from step <#>> · **Worker:** <the worker's id, which continues it> · **Model:** <model and effort> · **Estimate:** <SP, % of the weekly window>
+- **Executor:** <session | subagent | manual> <, reused from step <#>> · **Worker:** <the worker's id, which continues it> · **Account:** <the account it runs on, or —> · **Model:** <model and effort> · **Estimate:** <SP, % of the weekly window>
 - **Usage before:** <…>
 
 ### YYYY-MM-DD HH:MM — step <#> ended: <done | partial | blocked>

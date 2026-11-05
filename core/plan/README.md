@@ -220,7 +220,8 @@ project that has a releases file; the profile names their folder (`paths.flows`)
   the newest entries of the log, and prints the mismatches, a step left open, and the next step. `harness flow next <n>` prints that step with its prompt, and `harness flow prompt <n> <step>` the
   prompt of a step: the standard wording (the header, the text of the kind, the Git wording, where to stop, the step report) is written once in the [step prompts](./flow-step-prompts.md), and a
   `custom` step carries its own text under `## Step <#>` in the flow file. The session start names a flow that is running or waits, with its next step by the State column.
-  `harness flow dispatch <n> <step> [--context <percent>]` says how to hand a step to a worker: its executor (the step's own or the flow's, by the means of the runtime adapter's role `executors`,
+  `harness flow dispatch <n> <step> [--context <percent>] [--account <id>]` says how to hand a step to a worker: its executor (the step's own or the flow's, by the means of the runtime adapter's role `executors`,
   the manual one when the runtime offers none), whether the previous step's worker continues it or a fresh one starts, with every reason, the means to start or continue it, to fetch its full
-  report and to read its context, and the executor line of its "step started" log entry, whose `Worker:` field the next dispatch reads.
+  report and to read its context, and the executor line of its "step started" log entry, whose `Worker:` and `Account:` fields the next dispatch reads. A worker of another account
+  than the orchestrator's is never continued; when a continue fails anyway, `dispatch` has printed the fresh start to fall back on.
 - **Not yet.** Parallel steps (waves); the `Needs` column keeps room for them.

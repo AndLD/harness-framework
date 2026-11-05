@@ -106,6 +106,20 @@ const session = {
       via: CLI,
       from: 'the context of the last call: `usage.input_tokens` + `usage.cache_read_input_tokens` + `usage.cache_creation_input_tokens`, over `modelUsage.<model>.contextWindow`, in percent'
     }
+  ],
+  // A desktop app's session runs on the app's account, which it names in `CLAUDE_CODE_USER_EMAIL`; a `claude -p` worker runs on the account of the
+  // command line's configuration folder, which `claude auth status` names (with two accounts on one machine, the folders differ).
+  account: () => [
+    {
+      via: APP,
+      command: ['printenv', 'CLAUDE_CODE_USER_EMAIL'],
+      reads: 'the account of the session, which a worker it starts runs on'
+    },
+    {
+      via: CLI,
+      command: ['claude', 'auth', 'status'],
+      reads: 'the `email` field: the account a `claude -p` worker runs on'
+    }
   ]
 }
 
