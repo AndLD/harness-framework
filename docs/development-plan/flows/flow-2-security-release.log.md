@@ -21,3 +21,9 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Worker's recommendation:** none.
 - **Choice:** one step per task; the steps after it move down by one (an early plan change, before any run, so the ids are renumbered rather than suffixed) · **Decided by:** the owner ("I agree with you").
 
+
+### 2026-11-05 22:00 — decision D3: `sed` and `ls` join what the workers of this flow may do
+- **Options:** (a) add `Bash(sed *)` and `Bash(ls *)` to the `allow` list of the `permissions` setting; (b) leave the list as it is; (c) widen the mode.
+- **Own analysis** (written by the orchestrator of flow 1, which saw the refusals, before the owner's answer): (a). The workers of flow 1 on the command line were refused `sed -i` edits, `ls` of a folder outside their own and some compound shell lines, so they spent turns on workarounds and left one pull request body unfixed; `sed` and `ls` are routine and, run through `Bash(…)` patterns, stay inside the mode `acceptEdits`; nothing else in the list changes. A compound line whose parts are all allowed is allowed, so the list is the whole fix.
+- **Worker's recommendation:** the workers of steps 1d and 1g of flow 1 named the refusals and worked round them.
+- **Choice:** (a), `"allow": ["Bash(git *)", "Bash(gh *)", "Bash(npm *)", "Bash(node *)", "Bash(sed *)", "Bash(ls *)"]` · **Decided by:** the owner ("I think you should add sed and ls commands to permissions for new workers"). Flow 1 is finished and keeps its own list.
