@@ -1,0 +1,3 @@
+{"v":1,"at":"2026-11-05T10:23:16.006Z","flow":1,"event":"flow-start","subscription":"pro","fiveHour":{"percent":68,"resetsAt":"2026-11-05T12:30:00Z"},"weekly":{"percent":13,"resetsAt":"2026-11-10T07:00:00Z"}}
+{"v":1,"at":"2026-11-05T10:23:17.687Z","flow":1,"event":"step-start","step":"1","kind":"cut","sp":1,"model":"Sonnet 5.5 at high effort","start":"cold","subscription":"pro","fiveHour":{"percent":68,"resetsAt":"2026-11-05T12:30:00Z"},"weekly":{"percent":13,"resetsAt":"2026-11-10T07:00:00Z"}}
+{"v":1,"at":"2026-11-05T10:30:59.107Z","flow":1,"event":"step-end","step":"1","kind":"cut","sp":1,"model":"Sonnet 5.5 at high effort","subscription":"pro","fiveHour":{"percent":71,"resetsAt":"2026-11-05T12:30:00Z"},"weekly":{"percent":13,"resetsAt":"2026-11-10T07:00:00Z"}}
