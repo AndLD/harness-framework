@@ -19,4 +19,5 @@ A request for something new, which is not a defect, is an item of the [backlog](
 | [I-16](./I-16.md) | The notes of a development version and the migration say too little: the final note is not printed on a development-only path, a check is false after the next version, and the arrows action has no answer for phases no release holds | bootstrap and sync | C1 | 2 | ⬜ | — |
 | [I-17](./I-17.md) | Pushing the tag of a release from the branch of the work fails the migration tests, and the procedure `release` does not say from which branch to push it | procedures | C1 | 1 | ⬜ | — |
 | [I-18](./I-18.md) | A pull request that the update workflow brings up to date is left BLOCKED, because the required `pr-title` check of the new head never runs | checks | C1 | 2 | ⬜ | — |
+| [I-19](./I-19.md) | The pre-push hook of a linked worktree runs the main checkout's tools, so it checks the worktree's generated files against the wrong `core/` | Git rules | C1 | 1 | ⬜ | — |
 <!-- issue-queue:end -->
