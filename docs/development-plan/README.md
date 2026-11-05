@@ -15,11 +15,11 @@ is updated in the change that starts or finishes it.
 | Phase | Theme | Story points | Agent complexity | Status |
 | ----- | ----- | ------------ | ---------------- | ------ |
 | 1 | Adoption, presets, examples and the proof | 12 | C1–C2 | ✅ Done |
-| 2 | Security and review automation | 25 | C2–C3 | ⬜ Not started |
+| 2 | Security and review automation | 38 | C2–C3 | ⬜ Not started |
 | 3 | Stabilization, migrations and local adapters | 71 | C1–C2 | ✅ Done |
 | 4 | Reaching and holding the structure of documents | 27 | C1–C2 | 🟡 In progress |
 | 5 | Releases in a file of their own, and flows run by an orchestrator | 43 | C2–C3 | ✅ Done |
-|  | **Total of Phases 1–5** | **178** | | |
+|  | **Total of Phases 1–5** | **191** | | |
 <!-- plan-summary:end -->
 
 <!-- plan-issues:start -->
@@ -50,7 +50,7 @@ No release is being developed. Next: `0.4.0` (⬜ planned). The order of the rel
 
 <!-- plan-contents:start -->
 - [Phase 1 — Adoption, presets, examples and the proof (12 SP)](./phases/phase-1-adoption-presets-proof.md)
-- [Phase 2 — Security and review automation (25 SP)](./phases/phase-2-security/README.md)
+- [Phase 2 — Security and review automation (38 SP)](./phases/phase-2-security/README.md)
 - [Phase 3 — Stabilization, migrations and local adapters (71 SP)](./phases/phase-3-stabilization/README.md)
 - [Phase 4 — Reaching and holding the structure of documents (27 SP)](./phases/phase-4-document-extension/README.md)
 - [Phase 5 — Releases in a file of their own, and flows run by an orchestrator (43 SP)](./phases/phase-5-release-flows/README.md)
