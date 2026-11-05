@@ -1,6 +1,6 @@
 {
   "name": "harness-framework",
-  "version": "0.3.0-dev.3",
+  "version": "0.3.0",
   "license": "MIT",
   "adapters": {
     "stack": ["node-ts", "python"],
