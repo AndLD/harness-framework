@@ -412,14 +412,16 @@ export function dispatchStep({
   const reading = picked.executor.context({ worker: id })
   const accountMeans = picked.executor.account?.() ?? []
   const render = (list) => list.map((means) => `  - ${renderMeans(means, promptCommand)}`)
-  const logLine = (executorText, workerText, modelText) =>
-    `- **Executor:** ${executorText} · **Worker:** ${workerText} · **Account:** ${account ?? '—'} · **Model:** ${modelText ?? '—'} · **Estimate:** ${step.sp || '—'} SP, ${step.usage || '—'}`
+  const logLine = (executorText, workerText, modelText, accountText = account ?? '—') =>
+    `- **Executor:** ${executorText} · **Worker:** ${workerText} · **Account:** ${accountText} · **Model:** ${modelText ?? '—'} · **Estimate:** ${step.sp || '—'} SP, ${step.usage || '—'}`
   const field = (reusedFrom = null) =>
     executorField({ kind: picked.kind, planned: picked.planned, reason: picked.reason, reusedFrom })
   // The next executor of the order, for this step only, when the start of this one is refused or fails
   const next = nextInOrder(picked.kind, executors)
   const failed = `<why the ${picked.kind} start failed>`
   const nextPermissions = next && executors[next].permissions?.({ permissions })
+  // A worker of the next executor may run on another account than the orchestrator's (a command line signs in by its own folder), so its line reads its own
+  const nextAccount = (next && executors[next].account?.()) ?? []
   const fallback = next
     ? [
         `If the ${picked.kind} start is refused or fails, do not retry it and do not wait: the fallback for this step only is the ${next} executor (the order of the executors; the next step is dispatched again and goes back to ${picked.planned}). Log a decision D0 "step ${step.id}: ${failed}, so the ${next} executor runs it", and start it:`,
@@ -429,7 +431,17 @@ export function dispatchStep({
           .report({ worker: '<its id>' })
           .map((means) => renderMeans(means, promptCommand))
           .join('; ')}`,
-        `  - then log: ${logLine(executorField({ kind: next, planned: picked.planned, reason: failed }), '<the id the start returns>', fallbackModel)}`
+        ...(nextAccount.length
+          ? [
+              `  - read the account it runs on: ${nextAccount.map((means) => renderMeans(means, promptCommand)).join('; ')}`
+            ]
+          : []),
+        `  - then log: ${logLine(
+          executorField({ kind: next, planned: picked.planned, reason: failed }),
+          '<the id the start returns>',
+          fallbackModel,
+          nextAccount.length ? '<the account it runs on>' : (account ?? '—')
+        )}`
       ]
     : []
   const lines = [

@@ -368,6 +368,20 @@ test('a session step prints the command line as the fallback for this step only,
   )
   // the step's own line names the session alone
   assert.match(text, /Log "step 1 started" with: - \*\*Executor:\*\* session · \*\*Worker:\*\*/)
+  // a worker on the command line may sign in to another account than the orchestrator's, so its line reads its own
+  const signedIn = { ...cli, account: () => [{ via: 'shell', command: ['who-cli'] }] }
+  const twoAccounts = dispatchOrdered({
+    account: 'app@example.com',
+    runtimes: {
+      rt: {
+        manifest: ordered.rt.manifest,
+        modules: { m: { e: () => ({ session: executor, cli: signedIn }) } }
+      }
+    }
+  }).lines.join('\n')
+  assert.match(twoAccounts, / {2}- read the account it runs on: shell: run `who-cli`/)
+  assert.match(twoAccounts, /- then log: - \*\*Executor:\*\* cli, .* · \*\*Account:\*\* <the account it runs on> ·/)
+  assert.match(twoAccounts, /Log "step 1 started" with: .* · \*\*Account:\*\* app@example\.com ·/)
   // a worker on the command line that is itself the fallback falls back to the manual one
   const fromCli = dispatchOrdered({ flow: flowOf(STEPS, { executor: 'cli' }) })
   assert.equal(fromCli.plan.fallback, 'manual')
