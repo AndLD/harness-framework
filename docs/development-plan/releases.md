@@ -16,7 +16,7 @@ Status: ⬜ planned · 🟡 developing · 🏷 a development version cut · ✅ 
 | `0.2.0-dev.3` | ✅ | 3.20 (the backlog queue for feature requests), then 3.22 (the probe switch of report 65: issue I-6, then backlog item B-1, built before 3.21 and promoted to this task), I-1 (report 30), and 3.21 (a backlog item is never started as it is: the owner promotes it into a task of a phase first) | takes it again |  |
 | `0.2.0` | ✅ | the final cut of the tasks above, with its note complete from the previous final version | moves its branch to it and finishes the task |  |
 | `0.3.0-dev.1` | 🏷 | no task of its own: the tasks of `0.3.0` below, cut early as a development version (the owner's decision of 2026-11-05, flow 1) so that the consumer runs its checks before the final tag exists | takes it on a draft pull request, to find what blocks the release |  |
-| `0.3.0-dev.2` | ⬜ | I-12 and I-13, the fixes of what the take of `0.3.0-dev.1` found (the owner's decision of 2026-11-05, flow 1) | takes it again, to prove the fixes before the final tag |  |
+| `0.3.0-dev.2` | 🏷 | I-12 and I-13, the fixes of what the take of `0.3.0-dev.1` found (the owner's decision of 2026-11-05, flow 1) | takes it again, to prove the fixes before the final tag |  |
 | `0.3.0` | 🟡 | 3.4 (local adapters), then Phase 5 (the release order in a file of its own, and flows run by an orchestrator; added on 2026-11-04), in the order of its ids, and I-11 (the permissions of a worker on the command line, which flow 1 needs; added on 2026-11-05), then I-12 and I-13 (the findings of the first take of `0.3.0-dev.1`, which the consumer's run found; added on 2026-11-05) | takes it |  |
 | next | ⬜ | Phase 2 (earlier if the repository goes public or a second person uses the framework) | takes it |  |
 
