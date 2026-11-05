@@ -12,5 +12,6 @@ The table is written from the flow files by `harness plan summary`; edit a flow 
 | Flow | Releases | Mode | Size | Est. usage | Status |
 | ---- | -------- | ---- | ---- | ---------- | ------ |
 | [1 — Release 0.3.0 and its first consumer](./flow-1-release-0-3-0.md) | `0.3.0-dev.1`, `0.3.0-dev.2`, `0.3.0-dev.3`, `0.3.0` | seamless | 20 SP | 21.6% | ✅ |
-| [2 — The security release](./flow-2-security-release.md) | `0.4.0` | seamless | 39 SP | 89.7% | ⬜ |
+| [2 — The 0.4.0 release](./flow-2-release-0-4-0.md) | `0.4.0` | seamless | 23 SP | 41% | ⬜ |
+| [3 — The security release](./flow-3-security-release.md) | `0.5.0` | brainstorm | 25 SP | 61.8% | ⬜ |
 <!-- flows-index:end -->
