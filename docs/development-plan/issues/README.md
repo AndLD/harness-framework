@@ -15,5 +15,4 @@ A request for something new, which is not a defect, is an item of the [backlog](
 | Issue | Title | Area | Agent | SP | Status | Reported |
 | ----- | ----- | ---- | ----- | -- | ------ | -------- |
 | [I-7](./I-7.md) | `harness branch update` left merge conflict markers in a file it reported as resolved, and no check refuses them | Git rules | C1 | 2 | ⬜ | — |
-| [I-13](./I-13.md) | The first `check all` after taking `0.3.0` fails on the new releases file and on a generic word of the core, and the notes say nothing of either or of the cost of the gate | checks | C1 | 2 | ⬜ | — |
 <!-- issue-queue:end -->

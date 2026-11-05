@@ -213,8 +213,7 @@ project that has a releases file; the profile names their folder (`paths.flows`)
   logged decision. The State column is a cache of the repository's state; the log is the record.
 - **Running.** The procedure `run-flow`: the decision levels (D0 mechanical to D4 external communication), the hard limits no mode crosses, the step report a worker ends with,
   the unbiased analysis, escalation and the digests. The resume phrases of the profile ("Run flow N") approve what the settings of the named flows allow, within the Git rules of the entry file.
-- **The tools.** `harness flow check` (part of `harness check all`, as the check `flows`) holds the parts of a flow and of its log, the step ids (unique, an inserted step with a suffix after its
-  base), that the ids a step names exist (tasks and issues, never a backlog item), that a version is a row of the releases file and one the flow declares, that the `Needs` of steps point to
+- **The tools.** `harness flow check` (part of `harness check all`, as the check `flows`) holds the parts of a flow and of its log, the step ids (unique, an inserted step with a suffix after the step it follows), that the ids a step names exist (tasks and issues, never a backlog item), that a version is a row of the releases file and one the flow declares, that the `Needs` of steps point to
   earlier steps and those of flows resolve without a circle, and that the flows index agrees with the files. `harness flow status <n>` recomputes the state of each step from the
   repository (the ids of a `tasks` step are ✅ and their pull requests merged, a `cut` has its tag, a `consumer-take` has the version in the consumer's lock), compares it with the State column and with
   the newest entries of the log, and prints the mismatches, a step left open, and the next step. `harness flow next <n>` prints that step with its prompt, and `harness flow prompt <n> <step>` the
