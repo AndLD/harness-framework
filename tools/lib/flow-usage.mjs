@@ -417,9 +417,27 @@ export const appendSample = (fileText, sample) =>
   `${fileText && !fileText.endsWith('\n') ? `${fileText}\n` : (fileText ?? '')}${JSON.stringify(sample)}\n`
 
 /**
- * What a step used: the difference between its "step-end" sample and the newest "step-start" sample of the same flow and step before it, per window. A window
- * that reset in between (its reset time passed, or its end is lower than its start) has no difference: the sample is cut.
- * @returns {{ fiveHour?: number, weekly?: number, cut: string[] } | null} null when there is no start sample
+ * What was used between two samples, per window (and in money): the end's reading less the start's. A window that reset in between (its reset time passed, or
+ * its end is lower than its start) has no difference: it is cut.
+ * @returns {{ fiveHour?: number, weekly?: number, usd?: number, cut: string[] }}
+ */
+export function deltaBetween(start, end) {
+  const delta = { cut: [] }
+  for (const window of WINDOWS) {
+    if (!start[window.id] || !end[window.id]) continue
+    const reset = start[window.id].resetsAt ? timeOf(start[window.id].resetsAt) : null
+    if (end[window.id].percent < start[window.id].percent || (reset !== null && reset <= timeOf(end.at)))
+      delta.cut.push(window.id)
+    else delta[window.id] = Math.round((end[window.id].percent - start[window.id].percent) * 100) / 100
+  }
+  if (start.cost !== undefined && end.cost !== undefined && end.cost >= start.cost)
+    delta.usd = Math.round((end.cost - start.cost) * 100) / 100
+  return delta
+}
+
+/**
+ * What a step used: the difference between its "step-end" sample and the newest "step-start" sample of the same flow and step before it, per window.
+ * @returns {{ fiveHour?: number, weekly?: number, usd?: number, cut: string[] } | null} null when there is no start sample
  */
 export function stepDelta(samples, end) {
   const start = samples.findLast(
@@ -429,14 +447,5 @@ export function stepDelta(samples, end) {
       sample.step === end.step &&
       timeOf(sample.at) <= timeOf(end.at)
   )
-  if (!start) return null
-  const delta = { cut: [] }
-  for (const window of WINDOWS) {
-    if (!start[window.id] || !end[window.id]) continue
-    const reset = start[window.id].resetsAt ? timeOf(start[window.id].resetsAt) : null
-    if (end[window.id].percent < start[window.id].percent || (reset !== null && reset <= timeOf(end.at)))
-      delta.cut.push(window.id)
-    else delta[window.id] = end[window.id].percent - start[window.id].percent
-  }
-  return delta
+  return start ? deltaBetween(start, end) : null
 }
