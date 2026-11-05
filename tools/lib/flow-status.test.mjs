@@ -160,7 +160,12 @@ test('a step in an external repository is checked through the host: the lock it 
   )
   assert.match(
     take(old, prs({ number: 5, title: 'other', state: 'closed' })).evidence,
-    /no pull request mentions 1\.0\.0/
+    /no pull request names 1\.0\.0 in its title/
+  )
+  // a pull request that only mentions the version in its body (a plan document) is not the one that takes it
+  assert.match(
+    take(old, prs({ number: 3, title: 'docs: the order of the plan', state: 'merged' })).evidence,
+    /no pull request names 1\.0\.0 in its title/
   )
   assert.match(
     take(old, () => ({ pullRequests: [], error: 'no access' })).evidence,

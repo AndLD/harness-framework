@@ -152,8 +152,9 @@ export function workerEntries(logText) {
  */
 export function previousWorker(logText, stepId) {
   const entries = workerEntries(logText)
-  const index = entries.findLastIndex((entry) => entry.kind === 'started' && entry.step !== stepId)
-  if (index < 0 || !entries[index].worker) return null
+  // A step the orchestrator ran itself (a cut at its own level) names no worker and does not end the previous worker's line
+  const index = entries.findLastIndex((entry) => entry.kind === 'started' && entry.step !== stepId && entry.worker)
+  if (index < 0) return null
   const last = entries[index]
   const ran = entries
     .filter((entry) => entry.kind === 'started' && entry.worker === last.worker)

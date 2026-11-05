@@ -53,6 +53,11 @@ test('a flow file is read: its releases, its settings over the defaults, the siz
   assert.deepEqual(read.settings.levels, FLOW_DEFAULTS.levels)
   assert.equal(read.size, 6)
   assert.deepEqual(read.usage, { percent: 10, partial: true })
+  assert.equal(
+    parseFlow('flow-1-ship-one.md', flow({ usage: ['0.6%', '3.2%'] })).usage.percent,
+    3.8,
+    'a sum of fractions has no floating point tail'
+  )
   assert.equal(read.status, '🟡')
   assert.equal(parseFlow('flow-1-ship-one.md', flow({ usage: ['—', '—'] })).usage, null)
 })

@@ -9,5 +9,8 @@ identities; the order between flows is the `Needs:` line of a flow, else the num
 The table is written from the flow files by `harness plan summary`; edit a flow file, not this table.
 
 <!-- flows-index:start -->
-No flow yet.
+| Flow | Releases | Mode | Size | Est. usage | Status |
+| ---- | -------- | ---- | ---- | ---------- | ------ |
+| [1 — Release 0.3.0 and its first consumer](./flow-1-release-0-3-0.md) | `0.3.0` | brainstorm | 4 SP | 3.8% | ⬜ |
+| [2 — The security release](./flow-2-security-release.md) | `next` | brainstorm | 18 SP | 36.3% | ⬜ |
 <!-- flows-index:end -->

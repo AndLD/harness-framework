@@ -150,6 +150,15 @@ test('the log names the previous worker, the steps it ran, its last turn and a s
   assert.equal(previousWorker(`${LOG}\n### 2026-11-04 10:41 — stop: waits for the owner\n`, '3').paused, true)
   assert.equal(previousWorker(LOG.replace(/\*\*Worker:\*\* w-1/g, '**Worker:** —'), '3'), null)
   assert.equal(previousWorker('', '1'), null)
+  // a step the orchestrator ran itself (a cut at its own level, no worker) does not end the previous worker's line
+  const between = `${LOG}
+### 2026-11-04 10:41 — step 3 started
+- **Executor:** orchestrator, no worker · **Worker:** — · **Model:** —
+
+### 2026-11-04 10:42 — step 3 ended: done
+`
+  assert.equal(previousWorker(between, '4').id, 'w-1')
+  assert.equal(previousWorker(between, '4').step, '2')
   assert.equal(
     previousWorker(LOG.replace(/ · \*\*Account:\*\* one@example\.com/g, ''), '3').account,
     null,
