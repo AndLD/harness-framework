@@ -259,3 +259,8 @@ Entries are written from the entry templates of the [flow-log template](../../..
 
 ### 2026-11-05 19:30 — step 1h ended: done
 - **Usage after:** the sample of 19:10 stands · **Pull requests merged:** #101 (`0de995f` on `main`), and the merge back, #124, once its checks are green · **Ids done:** none; the tag `v0.3.0` exists, so `harness flow status` reads steps 1h as ✅.
+
+### 2026-11-05 19:50 — step 2 started
+- **Executor:** session, on the command line (`claude -p`, in the consumer's folder, in a worktree of its own `flow-1-step-2`, under the flow's `permissions`) · **Worker:** `claude -p` named `flow-1-step-2` (its `session_id` is in the transcript of its run) · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Estimate:** 2 SP, 1.6% (gate: 5-hour 14.4%, weekly 1.9% with the safety factor)
+- **Usage before:** 5-hour 55% (resets 2026-11-05T17:30:00Z) · weekly 22% (resets 2026-11-10T07:00:00Z)
+- **Prompt:** the standard prompt of the step with the orchestrator's additions: take the final `0.3.0` (tag `v0.3.0`) from the state before the first take, not on the three development drafts, open the pull request with auto-merge off and do not merge it; what happens to #297 to #299 is that repository's owner's; do the required actions of `migrations/0.3.0.md` with their checks and list what it missed; end the run on the report, so that its result holds it.
