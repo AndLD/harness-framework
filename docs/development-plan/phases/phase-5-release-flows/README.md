@@ -27,7 +27,7 @@ scope; the format keeps room for them.
 | [5.6](./5.6.md) | Usage: read it, estimate each step, and gate the next one | C2 | 5 | ✅ |
 | [5.7](./5.7.md) | Calibrate the usage estimate from what flows used | C2 | 3 | ✅ |
 | [5.8](./5.8.md) | Flows across repositories: one home repository and external ones | C2 | 3 | ✅ |
-| [5.9](./5.9.md) | The first flows of this repository, and a probe of each mode | C2 | 3 | ⬜ |
+| [5.9](./5.9.md) | The first flows of this repository, and a probe of each mode | C2 | 3 | ✅ |
 <!-- phase-tasks:end -->
 
 Task status: ⬜ not started · 🟡 in progress (branch noted in the task's log) · ✅ done. Agent: the task's agent-complexity marker (plan method, section 7).

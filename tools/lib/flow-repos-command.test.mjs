@@ -119,7 +119,7 @@ test('status says running while a pull request that mentions the version is open
   assert.deepEqual(open.calls[1], ['prs', { slug: 'acme/app', text: '1.0.0' }])
   assert.match(
     step2(call(['status', '1'], project(), { remote: remote({ lock: { version: '0.9.0' } }) }).lines),
-    /repository ⬜: .*no pull request mentions 1\.0\.0/
+    /repository ⬜: .*no pull request names 1\.0\.0 in its title/
   )
   assert.match(
     step2(call(['status', '1'], project(), { remote: remote({ lock: undefined }) }).lines),

@@ -129,18 +129,20 @@ function takeTruth(step, facts) {
   if (!found) return { state: NOT_STARTED, evidence: base }
   if (found.error)
     return { state: NOT_STARTED, evidence: `${base}; its pull requests could not be read (${found.error})` }
-  const open = found.pullRequests.filter((pr) => pr.state === 'open')
+  // A search matches the body too, and a plan document may mention a version: only a pull request whose title names it is the one that takes it
+  const named = found.pullRequests.filter((pr) => (pr.title ?? '').includes(version))
+  const open = named.filter((pr) => pr.state === 'open')
   if (open.length)
     return {
       state: RUNNING,
       evidence: `${base}; ${open.map((pr) => `pull request #${pr.number} (${pr.title}) is open`).join(', ')}`
     }
-  const merged = found.pullRequests.filter((pr) => pr.state === 'merged')
+  const merged = named.filter((pr) => pr.state === 'merged')
   return {
     state: NOT_STARTED,
     evidence: merged.length
       ? `${base}; pull request #${merged[0].number} (${merged[0].title}) is merged, but the lock on the default branch does not name ${version} yet`
-      : `${base}; no pull request mentions ${version}`
+      : `${base}; no pull request names ${version} in its title`
   }
 }
 

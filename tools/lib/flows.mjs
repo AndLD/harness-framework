@@ -147,7 +147,7 @@ export function parseFlow(file, text) {
     steps: parseSteps(rows),
     size: sp.reduce((sum, n) => sum + (n ?? 0), 0),
     usage: known.length
-      ? { percent: known.reduce((sum, n) => sum + n, 0), partial: known.length < steps.length }
+      ? { percent: Math.round(known.reduce((sum, n) => sum + n, 0) * 10) / 10, partial: known.length < steps.length }
       : null,
     status: flowStatus(states),
     problems

@@ -15,4 +15,5 @@ A request for something new, which is not a defect, is an item of the [backlog](
 | Issue | Title | Area | Agent | SP | Status | Reported |
 | ----- | ----- | ---- | ----- | -- | ------ | -------- |
 | [I-7](./I-7.md) | `harness branch update` left merge conflict markers in a file it reported as resolved, and no check refuses them | Git rules | C1 | 2 | ⬜ | — |
+| [I-11](./I-11.md) | a worker started on the command line has no permission to edit files or run commands, and the executor's means do not say how to give it | runtime adapters | C2 | 3 | ⬜ | — |
 <!-- issue-queue:end -->
