@@ -1,6 +1,6 @@
-[← Flow 2 — The security release](./flow-2-security-release.md)
+[← Flow 2 — The 0.4.0 release](./flow-2-release-0-4-0.md)
 
-# Flow 2 — The security release — log
+# Flow 2 — The 0.4.0 release — log
 
 Append-only log of this flow, written by its orchestrator (the procedure `run-flow`); newest entry at the bottom. It is the record of the flow: a
 session that continues the flow reads the flow file, the tail of this log and the current step report, nothing older.
@@ -57,3 +57,9 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis** (written by the session that recorded it, before the owner's answer): (b). The owner is not a security expert and wants the framework to deliver a wide, researched methodology that a consumer's agent can use on its own project, and then a few core rules from its findings; one 5 SP task cannot hold that, and a list fixed in advance would stop at what section 11.1 of the design knew. Splitting the frame from the catalogue lets the catalogue grow by review. The catalogue is checked by an independent pass and marked draft until a person with security expertise has reviewed it, because a model can state a security fact confidently and be wrong. (c) is the owner's decision about the size of `0.4.0` and was not made here; the phase is 38 SP now, and the flow is about 90% of one 5-hour window by its estimates.
 - **Worker's recommendation:** none (no worker is involved).
 - **Choice:** (b); steps 4 (2.8), 5 (2.9) and 9 (2.10) are new, and the other steps move down (the flow has not run, as in the entry of 12:20); the release of the security tasks stays `0.4.0` until the owner decides (c) · **Decided by:** the owner ("Yes, agree with you"), who asked for the direction and the learning loop; the numbering and the order of the steps are the session's choice, open to the owner's change.
+
+### 2026-11-05 23:40 — decision D2: the security tasks leave this flow for flow 3 and the release `0.5.0`; the flow is renamed
+- **Options:** (a) keep the security tasks here; (b) move them to a release `0.5.0` and a flow of their own, flow 3; (c) move them to `0.5.0` and keep one flow for both.
+- **Own analysis:** see the entry of the same time in the log of [flow 3](./flow-3-security-release.log.md): (b). This flow keeps its number, its history above and its settings (seamless); it now delivers `0.4.0` only: 2.7, 2.6, 2.3, 2.5 and the open issues (two steps of C1: I-18 and I-7; I-17, I-14 and I-16), then the decision that inserts the cut step. The entries above that speak of the security tasks (the steps of 2.1, 2.8, 2.9, 2.2, 2.4 and 2.10 and of the version for them) describe the flow as it was before this entry, and are not rewritten. The files are renamed `flow-2-release-0-4-0` (the title "The security release" went to flow 3).
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (b) · **Decided by:** the owner ("I agree with security goes to 0.5.0"); the renaming, the grouping of the issues into two steps and the order are the session's choice, open to the owner's change.
