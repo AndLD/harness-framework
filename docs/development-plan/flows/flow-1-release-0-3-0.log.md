@@ -65,3 +65,12 @@ Entries are written from the entry templates of the [flow-log template](../../..
 
 ### 2026-11-05 11:45 — stop: usage
 - **Digest:** done: step 1, the cut of `0.3.0-dev.1` (tag `0.3.0-dev.1` on `003d02a`, release pull request #101 a draft); decided alone: the cut of the development version, D1 (entry of 11:40) and the insertion of steps 1a and 1b, D2, as a consequence of the owner's choice of the development version first (entries of 11:05); usage: 5-hour 77% (resets 2026-11-05T12:29:59Z), weekly 14%; step 1a (the consumer takes `0.3.0-dev.1`, estimated 12% of the 5-hour window with the safety factor) would pass the 85% threshold, so the gate says WAIT until the reset; next: after 12:30 UTC run "Continue flow 1": step 1a, `harness flow gate 1 1a` first, then the worker in the consumer's folder; then 1b, the final cut, which stops for the owner's review (D3).
+
+### 2026-11-05 12:35 — running
+- **Orchestrator:** the desktop-app session of andrey.larionov.me@gmail.com, started by "Continue flow 1" (the claim of 10:25 ended with the "stop: usage" entry of 11:45) · **Mode:** brainstorm (askAt D2) · **Steps:** 1a to 3
+- **Usage:** 5-hour 0% (resets 2026-11-05T17:30:00Z) · weekly 15% (resets 2026-11-10T07:00:00Z) (Pro)
+
+### 2026-11-05 12:35 — step 1a started
+- **Executor:** session, a fresh worker in the consumer's folder (the previous worker was in the home repository and its cache is long gone) · **Worker:** local_afe1c87f-6bb3-44ba-9538-5269505844d4 · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Estimate:** 2 SP, 1.6% (gate: 5-hour 14.4%, weekly 1.9% with the safety factor)
+- **Usage before:** 5-hour 0% (resets 2026-11-05T17:30:00Z) · weekly 15% (resets 2026-11-10T07:00:00Z)
+- **Prompt:** the standard prompt of the step, with the facts of the framework repository: the tag `0.3.0-dev.1` on `003d02a`, both notes, and the instruction to open the pull request as a draft that names the version and not to merge it.
