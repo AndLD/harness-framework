@@ -61,9 +61,13 @@ function statusOf(tasks, phases) {
   return statuses.every((status) => status === '✅') ? '✅' : statuses.some((status) => status !== '⬜') ? '🟡' : '⬜'
 }
 
+// The part of a cell that lists tasks: its start, as far as it holds only ids, separators, the words "then" and "and", and notes in brackets with no id
+const LISTED = /^(?:[\s,;+]|\b(?:then|and)\b|\([^()\d]*\)|Phase \d+\b|\d+\.\d+[a-z]?\b|[IB]-\d+\b)*/
+
 /**
- * The cell of an old table as the column "Tasks, in order": only the ids the tools can read (a task of a phase, "Phase N" of a phase that exists, an issue), in
- * order and once each. A cell that holds nothing else stays as it was; the words around the ids go to `prose`, for the column "Notes".
+ * The cell of an old table as the column "Tasks, in order": only the ids the tools can read (a task of a phase, "Phase N" of a phase that exists, an issue) of
+ * the part of the cell that lists tasks (its start), in order and once each; an id that the words after it only mention ("Phase 17 is closed") is not taken.
+ * A cell that holds nothing else stays as it was; the words around the ids go to `prose`, for the column "Notes".
  * @returns {{ tasks: string, prose: string }}
  */
 export function readableTasks(cell, phases) {
@@ -72,7 +76,7 @@ export function readableTasks(cell, phases) {
   const all = tokensOf(cell)
   const ids = [
     ...new Set(
-      all
+      tokensOf(cell.match(LISTED)[0])
         .filter((token) =>
           typeof token === 'string' ? known.has(token) || token.startsWith('I-') : numbers.has(token.phase)
         )
@@ -110,7 +114,17 @@ export function readOldSection(lines, phases) {
       notes: prose
     }
   })
-  return { rows, rest: lines.filter((line) => !line.startsWith('|')) }
+  return { rows, rest: closeSentence(lines).filter((line) => !line.startsWith('|')) }
+}
+
+// A sentence that ended in a colon because the table followed it is closed with a full stop: the table is gone from that place
+function closeSentence(lines) {
+  const first = lines.findIndex((line) => line.startsWith('|'))
+  const before = lines.slice(0, Math.max(first, 0)).findLastIndex((line) => line.trim() !== '')
+  if (first < 0 || before < 0 || !lines[before].trimEnd().endsWith(':')) {
+    return lines
+  }
+  return lines.map((line, at) => (at === before ? line.trimEnd().replace(/:$/, '.') : line))
 }
 
 /** Moves the release order of the index into the releases file. @returns {string[]} the lines to print */
