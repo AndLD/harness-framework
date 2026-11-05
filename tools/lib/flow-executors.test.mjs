@@ -3,11 +3,14 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import {
+  EXTERNAL_REASON,
   MANUAL_EXECUTOR,
   PROMPT_SLOT,
   decideReuse,
   dispatchStep,
+  nextInOrder,
   pickExecutor,
+  pickStepExecutor,
   previousWorker,
   renderMeans,
   runtimeExecutors,
@@ -300,4 +303,121 @@ test("dispatch passes the flow's permissions to the means and says what a worker
   assert.match(text, /run '\{"mode":"acceptEdits"\}' /)
   assert.match(dispatch({}, { session }), /Permissions: none set\./)
   assert.doesNotMatch(dispatch({}, { session: executor }), /Permissions:/)
+})
+
+// A runtime with the three executors of the order (task 2.7): a session, a worker on the command line, and the manual one of the framework
+const cli = {
+  ...executor,
+  means: 'a demo worker on the command line',
+  wakeups: false,
+  start: () => [{ via: 'shell', command: ['demo-cli', PROMPT_SLOT] }],
+  report: () => [{ via: 'shell', from: 'its result field' }],
+  permissions: () => 'the demo mode'
+}
+const ordered = {
+  rt: {
+    manifest: { roles: { executors: { module: 'm', export: 'e' } } },
+    modules: { m: { e: () => ({ session: executor, cli }) } }
+  }
+}
+const dispatchOrdered = (overrides = {}) =>
+  dispatchStep({
+    flow: flowOf(STEPS),
+    step: STEPS[0],
+    profile: { ...profile, adapters: { runtimes: ['rt'] } },
+    runtimes: ordered,
+    logText: '',
+    now: '2026-11-06 01:00',
+    harness: 'h',
+    ...overrides
+  })
+
+test('the order of the executors: a session, then the command line, then the manual one; a subagent stands outside it (task 2.7)', () => {
+  const all = { manual: MANUAL_EXECUTOR, session: executor, cli }
+  assert.equal(nextInOrder('session', all), 'cli')
+  assert.equal(nextInOrder('cli', all), 'manual')
+  assert.equal(nextInOrder('manual', all), null)
+  assert.equal(nextInOrder('subagent', all), null)
+  assert.equal(nextInOrder('session', { manual: MANUAL_EXECUTOR }), 'manual')
+  // a runtime without a session goes to the next executor it offers, and the reason is kept for the log line
+  const noSession = pickExecutor(flowOf(STEPS), STEPS[0], { manual: MANUAL_EXECUTOR, cli })
+  assert.deepEqual(
+    [noSession.kind, noSession.planned, noSession.reason],
+    ['cli', 'session', 'the runtime offers no session executor']
+  )
+  assert.match(noSession.note, /so the step goes to the cli one \(a D0 decision to log\)/)
+  assert.deepEqual(pickExecutor(flowOf(STEPS, { executor: 'cli' }), STEPS[0], all).reason, null)
+})
+
+test('a session step prints the command line as the fallback for this step only, with the log line that names it (task 2.7)', () => {
+  const { lines, plan } = dispatchOrdered()
+  const text = lines.join('\n')
+  assert.deepEqual([plan.kind, plan.planned, plan.fallback], ['session', 'session', 'cli'])
+  assert.match(text, /^Step 1 of flow 1 \[tasks\]: the session executor \(the flow's setting\)/)
+  assert.match(
+    text,
+    /If the session start is refused or fails, do not retry it and do not wait: the fallback for this step only is the cli executor \(the order of the executors; the next step is dispatched again and goes back to session\)\. Log a decision D0 "step 1: <why the session start failed>, so the cli executor runs it"/
+  )
+  assert.match(
+    text,
+    /\n {2}- shell: run `demo-cli "\$\(h flow prompt 1 1\)"`\n {2}- its permissions: the demo mode\n {2}- fetch its report: shell: its result field\n/
+  )
+  assert.match(
+    text,
+    / {2}- then log: - \*\*Executor:\*\* cli, the fallback of session: <why the session start failed> · \*\*Worker:\*\* <the id the start returns>/
+  )
+  // the step's own line names the session alone
+  assert.match(text, /Log "step 1 started" with: - \*\*Executor:\*\* session · \*\*Worker:\*\*/)
+  // a worker on the command line that is itself the fallback falls back to the manual one
+  const fromCli = dispatchOrdered({ flow: flowOf(STEPS, { executor: 'cli' }) })
+  assert.equal(fromCli.plan.fallback, 'manual')
+  assert.match(
+    fromCli.lines.join('\n'),
+    /- then log: - \*\*Executor:\*\* manual, the fallback of cli: <why the cli start failed>/
+  )
+  assert.equal(dispatchOrdered({ flow: flowOf(STEPS, { executor: 'subagent' }) }).plan.fallback, null)
+})
+
+test('the log names the worker on the command line with whose fallback it is and why, and the next session step does not continue it', () => {
+  const log = `# Flow 1 — Demo — log
+
+## Entries
+
+### 2026-11-06 00:41 — step 1 started
+- **Executor:** cli, the fallback of session: the app refused the start on a turn that a worker began · **Worker:** c-1 · **Account:** one@example.com · **Model:** Sonnet 5.5 at high effort · **Estimate:** 1 SP, —
+
+### 2026-11-06 01:00 — step 1 ended: done
+`
+  const [started] = workerEntries(log)
+  assert.deepEqual(
+    [started.executor, started.fallbackOf, started.reason, started.worker],
+    ['cli', 'session', 'the app refused the start on a turn that a worker began', 'c-1']
+  )
+  // the fallback is for one step at a time: the next step is planned for a session again, so the worker on the command line is not carried to it
+  const { lines, plan } = dispatchOrdered({ step: STEPS[1], logText: log, context: 10, account: 'one@example.com' })
+  assert.deepEqual([plan.kind, plan.reuse], ['session', false])
+  assert.match(lines.join('\n'), /not c-1: the previous worker is a cli one, this step goes to a session one/)
+})
+
+test('a step in another repository goes to the command line with the reason, unless the step names its own executor or the runtime has no command line', () => {
+  const external = {
+    ...flowOf(STEPS),
+    settings: { ...FLOW_DEFAULTS, repos: { app: { remote: 'acme/app', role: 'consumer' } } }
+  }
+  const step = row('2', 'consumer-take', '`1.0.0`', '1', 'C2', 'app')
+  const all = { manual: MANUAL_EXECUTOR, session: executor, cli }
+  const picked = pickStepExecutor({ flow: external, step, executors: all, repoPaths: { app: '/work/app' } })
+  assert.deepEqual([picked.kind, picked.planned, picked.reason], ['cli', 'session', EXTERNAL_REASON])
+  const own = row('2', 'consumer-take', '`1.0.0` (executor: manual)', '1', 'C2', 'app')
+  assert.equal(
+    pickStepExecutor({ flow: external, step: own, executors: all, repoPaths: { app: '/work/app' } }).kind,
+    'manual'
+  )
+  const withoutCli = { manual: MANUAL_EXECUTOR, session: executor }
+  assert.equal(
+    pickStepExecutor({ flow: external, step, executors: withoutCli, repoPaths: { app: '/work/app' } }).kind,
+    'session'
+  )
+  assert.equal(pickStepExecutor({ flow: external, step, executors: all }).kind, 'manual', 'the folder is not set')
+  assert.equal(pickStepExecutor({ flow: external, step: STEPS[0], executors: all }).kind, 'session', 'a home step')
 })

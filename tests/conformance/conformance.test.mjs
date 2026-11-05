@@ -165,7 +165,7 @@ test('executors that offer none, a session that cannot be continued, or an accou
     const dir = broken('runtime', 'claude-code', {
       'executors.mjs': (text) =>
         text.replace(
-          'export const executorsFor = () => ({ session, subagent })',
+          'export const executorsFor = () => ({ session, cli, subagent })',
           `export const executorsFor = () => ${executors}`
         )
     })

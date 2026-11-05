@@ -150,7 +150,14 @@ test('dispatch starts the worker in the folder of the external repository, and f
   const scratch = project()
   scratch.write('harness-profile.local.json', JSON.stringify({ repos: { app: '/work/app' } }))
   const text = call(['dispatch', '1', '2'], scratch).lines.join('\n')
-  assert.match(text, /"cwd":"\/work\/app"/)
+  // a step in another repository goes to the command line, logged as the fallback of a session with the reason (task 2.7)
+  assert.match(text, /the cli executor \(the order of the executors for another repository\)/)
+  assert.match(text, /run it in the folder \/work\/app, in the background/)
+  assert.match(
+    text,
+    /Log "step 2 started" with: - \*\*Executor:\*\* cli, the fallback of session: a step in another repository runs on the command line/
+  )
+  assert.doesNotMatch(text, /start_session/)
   assert.match(text, /Worker: a fresh one/)
   const unset = call(['dispatch', '1', '2'], project()).lines.join('\n')
   assert.match(unset, /the manual executor|the manual one/)
