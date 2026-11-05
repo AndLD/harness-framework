@@ -19,7 +19,8 @@ is updated in the change that starts or finishes it.
 | 3 | Stabilization, migrations and local adapters | 71 | C1–C2 | ✅ Done |
 | 4 | Reaching and holding the structure of documents | 27 | C1–C2 | 🟡 In progress |
 | 5 | Releases in a file of their own, and flows run by an orchestrator | 43 | C2–C3 | ✅ Done |
-|  | **Total of Phases 1–5** | **191** | | |
+| 6 | Context optimization for agents and consumers | 24 | C2–C3 | ⬜ Not started |
+|  | **Total of Phases 1–6** | **215** | | |
 <!-- plan-summary:end -->
 
 <!-- plan-issues:start -->
@@ -54,4 +55,5 @@ No release is being developed. Next: `0.4.0` (⬜ planned). The order of the rel
 - [Phase 3 — Stabilization, migrations and local adapters (71 SP)](./phases/phase-3-stabilization/README.md)
 - [Phase 4 — Reaching and holding the structure of documents (27 SP)](./phases/phase-4-document-extension/README.md)
 - [Phase 5 — Releases in a file of their own, and flows run by an orchestrator (43 SP)](./phases/phase-5-release-flows/README.md)
+- [Phase 6 — Context optimization for agents and consumers (24 SP)](./phases/phase-6-context-optimization/README.md)
 <!-- plan-contents:end -->
