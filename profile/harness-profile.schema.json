@@ -239,7 +239,7 @@
         },
         "releases": {
           "type": "string",
-          "description": "The file of the release order: one table `Release | Status | Tasks, in order | Consumers | Notes` (status ⬜ planned · 🟡 developing · 🏷 a development version cut · ✅ released) and a list \"Not scheduled\", beside the plan index, which links to it and shows the current release in a generated block. The tools read the order of the tasks from its column of the tasks. Optional: a project that ships no versions has no such file, and a project without the role keeps its order as the section \"Order of development\" of the plan index."
+          "description": "The file of the release order: one table `Release | Status | Tasks, in order | Consumers | Notes` (status ⬜ planned · 🟡 developing · 🏷 a development version cut · ✅ released · ⏭ skipped on purpose) and a list \"Not scheduled\", beside the plan index, which links to it and shows the current release in a generated block. The tools read the order of the tasks from its column of the tasks. Optional: a project that ships no versions has no such file, and a project without the role keeps its order as the section \"Order of development\" of the plan index."
         },
         "flows": {
           "type": "string",

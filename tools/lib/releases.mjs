@@ -10,7 +10,8 @@ export const RELEASE_STATUSES = {
   '⬜': 'planned',
   '🟡': 'developing',
   '🏷': 'a development version cut',
-  '✅': 'released'
+  '✅': 'released',
+  '⏭': 'skipped on purpose'
 }
 export const RELEASE_COLUMNS = ['Release', 'Status', 'Tasks, in order', 'Consumers', 'Notes']
 
@@ -142,7 +143,7 @@ export function releasesFile({ title, rows, notes = '', indexLink = './README.md
     'The order of the releases and of the tasks in each, which the tools read to choose the next task. A row names tasks and',
     'issues, in order, or "Phase N" for the tasks of a phase in its own order; never a backlog item, which the owner promotes into a task first.',
     '',
-    'Status: ⬜ planned · 🟡 developing · 🏷 a development version cut · ✅ released.',
+    'Status: ⬜ planned · 🟡 developing · 🏷 a development version cut · ✅ released · ⏭ skipped on purpose.',
     '',
     ...table,
     '',

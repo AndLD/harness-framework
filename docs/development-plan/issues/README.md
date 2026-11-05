@@ -15,7 +15,6 @@ A request for something new, which is not a defect, is an item of the [backlog](
 | Issue | Title | Area | Agent | SP | Status | Reported |
 | ----- | ----- | ---- | ----- | -- | ------ | -------- |
 | [I-7](./I-7.md) | `harness branch update` left merge conflict markers in a file it reported as resolved, and no check refuses them | Git rules | C1 | 2 | ⬜ | — |
-| [I-12](./I-12.md) | The migration of `0.3.0` writes prose into the release table's id column, leaves a skipped release as the next one, and leaves a prose order of phases without a message | bootstrap and sync | C1 | 3 | ⬜ | — |
 | [I-13](./I-13.md) | The first `check all` after taking `0.3.0` fails on the new releases file and on a generic word of the core, and the notes say nothing of either or of the cost of the gate | checks | C1 | 2 | ⬜ | — |
 | [I-14](./I-14.md) | `harness flow status` takes a consumer's pull request for a development version as the take of the final version it extends | checks | C1 | 1 | ⬜ | — |
 <!-- issue-queue:end -->

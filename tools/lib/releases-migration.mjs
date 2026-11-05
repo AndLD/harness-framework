@@ -61,6 +61,29 @@ function statusOf(tasks, phases) {
   return statuses.every((status) => status === '✅') ? '✅' : statuses.some((status) => status !== '⬜') ? '🟡' : '⬜'
 }
 
+/**
+ * The cell of an old table as the column "Tasks, in order": only the ids the tools can read (a task of a phase, "Phase N" of a phase that exists, an issue), in
+ * order and once each. A cell that holds nothing else stays as it was; the words around the ids go to `prose`, for the column "Notes".
+ * @returns {{ tasks: string, prose: string }}
+ */
+export function readableTasks(cell, phases) {
+  const known = new Set(phases.flatMap((phase) => phase.tasks.map((task) => task.id)))
+  const numbers = new Set(phases.map((phase) => phase.number))
+  const all = tokensOf(cell)
+  const ids = [
+    ...new Set(
+      all
+        .filter((token) =>
+          typeof token === 'string' ? known.has(token) || token.startsWith('I-') : numbers.has(token.phase)
+        )
+        .map((token) => (typeof token === 'string' ? token : `Phase ${token.phase}`))
+    )
+  ]
+  const text = (token) => (typeof token === 'string' ? token : `Phase ${token.phase}`)
+  const pure = cell.replace(/[\s,;]/g, '') === all.map(text).join('').replace(/\s/g, '') && ids.length === all.length
+  return pure ? { tasks: cell, prose: '' } : { tasks: ids.join(', '), prose: cell.replace(/\s+/g, ' ').trim() }
+}
+
 /** The rows of the old table of the section, and the lines of the section that are not the table; `rows` is null where the section holds no table. */
 export function readOldSection(lines, phases) {
   const table = lines.filter((line) => line.startsWith('|') && !/^\|\s*[-: |]+\|?\s*$/.test(line))
@@ -76,13 +99,15 @@ export function readOldSection(lines, phases) {
   const consumersAt = find(/consumer/, names.length > 2 ? 2 : -1)
   const rows = table.slice(1).map((line) => {
     const cells = cellsOf(line)
-    const tasks = cells[tasksAt] ?? ''
+    const { tasks, prose } = readableTasks(cells[tasksAt] ?? '', phases)
+    // A release with no task of the plan and a word of skipping in its cell was left out on purpose: it is never "next"
+    const skipped = !tasks && /\bskip/i.test(prose)
     return {
       release: cells[0] ?? '',
-      status: statusOf(tasks, phases),
+      status: skipped ? '⏭' : statusOf(tasks, phases),
       tasks,
       consumers: consumersAt >= 0 ? (cells[consumersAt] ?? '') : '',
-      notes: ''
+      notes: prose
     }
   })
   return { rows, rest: lines.filter((line) => !line.startsWith('|')) }
@@ -138,8 +163,19 @@ export function moveReleaseOrder({ root, profile }) {
   ]
   writeFileSync(indexPath, [...lines.slice(0, section.from), ...replacement, '', ...lines.slice(section.to)].join('\n'))
   const written = planSummary({ root, profile: loadProfile(root) })
+  const arrows = /\d+\s*(?:→|->)\s*\d+/.test(rest.join('\n'))
   return [
     `Moved the order of development of ${planIndex} (${rows.length} release(s)) into ${releases} and set \`paths.releases\`. The status of each release was worked out from its tasks (⬜ planned, 🟡 developing, ✅ released); a development version that was cut is 🏷, which only you know: review the column "Status".`,
+    ...(arrows
+      ? [
+          `Required action: ${planIndex} also wrote the order of the phases as arrows; it was kept as text in the "Notes" of ${releases}, which the tools do not read. To keep that order, name the phases as "Phase N" in the column "Tasks, in order" of the release that holds them, in that order, and run \`harness plan summary\`.`
+        ]
+      : []),
+    ...(rows.some((row) => row.notes)
+      ? [
+          `A cell of the old table held words besides task ids: only the ids stayed in the column "Tasks, in order" of ${releases}, and the words went to the column "Notes". Review both columns.`
+        ]
+      : []),
     ...written.problems
   ]
 }
