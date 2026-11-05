@@ -15,4 +15,5 @@ the `Source:` line of the item that holds it. A defect found in use is an issue 
 <!-- backlog:start -->
 | Item | Title | Area | SP | Status | Source |
 | ---- | ----- | ---- | -- | ------ | ------ |
+| [B-2](./B-2.md) | A switch that lets an agent write the plan's files without a prompt | bootstrap and sync | 3 | Proposed | owner |
 <!-- backlog:end -->
