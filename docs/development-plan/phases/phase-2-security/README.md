@@ -1,6 +1,6 @@
 [← Development plan index](../../README.md)
 
-# Phase 2 — Security and review automation (20 SP)
+# Phase 2 — Security and review automation (25 SP)
 
 **Status:** ⬜ Not started · **Branches:** see the [implementation log](#implementation-log) · **Work log:** [log](./log.md), and a log beside each task (`<id>.log.md`)
 
@@ -17,6 +17,7 @@ After `0.1.0`: a security review method next to the code review and the harness 
 | [2.4](./2.4.md) | First security review of the framework itself | C3 | 3 | ⬜ |
 | [2.5](./2.5.md) | Off-plan record (from the second source) | C2 | 3 | ⬜ |
 | [2.6](./2.6.md) | A switch that lets an agent write the plan's files without a prompt | C2 | 3 | ⬜ |
+| [2.7](./2.7.md) | A flow starts its workers as nested sessions, and logs why when it uses the command line | C3 | 5 | ⬜ |
 <!-- phase-tasks:end -->
 
 Task status: ⬜ not started · 🟡 in progress (branch noted in the work log) · ✅ done. Agent: the task's agent-complexity marker (plan method, section 7).

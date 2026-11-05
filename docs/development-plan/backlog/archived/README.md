@@ -10,4 +10,5 @@ the [backlog](../README.md), and the work is in the plan. It is read to find out
 | ---- | ----- | ---- | ----------- | ------ |
 | [B-1](./B-1.md) | A profile switch for the probes of a migration: `auto`, `ask` (the default) or `disabled` | procedures | 3.22 | report — [GitHub issue 65](https://github.com/AndLD/harness-framework/issues/65) |
 | [B-2](./B-2.md) | A switch that lets an agent write the plan's files without a prompt | bootstrap and sync | 2.6 | owner |
+| [B-3](./B-3.md) | A flow starts its workers as nested sessions, and logs why when it uses the command line | procedures | 2.7 | owner |
 <!-- backlog:end -->
