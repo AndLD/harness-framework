@@ -15,11 +15,11 @@ is updated in the change that starts or finishes it.
 | Phase | Theme | Story points | Agent complexity | Status |
 | ----- | ----- | ------------ | ---------------- | ------ |
 | 1 | Adoption, presets, examples and the proof | 12 | C1–C2 | ✅ Done |
-| 2 | Security and review automation | 17 | C2–C3 | ⬜ Not started |
+| 2 | Security and review automation | 20 | C2–C3 | ⬜ Not started |
 | 3 | Stabilization, migrations and local adapters | 71 | C1–C2 | ✅ Done |
 | 4 | Reaching and holding the structure of documents | 27 | C1–C2 | 🟡 In progress |
 | 5 | Releases in a file of their own, and flows run by an orchestrator | 43 | C2–C3 | ✅ Done |
-|  | **Total of Phases 1–5** | **170** | | |
+|  | **Total of Phases 1–5** | **173** | | |
 <!-- plan-summary:end -->
 
 <!-- plan-issues:start -->
@@ -27,7 +27,7 @@ is updated in the change that starts or finishes it.
 <!-- plan-issues:end -->
 
 <!-- plan-backlog:start -->
-**Backlog** (proposals the owner has not approved; not a phase, and not in the totals above): [1 proposed](./backlog/README.md); 1 promoted.
+**Backlog** (proposals the owner has not approved; not a phase, and not in the totals above): [0 proposed](./backlog/README.md); 2 promoted.
 <!-- plan-backlog:end -->
 
 **Releases** (the order of the releases and of their tasks is the file [releases](./releases.md), not a section of this index; the line below is written by `harness plan summary`)
@@ -50,7 +50,7 @@ No release is being developed. Next: next (⬜ planned). The order of the releas
 
 <!-- plan-contents:start -->
 - [Phase 1 — Adoption, presets, examples and the proof (12 SP)](./phases/phase-1-adoption-presets-proof.md)
-- [Phase 2 — Security and review automation (17 SP)](./phases/phase-2-security/README.md)
+- [Phase 2 — Security and review automation (20 SP)](./phases/phase-2-security/README.md)
 - [Phase 3 — Stabilization, migrations and local adapters (71 SP)](./phases/phase-3-stabilization/README.md)
 - [Phase 4 — Reaching and holding the structure of documents (27 SP)](./phases/phase-4-document-extension/README.md)
 - [Phase 5 — Releases in a file of their own, and flows run by an orchestrator (43 SP)](./phases/phase-5-release-flows/README.md)
