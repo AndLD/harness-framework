@@ -5,14 +5,14 @@
 **Releases:** `0.3.0-dev.1`, `0.3.0-dev.2`, `0.3.0` · **Needs:** — · **Log:** [`flow-1-release-0-3-0.log.md`](./flow-1-release-0-3-0.log.md)
 
 What remains of `0.3.0` once Phase 5 is merged: a development version first (`0.3.0-dev.1`, added on 2026-11-05 at the owner's decision, with the consumer taking it), the fixes of what that take found and a second development version (`0.3.0-dev.2`, also taken), its final cut, the first consumer taking it (an external step in AndLD/bot-rts), and the close of Phase 5, whose exit criteria include the tag. It replaces
-the owner's local list of prompts from `0.3.0` on. Written in task 5.9, with the default settings: brainstorm mode, so the final cut (level D3) asks the owner before it merges. The estimates are the provisional
+the owner's local list of prompts from `0.3.0` on. Written in task 5.9 with the default settings (brainstorm mode, so the final cut, level D3, would ask the owner before it merges); the owner switched the flow to **seamless** mode on 2026-11-05, so the orchestrator now decides every level and keeps a "review later" digest of its D2 to D4 decisions (the procedure `run-flow`). The step 1e still stops for the owner's review, because a step's "Stops for" column stops the flow in any mode. The estimates are the provisional
 Claude Pro coefficients of the runtime adapter (`harness flow estimate 1`).
 
 ## Settings
 
 ```json
 {
-  "mode": "brainstorm",
+  "mode": "seamless",
   "askAt": "D2",
   "permissions": { "mode": "acceptEdits", "allow": ["Bash(git *)", "Bash(gh *)", "Bash(npm *)", "Bash(node *)"] },
   "repos": {
