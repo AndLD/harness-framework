@@ -13,7 +13,7 @@ and inserts the cut step. Written in task 5.9; the estimates are the provisional
 
 ```json
 {
-  "mode": "brainstorm",
+  "mode": "seamless",
   "askAt": "D2",
   "permissions": { "mode": "acceptEdits", "allow": ["Bash(git *)", "Bash(gh *)", "Bash(npm *)", "Bash(node *)", "Bash(sed *)", "Bash(ls *)"] }
 }
