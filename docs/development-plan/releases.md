@@ -19,7 +19,7 @@ Status: ⬜ planned · 🟡 developing · 🏷 a development version cut · ✅ 
 | `0.3.0-dev.2` | ✅ | I-12 and I-13, the fixes of what the take of `0.3.0-dev.1` found (the owner's decision of 2026-11-05, flow 1) | takes it again, to prove the fixes before the final tag |  |
 | `0.3.0-dev.3` | ✅ | I-15, the fix of what the take of `0.3.0-dev.2` found (the owner's decision of 2026-11-05, flow 1) | takes it again, to prove the fix before the final tag |  |
 | `0.3.0` | ✅ | 3.4 (local adapters), then Phase 5 (the release order in a file of its own, and flows run by an orchestrator; added on 2026-11-04), in the order of its ids, and I-11 (the permissions of a worker on the command line, which flow 1 needs; added on 2026-11-05), then I-12 and I-13 (the findings of the first take of `0.3.0-dev.1`, which the consumer's run found; added on 2026-11-05), then I-15 (the finding of the second take, the migration reading ids from a mere mention; added on 2026-11-05 at the owner's decision) | takes it | Tagged `v0.3.0` (merge commit `0de995f` on `main`) on 2026-11-05. The consumer's take is the open pull request "chore(framework): take 0.3.0" of AndLD/bot-rts (#300), not merged: that repository's owner decides, and its lock names `0.2.0` until it merges. Its development takes are the drafts "take 0.3.0-dev.1" to "take 0.3.0-dev.3" (#297 to #299). |
-| next | ⬜ | Phase 2 (earlier if the repository goes public or a second person uses the framework) | takes it |  |
+| `0.4.0` | ⬜ | Phase 2 (earlier if the repository goes public or a second person uses the framework), then the open issues of the queue, in the order of how much they cost a flow when it runs: I-18, I-7, I-17, I-14, I-16 (scheduled on 2026-11-05 at the owner's request) | takes it |  |
 
 ## Not scheduled
 
