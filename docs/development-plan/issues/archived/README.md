@@ -16,4 +16,5 @@ It is read to find out whether a new report is a problem that was fixed already.
 | [I-8](./I-8.md) | A push from a linked worktree runs the gate's tests with the hook's `GIT_DIR`, and they rewrite the repository's Git config | Git rules | 2 | — |
 | [I-9](./I-9.md) | A condition inside a line (`{{#if role}}…{{/if}}`) is left unrendered in the generated skills | procedures | 2 | — |
 | [I-10](./I-10.md) | A flow continued from another account resumes a worker that account cannot find, and nothing falls back to a fresh one | runtime adapters | 3 | — |
+| [I-11](./I-11.md) | a worker started on the command line has no permission to edit files or run commands, and the executor's means do not say how to give it | runtime adapters | 3 | — |
 <!-- issue-queue:end -->

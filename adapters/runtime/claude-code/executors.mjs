@@ -36,6 +36,15 @@ const cliModel = ({ model, effort }) => [
   ...(model ? ['--model', modelId(model)] : []),
   ...(effort ? ['--effort', effort] : [])
 ]
+// The permission setting of a flow (`permissions: { mode, allow }`, in this runtime's own words) as the flags of a worker on the command line. A worker started that way
+// has no one to answer a prompt, so under the default it is refused every edit and command; the desktop app's sessions run under the app's own permission settings.
+// The list of allowed tools is one argument, and it comes before another flag, because the flag takes every word after it.
+const cliPermissions = ({ permissions }) => [
+  ...(permissions?.mode ? ['--permission-mode', permissions.mode] : []),
+  ...(permissions?.allow?.length ? ['--allowedTools', permissions.allow.join(',')] : [])
+]
+const PERMISSIONS_READS =
+  "a worker on the command line is refused every edit and command unless the flow's `permissions` setting allows them (a mode, and tools by name)"
 const JSON_ANSWER =
   '`session_id` is the worker, `result` its full final report, and `usage` with `modelUsage.<model>.contextWindow` its context'
 
@@ -47,7 +56,7 @@ const session = {
     'a session of its own that the orchestrator starts and the owner can open and steer, with the hooks and the CI monitoring of a session',
   wakeups: true,
   cacheMinutes: CACHE_MINUTES,
-  start: ({ prompt = SLOT, model, effort, cwd, name }) => [
+  start: ({ prompt = SLOT, model, effort, cwd, name, permissions }) => [
     {
       via: APP,
       tool: 'start_session',
@@ -68,11 +77,21 @@ const session = {
     },
     {
       via: CLI,
-      command: ['claude', '-p', ...cliModel({ model, effort }), '--output-format', 'json', '--name', name, prompt],
-      reads: `run it in the step's repository, in the background (it returns when the step ends); ${JSON_ANSWER}`
+      command: [
+        'claude',
+        '-p',
+        ...cliModel({ model, effort }),
+        ...cliPermissions({ permissions }),
+        '--output-format',
+        'json',
+        '--name',
+        name,
+        prompt
+      ],
+      reads: `run it in the step's repository, in the background (it returns when the step ends); ${PERMISSIONS_READS}; ${JSON_ANSWER}`
     }
   ],
-  continue: ({ worker, prompt = SLOT, model, effort }) => [
+  continue: ({ worker, prompt = SLOT, model, effort, permissions }) => [
     {
       via: APP,
       tool: 'SendMessage',
@@ -81,7 +100,17 @@ const session = {
     },
     {
       via: CLI,
-      command: ['claude', '-p', '--resume', worker, ...cliModel({ model, effort }), '--output-format', 'json', prompt],
+      command: [
+        'claude',
+        '-p',
+        '--resume',
+        worker,
+        ...cliModel({ model, effort }),
+        ...cliPermissions({ permissions }),
+        '--output-format',
+        'json',
+        prompt
+      ],
       reads: JSON_ANSWER
     }
   ],
@@ -107,6 +136,11 @@ const session = {
       from: 'the context of the last call: `usage.input_tokens` + `usage.cache_read_input_tokens` + `usage.cache_creation_input_tokens`, over `modelUsage.<model>.contextWindow`, in percent'
     }
   ],
+  // What a worker on the command line will be allowed, in one line for `harness flow dispatch`
+  permissions: ({ permissions }) =>
+    permissions?.mode || permissions?.allow?.length
+      ? `a worker on the command line runs with ${[permissions.mode ? `the permission mode ${permissions.mode}` : null, permissions.allow?.length ? `these tools allowed: ${permissions.allow.join(', ')}` : null].filter(Boolean).join(' and ')}; a session of the desktop app runs under the app's own permission settings`
+      : 'none set (the flow\'s `permissions` setting): a worker on the command line is refused every edit and command, so it reports itself blocked (issue I-11); set `permissions` to `{ "mode": "<a mode of the runtime>", "allow": [<tools by name>] }`; a session of the desktop app runs under the app\'s own permission settings',
   // A desktop app's session runs on the app's account, which it names in `CLAUDE_CODE_USER_EMAIL`; a `claude -p` worker runs on the account of the
   // command line's configuration folder, which `claude auth status` names (with two accounts on one machine, the folders differ).
   account: () => [

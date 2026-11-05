@@ -37,10 +37,11 @@ returns a list of **means**, the first preferred, empty when the runtime cannot 
 
 | Operation | Request | It does |
 | --------- | ------- | ------- |
-| `start` | `{ prompt, model, effort, cwd, name }` | starts a worker with a model and an effort in the step's repository |
-| `continue` | `{ worker, prompt, model, effort, cwd }` | gives the worker that ran the previous step its next prompt |
+| `start` | `{ prompt, model, effort, cwd, name, permissions }` | starts a worker with a model and an effort in the step's repository |
+| `continue` | `{ worker, prompt, model, effort, cwd, permissions }` | gives the worker that ran the previous step its next prompt |
 | `report` | `{ worker }` | fetches the worker's full final report (the notice of its end may be cut short) |
 | `context` | `{ worker }` | reads the worker's context in percent of its window; empty: never reused |
+| `permissions` (optional) | `{ permissions }` | returns one line of text (not means) saying what a worker will be allowed to do under the flow's `permissions` setting, and what happens when it is not set; `harness flow dispatch` prints it |
 | `account` (optional) | none | reads the account the orchestrator runs on, which a worker it starts runs on; absent or empty: accounts are not compared |
 
 A means is one of `{ via, tool, input, reads? }` (a tool of the runtime the orchestrator calls), `{ via, command, reads? }` (a command, as a list of words),
@@ -65,6 +66,8 @@ continue, it prints the fresh start to fall back on when the continue fails.
 The estimate of a step is its SP times the coefficient of its model and kind; the gate (`harness flow gate`) starts it only when the current use plus the estimate times the
 flow's `usage.safetyFactor` stays within `usage.stopAt` in every window. A table marked `provisional` was not measured; the tools say so. A change of the table is a change of the adapter,
 made by a pull request with the comparison that `harness flow calibrate` prints (task 5.7), which sets a row named after a step kind where the measurements ask for it.
+
+**Permissions.** A worker that is started by a command has no one to answer a permission prompt, so under a runtime's default it is refused every edit and command and reports itself blocked. The flow's `permissions` setting (`{ "mode": "<a mode of the runtime>", "allow": ["<a tool by name>"] }`, in the runtime's own words, absent by default) reaches `start` and `continue` as `permissions`, and the adapter turns it into the flags or settings of its runtime; it never chooses a mode itself, since what a worker may do is the owner's decision. A worker that a runtime's own application starts runs under that application's permission settings, which the setting does not change.
 
 **Defaults for a new project.** The manifest's `defaults` are values of the profile file that the adapter gives a project it bootstraps: the bootstrap writes them where the answers leave a role empty, and an answer always wins. The scaffolded files are the adapter's `scaffold-files` role.
 

@@ -76,3 +76,49 @@ test('a subagent gets no CI wake-ups and cannot report its context, so it is nev
   assert.deepEqual(subagent.context({ worker: 'a' }), [])
   assert.equal(subagent.start({ prompt: PROMPT, model: 'Opus 5.5', name: 'n' })[0].input.model, 'opus')
 })
+
+test('the permissions of a flow become flags of a worker on the command line, before the output flag; the desktop app takes none (issue I-11)', () => {
+  const { session } = executorsFor({})
+  const permissions = { mode: 'acceptEdits', allow: ['Bash(git *)', 'Edit'] }
+  const [, start] = session.start({ prompt: PROMPT, model: 'Sonnet 5.5', effort: 'high', name: 'n', permissions })
+  assert.deepEqual(start.command, [
+    'claude',
+    '-p',
+    '--model',
+    'claude-sonnet-5-5',
+    '--effort',
+    'high',
+    '--permission-mode',
+    'acceptEdits',
+    '--allowedTools',
+    'Bash(git *),Edit',
+    '--output-format',
+    'json',
+    '--name',
+    'n',
+    PROMPT
+  ])
+  assert.match(start.reads, /refused every edit and command unless the flow's `permissions` setting allows them/)
+  const [, resume] = session.continue({ worker: 'w-1', prompt: PROMPT, permissions: { mode: 'dontAsk' } })
+  assert.deepEqual(resume.command.slice(0, 7), [
+    'claude',
+    '-p',
+    '--resume',
+    'w-1',
+    '--permission-mode',
+    'dontAsk',
+    '--output-format'
+  ])
+  // without the setting there is no flag, and the one-line answer says the worker will be refused
+  const [, bare] = session.start({ prompt: PROMPT, name: 'n' })
+  assert.ok(!bare.command.includes('--permission-mode') && !bare.command.includes('--allowedTools'))
+  assert.match(
+    session.permissions({}),
+    /^none set .*refused every edit and command.*issue I-11.*desktop app runs under the app's own permission settings$/
+  )
+  assert.match(
+    session.permissions({ permissions }),
+    /runs with the permission mode acceptEdits and these tools allowed: Bash\(git \*\), Edit; a session of the desktop app/
+  )
+  assert.deepEqual(executorProblems(executorsFor({})), [])
+})

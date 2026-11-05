@@ -230,3 +230,18 @@ test('the index must agree with the flow files', () => {
   const unmarked = flowProblems({ dir: 'flows', readme: '# Flows', flows }, FACTS, { 'flow-1-ship.md': logText() })
   assert.match(unmarked.join('\n'), /the flows table must sit between/)
 })
+
+test('the permissions setting is an object with a mode name and a list of tools by name (issue I-11)', () => {
+  const problems = (settings) => one(flowText({ settings })).join('\n')
+  assert.equal(problems('{ "permissions": { "mode": "acceptEdits", "allow": ["Bash(git *)"] } }'), '')
+  assert.match(problems('{ "permissions": "acceptEdits" }'), /the setting permissions is not an object/)
+  assert.match(
+    problems('{ "permissions": { "mode": 5, "allow": "Edit" } }'),
+    /the permissions mode must be a name of the runtime/
+  )
+  assert.match(
+    problems('{ "permissions": { "mode": "x", "allow": "Edit" } }'),
+    /the permissions allow must be a list of tools by name/
+  )
+  assert.match(problems('{ "permissions": { "allow": ["Edit", ""] } }'), /the permissions allow must be a list/)
+})

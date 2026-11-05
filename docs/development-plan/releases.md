@@ -15,7 +15,7 @@ Status: ⬜ planned · 🟡 developing · 🏷 a development version cut · ✅ 
 | `0.2.0-dev.2` | ✅ | 4.7 (the RFC and risk-register templates; it moves to `0.3.0` if the run of `dev.1` finds a blocker), and the fixes of the blockers that run found (I-2 to I-5, reports 61 to 64); more development versions follow while blockers remain | takes it again when a blocker was fixed |  |
 | `0.2.0-dev.3` | ✅ | 3.20 (the backlog queue for feature requests), then 3.22 (the probe switch of report 65: issue I-6, then backlog item B-1, built before 3.21 and promoted to this task), I-1 (report 30), and 3.21 (a backlog item is never started as it is: the owner promotes it into a task of a phase first) | takes it again |  |
 | `0.2.0` | ✅ | the final cut of the tasks above, with its note complete from the previous final version | moves its branch to it and finishes the task |  |
-| `0.3.0` | 🟡 | 3.4 (local adapters), then Phase 5 (the release order in a file of its own, and flows run by an orchestrator; added on 2026-11-04), in the order of its ids | takes it |  |
+| `0.3.0` | 🟡 | 3.4 (local adapters), then Phase 5 (the release order in a file of its own, and flows run by an orchestrator; added on 2026-11-04), in the order of its ids, and I-11 (the permissions of a worker on the command line, which flow 1 needs; added on 2026-11-05) | takes it |  |
 | next | ⬜ | Phase 2 (earlier if the repository goes public or a second person uses the framework) | takes it |  |
 
 ## Not scheduled

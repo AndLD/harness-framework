@@ -6,6 +6,7 @@ import {
   MANUAL_EXECUTOR,
   PROMPT_SLOT,
   decideReuse,
+  dispatchStep,
   pickExecutor,
   previousWorker,
   renderMeans,
@@ -273,4 +274,30 @@ test('a means renders as a line: the prompt slot of a command becomes the comman
   )
   assert.equal(renderMeans({ via: 'the owner', owner: 'Paste it.' }, prompt), 'the owner: Paste it.')
   assert.equal(renderMeans({ via: 'cli', from: 'the result field' }, prompt), 'cli: the result field')
+})
+
+test("dispatch passes the flow's permissions to the means and says what a worker will be allowed; a runtime that says nothing prints no line (issue I-11)", () => {
+  const session = {
+    ...executor,
+    start: (request) => [{ via: 'cli', command: ['run', JSON.stringify(request.permissions ?? null), PROMPT_SLOT] }],
+    permissions: ({ permissions }) => (permissions ? `allowed: ${permissions.mode}` : 'none set')
+  }
+  const profileOf = { adapters: { runtimes: ['rt'] } }
+  const dispatch = (settings, executors) =>
+    dispatchStep({
+      flow: flowOf(STEPS, settings),
+      step: STEPS[0],
+      profile: profileOf,
+      runtimes: {
+        rt: { manifest: { roles: { executors: { module: 'm', export: 'e' } } }, modules: { m: { e: () => executors } } }
+      },
+      logText: '',
+      now: '2026-11-04 10:00',
+      harness: 'h'
+    }).lines.join('\n')
+  const text = dispatch({ permissions: { mode: 'acceptEdits' } }, { session })
+  assert.match(text, /Permissions: allowed: acceptEdits\./)
+  assert.match(text, /run '\{"mode":"acceptEdits"\}' /)
+  assert.match(dispatch({}, { session }), /Permissions: none set\./)
+  assert.doesNotMatch(dispatch({}, { session: executor }), /Permissions:/)
 })
