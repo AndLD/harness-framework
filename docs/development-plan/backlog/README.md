@@ -15,4 +15,5 @@ the `Source:` line of the item that holds it. A defect found in use is an issue 
 <!-- backlog:start -->
 | Item | Title | Area | SP | Status | Source |
 | ---- | ----- | ---- | -- | ------ | ------ |
+| [B-3](./B-3.md) | A flow starts its workers as nested sessions, and logs why when it uses the command line | procedures | 5 | Proposed | owner |
 <!-- backlog:end -->
