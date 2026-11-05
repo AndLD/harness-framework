@@ -94,8 +94,8 @@ test('estimate sizes each step and the flow by the subscription of the local pro
   const text = sized.lines.join('\n')
   assert.match(text, /subscription pro \(the local profile file\), provisional coefficients of claude-code/)
   assert.match(text, /step 1 \[tasks\] 5 SP, Sonnet 5\.5 at high effort: 5-hour 60%, weekly 8%/)
-  assert.match(text, /step 2 \[cut\] 1 SP, —: 5-hour 4\.8%, weekly 0\.6%/)
-  assert.match(text, /Sum of the steps: 5-hour 64\.8%, weekly 8\.6%\. .*the threshold is 90%/)
+  assert.match(text, /step 2 \[cut\] 1 SP, —: 5-hour 3\.4%, weekly 1%/)
+  assert.match(text, /Sum of the steps: 5-hour 63\.4%, weekly 9%\. .*the threshold is 90%/)
   assert.match(
     call(['estimate', '1'], scratch, { plan: 'Max 5x' }).lines[0],
     /subscription pro \(the local profile file\)/
