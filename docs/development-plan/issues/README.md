@@ -15,4 +15,5 @@ A request for something new, which is not a defect, is an item of the [backlog](
 | Issue | Title | Area | Agent | SP | Status | Reported |
 | ----- | ----- | ---- | ----- | -- | ------ | -------- |
 | [I-7](./I-7.md) | `harness branch update` left merge conflict markers in a file it reported as resolved, and no check refuses them | Git rules | C1 | 2 | ⬜ | — |
+| [I-14](./I-14.md) | `harness flow status` takes a consumer's pull request for a development version as the take of the final version it extends | checks | C1 | 1 | ⬜ | — |
 <!-- issue-queue:end -->
