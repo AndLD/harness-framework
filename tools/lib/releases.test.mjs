@@ -344,7 +344,7 @@ test('the migration writes only ids the tools read into the column of the tasks,
   const file = read('plan/releases.md')
   assert.match(
     file,
-    /\| `0\.1\.0` \| 🟡 \| 5\.1, Phase 5, 5\.2 \| {2}\| 5\.1, and a word; Phase 5 holds more \(5\.2\), 9\.9 is not a task \|/
+    /\| `0\.1\.0` \| [^|]+ \| 5\.1 \| {2}\| 5\.1, and a word; Phase 5 holds more \(5\.2\), 9\.9 is not a task \|/
   )
   assert.match(
     file,
@@ -400,4 +400,41 @@ test('the file a migration writes has the header of the template of the core', (
   for (const line of ['| Release | Status | Tasks, in order | Consumers | Notes |', '## Not scheduled']) {
     assert.ok(template.includes(line) && written.includes(line), line)
   }
+})
+
+const MENTION_INDEX = `# Plan
+
+<!-- plan-summary:start -->
+<!-- plan-summary:end -->
+
+**Order of development.** Each release is taken in turn; the table holds what each contains:
+
+| Release | Tasks, in order |
+| ------- | --------------- |
+| \`0.1.0\` | taken by task 5.1 (checked); Phase 5 is closed |
+| \`0.1.1\` | skips it on purpose, so that the next one is chained |
+| \`0.2.0\` | 5.2, then Phase 5 (a note); Phase 5 is closed again, and 5.1 is not repeated |
+
+---
+
+<!-- plan-contents:start -->
+<!-- plan-contents:end -->
+`
+
+test('the migration takes ids only from the part of a cell that lists tasks, and closes the sentence that ended in the colon of the table', () => {
+  const { root, profile, read, write } = project({ index: MENTION_INDEX, withRole: false })
+  write('plan/phases/phase-5-five.md', PHASE_5.replace('(1 SP)', '(2 SP)') + '| 5.2 | y | C1 | 1 | ⬜ |\n')
+  migration({ root, profile })
+  const file = read('plan/releases.md')
+  // Words first: no task is listed, and the mention of a phase or a task stays in the notes
+  assert.match(file, /\| `0\.1\.0` \| ⬜ \| {2}\| {2}\| taken by task 5\.1 \(checked\); Phase 5 is closed \|/)
+  assert.match(file, /\| `0\.1\.1` \| ⏭ \| {2}\| {2}\|/)
+  // A list first: its ids stay, the mention after it does not
+  assert.match(
+    file,
+    /\| `0\.2\.0` \| [^|]+ \| 5\.2, Phase 5 \| {2}\| 5\.2, then Phase 5 \(a note\); Phase 5 is closed again/
+  )
+  assert.match(file, /the table holds what each contains\./)
+  assert.doesNotMatch(file, /contains:/)
+  assert.deepEqual(readReleases(file).problems, [])
 })
