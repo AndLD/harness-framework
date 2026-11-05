@@ -25,6 +25,8 @@
 //   harness flow check | status <n> | next <n> | prompt <n> <step>   the flows of the plan (the procedure run-flow): check them (`check flows`), recompute the state of
 //     | dispatch <n> <step> [--context <percent>] [--account <id>] [--at <time>]     a flow's steps from the repository, print its next step with its prompt, the prompt of a step, or
 //                                                                 how to hand a step to a worker: its executor, a fresh or the previous worker (reuse), the means
+//     | estimate <n> | gate <n> <step> [--five-hour <pct>[@<reset>]] [--weekly …] [--cost <usd>]   the usage of a flow: the estimate of each step, whether the next step may start
+//     | sample <n> <event> [<step>] [same flags] [--tokens <n>] [--start cold|warm]    now, and a sample appended to the flows' usage.jsonl
 //   harness plan split <phase>                                    split a phase kept as one file into a folder: the phase index, a file per task and the logs beside them
 //   harness plan promote <B-n> --phase <n> [--agent <m>] [--size <n>] --approved   the owner's decision: a backlog item becomes a task of a phase
 //   harness plan log <phase> [ref]                                the implementation log of a phase from the merged pull requests
@@ -91,6 +93,8 @@ const USAGE = `usage: harness <command>
   check <${Object.keys(CHECKS).join('|')}|all>
   plan summary [--check]
   flow check | status <n> | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--account <id>] [--at <time>]
+  flow estimate <n> | gate <n> <step> [--five-hour <pct>[@<reset>]] [--weekly <pct>[@<reset>]] [--cost <usd>] [--plan <name>] [--at <time>]
+  flow sample <n> <flow-start|step-start|step-end|flow-end> [<step>] [the reading flags] [--tokens <n>] [--model <name>] [--start cold|warm]
   plan split <phase>
   plan promote <B-n> --phase <n> [--agent <marker>] [--size <n>] --approved
   plan log <phase> [ref]
@@ -131,7 +135,14 @@ const FLAGS_WITH_VALUE = new Set([
   '--size',
   '--context',
   '--account',
-  '--at'
+  '--at',
+  '--five-hour',
+  '--weekly',
+  '--cost',
+  '--plan',
+  '--tokens',
+  '--model',
+  '--start'
 ])
 // Flags that may be given several times; their values are collected in a list
 const REPEATED_FLAGS = new Set(['--set'])

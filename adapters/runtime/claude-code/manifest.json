@@ -45,6 +45,11 @@
       "module": "executors.mjs",
       "export": "executorsFor"
     },
+    "usage": {
+      "fills": "the desktop app's `get_usage` (the 5-hour and the weekly window in whole percent with their reset times, and the plan's name) or the owner on the command line; a table of provisional coefficients per subscription (Pro, Max 5x, Max 20x, and the API, where a cost replaces the windows), model family and step kind",
+      "module": "usage.mjs",
+      "export": "usageFor"
+    },
     "scaffold-files": {
       "fills": "`CLAUDE.md` importing the entry file, `.claude/settings.json` from `settingsFor`, and the ignore line of the local settings",
       "module": "scaffold.mjs",

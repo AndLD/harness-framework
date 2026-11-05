@@ -1,19 +1,21 @@
-// `harness flow …` (tasks 5.4, 5.5): `check`, `status <n>`, `next <n>`, `prompt <n> <step>` and `dispatch <n> <step>`, the one way the procedure `run-flow` reads
-// the state of a flow, the prompt of a step and how to hand it to a worker. Reading is free; nothing here writes a file. The seams are the Git command (`git`),
+// `harness flow …` (tasks 5.4 to 5.6): `check`, `status <n>`, `next <n>`, `prompt <n> <step>`, `dispatch <n> <step>`, and the usage commands `estimate`, `gate` and `sample`, the one way the procedure `run-flow` reads
+// the state of a flow, the prompt of a step and how to hand it to a worker. Reading is free; only `sample` (task 5.6) writes a file, the flows' `usage.jsonl`. The seams are the Git command (`git`),
 // the lock of a consuming repository (`lockOf`), the template of the prompts (`template`), the runtime adapters (`runtimes`) and the clock (`now`), so a test
 // replaces them.
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { checkFlows, planFacts } from './flow-check.mjs'
+import { planFacts } from './flow-check.mjs'
+import { checkFlowsWithUsage } from './flow-usage-check.mjs'
 import { dispatchStep } from './flow-executors.mjs'
 import { readPromptTemplate, renderPrompt } from './flow-prompt.mjs'
 import { flowTruth, gatherFacts, logEntries } from './flow-status.mjs'
 import { stepById } from './flow-steps.mjs'
 import { readFlowsOf } from './flows.mjs'
+import { dispatchUsageLines, usageCommand } from './flow-usage-command.mjs'
 import { inFramework } from './lock.mjs'
 
 const USAGE =
-  'usage: harness flow check | status <n> | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--account <id>] [--at <YYYY-MM-DD HH:MM>]'
+  'usage: harness flow check | status <n> | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--account <id>] [--at <YYYY-MM-DD HH:MM>] | estimate <n> | gate <n> <step> [--five-hour <pct>[@<reset>]] [--weekly <pct>[@<reset>]] [--cost <usd>] [--plan <name>] | sample <n> <flow-start|step-start|step-end|flow-end> [<step>] [the reading flags] [--tokens <n>] [--model <name>] [--start cold|warm]'
 
 const pad = (number) => String(number).padStart(2, '0')
 /** The time now as the log writes it, `YYYY-MM-DD HH:MM`, local. */
@@ -73,14 +75,11 @@ function statusLines(flow, truth, blocked) {
 export function flowCommand({ words, flags = {}, root, profile, git, lockOf, template, runtimes, now }) {
   const [action, number, step] = words
   if (action === 'check' && words.length === 1) {
-    const { problems, message } = checkFlows({ root, profile })
+    const { problems, message } = checkFlowsWithUsage({ root, profile, runtimes })
     return { lines: [message, ...problems], code: problems.length ? 1 : 0 }
   }
-  if (
-    !['status', 'next', 'prompt', 'dispatch'].includes(action) ||
-    !/^\d+$/.test(number ?? '') ||
-    words.length !== (['prompt', 'dispatch'].includes(action) ? 3 : 2)
-  ) {
+  const lengths = { status: [2], next: [2], estimate: [2], prompt: [3], dispatch: [3], gate: [3], sample: [3, 4] }
+  if (!lengths[action]?.includes(words.length) || !/^\d+$/.test(number ?? '')) {
     return { lines: [USAGE], code: 2 }
   }
   const read = readFlowsOf(root, profile)
@@ -97,6 +96,8 @@ export function flowCommand({ words, flags = {}, root, profile, git, lockOf, tem
   const truth = flowTruth(flow, facts, logEntries(logTextOf(root, read.dir, flow)))
   const blocked = unfinishedNeeds(flow, read, facts, root)
 
+  if (['estimate', 'gate', 'sample'].includes(action))
+    return usageCommand({ action, words: words.slice(2), flow, dir: read.dir, flags, root, profile, runtimes, now })
   if (action === 'status') return { lines: statusLines(flow, truth, blocked), code: 0 }
   if (action === 'dispatch') {
     const target = stepById(flow.steps, step)
@@ -106,7 +107,7 @@ export function flowCommand({ words, flags = {}, root, profile, git, lockOf, tem
       )
     const context = flags.context === undefined ? null : Number(String(flags.context).replace(/%$/, ''))
     if (context !== null && !(context >= 0 && context <= 100)) return fail('--context is a percent from 0 to 100.')
-    const { lines } = dispatchStep({
+    const { lines, plan } = dispatchStep({
       flow,
       step: target,
       profile,
@@ -118,7 +119,9 @@ export function flowCommand({ words, flags = {}, root, profile, git, lockOf, tem
       facts,
       harness: `node ${inFramework(profile, 'tools/harness.mjs')}`
     })
-    return { lines, code: 0 }
+    const harness = `node ${inFramework(profile, 'tools/harness.mjs')}`
+    const usage = dispatchUsageLines({ flow, step: target, profile, root, runtimes, harness, warm: plan.reuse })
+    return { lines: [...lines, ...usage], code: 0 }
   }
   if (action === 'next') {
     if (blocked.length)

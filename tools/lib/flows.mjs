@@ -28,7 +28,7 @@ export const FLOW_DEFAULTS = Object.freeze({
   reuse: 'auto',
   reuseLimits: { context: 40, steps: 3 },
   commits: 'per-step',
-  usage: { subscription: 'local', stopAt: { fiveHour: 85, weekly: 90 } },
+  usage: { subscription: 'local', stopAt: { fiveHour: 85, weekly: 90 }, safetyFactor: 1.2, maxWaitMinutes: 300 },
   repos: { home: '.' }
 })
 /** The state of a step, as the legend of the flow template says it; a flow's status is worked out from them. */
@@ -73,7 +73,14 @@ function settingsOf(text, problems) {
     return { ...FLOW_DEFAULTS }
   }
   try {
-    const settings = { ...FLOW_DEFAULTS, ...JSON.parse(block[1]) }
+    const given = JSON.parse(block[1])
+    // `usage` is merged one level deeper, so a flow that sets its subscription or one threshold keeps the defaults of the others
+    const usage = given.usage && typeof given.usage === 'object' && !Array.isArray(given.usage) ? given.usage : {}
+    const settings = {
+      ...FLOW_DEFAULTS,
+      ...given,
+      usage: { ...FLOW_DEFAULTS.usage, ...usage, stopAt: { ...FLOW_DEFAULTS.usage.stopAt, ...usage.stopAt } }
+    }
     if (!FLOW_MODES.includes(settings.mode)) {
       problems.push(`the mode "${settings.mode}" is not one of ${FLOW_MODES.join(', ')}`)
     }

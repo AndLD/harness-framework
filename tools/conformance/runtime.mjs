@@ -11,6 +11,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { isAbsolute, join, resolve } from 'node:path'
 import { OPERATIONS, OPTIONAL_OPERATIONS, PROMPT_SLOT } from '../lib/flow-executors.mjs'
 import { EXECUTORS } from '../lib/flow-steps.mjs'
+import { usageProblems } from '../lib/flow-usage.mjs'
 import { Skip } from './skip.mjs'
 
 const SAMPLES = ['sessionStart', 'shellRefused', 'shellAllowed', 'editRefused', 'editAllowed', 'editAfter']
@@ -211,6 +212,17 @@ export const runtimeChecks = [
       const { modules } = await context.adapter()
       const problems = executorProblems(modules[entry.module][entry.export](context.profile()))
       assert.deepEqual(problems, [])
+    }
+  },
+  {
+    name: 'usage: a way to read the account and a table of coefficients that is complete',
+    run: async (context) => {
+      const entry = context.manifest.roles.usage
+      if (!entry) {
+        throw new Skip('the usage role is empty: the framework asks the owner for the use of the account')
+      }
+      const { modules } = await context.adapter()
+      assert.deepEqual(usageProblems(modules[entry.module][entry.export](context.profile())), [])
     }
   },
   {

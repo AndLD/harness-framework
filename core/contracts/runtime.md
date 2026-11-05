@@ -18,6 +18,7 @@ which is the agent-neutral minimum. The machine form is the `manifest.json` of t
 | `waiting-advice` | optional | notes on waiting for long-running commands |
 | `model-map` | optional | the default of `plan.complexity.models` |
 | `executors` | logic (since contract 2) | `executorsFor(profile) → { session?, subagent?, manual? }`: how an orchestrator of a flow hands a step to a worker (the section below); a runtime without automation returns `{ manual }` only |
+| `usage` | logic-optional | `usageFor(profile) → { means, read(), plans, subscriptions, defaultModel }`: how an orchestrator of a flow reads the account's usage windows, and the table of coefficients that turns a step into a share of them (the section below); a runtime without the role gets the framework's manual one, which asks the owner |
 | `hook-adoption` | logic-optional (needed for `harness adopt` on a project that has the runtime's configuration already) | `adoptConfiguration({ root, profile }) → { files: [{ path, content }], notes }`: the runtime's configuration of the project with the framework's hook entries and read exclusions added, and a note for each hook command that is the project's own; it deletes nothing |
 | `managed-blocks` | logic-optional | `managedBlocks(profile) → [{ path, block, content }]`: blocks of files of the project that the sync keeps up to date, between `# harness:begin <block>` and `# harness:end <block>` lines (an ignore file, where an HTML comment would be a pattern); the sync adds the block at the end of the file when it lacks it, and the project's own lines stay as they are |
 | `scaffold-files` | logic-optional | `scaffoldFiles(profile) → [{ path, content }]`: the entry-file pointer and the hook configuration that the bootstrap writes once into a new project |
@@ -49,6 +50,21 @@ text of `plan.complexity.models` without its effort (`Sonnet 5.5`), and the adap
 every executor a runtime does not return, and for a project with no runtime adapter. `harness flow dispatch` picks the executor of a step, decides whether the
 previous worker continues it (`reuse: auto`: the plan method, section 10; a worker of another account than the orchestrator's never), and prints the means; beside a
 continue, it prints the fresh start to fall back on when the continue fails.
+
+**Usage** (the role `usage`, optional, a minor addition to contract 2). The orchestrator of a flow reads the use of the account before each step and estimates the step
+(the procedure `run-flow`, `harness flow gate`). The adapter returns:
+
+| Field | Meaning |
+| ----- | ------- |
+| `means` | one line: how the runtime reports usage, or that the owner must |
+| `read()` | a list of means (as for the executors), the first preferred, the owner at least; its `reads` says which fields give the percent used and the reset time of each window |
+| `plans` | the plan names the runtime reports, mapped to a subscription id of `subscriptions`; the subscription of a flow comes from its `usage.subscription`, else the ignored local profile file, else the plan the reading names |
+| `subscriptions` | by id: `{ label, unit, kinds, perSp, provisional? }`. `unit` is `percent` (the 5-hour and the weekly window) or `usd` (an API key: a cost replaces the windows). `perSp` maps a model family (`sonnet`, `opus`: the first word of the model, lowercased) to rows: `default` is `{ fiveHour, weekly }` (or `{ usd }`) per SP, and a row named after a step kind (`cut`) overrides the default for that kind, as `harness flow calibrate` writes it. `kinds` gives each step kind's factor against the default row (a cut is a shorter session than a task) |
+| `defaultModel` | the family used for a step whose Model column is a dash |
+
+The estimate of a step is its SP times the coefficient of its model and kind; the gate (`harness flow gate`) starts it only when the current use plus the estimate times the
+flow's `usage.safetyFactor` stays within `usage.stopAt` in every window. A table marked `provisional` was not measured; the tools say so. A change of the table is a change of the adapter,
+made by a pull request with the comparison that `harness flow calibrate` prints (task 5.7).
 
 **Defaults for a new project.** The manifest's `defaults` are values of the profile file that the adapter gives a project it bootstraps: the bootstrap writes them where the answers leave a role empty, and an answer always wins. The scaffolded files are the adapter's `scaffold-files` role.
 

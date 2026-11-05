@@ -153,12 +153,12 @@ test('a flow waits for the flows it needs; an unknown flow, a flow with problems
   scratch.write('plan/flows/flow-3-bad.md', '# nothing\n')
   assert.match(call(['status', '3'], scratch).lines[0], /plan\/flows\/flow-3-bad\.md: .*run `harness flow check`/)
   for (const words of [[], ['status'], ['status', 'x'], ['prompt', '1'], ['next', '1', '2'], ['unknown']]) {
-    assert.deepEqual(call(words, scratch), {
-      lines: [
-        'usage: harness flow check | status <n> | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--account <id>] [--at <YYYY-MM-DD HH:MM>]'
-      ],
-      code: 2
-    })
+    const refused = call(words, scratch)
+    assert.equal(refused.code, 2)
+    assert.match(
+      refused.lines[0],
+      /^usage: harness flow check \| status <n> .*\| estimate <n> \| gate <n> <step> .*\| sample <n>/
+    )
   }
   assert.match(
     flowCommand({
