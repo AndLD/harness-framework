@@ -23,7 +23,7 @@ is updated in the change that starts or finishes it.
 <!-- plan-summary:end -->
 
 <!-- plan-issues:start -->
-**Issue queue** (not a phase; its size is not in the totals above): [3 open](./issues/README.md), 5 SP; 10 archived.
+**Issue queue** (not a phase; its size is not in the totals above): [2 open](./issues/README.md), 3 SP; 11 archived.
 <!-- plan-issues:end -->
 
 <!-- plan-backlog:start -->
