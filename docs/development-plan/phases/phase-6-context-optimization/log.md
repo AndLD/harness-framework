@@ -29,8 +29,8 @@ pauses. Newest entry at the bottom.
 ### 2026-11-05 — the phase is the release `0.5.0`, before the security release
 - **Tasks:** 6.1 to 6.8, unchanged.
 - **Branch:** `docs/release-0-5-0-phase-6`
-- **Decisions / deviations from the plan:** the owner named the release: Phase 6 is `0.5.0`, and the security release (Phase 2's security tasks) moved to `0.6.0`, so that the security research runs on quiet output and short reports. The phase has a flow of its own, flow 4 (`Needs` flow 2); flow 3, the security flow, now needs flow 4.
+- **Decisions / deviations from the plan:** the owner named the release: Phase 6 is `0.5.0`, and the security release (Phase 2's security tasks) moved to `0.6.0`, so that the security research runs on quiet output and short reports. The phase has a flow of its own, flow 3 (`Needs` flow 2); the security flow is flow 4 and needs flow 3 (the flows were numbered to follow the order of the releases).
 - **Problems / blockers / findings:** none.
-- **Next step:** run flow 2 (`0.4.0`), then flow 4.
+- **Next step:** run flow 2 (`0.4.0`), then flow 3.
 - **Verify with:** `npm run docs:check`
 - **Verify with:** `npm run docs:check`
