@@ -64,7 +64,7 @@ continue, it prints the fresh start to fall back on when the continue fails.
 
 The estimate of a step is its SP times the coefficient of its model and kind; the gate (`harness flow gate`) starts it only when the current use plus the estimate times the
 flow's `usage.safetyFactor` stays within `usage.stopAt` in every window. A table marked `provisional` was not measured; the tools say so. A change of the table is a change of the adapter,
-made by a pull request with the comparison that `harness flow calibrate` prints (task 5.7).
+made by a pull request with the comparison that `harness flow calibrate` prints (task 5.7), which sets a row named after a step kind where the measurements ask for it.
 
 **Defaults for a new project.** The manifest's `defaults` are values of the profile file that the adapter gives a project it bootstraps: the bootstrap writes them where the answers leave a role empty, and an answer always wins. The scaffolded files are the adapter's `scaffold-files` role.
 

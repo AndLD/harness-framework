@@ -233,4 +233,9 @@ project that has a releases file; the profile names their folder (`paths.flows`)
   measurement to `usage.jsonl` of the flows folder (tracked, shared by every flow): the windows with their reset times, tokens when the runtime gives them, the model, the SP, the step kind, the subscription and
   whether the worker started cold or warm; at a step's end it also prints what the step used against its estimate. A window that reset between a step's two samples is cut, and counts for nothing.
   The numbers of a table that was not measured are marked `provisional`.
+- **Calibration** (task 5.7). `harness flow calibrate [--min <n>] [--subscription <id>]` reads `usage.jsonl`, pairs each step's start and end samples, drops the windows that a reset cut, takes the median
+  use per SP of each subscription, model family and step kind (tokens per SP converted to percent per subscription over all the steps together, where the runtime reports tokens: whole percents are coarse on a larger subscription;
+  else the percent per SP), and prints the coefficients it proposes beside the table's, with the number of steps behind each (at least 3 by default). It compares the cold and the warm starts by
+  their use per SP and says whether warm starts pay off (the median ratio at most 0.9), and sets whole flows against the sum of their steps. It never writes: the procedure `run-flow` says to run it at the end of a flow
+  and that a proposal is accepted by a pull request that changes the runtime adapter's table with the comparison, and that `reuse` defaults to `never` when warm starts do not pay off.
 - **Not yet.** Parallel steps (waves); the `Needs` column keeps room for them.
