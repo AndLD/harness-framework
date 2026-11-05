@@ -2,6 +2,7 @@
 // to the previous step's worker (`reuse: auto`) or to a fresh one. The runtime adapter says how its runtime starts, continues, reports and measures a worker;
 // this module picks the executor of a step, decides the reuse from the flow's log, the steps and the worker's context, and renders the adapter's means as
 // the lines `harness flow dispatch` prints. Pure functions; the runtime adapters, the clock and the context reading are parameters.
+import { repoRow } from './flow-repos.mjs'
 import { EXECUTORS, stepById } from './flow-steps.mjs'
 import { ENTRY_HEADING, logHeadings } from './flow-check.mjs'
 import { releaseIds } from './flow-status.mjs'
@@ -309,10 +310,21 @@ export function dispatchStep({
   account = null,
   now,
   facts,
-  harness
+  harness,
+  repoPaths = {}
 }) {
   const { runtime, executors } = runtimeExecutors(profile, runtimes)
-  const picked = pickExecutor(flow, step, executors)
+  const row = repoRow(flow.settings, step.repo)
+  // An external repository's worker starts in that repository's folder on this machine; without the folder only the owner can start it there
+  const missingPath = row && !row.home && repoPaths[step.repo] === undefined
+  const picked = missingPath
+    ? {
+        kind: 'manual',
+        executor: executors.manual,
+        source: 'the missing folder',
+        note: `the folder of the repository "${step.repo}" on this machine is not set (\`repos.${step.repo}\` in harness-profile.local.json), so no worker can be started there, and the step goes to the manual one (a D0 decision to log)`
+      }
+    : pickExecutor(flow, step, executors)
   const worker = previousWorker(logText, step.id)
   const decision = decideReuse({
     flow,
@@ -330,7 +342,7 @@ export function dispatchStep({
   const parts = splitModel(model)
   const fallbackModel = stepModel(step, profile).text
   const promptCommand = `${harness} flow prompt ${flow.number} ${step.id}`
-  const repo = flow.settings.repos?.[step.repo] ?? step.repo
+  const repo = repoPaths[step.repo] ?? '.'
   const name = `flow-${flow.number}-step-${step.id}`
   const startFresh = (text) => {
     const split = splitModel(text)

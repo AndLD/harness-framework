@@ -17,7 +17,7 @@ const flow = parseFlow(
 ## Settings
 
 \`\`\`json
-{ "repos": { "home": ".", "app": "../app" } }
+{ "repos": { "app": { "remote": "acme/app", "role": "consumer" } } }
 \`\`\`
 
 ## Steps
@@ -61,6 +61,7 @@ const prompt = (step) => renderPrompt({ flow, step, facts, template: TEMPLATE, v
 test('the template has a section for every part of a prompt', () => {
   assert.deepEqual(Object.keys(promptSections(TEMPLATE)), [
     'header',
+    'external',
     'tasks',
     'cut',
     'consumer-take',
@@ -76,7 +77,7 @@ test('a tasks step lists its ids in order with their state, and gets the header,
   const { prompt: text, problems } = prompt('1')
   assert.deepEqual(problems, [])
   assert.match(text, /^You are the worker of step 1 of flow 2, "Ship the thing"/)
-  assert.match(text, /Repository: home \(\.\)\nModel: C2\nScope: `1\.0\.0`\n/)
+  assert.match(text, /Kind: tasks\nModel: C2\nScope: `1\.0\.0`\n/, 'the home repository has no Repository line')
   assert.doesNotMatch(text, /executor/, 'the override is for the orchestrator, not the worker')
   assert.match(text, /- 1\.1 — First \(done\)\n- 1\.2 — Second \(in progress: continue it\)/)
   assert.match(text, /Read AGENTS\.md first/)
@@ -95,7 +96,20 @@ test('a cut step names the version and leaves the merge and the tag to the orche
 })
 
 test('a consumer-take step names the repository and its path; a triage-fix step its issues; a decision changes no file', () => {
-  assert.match(prompt('3').prompt, /Take the version 1\.0\.0 in the repository "app" \(\.\.\/app\)/)
+  const take = prompt('3').prompt
+  assert.match(take, /Repository: app \(acme\/app\)\nModel: C2/)
+  assert.match(take, /Take the version 1\.0\.0 in the repository of this step/)
+  assert.doesNotMatch(
+    take,
+    /Read AGENTS\.md first/,
+    "an external worker is not sent to the home repository's entry file"
+  )
+  assert.match(
+    take,
+    /This step runs in the repository "app" \(acme\/app\), which is not the flow's home repository\. Read that repository's own entry file first/
+  )
+  assert.match(take, /never by the task ids of that repository's plan/)
+  assert.doesNotMatch(prompt('2').prompt, /which is not the flow's home repository/)
   assert.match(prompt('4').prompt, /Triage the open reports[\s\S]*- I-1\n[\s\S]*Claim each task/)
   assert.match(prompt('5').prompt, /This step is a decision, not a build\. Change no file/)
 })
@@ -104,7 +118,7 @@ test('a custom step carries its own text, between the header and the standard en
   const { prompt: text } = prompt('5a')
   assert.match(
     text,
-    /Scope: a probe\nRead AGENTS\.md first[^\n]*\n\nRun the probe in a scratch folder\.\nIt reads only the folder\.\n\nStop when/
+    /Scope: a probe\nRead AGENTS\.md first[^\n]*\nYou do this step and no other[^\n]*\n\nRun the probe in a scratch folder\.\nIt reads only the folder\.\n\nStop when/
   )
   assert.doesNotMatch(text, /Not part of the step/)
   assert.equal(customText(flow.text, '5a'), 'Run the probe in a scratch folder.\nIt reads only the folder.')

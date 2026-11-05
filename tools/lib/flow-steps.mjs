@@ -34,7 +34,7 @@ export function parseStep(row) {
     number: match ? Number(match[1]) : null,
     suffix: match?.[2] ?? '',
     kind: (row.kind ?? '').trim(),
-    repo: (row.repo ?? '').trim(),
+    repo: (row.repo ?? '').trim() || HOME_REPO,
     scope,
     versions: [...scope.matchAll(VERSION)].map((found) => found[1]),
     ids: tokensOf(scope).filter((token) => typeof token === 'string'),

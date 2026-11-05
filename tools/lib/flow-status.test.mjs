@@ -1,7 +1,8 @@
 // `harness flow status` and `next` (task 5.4): the state of each step recomputed from the repository, compared with the State column and the log.
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { flowTruth, gatherFacts, logEntries, mergedPlanIds, stepIds, tagsOf } from './flow-status.mjs'
+import { parseStep } from './flow-steps.mjs'
+import { flowTruth, gatherFacts, logEntries, mergedPlanIds, stepIds, stepTruth, tagsOf } from './flow-status.mjs'
 import { parseFlow } from './flows.mjs'
 
 const row = (...cells) => `| ${cells.join(' | ')} |`
@@ -15,7 +16,7 @@ const flow = (states = ['⬜', '⬜', '⬜', '⬜', '⬜']) =>
 ## Settings
 
 \`\`\`json
-{ "repos": { "home": ".", "app": "../app" } }
+{ "repos": { "app": { "remote": "acme/app", "role": "consumer" } } }
 \`\`\`
 
 ## Steps
@@ -136,6 +137,41 @@ test('a consumer takes a version when its lock names it; an external repository 
   assert.equal(unreadable.state, '🟡')
   assert.equal(unreadable.mismatch, null)
   assert.match(unreadable.evidence, /the lock of the repository "app" cannot be read from here/)
+})
+
+test('a step in an external repository is checked through the host: the lock it holds, and the pull requests that mention the version', () => {
+  const take = (lock, pullRequestsOf) => {
+    const base = facts({ statuses: { ...DONE, 'I-1': '✅' }, locks: { app: lock } })
+    return byId(flowTruth(flow(['✅', '✅', '✅', '⬜', '⬜']), { ...base, pullRequestsOf }), '4')
+  }
+  const prs =
+    (...pullRequests) =>
+    () => ({ pullRequests })
+  const old = { version: '0.9.0' }
+  assert.equal(take({ version: '1.0.0' }, prs()).computed, '✅')
+  const open = take(old, prs({ number: 7, title: 'take 1.0.0', state: 'open' }))
+  assert.equal(open.computed, '🟡')
+  assert.match(open.evidence, /the lock of "app" names 0\.9\.0, not 1\.0\.0; pull request #7 \(take 1\.0\.0\) is open/)
+  const merged = take(old, prs({ number: 6, title: 'take 1.0.0', state: 'merged' }))
+  assert.equal(merged.computed, '⬜')
+  assert.match(
+    merged.evidence,
+    /pull request #6 \(take 1\.0\.0\) is merged, but the lock on the default branch does not name 1\.0\.0 yet/
+  )
+  assert.match(
+    take(old, prs({ number: 5, title: 'other', state: 'closed' })).evidence,
+    /no pull request mentions 1\.0\.0/
+  )
+  assert.match(
+    take(old, () => ({ pullRequests: [], error: 'no access' })).evidence,
+    /its pull requests could not be read \(no access\)/
+  )
+  assert.equal(take(old, undefined).evidence, 'the lock of "app" names 0.9.0, not 1.0.0')
+  assert.equal(take(old, () => undefined).computed, '⬜')
+  // the home repository's own consumer step never asks the host
+  const home = parseStep({ '#': '1', kind: 'consumer-take', repo: 'home', scope: '`1.0.0`' })
+  const never = () => assert.fail('the host is not asked for the home repository')
+  assert.equal(stepTruth(home, { lockOf: () => old, pullRequestsOf: never }).state, '⬜')
 })
 
 test('a decision or a custom step has nothing to recompute; a step the owner holds is no mismatch until the repository shows it done', () => {

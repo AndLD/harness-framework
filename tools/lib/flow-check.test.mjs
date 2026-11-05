@@ -142,7 +142,7 @@ test('the settings hold valid levels, executors, reuse limits, thresholds and a 
   const problems = one(
     flowText({
       settings:
-        '{ "askAt": "D0", "levels": { "cut.final": "D9" }, "executor": "robot", "reuse": "maybe", "reuseLimits": { "context": 0, "steps": 1.5, "cacheMinutes": -1 }, "commits": "never", "usage": { "stopAt": { "fiveHour": 0, "weekly": 120 } }, "repos": {} }'
+        '{ "askAt": "D0", "levels": { "cut.final": "D9" }, "executor": "robot", "reuse": "maybe", "reuseLimits": { "context": 0, "steps": 1.5, "cacheMinutes": -1 }, "commits": "never", "usage": { "stopAt": { "fiveHour": 0, "weekly": 120 } }, "repos": { "home": "../elsewhere" } }'
     })
   ).join('\n')
   for (const part of [
@@ -156,7 +156,7 @@ test('the settings hold valid levels, executors, reuse limits, thresholds and a 
     /setting commits "never"/,
     /threshold fiveHour/,
     /threshold weekly/,
-    /repos has no "home" repository/
+    /the home repository is "\."/
   ]) {
     assert.match(problems, part)
   }
