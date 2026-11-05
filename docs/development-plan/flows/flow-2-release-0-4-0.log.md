@@ -69,3 +69,19 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis:** (b), as the entries of 23:59 in the logs of the two new flows say: the owner put Phase 6 (`0.5.0`) before the security release (`0.6.0`), so the context optimization flow is flow 3 and the security flow is flow 4 (it was flow 3 until now). This flow's number, steps and history are unchanged; the entries above that say "flow 3" mean the security flow, which is flow 4 now.
 - **Worker's recommendation:** none (no worker is involved).
 - **Choice:** (b) · **Decided by:** the owner ("Go", to the renumbering).
+
+### 2026-11-06 00:20 — running
+- **Orchestrator:** the desktop-app session of andrey.larionov.me@gmail.com, started by "Run flow 2" (no earlier claim) · **Mode:** seamless · **Steps:** 1 to 7
+- **Usage:** 5-hour 42% (resets 2026-11-05T22:39:59Z) · weekly 31% (resets 2026-11-10T06:59:59Z) (Pro)
+
+### 2026-11-06 00:25 — decision D2: split step 1 (task 2.7, 5 SP of Opus), which the gate stops
+- **Options:** (a) split task 2.7 into two tasks of the same model, 3 SP and 2 SP, as steps 1 and 1a; (b) lower the step's model to Sonnet (C2), which fits at 5 SP (72% with the factor); (c) stop and ask the owner; (d) start it anyway, since flow 1 measured Sonnet tasks at 1.8% of the 5-hour window per SP against the table's 12%.
+- **Own analysis:** (a). `harness flow gate 2 1 --plan Pro` says STOP: by the provisional coefficients of Pro (Opus 20% of the 5-hour window per SP) the step needs 100% of the window, 120% with the safety factor, above the threshold of 85% of an empty window; the procedure says such a step is a flow to fix, a D2 decision: split it, and seamless decides D2. (d) crosses the gate on two measured steps of another model, below the calibration minimum of three; (b) gives a contract change (the meaning of the procedure `run-flow` and of the runtime contract) to a smaller model than the plan chose. The task has two separable halves: the order of the executors (the contract, the procedure, the named fallback in the log and the dispatch, the step in another repository) and the permissions of a nested session with the repeated experiment, which builds on the first. Each fits: 60% and 40% of an empty window (72% and 48% with the factor). The flow file was not refused earlier because no subscription is set in `harness-profile.local.json`, so `harness flow check` could not size it.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (a): 2.7 is 3 SP, the new task 2.11 (2 SP, C3, needs 2.7) takes the permissions of a nested worker and the experiment; step 1a (2.11) is inserted after step 1, step 2 now needs 1a; the row `0.4.0` of the releases file names 2.11 after 2.7 · **Decided by:** the orchestrator (seamless mode); for the owner's review later.
+
+### 2026-11-06 00:27 — stop: usage
+- **Done:** nothing yet; step 1 was split (the entry above).
+- **Decided alone:** the split of step 1 (D2, the entry of 00:25).
+- **Usage:** 5-hour 42% (resets 2026-11-05T22:39:59Z) · weekly 31% · the gate says WAIT for step 1 (60% plus the factor does not fit on top of 42%).
+- **Next step:** after the reset at 00:40, step 1 (task 2.7, 3 SP, Opus) as a fresh session.
