@@ -23,7 +23,7 @@ scope; the format keeps room for them.
 | [5.2](./5.2.md) | Flows: files of the plan that an orchestrator runs, with the procedure `run-flow` | C3 | 5 | ✅ |
 | [5.3](./5.3.md) | The authority of a flow: release cuts and answers to reports at their levels | C3 | 3 | ✅ |
 | [5.4](./5.4.md) | `harness flow`: check, status, next and prompt | C2 | 8 | ✅ |
-| [5.5](./5.5.md) | Executors in the runtime-adapter contract, and the reuse of a worker session | C3 | 8 | 🟡 |
+| [5.5](./5.5.md) | Executors in the runtime-adapter contract, and the reuse of a worker session | C3 | 8 | ✅ |
 | [5.6](./5.6.md) | Usage: read it, estimate each step, and gate the next one | C2 | 5 | ⬜ |
 | [5.7](./5.7.md) | Calibrate the usage estimate from what flows used | C2 | 3 | ⬜ |
 | [5.8](./5.8.md) | Flows across repositories: one home repository and external ones | C2 | 3 | ⬜ |
