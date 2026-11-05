@@ -33,7 +33,7 @@ is updated in the change that starts or finishes it.
 **Releases** (the order of the releases and of their tasks is the file [releases](./releases.md), not a section of this index; the line below is written by `harness plan summary`)
 
 <!-- plan-releases:start -->
-Current release: `0.3.0-dev.1` (🏷 a development version cut). Next: `0.3.0-dev.3` (⬜ planned). The order of the releases and of their tasks: [releases](./releases.md). The flows that run them: [flows](./flows/README.md).
+Current release: `0.3.0-dev.1` (🏷 a development version cut). Next: next (⬜ planned). The order of the releases and of their tasks: [releases](./releases.md). The flows that run them: [flows](./flows/README.md).
 <!-- plan-releases:end -->
 
 ---
