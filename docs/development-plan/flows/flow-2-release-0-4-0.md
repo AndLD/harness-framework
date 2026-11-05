@@ -21,7 +21,7 @@ What the releases file holds for `0.4.0`, after `0.3.0`: the tasks that change h
 | # | Kind | Scope | Needs | Stops for | SP | Est. usage | Model | State |
 | - | ---- | ----- | ----- | --------- | -- | ---------- | ----- | ----- |
 | 1 | tasks | 2.7 | — | — | 3 | 8.1% | C3 | ✅ |
-| 1a | tasks | 2.11 | 1 | — | 2 | 5.4% | C3 | ⬜ |
+| 1a | tasks | 2.11 | 1 | — | 2 | 5.4% | C3 | ✅ |
 | 2 | tasks | 2.6 | 1a | — | 3 | 4.8% | C2 | ⬜ |
 | 3 | tasks | 2.3 | 2 | — | 3 | 4.8% | C2 | ⬜ |
 | 4 | tasks | 2.5 | 3 | — | 3 | 4.8% | C2 | ⬜ |
