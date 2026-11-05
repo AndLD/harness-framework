@@ -2,6 +2,9 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { executorProblems } from '../../../tools/conformance/runtime.mjs'
+import { dispatchStep } from '../../../tools/lib/flow-executors.mjs'
+import { parseStep } from '../../../tools/lib/flow-steps.mjs'
+import { FLOW_DEFAULTS } from '../../../tools/lib/flows.mjs'
 import { executorsFor, modelAlias, modelId } from './executors.mjs'
 
 const PROMPT = '<prompt>'
@@ -44,7 +47,72 @@ test('a session starts in the desktop app with the model and the effort, and con
   )
   assert.deepEqual(session.context({ worker: 'abc' })[0].input, { session_id: 'abc' })
   assert.equal(session.wakeups, true)
-  assert.match(session.permissions({ permissions: { mode: 'acceptEdits' } }), /the app's own permission settings/)
+  assert.equal(app.input.permission_mode, undefined, 'without the setting the session inherits the orchestrator mode')
+  assert.match(session.permissions({}), /^none set .*the orchestrator's own permission mode/)
+})
+
+test("a session starts in the mode of the flow's permissions, and the tools of its allow list go to the project's settings (task 2.11)", () => {
+  const { session } = executorsFor({})
+  const permissions = { mode: 'acceptEdits', allow: ['Bash(git *)', 'Bash(npm *)'] }
+  const [app] = session.start({ prompt: PROMPT, model: 'Opus 5.5', name: 'n', permissions })
+  assert.equal(app.input.permission_mode, 'acceptEdits')
+  assert.match(app.reads, /`permission_mode` above the orchestrator's own mode is refused/)
+  const line = session.permissions({ permissions })
+  assert.match(line, /^a session of the desktop app starts in the permission mode acceptEdits/)
+  assert.match(
+    line,
+    /\(Bash\(git \*\), Bash\(npm \*\)\) reach it only as allow rules of the project's settings, `\.claude\/settings\.json`/
+  )
+  assert.deepEqual(executorProblems(executorsFor({})), [])
+})
+
+test('the dispatch of a step prints the mode and the allow rules of the flow for a session and for its fallback, and logs the mode (task 2.11)', () => {
+  const flow = {
+    number: 2,
+    settings: { ...FLOW_DEFAULTS, permissions: { mode: 'acceptEdits', allow: ['Bash(git *)', 'Bash(gh *)'] } },
+    steps: [
+      parseStep({
+        '#': '1',
+        kind: 'tasks',
+        repo: 'home',
+        scope: '2.11',
+        needs: '—',
+        'stops for': '—',
+        sp: '2',
+        'est. usage': '—',
+        model: 'C3',
+        state: '⬜'
+      })
+    ]
+  }
+  const { lines } = dispatchStep({
+    flow,
+    step: flow.steps[0],
+    profile: {
+      adapters: { runtimes: ['claude-code'] },
+      plan: { complexity: { models: { C3: 'Opus 5.5 at high effort' } } }
+    },
+    runtimes: {
+      'claude-code': {
+        manifest: { roles: { executors: { module: 'm', export: 'e' } } },
+        modules: { m: { e: executorsFor } }
+      }
+    },
+    logText: '',
+    now: '2026-11-06 10:00',
+    harness: 'h'
+  })
+  const text = lines.join('\n')
+  assert.match(text, /call start_session \{[^\n]*"permission_mode":"acceptEdits"/)
+  assert.match(
+    text,
+    /Permissions: a session of the desktop app starts in the permission mode acceptEdits [^\n]*\(Bash\(git \*\), Bash\(gh \*\)\)/
+  )
+  assert.match(text, /--permission-mode acceptEdits --allowedTools 'Bash\(git \*\),Bash\(gh \*\)'/)
+  assert.match(
+    text,
+    /Log "step 1 started" with: .*· \*\*Model:\*\* Opus 5\.5 at high effort · \*\*Permissions:\*\* acceptEdits · \*\*Estimate:\*\*/
+  )
 })
 
 test('a worker on the command line starts with the model and the effort in the folder of its step, and continues by its id', () => {

@@ -38,14 +38,27 @@ const cliModel = ({ model, effort }) => [
   ...(effort ? ['--effort', effort] : [])
 ]
 // The permission setting of a flow (`permissions: { mode, allow }`, in this runtime's own words) as the flags of a worker on the command line. A worker started that way
-// has no one to answer a prompt, so under the default it is refused every edit and command; the desktop app's sessions run under the app's own permission settings.
-// The list of allowed tools is one argument, and it comes before another flag, because the flag takes every word after it.
+// has no one to answer a prompt, so under the default it is refused every edit and command. The list of allowed tools is one argument, and it comes before another
+// flag, because the flag takes every word after it.
 const cliPermissions = ({ permissions }) => [
   ...(permissions?.mode ? ['--permission-mode', permissions.mode] : []),
   ...(permissions?.allow?.length ? ['--allowedTools', permissions.allow.join(',')] : [])
 ]
 const PERMISSIONS_READS =
   "a worker on the command line is refused every edit and command unless the flow's `permissions` setting allows them (a mode, and tools by name)"
+// The permission setting for a session of the desktop app (task 2.11). The app's `start_session` takes the mode as `permission_mode`, at or below the
+// orchestrator's own mode (it refuses a higher one), and takes no tools: a session asks for each tool that its mode and the project's allow rules do not allow,
+// and an unattended session is refused it, so the tools of `allow` belong in the project's settings, which the owner keeps.
+const PROJECT_SETTINGS = '`.claude/settings.json` (or the local `.claude/settings.local.json`)'
+const sessionPermissions = ({ permissions }) => {
+  const mode = permissions?.mode
+    ? `a session of the desktop app starts in the permission mode ${permissions.mode} (the \`permission_mode\` of its start; the app refuses a mode above the orchestrator's own)`
+    : "none set (the flow's `permissions` setting): a session of the desktop app starts in the orchestrator's own permission mode"
+  const allow = permissions?.allow?.length
+    ? `the app's start takes no tools, so the tools of the flow's \`allow\` (${permissions.allow.join(', ')}) reach it only as allow rules of the project's settings, ${PROJECT_SETTINGS}; the owner adds there those it lacks, since a session is refused, unattended, each tool its mode does not allow`
+    : "it asks for each tool that its mode and the project's allow rules do not allow, and an unattended session is refused it"
+  return `${mode}; ${allow}`
+}
 const JSON_ANSWER =
   '`session_id` is the worker, `result` its full final report, and `usage` with `modelUsage.<model>.contextWindow` its context'
 
@@ -57,7 +70,7 @@ const session = {
     'a session of the desktop app that the orchestrator starts and the owner can open and steer, with the hooks and the CI monitoring of a session',
   wakeups: true,
   cacheMinutes: CACHE_MINUTES,
-  start: ({ prompt = SLOT, model, effort, cwd, name }) => [
+  start: ({ prompt = SLOT, model, effort, cwd, name, permissions }) => [
     {
       via: APP,
       tool: 'start_session',
@@ -70,11 +83,11 @@ const session = {
         background: BACKGROUND,
         model: modelId(model),
         effort,
+        permission_mode: permissions?.mode ?? null,
         cwd: cwd && cwd !== '.' ? cwd : null,
         use_worktree: true
       }),
-      reads:
-        "the `local_…` id of the result is the worker; when it ends its turn the app continues the orchestrator with a note of its first 400 characters. A model above the orchestrator's is lowered to it. The app may refuse the start on a turn that a worker's end began, and a start in another folder without the owner's message"
+      reads: `the \`local_…\` id of the result is the worker; when it ends its turn the app continues the orchestrator with a note of its first 400 characters. A model above the orchestrator's is lowered to it${permissions?.mode ? ", and a `permission_mode` above the orchestrator's own mode is refused: then the start fails, and the fallback below runs the step" : ''}. The app may refuse the start on a turn that a worker's end began, and a start in another folder without the owner's message`
     }
   ],
   continue: ({ worker, prompt = SLOT }) => [
@@ -103,8 +116,7 @@ const session = {
     }
   ],
   // What a session of the app is allowed, in one line for `harness flow dispatch`
-  permissions: () =>
-    "a session of the desktop app runs under the app's own permission settings, not the flow's `permissions` setting",
+  permissions: sessionPermissions,
   // A desktop app's session runs on the app's account, which it names in `CLAUDE_CODE_USER_EMAIL`
   account: () => [
     {

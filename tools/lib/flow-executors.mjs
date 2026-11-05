@@ -412,8 +412,10 @@ export function dispatchStep({
   const reading = picked.executor.context({ worker: id })
   const accountMeans = picked.executor.account?.() ?? []
   const render = (list) => list.map((means) => `  - ${renderMeans(means, promptCommand)}`)
+  // The permission mode the worker starts in is the flow's setting (task 2.11), logged beside the model when the flow sets one
+  const modeField = permissions?.mode ? ` · **Permissions:** ${permissions.mode}` : ''
   const logLine = (executorText, workerText, modelText, accountText = account ?? '—') =>
-    `- **Executor:** ${executorText} · **Worker:** ${workerText} · **Account:** ${accountText} · **Model:** ${modelText ?? '—'} · **Estimate:** ${step.sp || '—'} SP, ${step.usage || '—'}`
+    `- **Executor:** ${executorText} · **Worker:** ${workerText} · **Account:** ${accountText} · **Model:** ${modelText ?? '—'}${modeField} · **Estimate:** ${step.sp || '—'} SP, ${step.usage || '—'}`
   const field = (reusedFrom = null) =>
     executorField({ kind: picked.kind, planned: picked.planned, reason: picked.reason, reusedFrom })
   // The next executor of the order, for this step only, when the start of this one is refused or fails
