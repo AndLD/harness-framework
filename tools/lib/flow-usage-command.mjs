@@ -3,7 +3,9 @@
 // writes) and prints the line the flow's log carries. The seams are the runtime adapters (`runtimes`) and the clock (`now`).
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { calibrationReport, MIN_SAMPLES } from './flow-calibrate.mjs'
 import { stepModel, renderMeans } from './flow-executors.mjs'
+import { readFlowsOf } from './flows.mjs'
 import { stepById } from './flow-steps.mjs'
 import { localProfile } from './flow-usage-check.mjs'
 import {
@@ -198,4 +200,27 @@ export function dispatchUsageLines({ flow, step, profile, root, runtimes, harnes
     `Then \`${harness} flow gate ${flow.number} ${step.id} ${reading}\`: start the step only on GO; on WAIT or STOP log a "stop: usage" entry (the procedure run-flow, step 3).`,
     `Measure it: \`${harness} flow sample ${flow.number} step-start ${step.id} ${reading} --start ${warm ? 'warm' : 'cold'}\` when the worker starts, and \`... step-end ${step.id} ...\` (with \`--tokens <n>\` when the runtime reports them) when it ends; each prints the line for the log.`
   ]
+}
+
+/** `harness flow calibrate`: the proposals of new coefficients from `usage.jsonl`; it never writes them. */
+export function calibrateCommand({ flags, root, profile, runtimes }) {
+  const read = readFlowsOf(root, profile)
+  if (!read)
+    return fail('The profile file names no flows folder, or the folder has no index; there is no usage to calibrate.')
+  const min = flags.min === undefined ? MIN_SAMPLES : Number(flags.min)
+  if (!(Number.isInteger(min) && min >= 1)) return fail('--min is a whole number of steps from 1.')
+  const file = `${read.dir}/${USAGE_FILE}`
+  const path = join(root, file)
+  const { samples, problems } = parseSamples(existsSync(path) ? readFileSync(path, 'utf8') : '')
+  const { runtime, usage } = runtimeUsage(profile, runtimes)
+  const { lines } = calibrationReport({
+    samples,
+    problems,
+    usage,
+    runtime,
+    file,
+    min,
+    subscription: typeof flags.subscription === 'string' ? flags.subscription : null
+  })
+  return { lines, code: 0 }
 }

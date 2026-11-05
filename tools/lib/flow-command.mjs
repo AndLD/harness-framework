@@ -11,11 +11,11 @@ import { readPromptTemplate, renderPrompt } from './flow-prompt.mjs'
 import { flowTruth, gatherFacts, logEntries } from './flow-status.mjs'
 import { stepById } from './flow-steps.mjs'
 import { readFlowsOf } from './flows.mjs'
-import { dispatchUsageLines, usageCommand } from './flow-usage-command.mjs'
+import { calibrateCommand, dispatchUsageLines, usageCommand } from './flow-usage-command.mjs'
 import { inFramework } from './lock.mjs'
 
 const USAGE =
-  'usage: harness flow check | status <n> | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--account <id>] [--at <YYYY-MM-DD HH:MM>] | estimate <n> | gate <n> <step> [--five-hour <pct>[@<reset>]] [--weekly <pct>[@<reset>]] [--cost <usd>] [--plan <name>] | sample <n> <flow-start|step-start|step-end|flow-end> [<step>] [the reading flags] [--tokens <n>] [--model <name>] [--start cold|warm]'
+  'usage: harness flow check | status <n> | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--account <id>] [--at <YYYY-MM-DD HH:MM>] | calibrate [--min <n>] [--subscription <id>] | estimate <n> | gate <n> <step> [--five-hour <pct>[@<reset>]] [--weekly <pct>[@<reset>]] [--cost <usd>] [--plan <name>] | sample <n> <flow-start|step-start|step-end|flow-end> [<step>] [the reading flags] [--tokens <n>] [--model <name>] [--start cold|warm]'
 
 const pad = (number) => String(number).padStart(2, '0')
 /** The time now as the log writes it, `YYYY-MM-DD HH:MM`, local. */
@@ -78,6 +78,7 @@ export function flowCommand({ words, flags = {}, root, profile, git, lockOf, tem
     const { problems, message } = checkFlowsWithUsage({ root, profile, runtimes })
     return { lines: [message, ...problems], code: problems.length ? 1 : 0 }
   }
+  if (action === 'calibrate' && words.length === 1) return calibrateCommand({ flags, root, profile, runtimes })
   const lengths = { status: [2], next: [2], estimate: [2], prompt: [3], dispatch: [3], gate: [3], sample: [3, 4] }
   if (!lengths[action]?.includes(words.length) || !/^\d+$/.test(number ?? '')) {
     return { lines: [USAGE], code: 2 }
