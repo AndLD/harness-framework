@@ -2,7 +2,7 @@
 
 # Phase 5 — Releases in a file of their own, and flows run by an orchestrator (43 SP)
 
-**Status:** ⬜ Not started · **Branches:** see the [implementation log](#implementation-log) · **Work log:** [log](./log.md), and a log beside each task (`<id>.log.md`)
+**Status:** ✅ Done · **Branches:** see the [implementation log](#implementation-log) · **Work log:** [log](./log.md), and a log beside each task (`<id>.log.md`)
 
 Planned with the owner on 2026-11-04. Today the order of the releases is a section of the plan index, and the owner runs it by hand from a
 local list of prompts, one session per step. This phase moves the release order into a file of its own beside the index (5.1) and adds
