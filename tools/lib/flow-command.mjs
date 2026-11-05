@@ -1,14 +1,24 @@
-// `harness flow …` (task 5.4): `check`, `status <n>`, `next <n>` and `prompt <n> <step>`, the one way the procedure `run-flow` reads the state of a flow and the
-// prompt of a step. Reading is free; nothing here writes a file. The seams are the Git command (`git`), the lock of a consuming repository (`lockOf`) and the
-// template of the prompts (`template`), so a test replaces them.
+// `harness flow …` (tasks 5.4, 5.5): `check`, `status <n>`, `next <n>`, `prompt <n> <step>` and `dispatch <n> <step>`, the one way the procedure `run-flow` reads
+// the state of a flow, the prompt of a step and how to hand it to a worker. Reading is free; nothing here writes a file. The seams are the Git command (`git`),
+// the lock of a consuming repository (`lockOf`), the template of the prompts (`template`), the runtime adapters (`runtimes`) and the clock (`now`), so a test
+// replaces them.
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { checkFlows, planFacts } from './flow-check.mjs'
+import { dispatchStep } from './flow-executors.mjs'
 import { readPromptTemplate, renderPrompt } from './flow-prompt.mjs'
 import { flowTruth, gatherFacts, logEntries } from './flow-status.mjs'
+import { stepById } from './flow-steps.mjs'
 import { readFlowsOf } from './flows.mjs'
+import { inFramework } from './lock.mjs'
 
-const USAGE = 'usage: harness flow check | status <n> | next <n> | prompt <n> <step>'
+const USAGE =
+  'usage: harness flow check | status <n> | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--at <YYYY-MM-DD HH:MM>]'
+
+const pad = (number) => String(number).padStart(2, '0')
+/** The time now as the log writes it, `YYYY-MM-DD HH:MM`, local. */
+export const logTime = (date = new Date()) =>
+  `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`
 
 const fail = (message) => ({ lines: [message], code: 1 })
 
@@ -55,19 +65,20 @@ function statusLines(flow, truth, blocked) {
 
 /**
  * Runs one `harness flow` command.
- * @param {{ words: string[], root: string, profile: object, git?: Function, lockOf?: Function, template?: string }} options
+ * @param {{ words: string[], flags?: object, root: string, profile: object, git?: Function, lockOf?: Function, template?: string, runtimes?: object, now?: string }} options
+ *   `flags.context` is the previous worker's context in percent of its window (dispatch), `flags.at` or `now` the time it runs.
  * @returns {{ lines: string[], code: number }}
  */
-export function flowCommand({ words, root, profile, git, lockOf, template }) {
+export function flowCommand({ words, flags = {}, root, profile, git, lockOf, template, runtimes, now }) {
   const [action, number, step] = words
   if (action === 'check' && words.length === 1) {
     const { problems, message } = checkFlows({ root, profile })
     return { lines: [message, ...problems], code: problems.length ? 1 : 0 }
   }
   if (
-    !['status', 'next', 'prompt'].includes(action) ||
+    !['status', 'next', 'prompt', 'dispatch'].includes(action) ||
     !/^\d+$/.test(number ?? '') ||
-    words.length !== (action === 'prompt' ? 3 : 2)
+    words.length !== (['prompt', 'dispatch'].includes(action) ? 3 : 2)
   ) {
     return { lines: [USAGE], code: 2 }
   }
@@ -86,6 +97,27 @@ export function flowCommand({ words, root, profile, git, lockOf, template }) {
   const blocked = unfinishedNeeds(flow, read, facts, root)
 
   if (action === 'status') return { lines: statusLines(flow, truth, blocked), code: 0 }
+  if (action === 'dispatch') {
+    const target = stepById(flow.steps, step)
+    if (!target)
+      return fail(
+        `Flow ${flow.number} has no step ${step}; its steps are ${flow.steps.map((each) => each.id).join(', ')}.`
+      )
+    const context = flags.context === undefined ? null : Number(String(flags.context).replace(/%$/, ''))
+    if (context !== null && !(context >= 0 && context <= 100)) return fail('--context is a percent from 0 to 100.')
+    const { lines } = dispatchStep({
+      flow,
+      step: target,
+      profile,
+      runtimes,
+      logText: logTextOf(root, read.dir, flow),
+      context,
+      now: flags.at ?? now ?? logTime(),
+      facts,
+      harness: `node ${inFramework(profile, 'tools/harness.mjs')}`
+    })
+    return { lines, code: 0 }
+  }
   if (action === 'next') {
     if (blocked.length)
       return {

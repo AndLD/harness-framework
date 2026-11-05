@@ -138,11 +138,11 @@ test('a custom step needs its section and no other kind has one', () => {
   )
 })
 
-test('the settings hold valid levels, executors, thresholds and a home repository', () => {
+test('the settings hold valid levels, executors, reuse limits, thresholds and a home repository', () => {
   const problems = one(
     flowText({
       settings:
-        '{ "askAt": "D0", "levels": { "cut.final": "D9" }, "executor": "robot", "reuse": "maybe", "commits": "never", "usage": { "stopAt": { "fiveHour": 0, "weekly": 120 } }, "repos": {} }'
+        '{ "askAt": "D0", "levels": { "cut.final": "D9" }, "executor": "robot", "reuse": "maybe", "reuseLimits": { "context": 0, "steps": 1.5, "cacheMinutes": -1 }, "commits": "never", "usage": { "stopAt": { "fiveHour": 0, "weekly": 120 } }, "repos": {} }'
     })
   ).join('\n')
   for (const part of [
@@ -150,6 +150,9 @@ test('the settings hold valid levels, executors, thresholds and a home repositor
     /level of "cut\.final" is "D9"/,
     /setting executor "robot"/,
     /setting reuse "maybe"/,
+    /reuse limit context must be a percent/,
+    /reuse limit steps must be a whole number/,
+    /reuse limit cacheMinutes must be a number of minutes/,
     /setting commits "never"/,
     /threshold fiveHour/,
     /threshold weekly/,
@@ -157,6 +160,13 @@ test('the settings hold valid levels, executors, thresholds and a home repositor
   ]) {
     assert.match(problems, part)
   }
+})
+
+test('the reuse limits are an object', () => {
+  assert.match(
+    one(flowText({ settings: '{ "reuseLimits": 5 }' })).join('\n'),
+    /the setting reuseLimits is not an object/
+  )
 })
 
 test('the needs of flows resolve and never go in a circle', () => {

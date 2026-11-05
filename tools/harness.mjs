@@ -23,7 +23,8 @@
 //   harness check all                                             every check, then the project's own (`checks.project`)
 //   harness plan summary [--check]                                write (or compare) the summary of the plan index
 //   harness flow check | status <n> | next <n> | prompt <n> <step>   the flows of the plan (the procedure run-flow): check them (`check flows`), recompute the state of
-//                                                                 a flow's steps from the repository, print its next step with its prompt, or the prompt of a step
+//     | dispatch <n> <step> [--context <percent>] [--at <time>]     a flow's steps from the repository, print its next step with its prompt, the prompt of a step, or
+//                                                                 how to hand a step to a worker: its executor, a fresh or the previous worker (reuse), the means
 //   harness plan split <phase>                                    split a phase kept as one file into a folder: the phase index, a file per task and the logs beside them
 //   harness plan promote <B-n> --phase <n> [--agent <m>] [--size <n>] --approved   the owner's decision: a backlog item becomes a task of a phase
 //   harness plan log <phase> [ref]                                the implementation log of a phase from the merged pull requests
@@ -50,6 +51,7 @@ import { bootstrap, buildTemplate } from './lib/bootstrap.mjs'
 import { CHECKS, checkAll, report, runCheck } from './lib/checks.mjs'
 import { checkChanged, mergeShards, summarizePackages } from './lib/coverage.mjs'
 import { flowCommand } from './lib/flow-command.mjs'
+import { ADAPTER_RUNTIMES } from './lib/runtimes.mjs'
 import { guardCommit, guardPush } from './lib/git-guards.mjs'
 import { adopt } from './lib/adopt.mjs'
 import { init } from './lib/init.mjs'
@@ -88,7 +90,7 @@ const USAGE = `usage: harness <command>
   layers
   check <${Object.keys(CHECKS).join('|')}|all>
   plan summary [--check]
-  flow check | status <n> | next <n> | prompt <n> <step>
+  flow check | status <n> | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--at <time>]
   plan split <phase>
   plan promote <B-n> --phase <n> [--agent <marker>] [--size <n>] --approved
   plan log <phase> [ref]
@@ -126,7 +128,9 @@ const FLAGS_WITH_VALUE = new Set([
   '--version',
   '--phase',
   '--agent',
-  '--size'
+  '--size',
+  '--context',
+  '--at'
 ])
 // Flags that may be given several times; their values are collected in a list
 const REPEATED_FLAGS = new Set(['--set'])
@@ -274,7 +278,13 @@ export async function run(argv, { out = console.log, err = console.error, input 
       return report('flow check', runCheck('flows', { root, profile: loadProfile(root) }), { out, err })
     }
     if (words[0] === 'flow') {
-      const { lines, code } = flowCommand({ words: words.slice(1), root, profile: loadProfile(root) })
+      const { lines, code } = flowCommand({
+        words: words.slice(1),
+        flags,
+        root,
+        profile: loadProfile(root),
+        runtimes: ADAPTER_RUNTIMES
+      })
       lines.forEach((line) => (code === 0 ? out(line) : err(line)))
       return code
     }

@@ -26,6 +26,7 @@ export const FLOW_DEFAULTS = Object.freeze({
   },
   executor: 'session',
   reuse: 'auto',
+  reuseLimits: { context: 40, steps: 3 },
   commits: 'per-step',
   usage: { subscription: 'local', stopAt: { fiveHour: 85, weekly: 90 } },
   repos: { home: '.' }

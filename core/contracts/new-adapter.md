@@ -14,6 +14,8 @@ when `harness adapter test` passes on it, which is the same suite the presets pa
    core rows of the rule-to-check map are generated from them.
 3. **Write the logic modules** as pure functions with `node --test` tests next to them, like the presets. A module that talks to a tool takes the tool as a seam
    (`cli` for a host's command line) so that a test, and the suite, can pass a stand-in.
+   For a runtime, the `executors` module says how an orchestrator of a flow starts, continues, reports and measures a worker; when the runtime offers no
+   verified way for one agent to drive another, return the manual executor only (the runtime contract, "Executors").
 4. **Write the samples** in `conformance.json` (below) and, for a runtime, record the event samples.
 5. **Write the adapter's documents** from the skeleton's README: the section of the stack file, the commands and the terms. `terms` are the adapter's own words
    (tool and language names, a pattern of regular expression); the CORE scan joins them with the term lists of the profile file, so core text never names them.

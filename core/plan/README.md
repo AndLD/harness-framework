@@ -205,7 +205,7 @@ project that has a releases file; the profile names their folder (`paths.flows`)
   belongs to at most one flow, a release in no flow is not planned to run, and one flow may hold every release.
 - **Settings** (a JSON block, every key optional): `mode` (`brainstorm`, the default, asks the owner from `askAt` up; `seamless` decides everything and keeps a digest), `askAt`
   (`D1` to `D4`, default `D2`), `levels` (the level of a kind of decision: a development cut `D1`, a final cut or a hotfix `D3`, answering or closing reports `D4` by default),
-  `executor` (`session`, the default, `subagent` or `manual`; a step may override it), `reuse` (`auto` or `never`), `commits` (`per-step`, the default, or `per-cut`), `usage` (the
+  `executor` (`session`, the default, `subagent` or `manual`; a step may override it), `reuse` (`auto` or `never`), `reuseLimits` (when `auto` may continue the previous worker: `context`, its context below that percent of its window, 40 by default; `steps`, fewer steps run, 3 by default; `cacheMinutes`, how long the prompt cache lives, else the runtime adapter's value), `commits` (`per-step`, the default, or `per-cut`), `usage` (the
   subscription, read from the ignored local profile file, and `stopAt`, the thresholds of the 5-hour and the weekly window, 85% and 90% by default) and `repos` (the home repository only, by default).
 - **Steps.** The table `# | Kind | Repo | Scope | Needs | Stops for | SP | Est. usage | Model | State`. The kinds: `tasks`, `cut`, `consumer-take`, `triage-fix`, `decision`, and
   `custom`, the only one with a prompt of its own. A scope names ids only (a release, task and issue ids, a version), never a backlog item and never a copy of what a release holds; a
@@ -220,4 +220,7 @@ project that has a releases file; the profile names their folder (`paths.flows`)
   the newest entries of the log, and prints the mismatches, a step left open, and the next step. `harness flow next <n>` prints that step with its prompt, and `harness flow prompt <n> <step>` the
   prompt of a step: the standard wording (the header, the text of the kind, the Git wording, where to stop, the step report) is written once in the [step prompts](./flow-step-prompts.md), and a
   `custom` step carries its own text under `## Step <#>` in the flow file. The session start names a flow that is running or waits, with its next step by the State column.
+  `harness flow dispatch <n> <step> [--context <percent>]` says how to hand a step to a worker: its executor (the step's own or the flow's, by the means of the runtime adapter's role `executors`,
+  the manual one when the runtime offers none), whether the previous step's worker continues it or a fresh one starts, with every reason, the means to start or continue it, to fetch its full
+  report and to read its context, and the executor line of its "step started" log entry, whose `Worker:` field the next dispatch reads.
 - **Not yet.** Parallel steps (waves); the `Needs` column keeps room for them.

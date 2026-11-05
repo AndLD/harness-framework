@@ -63,8 +63,8 @@ export function gatherFacts({ root, profile, plan, git, lockOf }) {
   }
 }
 
-// The ids that a release row names, in order; a "Phase N" token is the tasks of that phase in its own order
-function releaseIds(version, facts) {
+/** The ids that a release row names, in order; a "Phase N" token is the tasks of that phase in its own order. */
+export function releaseIds(version, facts) {
   const row = facts.releaseRows.find((each) => each.release.replace(/`/g, '') === version)
   return (row ? tokensOf(row.tasks) : []).flatMap((token) =>
     typeof token === 'string'

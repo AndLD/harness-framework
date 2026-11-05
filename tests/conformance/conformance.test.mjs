@@ -131,6 +131,46 @@ test('a runtime whose sample of the refused push is a command the hook lets thro
   ])
 })
 
+test('a runtime adapter without an executor fails the manifest check and the executors check', async () => {
+  const dir = broken('runtime', 'cursor', {
+    'manifest.json': json((manifest) => {
+      delete manifest.roles.executors
+      return manifest
+    })
+  })
+  const suite = await runSuite({ dir, only: /^(the manifest|executors)/ })
+  assert.deepEqual(failedNames(suite), [
+    'the manifest matches the contract of its axis and the folder carries its name',
+    'executors: each starts, continues and reports a worker and reads its context, by means of the runtime'
+  ])
+  assert.match(failed(suite)[0].message, /the logic role "executors" of the runtime contract is not filled/)
+})
+
+test('executors that offer none, or a session that cannot be continued, fail the executors check', async () => {
+  for (const [executors, problem] of [
+    ['({})', /the runtime offers no executor/],
+    ['({ session: { ...session, continue: () => [] }, subagent })', /session: continue offers no means/],
+    ['({ session: { ...session, report: () => [] } })', /session: report offers no means to fetch the full report/],
+    [
+      "({ session: { ...session, start: () => [{ via: 'x', command: ['run'] }] } })",
+      /session\.start: a means does not carry the prompt/
+    ]
+  ]) {
+    const dir = broken('runtime', 'claude-code', {
+      'executors.mjs': (text) =>
+        text.replace(
+          'export const executorsFor = () => ({ session, subagent })',
+          `export const executorsFor = () => ${executors}`
+        )
+    })
+    const suite = await runSuite({ dir, only: /^executors/ })
+    assert.deepEqual(failedNames(suite), [
+      'executors: each starts, continues and reports a worker and reads its context, by means of the runtime'
+    ])
+    assert.match(failed(suite)[0].message, problem)
+  }
+})
+
 test('a packaging that loses the trigger of a procedure fails', async () => {
   const dir = broken('runtime', 'claude-code', {
     'conformance.json': json((conformance) => ({
