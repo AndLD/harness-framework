@@ -39,9 +39,10 @@ export function tagsOf(git) {
 /**
  * The facts a status needs from a repository. `git` runs a Git command and returns its output; `lockOf(repo)` returns the lock of a repository: the parsed
  * lock, `null` when the repository has none, `undefined` when it cannot be read from here (an external repository, which task 5.8 reaches through the host).
- * @param {{ root: string, profile: object, plan: ReturnType<import('./flow-check.mjs').planFacts>, git?: Function, lockOf?: Function }} options
+ * @param {{ root: string, profile: object, plan: ReturnType<import('./flow-check.mjs').planFacts>, git?: Function, lockOf?: Function, pullRequestsOf?: Function }} options
+ *   `pullRequestsOf(repo, text)` returns the pull requests of an external repository that mention `text` (`{ pullRequests, error? }`), `undefined` when they cannot be asked.
  */
-export function gatherFacts({ root, profile, plan, git, lockOf }) {
+export function gatherFacts({ root, profile, plan, git, lockOf, pullRequestsOf }) {
   const run =
     git ?? ((args) => execFileSync('git', args, { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }))
   const integration = profile.branches.integration
@@ -58,6 +59,7 @@ export function gatherFacts({ root, profile, plan, git, lockOf }) {
     merged,
     tags: tagsOf(run),
     lockOf: lockOf ?? ((repo) => (repo === HOME_REPO ? readLock(root) : undefined)),
+    pullRequestsOf,
     releaseRows: plan.releaseRows,
     phases: plan.phases
   }
@@ -120,9 +122,26 @@ function takeTruth(step, facts) {
   if (lock === undefined)
     return { state: null, evidence: `the lock of the repository "${step.repo}" cannot be read from here` }
   if (lock === null) return { state: NOT_STARTED, evidence: `the repository "${step.repo}" has no lock` }
-  return lock.version === version
-    ? { state: DONE, evidence: `the lock of "${step.repo}" names ${version}` }
-    : { state: NOT_STARTED, evidence: `the lock of "${step.repo}" names ${lock.version}, not ${version}` }
+  if (lock.version === version) return { state: DONE, evidence: `the lock of "${step.repo}" names ${version}` }
+  const base = `the lock of "${step.repo}" names ${lock.version}, not ${version}`
+  // An external repository is read through the host, so its pull requests that mention the version say whether the step has begun
+  const found = step.repo === HOME_REPO ? undefined : facts.pullRequestsOf?.(step.repo, version)
+  if (!found) return { state: NOT_STARTED, evidence: base }
+  if (found.error)
+    return { state: NOT_STARTED, evidence: `${base}; its pull requests could not be read (${found.error})` }
+  const open = found.pullRequests.filter((pr) => pr.state === 'open')
+  if (open.length)
+    return {
+      state: RUNNING,
+      evidence: `${base}; ${open.map((pr) => `pull request #${pr.number} (${pr.title}) is open`).join(', ')}`
+    }
+  const merged = found.pullRequests.filter((pr) => pr.state === 'merged')
+  return {
+    state: NOT_STARTED,
+    evidence: merged.length
+      ? `${base}; pull request #${merged[0].number} (${merged[0].title}) is merged, but the lock on the default branch does not name ${version} yet`
+      : `${base}; no pull request mentions ${version}`
+  }
 }
 
 /** The state of one step from the repository: `{ state, evidence }`, with `state` null where the repository cannot say (a decision, a custom step). */

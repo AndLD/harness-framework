@@ -3,6 +3,7 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { inFramework } from './lock.mjs'
+import { repoWords } from './flow-repos.mjs'
 import { stepIds } from './flow-status.mjs'
 
 export const PROMPT_TEMPLATE = 'core/plan/flow-step-prompts.md'
@@ -64,7 +65,7 @@ function idList(step, facts) {
  * The prompt of a step: `{ prompt, problems }`. `problems` names what stops a prompt from being rendered (an unknown step, a custom step without its text, a
  * template without a section); the prompt is then empty. `values` are the profile's words: `entryFile`, `integration`, `production`.
  */
-export function renderPrompt({ flow, step: id, facts, template, values }) {
+export function renderPrompt({ flow, step: id, facts, template, values, repoPaths = {} }) {
   const step = flow.steps.find((each) => each.id === id)
   if (!step)
     return {
@@ -73,8 +74,10 @@ export function renderPrompt({ flow, step: id, facts, template, values }) {
     }
   const sections = promptSections(template)
   const own = step.kind === 'custom' ? customText(flow.text, step.id) : null
+  const where = repoWords(step, flow.settings, repoPaths)
   const wanted = [
     'header',
+    ...(where.external ? ['external'] : []),
     step.kind === 'custom' ? null : step.kind,
     ...(GIT_KINDS.includes(step.kind) ? ['git'] : []),
     'stop',
@@ -99,15 +102,18 @@ export function renderPrompt({ flow, step: id, facts, template, values }) {
     title: flow.title,
     file: flow.file,
     kind: step.kind,
-    repo: step.repo,
-    repoPath: flow.settings.repos?.[step.repo],
+    repo: where.repo,
+    repoPath: where.repoPath,
+    remote: where.remote,
+    // The entry file named in the header is the home repository's; a worker in an external repository reads that repository's own (the section `external`)
+    ...(where.external ? { entryFile: undefined } : {}),
     model: step.model,
     scope: step.scope.replace(/\s*\(executor:[^)]*\)/i, '').trim(),
     version: step.versions[0],
     idList: step.kind === 'tasks' || step.kind === 'triage-fix' ? idList(step, facts) : ''
   }
-  const parts = wanted.map((name) => fillWords(name === 'header' ? sections.header : sections[name], words))
-  if (own !== null) parts.splice(1, 0, own)
+  const parts = wanted.map((name) => fillWords(sections[name], words))
+  if (own !== null) parts.splice(wanted.indexOf('header') + 1 + (where.external ? 1 : 0), 0, own)
   return { prompt: parts.join('\n\n'), problems: [] }
 }
 

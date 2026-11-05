@@ -30,17 +30,16 @@ The orchestrator reads this block (the procedure `run-flow`); a setting left out
     "stopAt": { "fiveHour": 85, "weekly": 90 },
     "safetyFactor": 1.2,
     "maxWaitMinutes": 300
-  },
-  "repos": { "home": "." }
+  }
 }
 ```
 
 ## Steps
 
-| # | Kind | Repo | Scope | Needs | Stops for | SP | Est. usage | Model | State |
-| - | ---- | ---- | ----- | ----- | --------- | -- | ---------- | ----- | ----- |
-| 1 | tasks | home | <a release (`<version>`: its tasks in the order of the releases file), or task and issue ids> | — | — | <SP> | <% of the weekly window (`harness flow estimate <n>` prints it), or —> | <from the markers, or a model> | ⬜ |
-| 2 | cut | home | `<version>` | 1 | — | 1 | — | — | ⬜ |
+| # | Kind | Scope | Needs | Stops for | SP | Est. usage | Model | State |
+| - | ---- | ----- | ----- | --------- | -- | ---------- | ----- | ----- |
+| 1 | tasks | <a release (`<version>`: its tasks in the order of the releases file), or task and issue ids> | — | — | <SP> | <% of the weekly window (`harness flow estimate <n>` prints it), or —> | <from the markers, or a model> | ⬜ |
+| 2 | cut | `<version>` | 1 | — | 1 | — | — | ⬜ |
 
 State: ⬜ not started · 🟡 running · ⏸ waits for the owner · ⛔ blocked · ✅ done. The State column is a cache of the repository's state; the log is the record.
 
@@ -55,6 +54,10 @@ Rules (the plan method, section 10; delete this comment in a real flow):
 - "Stops for": a level (`D2`) or a named reason (`owner review`) at which the orchestrator stops at this step whatever the mode, or —.
 - "Executor" and "Model" may be overridden per step in the scope's cell: `(executor: manual)`. `harness flow dispatch <n> <step>` says how the executor hands the step to a worker,
   and whether the previous step's worker continues it (`reuse: auto` within `reuseLimits`).
+- One repository: this template has no Repo column, and every step runs in the flow's home repository. To drive a step in another repository (a consumer taking a version), add a
+  `Repo` column after `Kind` (the alias of the repository, `home` for the flow's own), and add a row for the alias to the settings, next to the others:
+  `"repos": { "app": { "remote": "<owner>/<name>", "role": "consumer", "kinds": ["consumer-take"] } }`. The folder of `app` on this machine goes in the ignored `harness-profile.local.json`
+  (`{ "repos": { "app": "../app" } }`), never in the flow. A step there names the work by what it does (`take` + the version in backticks), never by that repository's task ids.
 - `harness flow check` holds this shape, `harness flow status <n>` recomputes the State column from the repository, and `harness flow prompt <n> <step>` renders the prompt of a step from the
   standard wording of the step prompts (the plan folder of the framework); only a `custom` step writes its own.
 -->

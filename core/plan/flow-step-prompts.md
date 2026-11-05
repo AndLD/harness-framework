@@ -4,7 +4,7 @@
 
 The standard wording that `harness flow prompt <n> <step>` renders for the worker of a step: the header, the text of the step's kind, the Git wording, where to stop and
 the step report, each written once here. The tool reads this file by the headings of its sections (`header`, `tasks`, `cut`, `consumer-take`, `triage-fix`,
-`decision`, `git`, `stop`, `report`) and fills the words in braces from the flow, the step and the profile; a line whose word has no value is left out. A `custom` step
+`decision`, `external`, `git`, `stop`, `report`) and fills the words in braces from the flow, the step and the profile; a line whose word has no value is left out. A `custom` step
 has no section of its own: its prompt is the section `## Step <#>` of the flow file, and it still gets the sections `stop` and `report`. Change the wording here, in one
 place, and every flow takes it.
 
@@ -15,7 +15,14 @@ Kind: {kind}
 Repository: {repo} ({repoPath})
 Model: {model}
 Scope: {scope}
-Read {entryFile} first: its rules bind you. You do this step and no other, and you start no phase, task or issue that the scope does not name.
+Read {entryFile} first: its rules bind you.
+You do this step and no other, and you start no phase, task or issue that the scope does not name.
+
+## external
+
+This step runs in the repository "{repo}" ({remote}), which is not the flow's home repository. Read that repository's own entry file first: its rules and its approvals bind you here, and
+what it keeps for its owner stays the owner's. The orchestrator of the flow edits nothing there and decides nothing for that repository. Name the work in your report by what it did ("took
+the version"), the pull requests it opened and their state, never by the task ids of that repository's plan, and write nothing of the home repository's plan into it.
 
 ## tasks
 
@@ -32,7 +39,7 @@ In your report, list what the version changes for a project, from the changelog 
 
 ## consumer-take
 
-Take the version {version} in the repository "{repo}" ({repoPath}): the procedure `update-framework` there, from the lock's version to {version}. Read the migration notes of every
+Take the version {version} in the repository of this step (the one in the header, the home repository when there is none): the procedure `update-framework`, from the lock's version to {version}. Read the migration notes of every
 version in between, do the required actions of each and prove each with its check, run the repository's checks and its gate, and open the pull request.
 In your report, list what the notes missed.
 

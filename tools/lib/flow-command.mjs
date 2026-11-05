@@ -9,10 +9,12 @@ import { checkFlowsWithUsage } from './flow-usage-check.mjs'
 import { dispatchStep } from './flow-executors.mjs'
 import { readPromptTemplate, renderPrompt } from './flow-prompt.mjs'
 import { flowTruth, gatherFacts, logEntries } from './flow-status.mjs'
-import { stepById } from './flow-steps.mjs'
+import { HOME_REPO, stepById } from './flow-steps.mjs'
 import { readFlowsOf } from './flows.mjs'
 import { dispatchUsageLines, usageCommand } from './flow-usage-command.mjs'
-import { inFramework } from './lock.mjs'
+import { repoRows, localRepoPaths } from './flow-repos.mjs'
+import { hostModule } from './host.mjs'
+import { inFramework, LOCK_FILE, readLock } from './lock.mjs'
 
 const USAGE =
   'usage: harness flow check | status <n> | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--account <id>] [--at <YYYY-MM-DD HH:MM>] | estimate <n> | gate <n> <step> [--five-hour <pct>[@<reset>]] [--weekly <pct>[@<reset>]] [--cost <usd>] [--plan <name>] | sample <n> <flow-start|step-start|step-end|flow-end> [<step>] [the reading flags] [--tokens <n>] [--model <name>] [--start cold|warm]'
@@ -23,6 +25,45 @@ export const logTime = (date = new Date()) =>
   `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`
 
 const fail = (message) => ({ lines: [message], code: 1 })
+
+// The host's reading of another repository (the role `remote-state`): `{ readFile({ slug, path }), pullRequests({ slug, text }) }`, or null when the host offers none
+function hostRemote(profile) {
+  try {
+    const module = hostModule(profile, 'remote-state')
+    return {
+      readFile: (request) => module.remoteFile(request),
+      pullRequests: (request) => module.remotePullRequests(request)
+    }
+  } catch {
+    return null
+  }
+}
+
+// The facts about the external repositories of a flow, read through the host: the lock of each (`lockOf`) and the pull requests that mention a version
+function remoteFacts({ root, profile, flow, remote }) {
+  const external = repoRows(flow.settings).filter((row) => !row.home && row.remote)
+  const api = external.length ? (remote ?? hostRemote(profile)) : null
+  const remoteOf = (alias) => external.find((row) => row.alias === alias)
+  return {
+    lockOf: (alias) => {
+      if (alias === HOME_REPO) return readLock(root)
+      const row = remoteOf(alias)
+      if (!row || !api) return undefined
+      const file = api.readFile({ slug: row.remote, path: LOCK_FILE })
+      if (file.error) return undefined
+      if (!file.found) return null
+      try {
+        return JSON.parse(file.text)
+      } catch {
+        return undefined
+      }
+    },
+    pullRequestsOf: (alias, text) => {
+      const row = remoteOf(alias)
+      return row && api ? api.pullRequests({ slug: row.remote, text }) : undefined
+    }
+  }
+}
 
 const logTextOf = (root, dir, flow) => {
   const path = join(root, dir, flow.file.replace(/\.md$/, '.log.md'))
@@ -67,12 +108,13 @@ function statusLines(flow, truth, blocked) {
 
 /**
  * Runs one `harness flow` command.
- * @param {{ words: string[], flags?: object, root: string, profile: object, git?: Function, lockOf?: Function, template?: string, runtimes?: object, now?: string }} options
+ * @param {{ words: string[], flags?: object, root: string, profile: object, git?: Function, lockOf?: Function, template?: string, runtimes?: object, now?: string, remote?: object }} options
+ *   `remote` is the host's reading of an external repository (`{ readFile({ slug, path }), pullRequests({ slug, text }) }`); the host adapter's by default.
  *   `flags.context` is the previous worker's context in percent of its window (dispatch), `flags.account` the account the orchestrator runs on (dispatch),
  *   `flags.at` or `now` the time it runs.
  * @returns {{ lines: string[], code: number }}
  */
-export function flowCommand({ words, flags = {}, root, profile, git, lockOf, template, runtimes, now }) {
+export function flowCommand({ words, flags = {}, root, profile, git, lockOf, template, runtimes, now, remote }) {
   const [action, number, step] = words
   if (action === 'check' && words.length === 1) {
     const { problems, message } = checkFlowsWithUsage({ root, profile, runtimes })
@@ -92,7 +134,16 @@ export function flowCommand({ words, flags = {}, root, profile, git, lockOf, tem
     )
   if (flow.problems.length)
     return fail(`${read.dir}/${flow.file}: ${flow.problems.join('; ')}; run \`harness flow check\`.`)
-  const facts = gatherFacts({ root, profile, plan: planFacts({ root, profile }), git, lockOf })
+  const remoteSeen = remoteFacts({ root, profile, flow, remote })
+  const facts = gatherFacts({
+    root,
+    profile,
+    plan: planFacts({ root, profile }),
+    git,
+    lockOf: lockOf ?? remoteSeen.lockOf,
+    pullRequestsOf: remoteSeen.pullRequestsOf
+  })
+  const repoPaths = localRepoPaths(root, flow.settings)
   const truth = flowTruth(flow, facts, logEntries(logTextOf(root, read.dir, flow)))
   const blocked = unfinishedNeeds(flow, read, facts, root)
 
@@ -117,7 +168,8 @@ export function flowCommand({ words, flags = {}, root, profile, git, lockOf, tem
       account: typeof flags.account === 'string' && flags.account.trim() ? flags.account.trim() : null,
       now: flags.at ?? now ?? logTime(),
       facts,
-      harness: `node ${inFramework(profile, 'tools/harness.mjs')}`
+      harness: `node ${inFramework(profile, 'tools/harness.mjs')}`,
+      repoPaths
     })
     const harness = `node ${inFramework(profile, 'tools/harness.mjs')}`
     const usage = dispatchUsageLines({ flow, step: target, profile, root, runtimes, harness, warm: plan.reuse })
@@ -137,6 +189,7 @@ export function flowCommand({ words, flags = {}, root, profile, git, lockOf, tem
     flow,
     step: target,
     facts,
+    repoPaths,
     template: template ?? readPromptTemplate(root, profile),
     values: {
       entryFile: profile.project?.entryFile,

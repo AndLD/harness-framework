@@ -79,7 +79,14 @@ function settingsOf(text, problems) {
     const settings = {
       ...FLOW_DEFAULTS,
       ...given,
-      usage: { ...FLOW_DEFAULTS.usage, ...usage, stopAt: { ...FLOW_DEFAULTS.usage.stopAt, ...usage.stopAt } }
+      usage: { ...FLOW_DEFAULTS.usage, ...usage, stopAt: { ...FLOW_DEFAULTS.usage.stopAt, ...usage.stopAt } },
+      // `repos` too: the home repository is always there, the external ones are the flow's rows
+      repos:
+        given.repos && typeof given.repos === 'object' && !Array.isArray(given.repos)
+          ? { ...FLOW_DEFAULTS.repos, ...given.repos }
+          : given.repos === undefined
+            ? FLOW_DEFAULTS.repos
+            : given.repos
     }
     if (!FLOW_MODES.includes(settings.mode)) {
       problems.push(`the mode "${settings.mode}" is not one of ${FLOW_MODES.join(', ')}`)

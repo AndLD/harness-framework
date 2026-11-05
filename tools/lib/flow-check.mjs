@@ -3,7 +3,8 @@
 // names of the releases, the ids of the tasks and issues. `checkFlows` reads them from a project.
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { EXECUTORS, HOME_REPO, LEVELS, STEP_ID, STEP_KINDS, isInserted } from './flow-steps.mjs'
+import { repoSettingsProblems, stepRepoProblems } from './flow-repos.mjs'
+import { EXECUTORS, LEVELS, STEP_ID, STEP_KINDS, isInserted } from './flow-steps.mjs'
 import { readFlowsOf, withFlowsTable } from './flows.mjs'
 import { readReleases } from './releases.mjs'
 import { planPhases, readBacklogOf, readQueueOf } from './plan.mjs'
@@ -67,8 +68,7 @@ function settingsProblems(settings) {
     if (!(stop[window] > 0 && stop[window] <= 100))
       problems.push(`the usage threshold ${window} must be a percent from 1 to 100`)
   }
-  const home = settings.repos && typeof settings.repos === 'object' ? settings.repos[HOME_REPO] : undefined
-  if (typeof home !== 'string') problems.push(`the setting repos has no "${HOME_REPO}" repository (a path)`)
+  problems.push(...repoSettingsProblems(settings))
   return problems
 }
 
@@ -119,7 +119,6 @@ function scopeProblems(step, flow, { releaseNames, knownIds, phaseNumbers }) {
 function stepsProblems(flow, facts) {
   const problems = []
   const seen = new Set()
-  const repos = Object.keys(flow.settings.repos ?? {})
   let lastNumber = 0
   let lastSuffix = ''
   flow.steps.forEach((step, index) => {
@@ -147,11 +146,7 @@ function stepsProblems(flow, facts) {
     if (!STEP_KINDS.includes(step.kind)) {
       problems.push(`step ${step.id} has the kind "${step.kind}", not one of ${STEP_KINDS.join(', ')}`)
     }
-    if (!repos.includes(step.repo)) {
-      problems.push(
-        `step ${step.id} names the repository "${step.repo}", which the flow's "repos" setting does not hold (${repos.join(', ')})`
-      )
-    }
+    problems.push(...stepRepoProblems(step, flow.settings))
     for (const need of step.needs) {
       const earlier = flow.steps.slice(0, index).some((other) => other.id === need)
       if (!earlier) {
