@@ -30,4 +30,4 @@ The framework is this repository ([entry file]({{rel:documents.rules}}), section
 
 1. The change reaches projects through the distributable paths of `framework.json`; write a changelog fragment in `changelog.d/` that says what a project must do about it, and a migration note when it must do something.
 2. Tests for every new behavior; run `{{commands.lint}}`, `{{commands.typecheck}}`, `{{commands.test}}` and `{{commands.docsCheck}}`.
-3. The pull request follows the entry file. A change to a contract (design §1.4) or to the meaning of a core rule needs the owner's approval in it, and a major version.
+3. The pull request follows the entry file. A change to a contract (design §1.4) or to the meaning of a core rule needs the owner's approval in it, and a major version. A flow the owner started may give that approval for a contract at the level of its `contract.change` (the procedure `run-flow`); the pull request then cites the flow's decision entry.
