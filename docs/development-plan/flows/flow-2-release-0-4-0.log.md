@@ -137,3 +137,15 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **For the owner:** (1) confirm the contract change of 2.11 (a session starts in the mode of the flow's `permissions`), or say to revert it (the entry of 01:20); (2) whether to add the flow's `allow` rules to `.claude/settings.json`, and whether to widen the list with read-only tools (`grep`, `cat`, `head`, `tail`, `npx prettier`), as both workers asked; (3) optionally, a wake-up test of a `claude -p` worker.
 - **Usage:** 5-hour 33% (resets 2026-11-06T03:40:00Z) · weekly 35% (resets 2026-11-10T07:00:00Z) (Pro); steps 1 and 1a used 17% and 16% of the 5-hour window against estimates of 60% and 40%.
 - **Next step:** at the owner's answer, "Continue flow 2": step 2 (task 2.6, 3 SP, Sonnet), the gate says GO at the current use; started from the owner's message, the session start should not be refused.
+
+### 2026-11-06 23:55 — decision D3: the contract change of 2.11, decided under the new level `contract.change` (the answer to the entry of 01:20)
+- **Options:** as in the entry of 01:20: (a) accept the change (a session starts in the mode of the flow's `permissions`); (b) ask the owner; (c) revert it.
+- **Own analysis:** the owner did not answer the question of 01:20; instead the owner moved a change of the meaning of a contract from what a flow may never decide to a level of the flow ("I want the changes of contract to be among the askAt D levels not at hard limit"; issue I-20, #150, merged). The kind `contract.change` is D3 by default, and this flow is seamless, so the orchestrator decides it. (a): the change is the "What is wanted" of 2.7 before its split, which the owner confirmed as discussed, it is additive (an adapter whose application takes no mode still conforms), tested, and in `develop` only; (c) would undo it for nothing.
+- **Worker's recommendation:** the worker of step 1a asked for D3 and the owner's review (now this level).
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode), under the level the owner gave it; for the owner's review later. The record of step 1a (#149) and this entry are the approval that #148 cites.
+
+### 2026-11-06 23:55 — stop: paused by the owner
+- **Done:** steps 1 and 1a; I-20 (#150) made a contract change a level of a flow, at the owner's request.
+- **Decided alone (review later):** as in the stop of 01:22, and the contract change of 2.11 (D3, the entry above).
+- **For the owner:** the flow's `allow` list and the project's allow rules (read-only tools that both workers asked for); optionally, the wake-up test of a `claude -p` worker.
+- **Next step:** at "Continue flow 2": step 2 (task 2.6, 3 SP, Sonnet); read the usage and run the gate first.
