@@ -71,7 +71,7 @@ Stop when this step is done, or earlier if you are blocked or a decision is need
 End with a step report, in this order:
 - Status: done, partial or blocked.
 - The pull requests merged, and the ids done.
-- Open decisions, each with its options and the level you suggest (D0 to D4).
+- Open decisions, each with its options and the level you suggest (D0 to D4); a change of the meaning of a contract that your work made is one of them.
 - Deviations from the scope, and reports filed.
 - The next step.
 - Recommendations, last and under a heading of their own, each with why: the orchestrator reads them after it has made its own pick.

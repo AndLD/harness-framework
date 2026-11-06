@@ -834,7 +834,7 @@ After 17.15 the framework is a project of its own, run by its own method:
 - **Where changes come from.** A finding of kind "fix in the framework" in a consuming project's review, a defect found in use, or a new adapter.
   Each becomes an issue or a pull request in the framework repository (section 1.3). Consuming projects take a release with a sync pull request
   of their own.
-- **Who decides.** The owner approves every major version and every change to the meaning of a core rule (section 1.4); a flow the owner started may cut a release or answer a report at the level its settings give it (section 12). Minor and patch
+- **Who decides.** The owner approves every major version and every change to the meaning of a core rule (section 1.4); a flow the owner started may cut a release, answer a report or approve a change of the meaning of a contract at the level its settings give it (section 12). Minor and patch
   releases follow the framework's own merge rules, as plan work does here.
 - **Releases.** A tag and its changelog section; the release workflow also rebuilds the template repository (section 6.2).
 - **Sessions.** Framework work runs in a session opened in the framework repository. A session in `bot-rts` pushes there only with the
@@ -882,7 +882,7 @@ local list of prompts, one session per step, and the order of the releases was a
 - **Decisions are levelled, not all-or-nothing.** D0 mechanical, D1 local, D2 plan-shaping, D3 contract or scope, D4 external communication. Brainstorm asks the owner from a
   threshold (`askAt`, D2 by default) up; seamless decides everything and leaves a digest to review later. Hard limits (an administrator's bypass, a cut on a red check, the
   non-negotiables, a force-push or a deleted remote branch) are outside every mode, and what the entry file keeps for the owner stays the owner's until a rule gives it to a
-  flow at a level (task 5.3: release cuts and answers to reports).
+  flow at a level (task 5.3: release cuts and answers to reports; issue I-20: a change of the meaning of a contract, `contract.change`, D3 by default).
 - **Unbiased analysis.** A worker's recommendation anchors whoever reads it first, so the orchestrator writes its own pick from the plan and the design before it reads the
   worker's, and answers the worker's argument when they differ. The log keeps both, so the owner can audit a seamless run.
 - **Executors are adapter work** (task 5.5). A controlled session by default, a subagent for short analysis, manual (the owner pastes) as the fallback. The runtime contract

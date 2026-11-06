@@ -15,13 +15,13 @@ A flow is a file of the plan's flows folder (the profile, plan section): an orde
 | D0 | mechanical | retry a flaky check, rerun the plan summary |
 | D1 | local: a worker's choice inside its task | a name, a test layout, a development version cut (default) |
 | D2 | plan-shaping | add, move or defer a task; insert or split a step; change a step's model; move a release between flows |
-| D3 | contract or scope | a core rule, an adapter contract, what a release promises its consumers, a dropped feature, a final cut or a hotfix (default) |
+| D3 | contract or scope | a core rule, a change of the meaning of a contract (default), what a release promises its consumers, a dropped feature, a final cut or a hotfix (default) |
 | D4 | external communication | answering or closing a report on the host (default) |
 
 The flow's `levels` setting may move a decision kind to another level. **Brainstorm** (the default mode) decides below `askAt` (D2 when the settings leave it out) and asks the owner from `askAt` up. **Seamless** decides every level and keeps a "review later" digest of its D2 to D4 decisions. In either mode:
 
 - **Hard limits** that no mode and no setting crosses: an administrator's bypass of the host's rules, a cut on a red check, the non-negotiables of the entry file, a force-push or the deletion of a remote branch.
-- **What the entry file keeps for the owner stays the owner's**, except where its rules give it to a flow at a level: a release or hotfix cut (the procedure `release`, "When a flow cuts") and an answer or a closing of a report (the procedure `triage-reports`), each by the flow's `levels`. Anything else they keep for the owner (a change of the meaning of a core rule or a non-negotiable, another merge into the production branch, creating a report on the host): stop and ask, whatever the mode.
+- **What the entry file keeps for the owner stays the owner's**, except where its rules give it to a flow at a level: a release or hotfix cut (the procedure `release`, "When a flow cuts"), an answer or a closing of a report (the procedure `triage-reports`), and a change of the meaning of a contract (`contract.change`: the worker names the change as an open decision of its step report, the orchestrator decides it as any other, the pull request of the change cites the decision entry of the flow's log as the approval, or the step's record does when the change merged first, and a refusal reverts it), each by the flow's `levels`. Anything else they keep for the owner (a change of the meaning of a core rule or a non-negotiable, another merge into the production branch, creating a report on the host): stop and ask, whatever the mode.
 - A step's "Stops for" column stops the flow at that step whatever the mode.
 
 ## Steps

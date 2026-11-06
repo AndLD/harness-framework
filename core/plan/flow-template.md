@@ -19,7 +19,8 @@ The orchestrator reads this block (the procedure `run-flow`); a setting left out
     "cut.final": "D3",
     "cut.hotfix": "D3",
     "reports.answer": "D4",
-    "reports.close": "D4"
+    "reports.close": "D4",
+    "contract.change": "D3"
   },
   "executor": "session",
   "reuse": "auto",

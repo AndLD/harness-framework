@@ -22,7 +22,8 @@ export const FLOW_DEFAULTS = Object.freeze({
     'cut.final': 'D3',
     'cut.hotfix': 'D3',
     'reports.answer': 'D4',
-    'reports.close': 'D4'
+    'reports.close': 'D4',
+    'contract.change': 'D3'
   },
   executor: 'session',
   reuse: 'auto',
