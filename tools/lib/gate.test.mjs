@@ -278,6 +278,16 @@ test('a failed step prints where its output is and its failing lines only, at mo
   assert.equal(readFileSync(result.files.at(-1), 'utf8').split('\n').length, 260, 'the file holds everything')
 })
 
+test('the gate runs the quiet variant of a test step, and the plain one with --verbose', async () => {
+  const quiet = await gateRun({ prepare: async () => ({}) })
+  assert.ok(
+    quiet.ran.some((command) => command.includes('--reporters=summary')),
+    'the quiet variant ran'
+  )
+  const loud = await gateRun({ verbose: true, prepare: async () => ({}) })
+  assert.ok(!loud.ran.some((command) => command.includes('--reporters=summary')), 'the plain command ran')
+})
+
 test('a need is prepared once, before the first step that has it; when the preparation stops the push, nothing runs', async () => {
   const prepared = []
   const passed = await gateRun({ prepare: async (need) => void prepared.push(need) })

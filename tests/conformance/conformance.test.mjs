@@ -330,3 +330,36 @@ test('a transcripts role whose parse or locate does not meet the contract fails 
   })
   assert.deepEqual(failedNames(await runSuite({ dir, only: /^transcripts/ })), [])
 })
+
+test('the stack presets fill the quiet-commands role; a stack whose quiet variant is the plain command or is missing fails its check, and one without the role skips it', async () => {
+  for (const name of ['node-ts', 'python']) {
+    const manifest = JSON.parse(readFileSync(join(adapterDir('stack', name), 'manifest.json'), 'utf8'))
+    assert.ok(manifest.roles['quiet-commands'], `${name} fills the role`)
+  }
+  const title =
+    'quiet commands: every command the stack defaults has a quiet variant that differs from it, and a quiet step of the gate names its arguments'
+  const same = broken('stack', 'node-ts', {
+    'manifest.json': json((manifest) => {
+      manifest.defaults.commands.lintQuiet = manifest.defaults.commands.lint
+      return manifest
+    })
+  })
+  const suite = await runSuite({ dir: same, only: /^quiet commands/ })
+  assert.deepEqual(failedNames(suite), [title])
+  assert.match(failed(suite)[0].message, /lintQuiet is the plain command/)
+  const none = broken('stack', 'node-ts', {
+    'manifest.json': json((manifest) => {
+      for (const key of Object.keys(manifest.defaults.commands))
+        if (key.endsWith('Quiet')) delete manifest.defaults.commands[key]
+      return manifest
+    })
+  })
+  assert.deepEqual(failedNames(await runSuite({ dir: none, only: /^quiet commands/ })), [title])
+  const without = broken('stack', 'node-ts', {
+    'manifest.json': json((manifest) => {
+      delete manifest.roles['quiet-commands']
+      return manifest
+    })
+  })
+  assert.deepEqual(failedNames(await runSuite({ dir: without, only: /^quiet commands/ })), [])
+})

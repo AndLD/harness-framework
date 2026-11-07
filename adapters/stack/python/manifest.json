@@ -69,6 +69,9 @@
       "fills": "`.python-version`, `.nvmrc` (the harness tools run on Node), a root `pyproject.toml` with the uv workspace, the development tools and the configuration of ruff, mypy and coverage.py, a `pyproject.toml`, a first module and its test in each package (at the root when the project has none), and the ignore lines of its tools; no uv.lock, which the project creates with `uv lock`",
       "module": "scaffold.mjs",
       "export": "scaffoldFiles"
+    },
+    "quiet-commands": {
+      "fills": "`--quiet` for Ruff, `--no-error-summary` for mypy and `-q` for pytest; the gate's steps use the same options"
     }
   },
   "enforces": [
@@ -107,7 +110,11 @@
       "docsCheck": "node harness/tools/harness.mjs check all",
       "harnessSync": "node harness/tools/harness.mjs sync",
       "harnessSyncLocal": "node harness/tools/harness.mjs sync --local",
-      "harnessDiff": "node harness/tools/harness.mjs diff"
+      "harnessDiff": "node harness/tools/harness.mjs diff",
+      "lintQuiet": "uv run ruff check --quiet .",
+      "typecheckQuiet": "uv run mypy --no-error-summary .",
+      "testQuiet": "uv run pytest -q",
+      "testCoverageQuiet": "uv run coverage run -m pytest -q"
     },
     "versions": {
       "runtime": "Python 3.12 (the harness tools run on Node.js 22 LTS)"

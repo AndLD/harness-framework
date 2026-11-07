@@ -196,7 +196,10 @@ export async function runGate({
   let counter = 0
   const outputOf = (step) => (folder ? join(folder, `${(counter += 1)}-${step.label.replace(/\W+/g, '-')}.log`) : null)
   let current = null
-  const runStep = (step, at) => run(step, at, stepEnv, { file: (current = outputOf(step)) ?? undefined })
+  const runStep = (step, at) =>
+    run(!verbose && step.quiet ? { ...step, ...step.quiet } : step, at, stepEnv, {
+      file: (current = outputOf(step)) ?? undefined
+    })
   const files = changedFiles(root, rangesOfPush(stdin, profile.branches.integration))
   const plan = planPush(files, { profile, stacks, exists: (file) => existsSync(join(root, file)) })
 
