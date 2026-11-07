@@ -165,3 +165,9 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Decided alone (review later):** as in the stop of 2026-11-06 23:55.
 - **Usage:** read at the start of step 2: 5-hour 18%, weekly 41% (Pro).
 - **Next step:** at "Continue flow 2": read the report of step 2's worker (local_c7c56016-5645-47e3-8128-41cc660f5441, by `list_events`), log "step 2 ended" with the usage after it, then step 3 (task 2.3).
+
+### 2026-11-07 11:00 — decision D3: the workers of this flow start in the mode `auto`
+- **Options:** (a) keep `acceptEdits`; (b) `auto`, where the runtime's classifier judges each command and refuses only the risky ones; (c) a more permissive mode.
+- **Own analysis:** none was needed: the `permissions` setting is the owner's choice. What led to it: the worker of step 2 started in `acceptEdits` with the flow's tools as allow rules of the owner's local settings, and still asked the owner for almost every command, because the runtime asks in that mode for what it cannot check before it runs, whatever the rules: shell operators (`&&`, pipes, subshells, redirections), nested commands (`$(…)`), and heredocs with braces and quotes ("expansion obfuscation"). The owner set that worker's session to `auto` by hand during the step.
+- **Worker's recommendation:** none.
+- **Choice:** (b), `"mode": "auto"`; the `allow` list stays · **Decided by:** the owner ("yes", to the question whether the flow's mode should be `auto`).
