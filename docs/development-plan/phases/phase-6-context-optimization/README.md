@@ -21,7 +21,7 @@ Planned with the owner on 2026-11-05, after a measurement of the long session th
 | [6.6](./6.6.md) | Delegating verbose reading to a subagent | C2 | 2 | ✅ |
 | [6.7](./6.7.md) | Agent briefs and section reads of the documents, decided on the audit's numbers | C3 | 2 | ✅ |
 | [6.8](./6.8.md) | The phase reaches consumers: distribution, the notes and a consumer fixture | C2 | 2 | ✅ |
-| [6.9](./6.9.md) | The first consumer takes the phase, and the fall is measured | C2 | 1 | ⬜ |
+| [6.9](./6.9.md) | The first consumer takes the phase, and the fall is measured | C2 | 1 | ✅ |
 <!-- phase-tasks:end -->
 
 Task status: ⬜ not started · 🟡 in progress (branch noted in the task's log) · ✅ done. Agent: the task's agent-complexity marker (plan method, section 7); a plan without markers leaves the column out.

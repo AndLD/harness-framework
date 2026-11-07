@@ -26,3 +26,18 @@ test('a procedure cites the quiet variant, which is the plain command in a proje
   assert.equal(quiet, 'Run `Lq` and `T`.\n')
   assert.throws(() => renderProcedure(procedure, { commands: {} }, 'x.md'), /needs the profile roles/)
 })
+
+test('the node-ts preset gives the quiet defaults of a single package, including typecheck and format, and says the workspaces form', async () => {
+  const { readFileSync } = await import('node:fs')
+  const manifest = JSON.parse(
+    readFileSync(new URL('../../adapters/stack/node-ts/manifest.json', import.meta.url), 'utf8')
+  )
+  const commands = manifest.defaults.commands
+  assert.equal(commands.typecheckQuiet, 'npm run --silent typecheck')
+  assert.equal(commands.formatQuiet, 'npm run --silent format -- --log-level warn')
+  assert.equal(commands.testQuiet, 'npm test --silent -- --reporters=summary --silent')
+  assert.match(
+    manifest.roles['quiet-commands'].fills,
+    /npm run --silent test --workspaces --if-present -- --reporters=summary --silent/
+  )
+})

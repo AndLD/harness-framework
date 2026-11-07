@@ -94,6 +94,15 @@ test('a session of the app is found through its file, a worker of the command li
   writeFileSync(join(projects, '-repo--claude-worktrees-flow-1-step-2', 'a.jsonl'), FIXTURE)
   writeFileSync(join(projects, '-repo--claude-worktrees-flow-1-step-2', 'b.jsonl'), FIXTURE)
   const roots = { apps: [apps], projects: [projects] }
+  const uuid = '09154421-b18d-4603-a9c1-0016ab4c1458'
+  mkdirSync(join(projects, '-elsewhere'), { recursive: true })
+  writeFileSync(join(projects, '-elsewhere', `${uuid}.jsonl`), FIXTURE)
+  const byId = locate({ ids: [uuid, '11111111-2222-3333-4444-555555555555'], roots })
+  assert.deepEqual(
+    byId.found.map((each) => each.id),
+    [uuid]
+  )
+  assert.deepEqual(byId.missing, ['11111111-2222-3333-4444-555555555555'])
   const { found, missing } = locate({ ids: ['local_abc', 'flow-1-step-2', 'local_gone', 'nobody'], roots })
   assert.deepEqual(
     found.map((each) => each.id),
