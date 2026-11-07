@@ -31,4 +31,5 @@ It is read to find out whether a new report is a problem that was fixed already.
 | [I-22](./I-22.md) | A bootstrap does not create the folder of the off-plan record | bootstrap and sync | 1 | — |
 | [I-23](./I-23.md) | The take of a version names no services that the project's gate needs | procedures | 1 | — |
 | [I-24](./I-24.md) | The tests fail on the tree that `harness release` leaves before its commit | checks | 1 | — |
+| [I-25](./I-25.md) | The list of notes in `migrations/README.md` is written by hand and stops at `0.2.0` | bootstrap and sync | 1 | — |
 <!-- issue-queue:end -->

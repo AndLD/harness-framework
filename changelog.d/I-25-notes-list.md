@@ -1,0 +1,1 @@
+Added: `harness check notes` (part of `harness check all`) fails when a note of the migrations folder has no line in the section "The notes" of its `README.md`, or a line has no note; a project without that section is not checked. Nothing to do for a project.
