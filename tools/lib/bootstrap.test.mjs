@@ -126,6 +126,15 @@ test('the scaffold writes a backlog only for a project that names the role, with
   assert.match(files['docs/development-plan/README.md'], /<!-- plan-backlog:start -->\n<!-- plan-backlog:end -->/)
 })
 
+test('a new project gets the off-plan record folder from the starter, and a profile without the role gets none', () => {
+  const profile = withDefaults(readSchema(), completeProfile(ANSWERS))
+  assert.equal(profile.paths.offPlan, 'docs/development-plan/off-plan')
+  const files = Object.fromEntries(scaffoldPlan({ profile, modules }).map(({ path, content }) => [path, content]))
+  assert.ok(files['docs/development-plan/off-plan/README.md'].startsWith('[← Development plan](../README.md)'))
+  const bare = { ...profile, paths: { ...profile.paths, offPlan: undefined } }
+  assert.ok(!scaffoldPlan({ profile: bare, modules }).some(({ path }) => path.includes('off-plan/')))
+})
+
 test('the scaffold writes the product-knowledge skeleton, which the entry file points to and the product-knowledge check accepts', () => {
   const profile = withDefaults(readSchema(), completeProfile(ANSWERS))
   const files = Object.fromEntries(scaffoldPlan({ profile, modules }).map(({ path, content }) => [path, content]))
