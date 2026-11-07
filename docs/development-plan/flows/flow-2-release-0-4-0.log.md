@@ -337,3 +337,9 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis:** (a). The level D1 is below the flow's `askAt` and the flow is seamless; the note is complete (the review above); the four checks of #173 were green at `8432248` (`changes`, `pr-title`, `static checks`, `verify`); a development tag has no `v` and publishes nothing. The worker's report said to merge #173 by merge commit first: that is the final cut's way; a development version is tagged on its release branch and merges nothing into `main` (the procedure `release`, "When a flow cuts", and flow 1's cut of `0.3.0-dev.1`).
 - **Worker's recommendation:** merge #173, then tag from a local branch at the merge commit (I-17): not taken, as above; the tag was pushed from a local branch at the release head, the spirit of I-17.
 - **Choice:** (a): the annotated tag `0.4.0-dev.1` on `8432248`, pushed · **Decided by:** the orchestrator (seamless mode); no merge into `main`.
+
+### 2026-11-07 14:30 — stop: usage
+- **Done:** steps 1 to 7a; `0.4.0-dev.1` is tagged.
+- **Decided alone (review later):** as in the stop of 13:50, and the cut of `0.4.0-dev.1` (D1, 14:25).
+- **Usage:** 5-hour 79% (resets 2026-11-07T13:30:00Z) · weekly 51% (resets 2026-11-10T07:00:00Z) (Pro). `harness flow gate 2 7b` says WAIT: the take (2 SP) is estimated at 5.2% of the 5-hour window by the calibrated table, 6.2% with the factor, which passes 85%. The calibrated estimate is a fair one, unlike the gate's WAIT before step 5, so the orchestrator waits.
+- **Next step:** after the reset at 15:30, step 7b: bot-rts takes `0.4.0-dev.1` (its lock names `0.3.0` now, so the take reads one final note), started on `cli` in the consumer's folder, logged as the fallback of a session.
