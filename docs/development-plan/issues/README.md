@@ -20,5 +20,4 @@ A request for something new, which is not a defect, is an item of the [backlog](
 | [I-17](./I-17.md) | Pushing the tag of a release from the branch of the work fails the migration tests, and the procedure `release` does not say from which branch to push it | procedures | C1 | 1 | ⬜ | — |
 | [I-18](./I-18.md) | A pull request that the update workflow brings up to date is left BLOCKED, because the required `pr-title` check of the new head never runs | checks | C1 | 2 | ⬜ | — |
 | [I-19](./I-19.md) | The pre-push hook of a linked worktree runs the main checkout's tools, so it checks the worktree's generated files against the wrong `core/` | Git rules | C1 | 1 | ⬜ | — |
-| [I-21](./I-21.md) | A flow cannot ask its workers for plain commands, which a strict permission mode would let through | procedures | C2 | 1 | 🟡 | — |
 <!-- issue-queue:end -->

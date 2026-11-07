@@ -25,7 +25,8 @@ export const ENTRY_HEADING =
 const SETTING_VALUES = {
   executor: EXECUTORS,
   reuse: ['auto', 'never'],
-  commits: ['per-step', 'per-cut']
+  commits: ['per-step', 'per-cut'],
+  commands: ['any', 'plain']
 }
 
 /** The part of a log text under "## Entries", outside fenced blocks, split into its `###` headings: `[{ heading, line }]`. */
