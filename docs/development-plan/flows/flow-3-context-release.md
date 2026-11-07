@@ -39,7 +39,7 @@ Phase 6 (context optimization for agents and consumers), in the release `0.5.0` 
 | 9b | consumer-take | consumer | `0.5.0-dev.1` | 9a | — | 2 | 0.5% | C2 | ✅ |
 | 9c | tasks | home | 6.9 | 9b | — | 1 | 1.6% | C2 | ✅ |
 | 9d | decision | home | what the take of `0.5.0-dev.1` and 6.9 found: fix steps and a `dev.2`, or the final cut | 9c | — | 1 | 0.3% | — | ✅ |
-| 9e | tasks | home | I-31, I-32 | 9d | — | 2 | 0.5% | C1 | ⬜ |
+| 9e | tasks | home | I-31, I-32 | 9d | — | 2 | 0.5% | C1 | ✅ |
 | 9f | cut | home | `0.5.0` | 9e | — | 1 | 0.7% | C2 | ⬜ |
 
 State: ⬜ not started · 🟡 running · ⏸ waits for the owner · ⛔ blocked · ✅ done. The State column is a cache of the repository's state; the log is the record.

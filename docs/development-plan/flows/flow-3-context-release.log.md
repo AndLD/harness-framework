@@ -362,3 +362,22 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Options:** (a) not an escalation; (b) escalate (a step over twice its estimate).
 - **Own analysis:** (a). The 5-hour reading rose 4 points against an estimate of 1.8%: twice over on paper, but the readings are whole percents and the window also holds this orchestrator's own work over the step (the note review, the cut, two records); the weekly window rose 0 against 0.3%. Steps 7, 8a and 9b came in far under their estimates.
 - **Choice:** (a) · **Decided by:** the orchestrator.
+
+### 2026-11-07 21:45 — step 9e started
+- **Executor:** cli, the fallback of session: the app refuses a session start on a turn that a background task's end began · **Worker:** `claude -p` named flow-3-step-9e, in a detached worktree of `origin/develop` · **Account:** nil10035@gmail.com · **Model:** Sonnet 5.5 at medium effort · **Permissions:** auto · **Estimate:** 2 SP, 5-hour 3.6%, weekly 0.5%
+- **Usage before:** 5-hour 72% (resets 2026-11-07T20:10:00Z) · weekly 86% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-07 21:58 — step 9e ended: done
+- **Usage after:** 5-hour 76% (resets 2026-11-07T20:10:00Z) · weekly 87% (resets 2026-11-08T21:00:00Z) · **Measured:** 5-hour +4%, weekly +1%, against an estimate of 5-hour 3.6% and weekly 0.5% (3.40 M cache-read and 25k output tokens, $0.90 at list price, 13 minutes) · **Pull requests merged:** #213 (I-31), #214 (I-32) · **Ids done:** I-31, I-32 · **Worker:** cli c35507ef-c3c3-4014-950c-a53d7e9de235, 49 turns
+- **Report:** I-31: the node-ts preset gives `typecheckQuiet` and `formatQuiet`; its test defaults are for a single package, and the role and the fragment `I-31-quiet-test-commands.md` give the form a workspaces root writes (not the default, since it fails without workspaces); not run on the real root. I-32: the audit reads the command-line workers from the "step ended" entries and finds a transcript by id in any project folder; a reused session is split by step by time (approximate: the log's minutes); `harness flow audit 3` reads 10 sessions (13 rows by step) instead of 2, flow 2 reads 7. 845 tests pass.
+
+### 2026-11-07 21:58 — decision D1: `locate` of the runtime role `transcripts` takes a session's id
+- **Options:** (a) an addition inside the optional role, not a change of the meaning of the contract; (b) a `contract.change`.
+- **Own analysis** (written before the worker's recommendations): (a). The role is the one approved at 17:38 as optional; `locate` finding a transcript by an id as well as by a name widens what it accepts and breaks no adapter. Logged so that the final note can name it.
+- **Worker's recommendation:** (a), D1.
+- **Choice:** (a) · **Decided by:** the orchestrator.
+
+### 2026-11-07 21:58 — decision D1: the recommendations of step 9e
+- **Options:** for each, take or leave.
+- **Own analysis:** the worker line of a "step ended" entry in one fixed form (`Worker: cli <id>`): taken, it is the form this log uses. The workspaces form of `testQuiet` checked on the consumer's root: handed to the take of `0.5.0`, which is the consumer's owner's to start; named in the digest.
+- **Choice:** as above · **Decided by:** the orchestrator.
