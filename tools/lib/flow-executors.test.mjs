@@ -6,9 +6,11 @@ import {
   EXTERNAL_REASON,
   MANUAL_EXECUTOR,
   PROMPT_SLOT,
+  cachePacing,
   decideReuse,
   dispatchStep,
   nextInOrder,
+  orchestratorContext,
   pickExecutor,
   pickStepExecutor,
   previousWorker,
@@ -434,4 +436,31 @@ test('a step in another repository goes to the command line with the reason, unl
   )
   assert.equal(pickStepExecutor({ flow: external, step, executors: all }).kind, 'manual', 'the folder is not set')
   assert.equal(pickStepExecutor({ flow: external, step: STEPS[0], executors: all }).kind, 'session', 'a home step')
+})
+
+test("the orchestrator's context against its limit: below, at and above it, not read, and a runtime that cannot read it (task 6.5)", () => {
+  const check = (context, settings = {}, own = executor) =>
+    orchestratorContext({ flow: flowOf(STEPS, settings), context, executor: own })
+  assert.deepEqual([check(49).state, check(50).state, check(80).state], ['below', 'at', 'at'])
+  assert.match(check(49).lines[0], /49% of its window, below its limit of 50%/)
+  assert.match(
+    check(50).lines.join('\n'),
+    /at or above its limit of 50%: write a handoff entry in the log .* new orchestrator session/
+  )
+  assert.equal(check(40, { orchestratorLimits: { context: 30 } }).state, 'at', "the flow's own limit")
+  assert.equal(check(null).state, 'unread')
+  assert.match(check(null).lines.join('\n'), /--orchestrator <percent>/)
+  const blind = check(null, {}, { ...executor, context: () => [] })
+  assert.equal(blind.state, 'unreadable')
+  assert.match(blind.lines[0], /cannot read it; hand the flow over by your own judgment/)
+})
+
+test("the cache hint says whether the next step starts inside the previous worker's cache window, and a start past it is logged cold (task 6.5)", () => {
+  const hint = (now, flow = flowOf(STEPS), w = worker) => cachePacing({ flow, executor, worker: w, now }).join('')
+  assert.match(hint('2026-11-04 10:20'), /20 minutes ago, so its prompt cache lives 40 more minutes: .* warm/)
+  assert.match(hint('2026-11-04 11:30'), /90 minutes ago, past the 60 minutes .* cold .*--start cold/)
+  assert.match(hint('2026-11-04 10:20', flowOf(STEPS, { reuseLimits: { cacheMinutes: 5 } })), /past the 5 minutes/)
+  assert.deepEqual(cachePacing({ flow: flowOf(STEPS), executor, worker: null, now: '2026-11-04 10:20' }), [])
+  const lines = dispatchOrdered({ step: STEPS[1], logText: '', orchestrator: 70 }).lines.join('\n')
+  assert.match(lines, /Orchestrator context: 70% of its window, at or above its limit of 50%/)
 })

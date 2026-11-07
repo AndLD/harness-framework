@@ -51,7 +51,7 @@ returns a list of **means**, the first preferred, empty when the runtime cannot 
 | `start` | `{ prompt, model, effort, cwd, name, permissions }` | starts a worker with a model and an effort in the step's repository |
 | `continue` | `{ worker, prompt, model, effort, cwd, permissions }` | gives the worker that ran the previous step its next prompt |
 | `report` | `{ worker }` | fetches the worker's full final report (the notice of its end may be cut short) |
-| `context` | `{ worker }` | reads the worker's context in percent of its window; empty: never reused |
+| `context` | `{ worker }` | reads the worker's context in percent of its window; empty: never reused. The orchestrator reads its own context by the same means (the `session` executor's, with its own session id), against the flow's `orchestratorLimits.context`; empty: it hands the flow over by its own judgment |
 | `permissions` (optional) | `{ permissions }` | returns one line of text (not means) saying what a worker will be allowed to do under the flow's `permissions` setting, and what happens when it is not set; `harness flow dispatch` prints it |
 | `account` (optional) | none | reads the account the orchestrator runs on, which a worker it starts runs on; absent or empty: accounts are not compared |
 
