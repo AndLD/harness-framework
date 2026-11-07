@@ -4,6 +4,7 @@
 import { spawnSync } from 'node:child_process'
 import { checkAdapters } from './adapters.mjs'
 import { checkChangelog } from './changelog.mjs'
+import { checkMarkers } from './conflict-markers.mjs'
 import { checkCore } from './core-scan.mjs'
 import { checkFlowsWithUsage } from './flow-usage-check.mjs'
 import { ADAPTER_RUNTIMES } from './runtimes.mjs'
@@ -67,6 +68,7 @@ export const CHECKS = {
     const { problems, count } = checkLinks({ root, indexedFolders: profile.checks?.indexedFolders })
     return { problems, messages: [`Checked links in ${count} Markdown files.`] }
   },
+  markers: (context) => single(checkMarkers(context)),
   paths: (context) => single(checkPaths(context)),
   core: (context) => single(checkCore(context)),
   plan: (context) => single(planSummary({ ...context, check: true })),

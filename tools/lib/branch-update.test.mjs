@@ -46,7 +46,7 @@ const git = (cwd, ...args) =>
   }).trim()
 
 // An origin with develop; a clone `work` on which task A (a.txt, shared.txt) is built, task B on top of A (shared.txt, b.txt), and A squash-merged into develop
-function stackedTasks({ afterSquash, laterOnA = false } = {}) {
+function stackedTasks({ afterSquash, laterOnA = false, sharedOnB = 'one\ntwo A\nthree B\n' } = {}) {
   const base = mkdtempSync(join(tmpdir(), 'branch-update-'))
   dirs.push(base)
   const origin = join(base, 'origin.git')
@@ -76,7 +76,7 @@ function stackedTasks({ afterSquash, laterOnA = false } = {}) {
 
   git(work, 'checkout', '--quiet', '-b', 'feature/b')
   write('b.txt', 'b\n')
-  write('shared.txt', 'one\ntwo A\nthree B\n')
+  write('shared.txt', sharedOnB)
   if (laterOnA) {
     write('d.txt', 'x\ny B\nm\nn\nz\n')
   }
@@ -187,4 +187,12 @@ test('the previous branch is not merged when this branch has it, and a conflict 
   const result = update(clash.work, { previous: 'feature/a' })
   assert.equal(result.code, 1)
   assert.match(result.problems[0], /conflicts in d\.txt\. This branch was made from an older commit of feature\/a/)
+})
+
+test('a file resolved to this branch that holds conflict markers is not committed as resolved, and the merge is left in progress', () => {
+  const { work } = stackedTasks({ sharedOnB: 'one\ntwo A\n<<<<<<<< HEAD:shared.txt\nthree B\n' })
+  const result = update(work, { previous: 'feature/a' })
+  assert.equal(result.code, 1)
+  assert.match(result.problems.join('\n'), /shared\.txt still hold\(s\) merge conflict markers/)
+  assert.equal(git(work, 'rev-parse', '-q', '--verify', 'MERGE_HEAD').length, 40)
 })
