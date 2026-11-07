@@ -103,3 +103,12 @@ test('a stack that owns only some folders plans only for those', () => {
   assert.deepEqual(result.coveragePackages, ['api'])
   assert.ok(result.steps.at(-1).args.includes('origin/main'))
 })
+
+test('the test steps carry a quiet variant: the summary reporter, with the same files and the coverage summary the gate reads', () => {
+  const related = run(['client/src/a.ts']).steps.find((step) => step.label.startsWith('tests related'))
+  assert.ok(related.quiet.args.includes('--reporters=summary') && related.quiet.args.includes('--silent'))
+  assert.ok(related.quiet.args.includes('--coverageReporters=json-summary'))
+  assert.equal(related.quiet.args.at(-1), 'src/a.ts', 'the related files stay last')
+  const whole = run(['client/jest.config.js']).steps.find((step) => step.label.includes('the whole package'))
+  assert.deepEqual(whole.quiet.args.slice(0, 5), ['run', '--silent', 'test:coverage', '-w', 'client'])
+})

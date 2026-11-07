@@ -486,6 +486,23 @@
           "type": "string",
           "description": "Tests with the coverage gate."
         },
+        "lintQuiet": {
+          "type": "string",
+          "description": "Lint with the output reduced to the findings (task 6.3); an agent runs it instead of `lint`. Absent: the plain command."
+        },
+        "typecheckQuiet": { "type": "string", "description": "Typecheck with the output reduced to the failures." },
+        "formatQuiet": {
+          "type": "string",
+          "description": "The format check with the output reduced to the files that differ."
+        },
+        "testQuiet": {
+          "type": "string",
+          "description": "The tests with the output reduced to the failing tests and a total."
+        },
+        "testCoverageQuiet": {
+          "type": "string",
+          "description": "The tests with the coverage gate, the output reduced to the failures, the total and the figure."
+        },
         "changedCoverage": {
           "type": "string",
           "description": "The coverage of the changed files."

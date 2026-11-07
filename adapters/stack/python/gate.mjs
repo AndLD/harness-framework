@@ -20,6 +20,13 @@ const rootOf = (pkg) => '../'.repeat(pkg.split('/').length)
 
 const uv = (label, ...args) => ({ label, command: 'uv', args: [...UV, ...args] })
 
+// The step with its quiet variant (the role `quiet-commands`): the same command with the flag of its tool that reduces the output to the failures
+const AFTER_TOOL = UV.length + 1
+const quietly = (step, flag, at) => ({
+  ...step,
+  quiet: { args: [...step.args.slice(0, at), flag, ...step.args.slice(at)] }
+})
+
 export function plan({ files, packages, integration, exists, isolated = () => false }) {
   const steps = []
   // Files of no package (the root configuration, the lock file, the hooks) can change every package: the full run
@@ -29,22 +36,34 @@ export function plan({ files, packages, integration, exists, isolated = () => fa
     : packages.filter((pkg) => files.some((file) => packageOf(file, packages) === pkg))
 
   if (isShared) {
-    steps.push(uv('lint', 'ruff', 'check', '.'), uv('typecheck', 'mypy', '.'))
+    steps.push(
+      quietly(uv('lint', 'ruff', 'check', '.'), '--quiet', AFTER_TOOL + 1),
+      quietly(uv('typecheck', 'mypy', '.'), '--no-error-summary', AFTER_TOOL)
+    )
   } else {
     for (const pkg of touched) {
-      steps.push(uv(`lint ${pkg}`, 'ruff', 'check', pkg), uv(`typecheck ${pkg}`, 'mypy', pkg))
+      steps.push(
+        quietly(uv(`lint ${pkg}`, 'ruff', 'check', pkg), '--quiet', AFTER_TOOL + 1),
+        quietly(uv(`typecheck ${pkg}`, 'mypy', pkg), '--no-error-summary', AFTER_TOOL)
+      )
     }
   }
   const formatted = files.filter((file) => PYTHON.test(file) && exists(file))
   if (formatted.length) {
-    steps.push(uv('format changed files', 'ruff', 'format', '--check', '--force-exclude', ...formatted))
+    steps.push(
+      quietly(
+        uv('format changed files', 'ruff', 'format', '--check', '--force-exclude', ...formatted),
+        '--quiet',
+        AFTER_TOOL + 1
+      )
+    )
   }
 
   for (const pkg of touched) {
     const config = `--rcfile=${rootOf(pkg)}pyproject.toml`
     steps.push(
       {
-        ...uv(`tests of ${pkg} (the whole package)`, 'coverage', 'run', config, '-m', 'pytest'),
+        ...quietly(uv(`tests of ${pkg} (the whole package)`, 'coverage', 'run', config, '-m', 'pytest'), '-q', 99),
         cwd: pkg,
         package: pkg,
         // A run that fails or finds no tests must not leave the coverage of an earlier run to be judged
