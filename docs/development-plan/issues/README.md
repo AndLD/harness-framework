@@ -16,4 +16,5 @@ A request for something new, which is not a defect, is an item of the [backlog](
 | ----- | ----- | ---- | ----- | -- | ------ | -------- |
 | [I-30](./I-30.md) | The bootstrap does not ask for the flows' default permissions | bootstrap and sync | C2 | 2 | ⬜ | — |
 | [I-31](./I-31.md) | The node-ts quiet test commands do not reach Jest from a workspaces root, and two quiet defaults are missing | stack adapters | C1 | 1 | ⬜ | — |
+| [I-32](./I-32.md) | `harness flow audit` misses the command-line workers of a flow | checks | C1 | 1 | ⬜ | — |
 <!-- issue-queue:end -->

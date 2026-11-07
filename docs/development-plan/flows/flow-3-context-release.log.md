@@ -338,3 +338,27 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Worker's recommendation:** the same fix (defaults for a workspaces root, the two missing defaults); report the logger upstream: it is the project's own, so it is named in the digest, not recorded.
 - **Choice:** (a) · **Decided by:** the orchestrator (seamless mode).
 - **The State of 9b:** ✅ for the flow, as step 7b of flow 2: the take is done and its draft waits for that repository's owner; `harness flow status` shows it 🟡 until AndLD/bot-rts#304 merges, and 9c needs the take's report and transcripts, not its merge.
+
+### 2026-11-07 21:37 — step 9c started
+- **Executor:** cli, the fallback of session: the app refuses a session start on a turn that a background task's end began · **Worker:** `claude -p` named flow-3-step-9c, in a detached worktree of `origin/develop` · **Account:** nil10035@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 1 SP, 5-hour 1.8%, weekly 0.3%
+- **Usage before:** 5-hour 66% (resets 2026-11-07T20:10:00Z) · weekly 86% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-07 21:42 — step 9c ended: done
+- **Usage after:** 5-hour 70% (resets 2026-11-07T20:10:00Z) · weekly 86% (resets 2026-11-08T21:00:00Z) · **Measured:** 5-hour +4%, weekly +0% (2.29 M cache-read and 21k output tokens, $0.75 at list price) · **Pull requests merged:** #211 (6.9) · **Ids done:** 6.9 (AndLD/bot-rts#304 stays that owner's to merge) · **Worker:** cli 09154421-b18d-4603-a9c1-0016ab4c1458, 32 turns
+- **Report** (in the schema): **the aim of the phase is met on the median**: 17.1k tool-result tokens a step after 6.4 against the baseline's 28.6k (aim 19.1k); takes: flow 1 29.7k, flow 2 13.0k, flow 3 11.4k; cuts: 23.1k to 14.0k; tasks after 6.4: 21.9k against 31.3k (−30%); no rise in failed checks or deviations. Left: `sed`, `cat` and `grep` are 65% of the results (ranged reads of code and plan files), and the agents' own output did not fall (17.3k against 18.2k a step). No orchestrator counted (flows 2 and 3 do not record theirs); the workers were counted by a one-off script, since `harness flow audit 3` finds 2 of 12. Full entry in the phase log.
+
+### 2026-11-07 21:42 — decision D2: what the take of `0.5.0-dev.1` and 6.9 found: fix, then the final cut
+- **Options:** (a) a step 9e that fixes I-31 (the node-ts quiet test commands from a workspaces root, and the two missing defaults) and I-32 (the audit misses command-line workers), then the final cut 9f, the take of `0.5.0` left to the consumer's owner as in flow 2; (b) the same fixes, a `0.5.0-dev.2` and a second take before the final cut; (c) the final cut now, with both noted.
+- **Own analysis** (written before the worker's recommendations): (a). I-31 is a defect of what this release promises its first consumer (the quiet test command prints as much as the plain one in its layout), so it is fixed before `0.5.0`, not noted (against (c)); I-32 makes the release's own measuring tool miss most workers, and the next flows are measured with it. Both are 1 SP of C1 and their tests prove them; the consumer already runs the working form of I-31 by hand (#304), so a second take would prove little for its cost (against (b)). The final cut stays D3, decided at 9f on its note and green checks.
+- **Worker's recommendation:** the same two questions named at D1, no pick; record I-32 (taken).
+- **Choice:** (a): I-32 recorded; step 9d ✅, 9e (I-31, I-32, 2 SP, C1) and 9f (cut `0.5.0`) replace the former 9e; the row `0.5.0` of the releases file names I-31 and I-32 · **Decided by:** the orchestrator (seamless mode).
+
+### 2026-11-07 21:42 — decision D1: the recommendations of step 9c
+- **Options:** for each, take, hand on, or leave.
+- **Own analysis:** the finder of the audit: I-32 (above). The orchestrator's session id in the "running" entry: the desktop app gives this session no way to read its own id; left, and named in the digest for the owner. Splitting a reused session by step: part of I-32.
+- **Choice:** as above · **Decided by:** the orchestrator.
+
+### 2026-11-07 21:43 — decision D0: step 9c's use against its estimate is not an escalation
+- **Options:** (a) not an escalation; (b) escalate (a step over twice its estimate).
+- **Own analysis:** (a). The 5-hour reading rose 4 points against an estimate of 1.8%: twice over on paper, but the readings are whole percents and the window also holds this orchestrator's own work over the step (the note review, the cut, two records); the weekly window rose 0 against 0.3%. Steps 7, 8a and 9b came in far under their estimates.
+- **Choice:** (a) · **Decided by:** the orchestrator.
