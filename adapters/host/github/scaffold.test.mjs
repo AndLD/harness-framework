@@ -61,5 +61,12 @@ test('the workflow that updates the pull requests waiting on auto-merge is writt
   assert.match(update, /gh pr update-branch "\$number"/)
   assert.match(update, /select\(\.autoMergeRequest != null\)/)
   assert.match(update, /gh workflow run ci\.yml --ref "\$branch"/)
-  assert.match(files.find(({ path }) => path.endsWith('ci.yml')).content, /\n {2}workflow_dispatch:\n/)
+  const ci = files.find(({ path }) => path.endsWith('ci.yml')).content
+  assert.match(ci, /\n {2}workflow_dispatch:\n/)
+  assert.match(
+    ci,
+    /if: github\.event_name == 'pull_request' \|\| github\.event_name == 'workflow_dispatch'/,
+    'pr-title also runs when dispatched'
+  )
+  assert.match(ci, /gh pr list --head "\$BRANCH"/)
 })
