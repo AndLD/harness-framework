@@ -2,7 +2,19 @@
 // two kinds of token count, and the command on a stub runtime.
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { auditCommand, auditLines, auditSessions, commandKey, workersOfLog } from './flow-audit.mjs'
+import {
+  auditCommand,
+  auditLines,
+  auditSessions,
+  commandKey,
+  splitByStep,
+  stepEndsOf,
+  workerStepsOfLog,
+  workersOfLog
+} from './flow-audit.mjs'
+import { copyFileSync, mkdirSync, mkdtempSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { loadProfile } from './profile.mjs'
 
 const ROOT = new URL('../..', import.meta.url).pathname
@@ -164,4 +176,82 @@ test('the command audits flow 1 of this repository on a stub runtime, and says w
     auditCommand({ number: 1, flags: { top: '0' }, root: ROOT, profile: profile(), runtimes: stub([]) }).lines[0],
     /--top is a whole number/
   )
+})
+
+const MIXED_LOG = [
+  '### 2026-11-05 10:30 — step 1 started',
+  '- **Worker:** local_b5383ee4-3eb2-4cdd-881e-81222187117b',
+  '### 2026-11-05 10:50 — step 1 ended: done',
+  '- **Worker:** session local_b5383ee4-3eb2-4cdd-881e-81222187117b, 5 turns',
+  '### 2026-11-05 10:40 — step 2 started',
+  '- **Worker:** local_b5383ee4-3eb2-4cdd-881e-81222187117b',
+  '### 2026-11-05 11:10 — step 2 ended: done',
+  '### 2026-11-05 11:20 — step 3 started',
+  '- **Worker:** `claude -p` named flow-9-step-3, in a detached worktree',
+  '### 2026-11-05 11:40 — step 3 ended: done',
+  '- **Worker:** cli 09154421-b18d-4603-a9c1-0016ab4c1458, 32 turns'
+].join('\n')
+
+test('the finder reads the id of a command-line worker from its "step ended" entry, and keeps the steps of a reused session', () => {
+  assert.deepEqual(
+    [...workerStepsOfLog(MIXED_LOG)],
+    [
+      ['local_b5383ee4-3eb2-4cdd-881e-81222187117b', ['1', '2']],
+      ['flow-9-step-3', ['3']],
+      ['09154421-b18d-4603-a9c1-0016ab4c1458', ['3']]
+    ]
+  )
+  assert.equal(workersOfLog(MIXED_LOG).get('09154421-b18d-4603-a9c1-0016ab4c1458'), '3')
+  assert.deepEqual([...stepEndsOf(MIXED_LOG).keys()], ['1', '2', '3'])
+})
+
+test('a reused session is split by step with the times of its records and the ends of the steps in the log', () => {
+  const ends = stepEndsOf(MIXED_LOG)
+  const local = (time) => new Date(`2026-11-05T${time}:00`).toISOString()
+  const records = {
+    turns: [{ at: local('10:35') }, { at: local('10:55') }, { at: local('12:00') }, { at: null }],
+    results: [{ at: local('10:45') }, { at: local('11:05') }]
+  }
+  const split = splitByStep(records, ['2', '1'], ends)
+  assert.deepEqual([...split.keys()], ['1', '2'])
+  assert.deepEqual(
+    [...split.values()].map((part) => [part.turns.length, part.results.length]),
+    [
+      [2, 1],
+      [2, 1]
+    ]
+  )
+})
+
+test('the command reads a log with session and command-line workers, finds the id once, and drops a name its id replaced', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'audit-'))
+  mkdirSync(join(dir, 'flows'))
+  copyFileSync(join(ROOT, 'docs/development-plan/flows/flow-1-release-0-3-0.md'), join(dir, 'flows', 'flow-1-x.md'))
+  copyFileSync(join(ROOT, 'docs/development-plan/flows/README.md'), join(dir, 'flows', 'README.md'))
+  writeFileSync(join(dir, 'flows', 'flow-1-x.log.md'), MIXED_LOG)
+  const uuid = '09154421-b18d-4603-a9c1-0016ab4c1458'
+  const found = [
+    { id: 'local_b5383ee4-3eb2-4cdd-881e-81222187117b', path: 'a' },
+    { id: 'flow-9-step-3', path: 'b' },
+    { id: uuid, path: 'b' }
+  ]
+  const result = auditCommand({
+    number: 1,
+    flags: { json: true },
+    root: dir,
+    profile: { ...profile(), paths: { ...profile().paths, flows: 'flows' } },
+    runtimes: stub(found, ['flow-9-step-3']),
+    readText: () => FIXTURE
+  })
+  assert.equal(result.code, 0, result.lines[0])
+  const report = JSON.parse(result.lines[0])
+  assert.deepEqual(
+    report.sessions.map((session) => [session.step, session.label]),
+    [
+      ['1', 'b5383ee4 (step 1)'],
+      ['2', 'b5383ee4 (step 2)'],
+      ['3', 'flow-9-step-3']
+    ]
+  )
+  assert.deepEqual(report.missing, [])
 })
