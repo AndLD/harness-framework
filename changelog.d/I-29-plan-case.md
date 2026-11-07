@@ -1,0 +1,1 @@
+Fixed: `harness flow estimate`, `gate` and `sample` take `--plan` as the plan the runtime reports (`Pro`) or the subscription the table names (`pro`), in any case; the message of an unknown subscription names the forms. Nothing to do for a project.

@@ -157,7 +157,7 @@ test('a flow waits for the flows it needs; an unknown flow, a flow with problems
     assert.equal(refused.code, 2)
     assert.match(
       refused.lines[0],
-      /^usage: harness flow check \| status <n> .*\| estimate <n> \| gate <n> <step> .*\| sample <n>/
+      /^usage: harness flow check \| status <n> .*\| estimate <n> .*\| gate <n> <step> .*\| sample <n>/
     )
   }
   assert.match(

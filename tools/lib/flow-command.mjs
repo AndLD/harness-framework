@@ -19,7 +19,7 @@ import { hostModule } from './host.mjs'
 import { inFramework, LOCK_FILE, readLock } from './lock.mjs'
 
 const USAGE =
-  'usage: harness flow check | status <n> [--orchestrator <percent>] | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--orchestrator <percent>] [--account <id>] [--at <YYYY-MM-DD HH:MM>] | audit <n> [--orchestrator <id>[,<id>]] [--top <n>] [--json] | report-check <file> | calibrate [--min <n>] [--subscription <id>] | estimate <n> | gate <n> <step> [--five-hour <pct>[@<reset>]] [--weekly <pct>[@<reset>]] [--cost <usd>] [--plan <name>] | sample <n> <flow-start|step-start|step-end|flow-end> [<step>] [the reading flags] [--tokens <n>] [--model <name>] [--start cold|warm]'
+  'usage: harness flow check | status <n> [--orchestrator <percent>] | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--orchestrator <percent>] [--account <id>] [--at <YYYY-MM-DD HH:MM>] | audit <n> [--orchestrator <id>[,<id>]] [--top <n>] [--json] | report-check <file> | calibrate [--min <n>] [--subscription <id>] | estimate <n> [--plan <name>] | gate <n> <step> [--five-hour <pct>[@<reset>]] [--weekly <pct>[@<reset>]] [--cost <usd>] [--plan <name>] | sample <n> <flow-start|step-start|step-end|flow-end> [<step>] [--plan <name>] [the reading flags] [--tokens <n>] [--model <name>] [--start cold|warm]'
 
 const pad = (number) => String(number).padStart(2, '0')
 /** The time now as the log writes it, `YYYY-MM-DD HH:MM`, local. */
