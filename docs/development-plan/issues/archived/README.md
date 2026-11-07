@@ -34,4 +34,5 @@ It is read to find out whether a new report is a problem that was fixed already.
 | [I-25](./I-25.md) | The list of notes in `migrations/README.md` is written by hand and stops at `0.2.0` | bootstrap and sync | 1 | — |
 | [I-26](./I-26.md) | `harness plan-write on` writes a settings file that the project's formatter rejects | runtime adapters | 1 | — |
 | [I-28](./I-28.md) | `harness flow status` reads a take that a later take superseded as not done | checks | 1 | — |
+| [I-29](./I-29.md) | The usage gate does not know the plan `pro` in lower case | checks | 1 | — |
 <!-- issue-queue:end -->

@@ -106,7 +106,7 @@ const USAGE = `usage: harness <command>
   flow audit <n> [--orchestrator <id>[,<id>]] [--top <n>] [--json]
   flow report-check <file>
   flow calibrate [--min <n>] [--subscription <id>]
-  flow estimate <n> | gate <n> <step> [--five-hour <pct>[@<reset>]] [--weekly <pct>[@<reset>]] [--cost <usd>] [--plan <name>] [--at <time>]
+  flow estimate <n> [--plan <name>] | gate <n> <step> [--five-hour <pct>[@<reset>]] [--weekly <pct>[@<reset>]] [--cost <usd>] [--plan <name>] [--at <time>]
   flow sample <n> <flow-start|step-start|step-end|flow-end> [<step>] [the reading flags] [--tokens <n>] [--model <name>] [--start cold|warm]
   plan-write on|off|state [--folders <a,b>] [--scope project|local|user]
   plan split <phase>

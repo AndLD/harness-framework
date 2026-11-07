@@ -75,13 +75,21 @@ const call = (words, { root, profile }, flags = {}, now = '2026-11-05T10:00:00Z'
 const READING = { 'five-hour': '30@2026-11-05T12:30:00Z', weekly: '7@2026-11-10T07:00:00Z' }
 const SAMPLES = 'plan/flows/usage.jsonl'
 
+test('--plan names the plan as the runtime reports it or the subscription as the table does, in any case, on estimate and on gate', () => {
+  const scratch = project()
+  for (const plan of ['Pro', 'pro', 'PRO']) {
+    assert.match(call(['estimate', '1'], scratch, { plan }).lines[0], /subscription pro \(the plan the account reports/)
+    assert.match(call(['gate', '1', '1'], scratch, { ...READING, plan }).lines.join('\n'), /subscription pro/)
+  }
+})
+
 test('estimate sizes each step and the flow by the subscription of the local profile file, and says when none is known', () => {
   const scratch = project()
   const unknown = call(['estimate', '1'], scratch)
   assert.equal(unknown.code, 0)
   assert.match(
     unknown.lines[0],
-    /no subscription known \(set usage\.subscription in harness-profile\.local\.json, or give --plan\)/
+    /no subscription known \(set usage\.subscription in harness-profile\.local\.json, or give --plan <plan or subscription id>.*in any case\)/
   )
   assert.match(
     unknown.lines.join('\n'),
