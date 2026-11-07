@@ -44,3 +44,9 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis:** (a). The owner asked that `auto` be the default of the flows to come. (c) cannot be done as asked: the core names no mode of a runtime, and the runtime contract says an adapter never chooses one, since what a worker may do is the owner's decision; a default that the project's profile holds keeps both and gives the owner the same result (this repository sets it to `auto`). Flows 3 and 4 set the mode already, so nothing waits for it before flow 5; 8b is C2, since it touches the profile schema, the tools and the text of the runtime contract.
 - **Worker's recommendation:** none (no worker is involved).
 - **Choice:** (a): I-27 recorded, step 8b inserted, step 9 now needs 8b; the row `0.5.0` of the releases file names I-27 · **Decided by:** the owner's request ("You can put auto mode as default"), in the form the orchestrator chose.
+
+### 2026-11-07 17:50 — decision D3: steps 4 and 5 no longer stop for the owner's review
+- **Options:** (a) remove the stops `owner review` of steps 4 (6.4) and 5 (6.5); (b) keep them.
+- **Own analysis:** (a). The stops were set on 2026-11-05, when a change of the meaning of a contract needed the owner's approval in its pull request whatever the mode; since I-20 (`0.4.0`) it is the kind `contract.change` (D3), which this seamless flow decides, logs with its options and lists in its digest. What stays the owner's without the column: a change of the meaning of a core rule or of a non-negotiable (6.4 may add one, its budgets being "a rule"), and a merge into `main` outside a cut the flow decides. The texts of the flow and of tasks 6.4 and 6.5 now say so.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (a) · **Decided by:** the owner ("Yes, you can remove pauses").
