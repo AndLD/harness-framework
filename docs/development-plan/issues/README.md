@@ -14,5 +14,4 @@ A request for something new, which is not a defect, is an item of the [backlog](
 <!-- issue-queue:start -->
 | Issue | Title | Area | Agent | SP | Status | Reported |
 | ----- | ----- | ---- | ----- | -- | ------ | -------- |
-| [I-16](./I-16.md) | The notes of a development version and the migration say too little: the final note is not printed on a development-only path, a check is false after the next version, and the arrows action has no answer for phases no release holds | bootstrap and sync | C1 | 2 | ⬜ | — |
 <!-- issue-queue:end -->
