@@ -253,3 +253,16 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Options:** for each, take, hand on, or leave.
 - **Own analysis:** start the `0.5.0` note from the fragment `6.8-phase-6-take.md`: handed to the cut step that step 9 inserts. Jest and pytest quiet options on a real project first: handed to 6.9. A migration script that sets the quiet roles: left, as 6.3 decided (a project may have its own commands). The report's extra lines are a small deviation from the 6.4 schema; it stayed within the cap in spirit (about 2.3k characters).
 - **Choice:** as above · **Decided by:** the orchestrator.
+
+### 2026-11-07 19:14 — step 8a started
+- **Executor:** cli, the fallback of session: the app refuses a session start on a turn that a background task's end began · **Worker:** `claude -p` named flow-3-step-8a, in a detached worktree of `origin/develop` · **Account:** nil10035@gmail.com · **Model:** Sonnet 5.5 at medium effort · **Permissions:** auto · **Estimate:** 6 SP, 5-hour 10.8%, weekly 1.5%
+- **Usage before:** 5-hour 44% (resets 2026-11-07T20:10:00Z) · weekly 83% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-07 19:47 — step 8a ended: done
+- **Usage after:** 5-hour 49% (resets 2026-11-07T20:10:00Z) · weekly 83% (resets 2026-11-08T21:00:00Z) · **Measured:** 5-hour +5%, weekly +0%, against an estimate of 5-hour 10.8% and weekly 1.5% (5.11 M cache-read and 22k output tokens, $1.04 at list price, 32 minutes) · **Pull requests merged:** #199 (I-23), #200 (I-24), #201 (I-25), #202 (I-26), #203 (I-28), #204 (I-29) · **Ids done:** I-23, I-24, I-25, I-26, I-28, I-29 · **Worker:** cli 478d45e3-64a5-4e63-9f2a-07236c849bd3, 77 turns
+- **Report** (in the schema, with sub-lines): no decision, no contract changed; `harness check notes` is a new check (`check all` runs 19). I-26 fixed by a message to run the project's formatter, not by matching Prettier (its output depends on the project's width); the scaffold's and the adoption's writes got no such message. I-28: a superseded take reads ✅ when a merged pull request names its version, or when the host cannot be asked. I-29: `--plan` in any case, named in the usage lines.
+
+### 2026-11-07 19:47 — decision D1: the recommendations of step 8a, and the fix of I-26
+- **Options:** I-26 as fixed (a message), or (b) a new issue for the scaffold's and the adoption's writes; for the rest, take or leave.
+- **Own analysis:** I-26 as fixed: the message is a fair fix, since the framework cannot know a project's formatter; the scaffold and the adoption write the file once at the start, before a project's formatter has run, so they are left (named in the digest). `flow status 2` checked after the merges: flow 3 no longer waits for flow 2; flow 1 still shows its three development takes ⬜ because no pull request of the consumer names those versions (they were taken in one pull request); a display of a finished flow, not a blocker, named in the digest. Branches off the merged `develop`: as the workers do. Fragments for I-23 and I-24: left to the cut, whose note is written from the fragments and the issues it lists.
+- **Choice:** as above · **Decided by:** the orchestrator.
