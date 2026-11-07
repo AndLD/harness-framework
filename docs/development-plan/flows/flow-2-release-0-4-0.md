@@ -35,6 +35,6 @@ What the releases file holds for `0.4.0`, after `0.3.0`: the tasks that change h
 | 7a | cut | home | `0.4.0-dev.1` | 6a | — | 1 | 0.7% | C2 | ✅ |
 | 7b | consumer-take | consumer | `0.4.0-dev.1` | 7a | — | 2 | 0.5% | C2 | ✅ |
 | 7c | decision | home | what the take of `0.4.0-dev.1` found: fix steps and a `dev.2`, or the final cut | 7b | — | 1 | 0.3% | — | ✅ |
-| 7d | cut | home | `0.4.0` | 7c | — | 1 | 0.7% | C2 | ⬜ |
+| 7d | cut | home | `0.4.0` | 7c | — | 1 | 0.7% | C2 | ✅ |
 
 State: ⬜ not started · 🟡 running · ⏸ waits for the owner · ⛔ blocked · ✅ done. The State column is a cache of the repository's state; the log is the record.
