@@ -13,7 +13,7 @@ After `0.1.0`: a security review method next to the code review and the harness 
 | - | ---- | ----- | -- | ------ |
 | [2.1](./2.1.md) | Security review method: the frame, the probe format and the rules of engagement | C3 | 5 | ⬜ |
 | [2.2](./2.2.md) | Automated security checks | C2 | 3 | ⬜ |
-| [2.3](./2.3.md) | Automated review measurements | C2 | 3 | ⬜ |
+| [2.3](./2.3.md) | Automated review measurements | C2 | 3 | ✅ |
 | [2.4](./2.4.md) | First security review of the framework itself | C3 | 3 | ⬜ |
 | [2.5](./2.5.md) | Off-plan record (from the second source) | C2 | 3 | ⬜ |
 | [2.6](./2.6.md) | A switch that lets an agent write the plan's files without a prompt | C2 | 3 | ✅ |

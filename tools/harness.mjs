@@ -18,6 +18,7 @@
 //   harness detach --reason <why>                                 the project takes the copy over; no more versions
 //   harness profile get <role>                                    print a value of the profile file (a list one item per line)
 //   harness layers                                                print the layer map
+//   harness review measure                                        the measurements of a harness review that a script can decide, against the budgets of the bindings
 //   harness check <name>                                          one check: vendored, generated, profile, scaffold, adapters, local-adapters, values,
 //                                                                 layers, links, paths, core, plan, flows, changelog, probes, product-knowledge
 //   harness check all                                             every check, then the project's own (`checks.project`)
@@ -72,6 +73,7 @@ import { probesReport } from './lib/probe-areas.mjs'
 import { promoteItem } from './lib/backlog-promote.mjs'
 import { probeAdvice, probeMode } from './lib/probe-mode.mjs'
 import { reportsCommand } from './lib/reports-command.mjs'
+import { reviewCommand } from './lib/review-measure.mjs'
 import { rollback } from './lib/rollback.mjs'
 import { loadProfile, lookup } from './lib/profile.mjs'
 import { detach, diff, override, sync } from './lib/vendor.mjs'
@@ -93,6 +95,7 @@ const USAGE = `usage: harness <command>
   detach --reason <why>
   profile get <role>
   layers
+  review measure
   check <${Object.keys(CHECKS).join('|')}|all>
   plan summary [--check]
   flow check | status <n> | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--account <id>] [--at <time>]
@@ -267,6 +270,11 @@ export async function run(argv, { out = console.log, err = console.error, input 
     }
     if (words[0] === 'reports') {
       const { lines, code } = reportsCommand({ words: words.slice(1), flags, root, profile: loadProfile(root) })
+      lines.forEach((line) => (code === 0 ? out(line) : err(line)))
+      return code
+    }
+    if (words[0] === 'review') {
+      const { lines, code } = reviewCommand({ words: words.slice(1), root, profile: loadProfile(root) })
       lines.forEach((line) => (code === 0 ? out(line) : err(line)))
       return code
     }
