@@ -133,6 +133,9 @@ test('the subscription comes from the flow, else the local profile file, else th
     from: 'the local profile file'
   })
   assert.deepEqual(resolveSubscription({ flow: flow('local'), local: {}, plan: 'Max 5x', usage }).id, 'max5x')
+  for (const plan of ['Pro', 'pro', 'PRO', ' pro ', 'max 5x', 'max5x'])
+    assert.ok(resolveSubscription({ flow: flow('local'), local: {}, plan, usage }).id, `the plan ${plan} is known`)
+  assert.equal(resolveSubscription({ flow: flow('local'), local: {}, plan: 'pro', usage }).id, 'pro')
   assert.equal(resolveSubscription({ flow: flow('local'), local: {}, plan: 'Team', usage }).id, null)
   assert.equal(resolveSubscription({ flow: flow('local'), local: {}, usage }).id, null)
 })

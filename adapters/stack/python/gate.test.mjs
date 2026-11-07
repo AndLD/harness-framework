@@ -58,3 +58,12 @@ test('a file the project says is isolated does not run the whole project, and a 
   assert.deepEqual(labels(steps).slice(0, 2), ['lint api', 'typecheck api'])
   assert.deepEqual(run([]).steps, [], 'nothing changed')
 })
+
+test('every tool step carries a quiet variant with the flag of its tool, and the rest of its arguments stay', () => {
+  const { steps } = run(['api/src/app.py'])
+  const quiet = (label) => steps.find((step) => step.label === label).quiet.args.join(' ')
+  assert.match(quiet('lint api'), /ruff check --quiet api$/)
+  assert.match(quiet('typecheck api'), /mypy --no-error-summary api$/)
+  assert.match(quiet('format changed files'), /ruff format --quiet --check|ruff format --check --quiet/)
+  assert.match(quiet('tests of api (the whole package)'), /-m pytest -q$/)
+})

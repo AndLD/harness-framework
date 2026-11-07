@@ -1,7 +1,7 @@
 // `harness review measure` (task 2.3): the counts of the hand-run harness reviews, on a small project built in memory, and the command on a real folder.
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, rmSync, unlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { after, test } from 'node:test'
@@ -268,4 +268,18 @@ test('harness review measure runs on a project folder: the commit in the first l
   assert.match(err.join('\n'), /Over the ceiling of the bindings: procedureWords, normative\.$/)
   assert.deepEqual(out, [])
   assert.equal(await run(['review', 'nonsense', '--root', dir], { out: () => {}, err: (line) => err.push(line) }), 1)
+})
+
+test('a tracked file that the work tree no longer has is left out of the measurements', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'review-measure-gone-'))
+  after(() => rmSync(dir, { recursive: true, force: true }))
+  for (const [path, content] of Object.entries({ ...FILES, 'changelog.d/gone.md': 'a fragment' })) {
+    mkdirSync(dirname(join(dir, path)), { recursive: true })
+    writeFileSync(join(dir, path), content)
+  }
+  spawnSync('git', ['init', '-q', '-b', 'feature/fixture'], { cwd: dir })
+  spawnSync('git', ['add', '-A'], { cwd: dir })
+  unlinkSync(join(dir, 'changelog.d/gone.md'))
+  const { lines } = measureReview({ root: dir, profile: PROFILE })
+  assert.match(lines[0], /^M6 /)
 })

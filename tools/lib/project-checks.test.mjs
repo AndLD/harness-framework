@@ -455,8 +455,10 @@ test('check all runs every check and then the project checks; one failure fails 
 
   const passed = run()
   assert.equal(passed.status, 0, passed.stderr)
+  assert.match(passed.stdout, /^harness check all: \d+ checks passed\n$/)
+  const verbose = spawnSync(process.execPath, [cli, 'check', 'all', '--verbose', '--root', root], { encoding: 'utf8' })
   assert.match(
-    passed.stdout,
+    verbose.stdout,
     /No vendored framework in this project\.[\s\S]*Checked links in [\s\S]*Checked 1 changelog fragments\./
   )
 
@@ -465,5 +467,6 @@ test('check all runs every check and then the project checks; one failure fails 
   })
   const failed = run()
   assert.equal(failed.status, 1)
+  assert.match(failed.stderr, /full output: /)
   assert.match(failed.stderr, /harness check all: the project check `node -e "process\.exit\(3\)"` failed/)
 })

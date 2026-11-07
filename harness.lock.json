@@ -12,7 +12,7 @@
     "host": "github"
   },
   "managed": {
-    "docs/profile.md": "3fdd2e1da8d10d312b3080a30b87e98775b49ca6e23d9c644d7471af5a802ddd",
+    "docs/profile.md": "2f8b2a93e06640f28de2b7fcb1f61703d7fef2074c4192382c886a09f152d462",
     "docs/quality-reviews/harness/bindings.md#layers": "3b11a01af0d9af7bdc65ece067d8b461b57b321be2eb2391c6bbbe417a7399f1",
     "docs/engineering/rule-checks.md#rule-map": "29ba3b98dac41697fdb10b36b6edb3012b52eec2f9860c4700e3e72a3888cd5b",
     "AGENTS.md#procedures": "21df0a29be988664932920d05f335913ee0ae7e6049d2d671779f7a5d0b9479e",
@@ -20,17 +20,17 @@
     "AGENTS.md#git-rules": "ea6b06a031cd2fe6d3808d9afc2b38022ed23fc7d221694f4b9f97a7a6e037c2",
     ".claude/skills/change-plan/SKILL.md": "a2bef1be6b72480c4ce29dbe8b85c54bc64ec09685be006eebb2b69bb3f3f8c4",
     ".claude/skills/code-review/SKILL.md": "3a46b3ee03a74b1a464bff2d507dcaba5c739011e531e31a5d507cf11721fd46",
-    ".claude/skills/end-session/SKILL.md": "33f4447a46b28a32fa03871c5e37fd0ffcd8ab2f19041b77668249805e34c83c",
+    ".claude/skills/end-session/SKILL.md": "ceacb6a53bcd95b52a36c787ce3617a4bf737bd584273c5b43fbbdb8daf2d2f5",
     ".claude/skills/finish-phase/SKILL.md": "f3eda68cb0531ae238c24ba72140b1a44d3c27822f636246af82b99a3b922f27",
     ".claude/skills/harness-review/SKILL.md": "9807ed551c0c0a7c1137d305b34faac5b90b0a5230527f37776d14d58b4fc950",
     ".claude/skills/new-adapter/SKILL.md": "59c45440c88897a90b3dcc5cdd59b6cd4143dd3b1d2853b64e80b655994ef81b",
-    ".claude/skills/open-pull-request/SKILL.md": "fee36ad6b22af9805762a67ca570d5781511c2da9e132642647da0fc1e165ddd",
-    ".claude/skills/release/SKILL.md": "6465ad2cb7536645b6de76b8278c123b29c3d2dcb709141d30bb7baaf089de85",
-    ".claude/skills/run-flow/SKILL.md": "97bd55b1070f71ea75bf514ba3bc0b24ada549dcba0f84e17c7d4808e39eb4fe",
-    ".claude/skills/start-task/SKILL.md": "cabbb344263eadd49b7983f4bca27cf075be14ae0e267f7c2ab5c861913e039e",
+    ".claude/skills/open-pull-request/SKILL.md": "bf7adcdb161b7dbf396c3cb7512ef15ad075256f5b37dbb19eeb182ffcdc5610",
+    ".claude/skills/release/SKILL.md": "a10c5ec6ce5a4ed46cdda59cc4ab7442d30c1fed7457d995f5c59c1d1dca1f22",
+    ".claude/skills/run-flow/SKILL.md": "ae61f6fa154b2660c9e813a2a67cdf37a47cc85422074f87e9cd3d7f53c6fb69",
+    ".claude/skills/start-task/SKILL.md": "9bd6ac3914abb8f6c53abf94f5d9a592e98979f0463d34638d13a31500e87fd4",
     ".claude/skills/triage-reports/SKILL.md": "63c26dd08442fa1d40a14b8a33b2ed990548a4edddf38b72fd7e99d01432e04b",
-    ".claude/skills/update-framework/SKILL.md": "468b47b54d82064692222bad6c800f0116493d6665f8ee9173b93b30e98c0fe0",
+    ".claude/skills/update-framework/SKILL.md": "6490e3e6e44dfc0c8529e5ac9cf2b3d5b1b2654a5c4789ad31327ed10e34cfdd",
     ".claude/skills/change-framework/SKILL.md": "6350a68afdce8cfc481269a81eee0713df00aca24cedbaba07ec9666db68c628"
   },
-  "profile": "78a35a4560c8c5fa4673854367c8306790fcf744d3c300b04b57bb99c15c08fe"
+  "profile": "4237499d736a93e6fc6e03744cfa38db86c9ef77b712a4fe5b531f9a66ca0d9a"
 }

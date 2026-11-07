@@ -69,6 +69,8 @@ test('the template has a section for every part of a prompt', () => {
     'decision',
     'commands',
     'git',
+    'budget',
+    'delegate',
     'stop',
     'report'
   ])
@@ -84,7 +86,11 @@ test('a tasks step lists its ids in order with their state, and gets the header,
   assert.match(text, /Read AGENTS\.md first/)
   assert.match(text, /integration branch \(develop\)[\s\S]*retarget the pull request to develop[\s\S]*Never touch main/)
   assert.match(text, /Stop when this step is done/)
-  assert.match(text, /End with a step report[\s\S]*Recommendations, last/)
+  assert.match(text, /Output budgets[\s\S]*a few lines/)
+  assert.match(
+    text,
+    /End with a step report of at most 30 lines and 2400 characters[\s\S]*Status:[\s\S]*Recommendations/
+  )
   assert.doesNotMatch(text, /\{|\}/, 'no word is left unfilled')
 })
 
@@ -119,7 +125,7 @@ test('a custom step carries its own text, between the header and the standard en
   const { prompt: text } = prompt('5a')
   assert.match(
     text,
-    /Scope: a probe\nRead AGENTS\.md first[^\n]*\nYou do this step and no other[^\n]*\n\nRun the probe in a scratch folder\.\nIt reads only the folder\.\n\nStop when/
+    /Scope: a probe\nRead AGENTS\.md first[^\n]*\nYou do this step and no other[^\n]*\n\nRun the probe in a scratch folder\.\nIt reads only the folder\.\n\nOutput budgets[\s\S]*?\n\nStop when/
   )
   assert.doesNotMatch(text, /Not part of the step/)
   assert.equal(customText(flow.text, '5a'), 'Run the probe in a scratch folder.\nIt reads only the folder.')
@@ -174,4 +180,14 @@ ${row(1, 'tasks', '1.1', '—', '—', 1, '—', 'C2', '⬜')}
   assert.doesNotMatch(render('any'), /Run plain commands/)
   assert.doesNotMatch(render(undefined), /Run plain commands/)
   assert.equal(withCommands(undefined).settings.commands, 'any')
+})
+
+test('the paragraph on delegating verbose reading is in the prompts of the kinds that read a lot and not in the others (task 6.6)', () => {
+  const tasks = prompt('1').prompt
+  assert.match(
+    tasks,
+    /hand it to a subagent[\s\S]*summary of at most 10 lines[\s\S]*Never delegate a decision, a write, a merge/
+  )
+  assert.doesNotMatch(tasks, /\{|\}/)
+  assert.doesNotMatch(prompt('2').prompt, /subagent/, 'a cut reads its note in full')
 })

@@ -1,7 +1,10 @@
 // `harness flow check` (task 5.4): a valid flow passes, and each check holds with a planted defect.
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { ENTRY_HEADING, flowProblems, logHeadings } from './flow-check.mjs'
+import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { ENTRY_HEADING, checkFlows, flowProblems, logHeadings, permissionsProblems } from './flow-check.mjs'
 import { flowsTable, parseFlow, FLOWS_END, FLOWS_START } from './flows.mjs'
 
 const ROWS = [
@@ -142,7 +145,7 @@ test('the settings hold valid levels, executors, reuse limits, thresholds and a 
   const problems = one(
     flowText({
       settings:
-        '{ "askAt": "D0", "levels": { "cut.final": "D9" }, "executor": "robot", "reuse": "maybe", "reuseLimits": { "context": 0, "steps": 1.5, "cacheMinutes": -1 }, "commits": "never", "commands": "heredocs", "usage": { "stopAt": { "fiveHour": 0, "weekly": 120 } }, "repos": { "home": "../elsewhere" } }'
+        '{ "askAt": "D0", "levels": { "cut.final": "D9" }, "executor": "robot", "reuse": "maybe", "reuseLimits": { "context": 0, "steps": 1.5, "cacheMinutes": -1 }, "orchestratorLimits": { "context": 150 }, "commits": "never", "commands": "heredocs", "usage": { "stopAt": { "fiveHour": 0, "weekly": 120 } }, "repos": { "home": "../elsewhere" } }'
     })
   ).join('\n')
   for (const part of [
@@ -151,6 +154,7 @@ test('the settings hold valid levels, executors, reuse limits, thresholds and a 
     /setting executor "robot"/,
     /setting reuse "maybe"/,
     /reuse limit context must be a percent/,
+    /orchestrator limit context must be a percent/,
     /reuse limit steps must be a whole number/,
     /reuse limit cacheMinutes must be a number of minutes/,
     /setting commits "never"/,
@@ -247,6 +251,44 @@ test('the permissions setting is an object with a mode name and a list of tools 
   assert.match(problems('{ "permissions": { "allow": ["Edit", ""] } }'), /the permissions allow must be a list/)
 })
 
+test('the profile role flows.permissions is checked like the setting, under its own name (issue I-27)', () => {
+  assert.deepEqual(permissionsProblems(undefined, 'the profile role flows.permissions'), [])
+  assert.deepEqual(
+    permissionsProblems({ mode: 'auto', allow: ['Bash(git *)'] }, 'the profile role flows.permissions'),
+    []
+  )
+  assert.deepEqual(permissionsProblems('auto', 'the profile role flows.permissions'), [
+    'the profile role flows.permissions is not an object ({ "mode", "allow" })'
+  ])
+  assert.deepEqual(permissionsProblems({ mode: '', allow: [1] }, 'x'), [
+    'the permissions mode must be a name of the runtime',
+    'the permissions allow must be a list of tools by name'
+  ])
+})
+
+test('`harness check flows` reports a malformed profile role flows.permissions (issue I-27)', () => {
+  const root = mkdtempSync(join(tmpdir(), 'flows-role-'))
+  mkdirSync(join(root, 'flows'))
+  writeFileSync(join(root, 'flows', 'README.md'), `${FLOWS_START}\nNo flow yet.\n${FLOWS_END}\n`)
+  const check = (flows) =>
+    checkFlows({
+      root,
+      profile: {
+        paths: { flows: 'flows', plan: 'plan', phases: 'plan/phases', issues: 'plan/issues' },
+        ...(flows ? { flows } : {})
+      }
+    }).problems
+  assert.deepEqual(
+    check(undefined).filter((problem) => /flows\.permissions/.test(problem)),
+    []
+  )
+  assert.deepEqual(
+    check({ permissions: { mode: 'auto' } }).filter((problem) => /flows\.permissions/.test(problem)),
+    []
+  )
+  assert.match(check({ permissions: 'auto' }).join('\n'), /the profile role flows\.permissions is not an object/)
+})
+
 test('a step started on another executor than its plan names the fallback and its reason, so a switch to the command line shows (task 2.7)', () => {
   const started = (executor) =>
     logText(`### 2026-11-06 00:41 — step 1 started
@@ -272,4 +314,21 @@ test('a step started on another executor than its plan names the fallback and it
   assert.match(check('cli, the fallback of session:').join('\n'), /planned for session/, 'a fallback without a reason')
   assert.match(check('subagent').join('\n'), /names the executor subagent, but step 1 is planned for session/)
   assert.deepEqual(check('orchestrator, no worker'), [], 'a step the orchestrator ran itself names no executor')
+})
+
+test('a handoff entry of the orchestrator carries its state, decisions, next step and what it waited for (task 6.5)', () => {
+  const handoff = (body) =>
+    one(flowText(), {
+      logs: {
+        'flow-1-ship.md': logText(`### 2026-11-07 10:00 — handoff: context at 52% of the window
+${body}
+`)
+      }
+    })
+  const whole = '- **State:** step 2 done · **Decisions:** none · **Next step:** step 3 · **Waiting for:** nothing'
+  assert.deepEqual(handoff(whole), [])
+  assert.match(
+    handoff('- **State:** step 2 done').join('\n'),
+    /handoff entry .* lacks "\*\*Decisions:\*\*", "\*\*Next step:\*\*", "\*\*Waiting for:\*\*"/
+  )
 })

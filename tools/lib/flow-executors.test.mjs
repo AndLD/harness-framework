@@ -6,9 +6,11 @@ import {
   EXTERNAL_REASON,
   MANUAL_EXECUTOR,
   PROMPT_SLOT,
+  cachePacing,
   decideReuse,
   dispatchStep,
   nextInOrder,
+  orchestratorContext,
   pickExecutor,
   pickStepExecutor,
   previousWorker,
@@ -305,6 +307,36 @@ test("dispatch passes the flow's permissions to the means and says what a worker
   assert.doesNotMatch(dispatch({}, { session: executor }), /Permissions:/)
 })
 
+test("a flow without its own permissions takes the project's default of the profile role flows.permissions; the flow's own setting wins (issue I-27)", () => {
+  const session = {
+    ...executor,
+    start: (request) => [{ via: 'cli', command: ['run', JSON.stringify(request.permissions ?? null), PROMPT_SLOT] }],
+    permissions: ({ permissions }) => (permissions ? `allowed: ${permissions.mode}` : 'none set')
+  }
+  const dispatch = (settings, flows) =>
+    dispatchStep({
+      flow: flowOf(STEPS, settings),
+      step: STEPS[0],
+      profile: { adapters: { runtimes: ['rt'] }, ...(flows ? { flows } : {}) },
+      runtimes: {
+        rt: {
+          manifest: { roles: { executors: { module: 'm', export: 'e' } } },
+          modules: { m: { e: () => ({ session }) } }
+        }
+      },
+      logText: '',
+      now: '2026-11-07 10:00',
+      harness: 'h'
+    }).lines.join('\n')
+  const role = { permissions: { mode: 'auto', allow: ['Bash(git *)'] } }
+  const defaulted = dispatch({}, role)
+  assert.match(defaulted, /Permissions: allowed: auto\./)
+  assert.match(defaulted, /run '\{"mode":"auto","allow":\["Bash\(git \*\)"\]\}' /)
+  assert.match(dispatch({ permissions: { mode: 'plan' } }, role), /Permissions: allowed: plan\./)
+  assert.match(dispatch({}), /Permissions: none set\./)
+  assert.match(dispatch({}, {}), /Permissions: none set\./)
+})
+
 // A runtime with the three executors of the order (task 2.7): a session, a worker on the command line, and the manual one of the framework
 const cli = {
   ...executor,
@@ -434,4 +466,31 @@ test('a step in another repository goes to the command line with the reason, unl
   )
   assert.equal(pickStepExecutor({ flow: external, step, executors: all }).kind, 'manual', 'the folder is not set')
   assert.equal(pickStepExecutor({ flow: external, step: STEPS[0], executors: all }).kind, 'session', 'a home step')
+})
+
+test("the orchestrator's context against its limit: below, at and above it, not read, and a runtime that cannot read it (task 6.5)", () => {
+  const check = (context, settings = {}, own = executor) =>
+    orchestratorContext({ flow: flowOf(STEPS, settings), context, executor: own })
+  assert.deepEqual([check(49).state, check(50).state, check(80).state], ['below', 'at', 'at'])
+  assert.match(check(49).lines[0], /49% of its window, below its limit of 50%/)
+  assert.match(
+    check(50).lines.join('\n'),
+    /at or above its limit of 50%: write a handoff entry in the log .* new orchestrator session/
+  )
+  assert.equal(check(40, { orchestratorLimits: { context: 30 } }).state, 'at', "the flow's own limit")
+  assert.equal(check(null).state, 'unread')
+  assert.match(check(null).lines.join('\n'), /--orchestrator <percent>/)
+  const blind = check(null, {}, { ...executor, context: () => [] })
+  assert.equal(blind.state, 'unreadable')
+  assert.match(blind.lines[0], /cannot read it; hand the flow over by your own judgment/)
+})
+
+test("the cache hint says whether the next step starts inside the previous worker's cache window, and a start past it is logged cold (task 6.5)", () => {
+  const hint = (now, flow = flowOf(STEPS), w = worker) => cachePacing({ flow, executor, worker: w, now }).join('')
+  assert.match(hint('2026-11-04 10:20'), /20 minutes ago, so its prompt cache lives 40 more minutes: .* warm/)
+  assert.match(hint('2026-11-04 11:30'), /90 minutes ago, past the 60 minutes .* cold .*--start cold/)
+  assert.match(hint('2026-11-04 10:20', flowOf(STEPS, { reuseLimits: { cacheMinutes: 5 } })), /past the 5 minutes/)
+  assert.deepEqual(cachePacing({ flow: flowOf(STEPS), executor, worker: null, now: '2026-11-04 10:20' }), [])
+  const lines = dispatchOrdered({ step: STEPS[1], logText: '', orchestrator: 70 }).lines.join('\n')
+  assert.match(lines, /Orchestrator context: 70% of its window, at or above its limit of 50%/)
 })
