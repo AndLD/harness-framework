@@ -32,16 +32,17 @@ test('a caller that changes the table does not change the next one', () => {
   assert.equal(usageFor({}).subscriptions.pro.perSp.sonnet.default.fiveHour, 12)
 })
 
-test('the calibrated rows of Sonnet on Pro are used for their kinds, and every other kind and subscription keeps its default row times the factor', () => {
+test('the calibrated rows of Sonnet on Pro are used for their kinds, and every other kind (triage-fix, custom, decision) and subscription keeps its default row times the factor', () => {
   const { subscriptions } = usageFor({})
   const pro = subscriptions.pro
   assert.deepEqual(coefficientFor(pro, 'sonnet', 'consumer-take'), {
-    fiveHour: 2.62,
-    weekly: 0.42,
+    fiveHour: 2.61,
+    weekly: 0.23,
     source: 'calibrated'
   })
-  assert.deepEqual(coefficientFor(pro, 'sonnet', 'cut'), { fiveHour: 3.42, weekly: 1.03, source: 'calibrated' })
-  assert.deepEqual(coefficientFor(pro, 'sonnet', 'tasks'), { fiveHour: 12, weekly: 1.6, source: 'default' })
+  assert.deepEqual(coefficientFor(pro, 'sonnet', 'cut'), { fiveHour: 3.42, weekly: 0.69, source: 'calibrated' })
+  assert.deepEqual(coefficientFor(pro, 'sonnet', 'tasks'), { fiveHour: 1.8, weekly: 0.25, source: 'calibrated' })
+  assert.deepEqual(coefficientFor(pro, 'sonnet', 'triage-fix'), { fiveHour: 12, weekly: 1.6, source: 'default' })
   assert.equal(coefficientFor(pro, 'opus', 'cut').source, 'default')
   assert.equal(coefficientFor(subscriptions.max5x, 'sonnet', 'cut').source, 'default')
 })

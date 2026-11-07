@@ -93,9 +93,9 @@ test('estimate sizes each step and the flow by the subscription of the local pro
   const sized = call(['estimate', '1'], scratch)
   const text = sized.lines.join('\n')
   assert.match(text, /subscription pro \(the local profile file\), provisional coefficients of claude-code/)
-  assert.match(text, /step 1 \[tasks\] 5 SP, Sonnet 5\.5 at high effort: 5-hour 60%, weekly 8%/)
-  assert.match(text, /step 2 \[cut\] 1 SP, —: 5-hour 3\.4%, weekly 1%/)
-  assert.match(text, /Sum of the steps: 5-hour 63\.4%, weekly 9%\. .*the threshold is 90%/)
+  assert.match(text, /step 1 \[tasks\] 5 SP, Sonnet 5\.5 at high effort: 5-hour 9%, weekly 1\.3%/)
+  assert.match(text, /step 2 \[cut\] 1 SP, —: 5-hour 3\.4%, weekly 0\.7%/)
+  assert.match(text, /Sum of the steps: 5-hour 12\.4%, weekly 2%\. .*the threshold is 90%/)
   assert.match(
     call(['estimate', '1'], scratch, { plan: 'Max 5x' }).lines[0],
     /subscription pro \(the local profile file\)/
@@ -161,11 +161,11 @@ test('gate refuses a bad reading, an unknown step and a bad time; --at moves the
     late.lines.join('\n'),
     /5-hour window reset at 2026-11-05T12:30:00Z, after the reading: counted as empty/
   )
-  // a step too big for an empty window says to split it (5 SP of Opus on Pro)
+  // a step too big for an empty window says to split it (8 SP of Opus on Pro)
   const big = project('{ "usage": { "subscription": "pro" } }')
   big.write(
     'plan/flows/flow-1-ship-one.md',
-    FLOW('{ "usage": { "subscription": "pro" } }').replace('| 5 | — | C2 |', '| 8 | — | C2 |')
+    FLOW('{ "usage": { "subscription": "pro" } }').replace('| 5 | — | C2 |', '| 8 | — | Opus 5.5 |')
   )
   const split = call(['gate', '1', '1'], big, READING)
   assert.match(split.lines.join('\n'), /Gate: STOP[\s\S]*of an empty window: split it/)
@@ -264,19 +264,19 @@ test('flow check flags a step that does not fit one window where the subscriptio
   assert.equal(call(['check'], scratch).code, 0)
   scratch.write(
     'plan/flows/flow-1-ship-one.md',
-    FLOW('{ "usage": { "subscription": "pro" } }').replace('| 5 | — | C2 |', '| 8 | — | C2 |')
+    FLOW('{ "usage": { "subscription": "pro" } }').replace('| 5 | — | C2 |', '| 8 | — | Opus 5.5 |')
   )
   planSummary({ root: scratch.root, profile: scratch.profile })
   const big = call(['check'], scratch)
   assert.equal(big.code, 1)
   assert.match(
     big.lines.join('\n'),
-    /plan\/flows\/flow-1-ship-one\.md: step 1: its estimate of 96% of the 5-hour window \(times 1\.2\) does not fit within the threshold 85% even when the window is empty; split the step/
+    /plan\/flows\/flow-1-ship-one\.md: step 1: its estimate of 160% of the 5-hour window \(times 1\.2\) does not fit within the threshold 85% even when the window is empty; split the step/
   )
   // on a larger subscription the same step fits; an unknown subscription is not checked
   scratch.write(
     'plan/flows/flow-1-ship-one.md',
-    FLOW('{ "usage": { "subscription": "max5x" } }').replace('| 5 | — | C2 |', '| 8 | — | C2 |')
+    FLOW('{ "usage": { "subscription": "max5x" } }').replace('| 5 | — | C2 |', '| 8 | — | Opus 5.5 |')
   )
   planSummary({ root: scratch.root, profile: scratch.profile })
   assert.equal(call(['check'], scratch).code, 0)
@@ -294,7 +294,10 @@ test('dispatch adds the estimate, how to read the usage, the gate and the sample
   const { lines, code } = call(['dispatch', '1', '1'], scratch)
   assert.equal(code, 0)
   const text = lines.join('\n')
-  assert.match(text, /Usage: the step is estimated at 5-hour 60%, weekly 8% \(subscription pro \(the flow's setting\)/)
+  assert.match(
+    text,
+    /Usage: the step is estimated at 5-hour 9%, weekly 1\.3% \(subscription pro \(the flow's setting\)/
+  )
   assert.match(text, /call get_usage \{\}/)
   assert.match(
     text,

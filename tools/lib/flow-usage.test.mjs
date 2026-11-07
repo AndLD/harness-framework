@@ -70,7 +70,8 @@ test('the model family, and the coefficient of a model and a kind: a calibrated 
   assert.equal(modelFamily('claude-opus-5-5'), 'opus')
   assert.equal(modelFamily(null), null)
   const pro = usage.subscriptions.pro
-  assert.deepEqual(coefficientFor(pro, 'sonnet', 'tasks'), { fiveHour: 12, weekly: 1.6, source: 'default' })
+  assert.deepEqual(coefficientFor(pro, 'sonnet', 'triage-fix'), { fiveHour: 12, weekly: 1.6, source: 'default' })
+  assert.deepEqual(coefficientFor(pro, 'sonnet', 'tasks'), { fiveHour: 1.8, weekly: 0.25, source: 'calibrated' })
   assert.equal(coefficientFor(pro, 'sonnet', 'cut').fiveHour, 3.42)
   const calibrated = structuredClone(pro)
   calibrated.perSp.sonnet.cut = { fiveHour: 9, weekly: 1 }
@@ -79,7 +80,8 @@ test('the model family, and the coefficient of a model and a kind: a calibrated 
 })
 
 test('the estimate of a step is its SP times the coefficient of its model, kind and subscription; the larger subscriptions are lower, the API is money', () => {
-  const task = step({})
+  // a kind without a calibrated row: the default row of the model times the kind factor 1
+  const task = step({ kind: 'triage-fix' })
   assert.deepEqual(estimateStep({ step: task, profile, usage, subscription: 'pro' }), {
     known: true,
     unit: 'percent',
