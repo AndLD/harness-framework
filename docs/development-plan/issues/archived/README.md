@@ -13,6 +13,7 @@ It is read to find out whether a new report is a problem that was fixed already.
 | [I-3](./I-3.md) | The migration adds the folders of the new plan layout to the layer map of a project with its own layers | profile file | 3 | [issue 62](https://github.com/AndLD/harness-framework/issues/62) |
 | [I-4](./I-4.md) | The migration keeps a task that a branch claims, though it is still ⬜ | plan format | 2 | [issue 63](https://github.com/AndLD/harness-framework/issues/63) |
 | [I-5](./I-5.md) | A probe table of the older shape fails `check probes` without saying which columns it expects, and the note does not list the action | checks | 2 | [issue 64](https://github.com/AndLD/harness-framework/issues/64) |
+| [I-7](./I-7.md) | `harness branch update` left merge conflict markers in a file it reported as resolved, and no check refuses them | Git rules | 2 | — |
 | [I-8](./I-8.md) | A push from a linked worktree runs the gate's tests with the hook's `GIT_DIR`, and they rewrite the repository's Git config | Git rules | 2 | — |
 | [I-9](./I-9.md) | A condition inside a line (`{{#if role}}…{{/if}}`) is left unrendered in the generated skills | procedures | 2 | — |
 | [I-10](./I-10.md) | A flow continued from another account resumes a worker that account cannot find, and nothing falls back to a fresh one | runtime adapters | 3 | — |
