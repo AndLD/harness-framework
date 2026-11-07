@@ -136,6 +136,7 @@
       "model-map": "optional",
       "executors": "logic",
       "usage": "logic-optional",
+      "transcripts": "logic-optional",
       "hook-adoption": "logic-optional",
       "plan-write": "logic-optional",
       "managed-blocks": "logic-optional",
