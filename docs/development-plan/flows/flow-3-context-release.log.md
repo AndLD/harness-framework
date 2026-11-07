@@ -95,4 +95,21 @@ Entries are written from the entry templates of the [flow-log template](../../..
 ### 2026-11-07 17:39 — decision D1: the worker's recommendations
 - **Options:** for each, take it now, hand it to its step, or leave it.
 - **Own analysis:** the orchestrator's session id in the "running" entry: taken from now on where the session can read it (this one cannot read its own id; the audit takes `--orchestrator`). Hook output and whole-document reads as the first cuts of 6.2: handed to step 2 by its report, which the worker of step 2 reads in the phase log. An earlier restart of the orchestrator in 6.5 (in flow 1 it re-read 163M tokens from the cache): handed to step 5, the task's own subject.
+### 2026-11-07 17:32 — step 2 started
+- **Executor:** session, reused from step 1 · **Worker:** local_a78ad07c-2b51-4fa1-b1c3-868ec0ad4ae3 · **Account:** nil10035@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 3 SP, 4.8%
+- **Usage before:** 5-hour 10% (resets 2026-11-07T20:10:00Z) · weekly 78% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-07 17:41 — step 2 ended: done
+- **Usage after:** 5-hour 15% (resets 2026-11-07T20:10:00Z) · weekly 79% (resets 2026-11-08T21:00:00Z) · **Measured:** 5-hour +5%, weekly +1%, against an estimate of 5-hour 5.4% and weekly 0.8% · **Pull requests merged:** #185 (6.2), by auto-merge once its checks pass (it was behind `develop`; the orchestrator updated its branch) · **Ids done:** 6.2 · **Worker:** session local_a78ad07c-2b51-4fa1-b1c3-868ec0ad4ae3 (reused, warm), 26 turns, context 24% after the step
+- **Report:** `check all` prints the problems and one line `N checks passed` (`--verbose` restores the full text); the pre-push gate and the project checks write each step's output to a file and print nothing on a pass, and on a failure the file's path and the failing lines, capped by a new optional profile value `output.maxLines` (default 40); `flow dispatch --brief`. Measured on the branch's own push: the gate printed 212,567 characters with `--verbose` and 122 quiet, with the same exit codes; `check all` 1,365 to 38. The runtime hooks were left as they are (already silent or about 950 characters); `flow status`, `next`, `gate` and `plan summary` are already short. No migration note (written at the cut); the fragment `6.2-quiet-output` says to use `--verbose`. 815 tests, `docs:check`, lint and typecheck pass locally. Note: the times of the entries 17:36 to 17:39 above were written about six minutes ahead of the clock; this entry and the start of step 2 (corrected before its commit) use the clock.
+
+### 2026-11-07 17:42 — decision D1: the optional profile value `output.maxLines` and the quiet output of passing checks
+- **Options:** (a) accept them as a minor addition, with the fragment as the project's instruction; (b) treat them as a `contract.change` (D3); (c) keep the full output by default.
+- **Own analysis** (written before the worker's recommendations): (a). The value is optional with a default, so every profile stays valid; the quiet output is what task 6.2 asks for, and a project that read the text of a passing check finds `--verbose` in the changelog. Neither changes what a contract promises (its exit codes and the checks it runs are the same), so it is not a `contract.change`.
+- **Worker's recommendation:** the same judgement (not a change of the meaning of a contract).
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode).
+
+### 2026-11-07 17:42 — decision D1: the worker's recommendations of step 2
+- **Options:** for each, take it, hand it to its step, or leave it.
+- **Own analysis:** the failing-lines pattern as a setting of the stack adapter: handed to step 3 (6.3, the stack's commands), whose report names whether it took it. The orchestrator uses `flow dispatch --brief`: taken from step 3. An audit of a flow's pushes before 6.8: left to 6.8, which measures the fall by the audit already.
 - **Choice:** as above · **Decided by:** the orchestrator.
