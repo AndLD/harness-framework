@@ -24,7 +24,7 @@ is updated in the change that starts or finishes it.
 <!-- plan-summary:end -->
 
 <!-- plan-issues:start -->
-**Issue queue** (not a phase; its size is not in the totals above): [0 open](./issues/README.md), 0 SP; 21 archived.
+**Issue queue** (not a phase; its size is not in the totals above): [1 open](./issues/README.md), 1 SP; 21 archived.
 <!-- plan-issues:end -->
 
 <!-- plan-backlog:start -->
@@ -34,7 +34,7 @@ is updated in the change that starts or finishes it.
 **Releases** (the order of the releases and of their tasks is the file [releases](./releases.md), not a section of this index; the line below is written by `harness plan summary`)
 
 <!-- plan-releases:start -->
-No release is being developed. Next: `0.4.0-dev.1` (⬜ planned). The order of the releases and of their tasks: [releases](./releases.md). The flows that run them: [flows](./flows/README.md).
+No release is being developed. Next: `0.4.0` (⬜ planned). The order of the releases and of their tasks: [releases](./releases.md). The flows that run them: [flows](./flows/README.md).
 <!-- plan-releases:end -->
 
 ---
