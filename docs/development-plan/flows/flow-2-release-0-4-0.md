@@ -24,7 +24,7 @@ What the releases file holds for `0.4.0`, after `0.3.0`: the tasks that change h
 | 1a | tasks | 2.11 | 1 | — | 2 | 5.4% | C3 | ✅ |
 | 2 | tasks | 2.6 | 1a | — | 3 | 4.8% | C2 | ✅ |
 | 3 | tasks | 2.3 | 2 | — | 3 | 4.8% | C2 | ✅ |
-| 4 | tasks | 2.5 | 3 | — | 3 | 4.8% | C2 | ⬜ |
+| 4 | tasks | 2.5 | 3 | — | 3 | 4.8% | C2 | ✅ |
 | 5 | tasks | I-19, I-18, I-7 | 4 | — | 5 | 8% | C1 | ⬜ |
 | 6 | tasks | I-17, I-14, I-16 | 5 | — | 4 | 6.4% | C1 | ⬜ |
 | 7 | decision | the cut step of `0.4.0` to insert after this one (the version is confirmed by the owner, 2026-11-05) | 6 | — | 1 | 0.3% | — | ⬜ |
