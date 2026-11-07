@@ -14,4 +14,5 @@ A request for something new, which is not a defect, is an item of the [backlog](
 <!-- issue-queue:start -->
 | Issue | Title | Area | Agent | SP | Status | Reported |
 | ----- | ----- | ---- | ----- | -- | ------ | -------- |
+| [I-23](./I-23.md) | The take of a version names no services that the project's gate needs | procedures | C1 | 1 | ⬜ | — |
 <!-- issue-queue:end -->
