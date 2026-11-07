@@ -12,7 +12,7 @@ What the releases file holds for `0.4.0`, after `0.3.0`: the tasks that change h
 {
   "mode": "seamless",
   "askAt": "D2",
-  "permissions": { "mode": "acceptEdits", "allow": ["Bash(git *)", "Bash(gh *)", "Bash(npm *)", "Bash(node *)", "Bash(sed *)", "Bash(ls *)"] }
+  "permissions": { "mode": "auto", "allow": ["Bash(git *)", "Bash(gh *)", "Bash(npm *)", "Bash(node *)", "Bash(sed *)", "Bash(ls *)"] }
 }
 ```
 
