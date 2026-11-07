@@ -138,3 +138,31 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Options:** for the pattern: (a) leave it generic, as the worker did; (b) a setting of the stack adapter. For the recommendations: take, hand on, or leave.
 - **Own analysis:** (a): the worker's reason holds; a new role for projects without quiet variants is not worth its weight. The check of the Jest options in a real project: handed to step 8 (6.8), whose take in bot-rts runs them first; the orchestrator adds it to that step's prompt. A hard line cap for the step report of 6.4: handed to step 4 as a note of its prompt (the agents' own output was 59% of the baseline).
 - **Choice:** as above · **Decided by:** the orchestrator.
+
+### 2026-11-07 17:55 — decision D0: step 4 runs on the command line
+- **Options:** (a) the cli executor, the fallback of the session; (b) wait for the owner to start a session.
+- **Own analysis:** (a). The app refuses a session start on a turn that a background task's end began ("Start sessions only on the user's own words"); the procedure says not to retry or wait. The worker of steps 1 to 3 reached its limit of three steps, so a fresh worker runs step 4.
+- **Choice:** (a) · **Decided by:** the orchestrator.
+
+### 2026-11-07 17:55 — step 4 started
+- **Executor:** cli, the fallback of session: the app refuses a session start on a turn that a background task's end began · **Worker:** `claude -p` named flow-3-step-4, in a detached worktree of `origin/develop` (its session id comes with its report) · **Account:** nil10035@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 3 SP, 5-hour 5.4%, weekly 0.8%
+- **Usage before:** 5-hour 21% (resets 2026-11-07T20:10:00Z) · weekly 80% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-07 18:14 — step 4 ended: done
+- **Usage after:** 5-hour 27% (resets 2026-11-07T20:10:00Z) · weekly 80% (resets 2026-11-08T21:00:00Z) · **Measured:** 5-hour +6%, weekly +0%, against an estimate of 5-hour 5.4% and weekly 0.8% (3.48 M cache-read tokens, 26k output, $1.04 at list price) · **Pull requests merged:** #189 (6.4), by auto-merge · **Ids done:** 6.4 · **Worker:** cli eb2445f0-4f56-4722-a5d7-f5f48d0f08fc; its `result` held only its last line, so the report was read from its transcript
+- **Report:** method §8 "Output budgets and short reports" (read with a filter, short closing text, the step report's schema and cap) and a line in the definition of done (§4); every step prompt gets a `budget` section and the report schema (Status, Merged, Decisions, Deviations, Next step, Recommendations last), capped at 30 lines and 2,400 characters, the rest in the task's log; `harness flow report-check <file>`; `run-flow` treats a report over the cap as a deviation; `start-task`, `open-pull-request` and `end-session` cite the budgets. 828 tests pass. Deviations: no dry run under the audit (the next steps are the first to use the prompts); the report check is a command, not part of `check all`; `Recommendations` is a plain line, since the template splits sections on `##`.
+
+### 2026-11-07 18:14 — decision D3: the procedures `run-flow`, `start-task`, `open-pull-request` and `end-session` and the step prompts take the budgets (`contract.change`)
+- **Options:** (a) accept them as merged in #189; (b) revert.
+- **Own analysis** (written before the worker's recommendations): (a). Task 6.4 asks for exactly this; the change is additive (a schema and a cap for reports, citations of the budgets), and a project's agents gain a check, not a new duty outside a flow. This entry is the approval #189 needed; it merged first.
+- **Worker's recommendation:** D3, accept.
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode, `contract.change` D3).
+
+### 2026-11-07 18:14 — decision D3: the new rules of the method (§8 and the line of §4), asked of the owner
+- **Options:** (a) keep method §8 "Output budgets and short reports" and the line of the definition of done (§4) as merged in #189; (b) keep them as guidance, not rules (reworded as advice); (c) revert them and keep the budgets in the step prompts and the procedures only.
+- **Own analysis** (written before the worker's recommendations): (a). They are the rule task 6.4 asks for, and the prompts and procedures already rest on them. But they add rules to the core method that bind every agent of every project, which is a change of the meaning of a core rule; the entry file keeps that for the owner whatever the mode, and the flow file says so for 6.4. The worker said no core rule changed; I read §8 and disagree, so I ask. #189 is merged already; (c) would be a revert pull request.
+- **Worker's recommendation:** none on this point (it judged the method change a contract change, D3).
+- **Choice:** asked of the owner; the flow stops here with step 4 ⏸.
+
+### 2026-11-07 18:14 — stop: waits for the owner
+- **Digest:** done: steps 1 to 4 (6.1 #183, 6.2 #185, 6.3 #187, 6.4 #189), with the records #184, #186 and #188; decided alone, for "review later": flow 2 counts as finished (17:20, D1), I-28 and I-29 into step 8a (17:25, D2), the runtime role `transcripts` (17:38, D3), the stack role `quiet-commands` (17:54, D3), the procedures' budgets (above, D3); usage: 5-hour 27% (resets 20:10 UTC), weekly 80% (resets 2026-11-08 21:00 UTC; the owner's threshold 95%); next: the owner answers the decision on method §8 and §4 above, then step 5 (6.5), whose worker starts fresh.
