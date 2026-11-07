@@ -15,7 +15,7 @@ After `0.1.0`: a security review method next to the code review and the harness 
 | [2.2](./2.2.md) | Automated security checks | C2 | 3 | ⬜ |
 | [2.3](./2.3.md) | Automated review measurements | C2 | 3 | ✅ |
 | [2.4](./2.4.md) | First security review of the framework itself | C3 | 3 | ⬜ |
-| [2.5](./2.5.md) | Off-plan record (from the second source) | C2 | 3 | ⬜ |
+| [2.5](./2.5.md) | Off-plan record (from the second source) | C2 | 3 | ✅ |
 | [2.6](./2.6.md) | A switch that lets an agent write the plan's files without a prompt | C2 | 3 | ✅ |
 | [2.7](./2.7.md) | A flow starts its workers as nested sessions, and logs why when it uses the command line | C3 | 3 | ✅ |
 | [2.8](./2.8.md) | Security probe catalogue for the project and its supply chain (S1 to S4) | C3 | 5 | ⬜ |

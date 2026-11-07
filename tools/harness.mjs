@@ -33,6 +33,7 @@
 //   harness plan split <phase>                                    split a phase kept as one file into a folder: the phase index, a file per task and the logs beside them
 //   harness plan promote <B-n> --phase <n> [--agent <m>] [--size <n>] --approved   the owner's decision: a backlog item becomes a task of a phase
 //   harness plan log <phase> [ref]                                the implementation log of a phase from the merged pull requests
+//   harness plan log --off-plan                                   the off-plan records, one fragment per pull request, in the order of the pull requests
 //   harness release [--dev] [--dry-run]                           prepare a release on its branch: versions and changelog; --dev only sets a development version
 //   harness release notes <version>                               the changelog section of a version, for the host's release
 //   harness ci changes <base> <head>                              whether a change needs the code checks (`code=true|false`)
@@ -63,6 +64,7 @@ import { init } from './lib/init.mjs'
 import { readStdin, runGate } from './lib/gate.mjs'
 import { protectHost } from './lib/host.mjs'
 import { layerConfig, renderLayerMap } from './lib/layers.mjs'
+import { offPlanLog } from './lib/off-plan.mjs'
 import { planLog, planSummary } from './lib/plan.mjs'
 import { planWriteCommand } from './lib/plan-write.mjs'
 import { splitPhases } from './lib/phase-split.mjs'
@@ -106,6 +108,7 @@ const USAGE = `usage: harness <command>
   plan split <phase>
   plan promote <B-n> --phase <n> [--agent <marker>] [--size <n>] --approved
   plan log <phase> [ref]
+  plan log --off-plan
   release [--dev] [--dry-run]
   release notes <version>
   ci changes <base> <head>
@@ -172,7 +175,8 @@ const BOOLEAN_FLAGS = new Set([
   '--untriaged',
   '--upstream',
   '--approved',
-  '--no-plan-write'
+  '--no-plan-write',
+  '--off-plan'
 ])
 
 export function parseArgs(argv) {
@@ -350,6 +354,10 @@ export async function run(argv, { out = console.log, err = console.error, input 
       splitPhases({ root, profile: loadProfile(root), numbers: [Number(words[2])] }).messages.forEach((line) =>
         out(line)
       )
+      return 0
+    }
+    if (words[0] === 'plan' && words[1] === 'log' && words.length === 2 && flags.offPlan) {
+      out(offPlanLog({ root, profile: loadProfile(root) }))
       return 0
     }
     if (words[0] === 'plan' && words[1] === 'log' && (words.length === 3 || words.length === 4)) {
