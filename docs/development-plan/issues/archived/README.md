@@ -36,4 +36,5 @@ It is read to find out whether a new report is a problem that was fixed already.
 | [I-27](./I-27.md) | A project cannot give its flows a default for the workers' permissions | plan format | 2 | — |
 | [I-28](./I-28.md) | `harness flow status` reads a take that a later take superseded as not done | checks | 1 | — |
 | [I-29](./I-29.md) | The usage gate does not know the plan `pro` in lower case | checks | 1 | — |
+| [I-32](./I-32.md) | `harness flow audit` misses the command-line workers of a flow | checks | 1 | — |
 <!-- issue-queue:end -->
