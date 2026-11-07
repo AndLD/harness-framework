@@ -13,6 +13,7 @@ import { ADAPTER_RUNTIMES } from './runtimes.mjs'
 import { checkLayers } from './layers.mjs'
 import { listLocalAdapters, localAdapterProblems, localLoadErrors, localSuiteProblems } from './local-adapters.mjs'
 import { checkLinks } from './links.mjs'
+import { checkNotesList } from './migration-notes.mjs'
 import { checkOffPlan } from './off-plan.mjs'
 import { checkPaths } from './paths.mjs'
 import { planSummary } from './plan.mjs'
@@ -76,6 +77,7 @@ export const CHECKS = {
   plan: (context) => single(planSummary({ ...context, check: true })),
   flows: (context) => single(checkFlowsWithUsage({ runtimes: ADAPTER_RUNTIMES, ...context })),
   changelog: (context) => single(checkChangelog(context)),
+  notes: (context) => single(checkNotesList(context)),
   'off-plan': (context) => single(checkOffPlan(context)),
   probes: (context) => single(checkProbes(context)),
   'product-knowledge': (context) => checkProductKnowledge(context)

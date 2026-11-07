@@ -1,8 +1,11 @@
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
-import { test } from 'node:test'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { after, test } from 'node:test'
 import {
   areasOf,
+  checkNotesList,
   AREAS_BEGIN,
   AREAS_END,
   noteProblems,
@@ -130,4 +133,23 @@ test('the stub of a note has the shape of a note, lists the fragments and the ar
     'the word counts wherever it stands in the required actions'
   )
   assert.deepEqual(placeholderProblems('## What changed for a project\n\nTODO\n\n## Required actions\n\nNone.\n'), [])
+})
+
+test('the list of the notes names every note of the folder and no other', () => {
+  const root = mkdtempSync(join(tmpdir(), 'notes-list-'))
+  after(() => rmSync(root, { recursive: true, force: true }))
+  const profile = { release: { migrations: 'migrations' } }
+  assert.deepEqual(checkNotesList({ root, profile }).problems, [])
+  mkdirSync(join(root, 'migrations'))
+  const readme = (lines) => writeFileSync(join(root, 'migrations/README.md'), `# Notes\n\n## The notes\n\n${lines}\n`)
+  for (const version of ['0.1.0', '0.2.0-dev.1']) {
+    writeFileSync(join(root, 'migrations', `${version}.md`), 'x')
+  }
+  readme('- [0.1.0](./0.1.0.md)\n- [0.2.0-dev.1](./0.2.0-dev.1.md)')
+  assert.deepEqual(checkNotesList({ root, profile }).problems, [])
+  readme('- [0.1.0](./0.1.0.md)\n- [0.0.9](./0.0.9.md)')
+  assert.deepEqual(checkNotesList({ root, profile }).problems, [
+    'migrations/README.md: the section "The notes" has no line for the note of 0.2.0-dev.1',
+    'migrations/README.md: the section "The notes" lists 0.0.9, which has no note'
+  ])
 })
