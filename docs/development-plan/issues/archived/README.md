@@ -20,6 +20,7 @@ It is read to find out whether a new report is a problem that was fixed already.
 | [I-11](./I-11.md) | a worker started on the command line has no permission to edit files or run commands, and the executor's means do not say how to give it | runtime adapters | 3 | — |
 | [I-12](./I-12.md) | The migration of `0.3.0` writes prose into the release table's id column, leaves a skipped release as the next one, and leaves a prose order of phases without a message | bootstrap and sync | 3 | — |
 | [I-13](./I-13.md) | The first `check all` after taking `0.3.0` fails on the new releases file and on a generic word of the core, and the notes say nothing of either or of the cost of the gate | checks | 2 | — |
+| [I-14](./I-14.md) | `harness flow status` takes a consumer's pull request for a development version as the take of the final version it extends | checks | 1 | — |
 | [I-15](./I-15.md) | The migration of `0.3.0` takes ids from a mere mention in the old words, and leaves a sentence broken where the old table stood | bootstrap and sync | 2 | — |
 | [I-17](./I-17.md) | Pushing the tag of a release from the branch of the work fails the migration tests, and the procedure `release` does not say from which branch to push it | procedures | 1 | — |
 | [I-18](./I-18.md) | A pull request that the update workflow brings up to date is left BLOCKED, because the required `pr-title` check of the new head never runs | checks | 2 | — |
