@@ -50,3 +50,11 @@ The ceilings of the numbers the method budgets (section 3). Task 4.5 of the plan
 | ------ | -------- | ------- |
 | Rows of the `procedures` block of `AGENTS.md` (M6, M20) | 12 | 16 |
 | Words of the `procedures` block of `AGENTS.md` (M6) | 277 | 400 |
+| Words in the always-loaded set (M6) | 2,729 | — |
+| Normative words in the always-loaded set (M20) | 33 | — |
+| Exception words in the always-loaded set (M20) | 5 | — |
+| Highest fan-out of one document (M21) | 25 | — |
+| Unreachable Markdown files (M7) | 82 | — |
+| References that break the dependency rule (M3) | 19 | — |
+
+`harness review measure` prints these numbers (method, section 4, step 3). The baselines above are its output at the commit of task 2.3 (2026-11-07); a ceiling stays open until the first harness review proposes it and the owner approves it.
