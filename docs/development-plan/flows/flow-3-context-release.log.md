@@ -38,3 +38,9 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis:** (a). In flow 2 the mode `acceptEdits` asked the owner for almost every command of a worker until the owner set `auto` (flow 2, 2026-11-07 11:00), and the take of the consumer (step 8, 6.8, and the take that step 9 inserts) runs in AndLD/bot-rts, which a step can name only when the flow's `repos` lists it; the local folder is in `harness-profile.local.json` (`repos.consumer`).
 - **Worker's recommendation:** none (no worker is involved).
 - **Choice:** (a) · **Decided by:** the owner ("Yes, set both").
+
+### 2026-11-07 17:30 — decision D2: I-27, a project's default for the workers' permissions, joins this release as step 8b
+- **Options:** (a) a step of its own after 8a (8b, I-27, 2 SP, C2); (b) a later release; (c) `auto` as the framework's default.
+- **Own analysis:** (a). The owner asked that `auto` be the default of the flows to come. (c) cannot be done as asked: the core names no mode of a runtime, and the runtime contract says an adapter never chooses one, since what a worker may do is the owner's decision; a default that the project's profile holds keeps both and gives the owner the same result (this repository sets it to `auto`). Flows 3 and 4 set the mode already, so nothing waits for it before flow 5; 8b is C2, since it touches the profile schema, the tools and the text of the runtime contract.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (a): I-27 recorded, step 8b inserted, step 9 now needs 8b; the row `0.5.0` of the releases file names I-27 · **Decided by:** the owner's request ("You can put auto mode as default"), in the form the orchestrator chose.
