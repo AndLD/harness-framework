@@ -13,6 +13,6 @@ The table is written from the flow files by `harness plan summary`; edit a flow 
 | ---- | -------- | ---- | ---- | ---------- | ------ |
 | [1 — Release 0.3.0 and its first consumer](./flow-1-release-0-3-0.md) | `0.3.0-dev.1`, `0.3.0-dev.2`, `0.3.0-dev.3`, `0.3.0` | seamless | 20 SP | 21.6% | ✅ |
 | [2 — The 0.4.0 release](./flow-2-release-0-4-0.md) | `0.4.0-dev.1`, `0.4.0` | seamless | 30 SP | 45.1% | ✅ |
-| [3 — The context optimization release](./flow-3-context-release.md) | `0.5.0-dev.1`, `0.5.0` | seamless | 40 SP | 45.6% | 🟡 |
+| [3 — The context optimization release](./flow-3-context-release.md) | `0.5.0-dev.1`, `0.5.0` | seamless | 41 SP | 45.9% | 🟡 |
 | [4 — The security release](./flow-4-security-release.md) | `0.6.0` | seamless | 25 SP | 61.8% | ⬜ |
 <!-- flows-index:end -->
