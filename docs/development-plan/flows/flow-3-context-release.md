@@ -12,7 +12,10 @@ Phase 6 (context optimization for agents and consumers), in the release `0.5.0` 
 {
   "mode": "seamless",
   "askAt": "D2",
-  "permissions": { "mode": "acceptEdits", "allow": ["Bash(git *)", "Bash(gh *)", "Bash(npm *)", "Bash(node *)", "Bash(sed *)", "Bash(ls *)"] }
+  "repos": {
+    "consumer": { "remote": "AndLD/bot-rts", "role": "consumer", "kinds": ["consumer-take"] }
+  },
+  "permissions": { "mode": "auto", "allow": ["Bash(git *)", "Bash(gh *)", "Bash(npm *)", "Bash(node *)", "Bash(sed *)", "Bash(ls *)"] }
 }
 ```
 

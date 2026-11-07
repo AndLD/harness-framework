@@ -32,3 +32,9 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis:** (a). The take of `0.4.0` in bot-rts (AndLD/bot-rts#303) found that `harness plan-write on` writes `.claude/settings.json` in a form the project's Prettier check rejects; every project that turns the switch on and checks formatting meets it, and it is 1 SP of C1, the same kind as the other issues of 8a.
 - **Worker's recommendation:** report the defect upstream; this repository is upstream, so it is recorded here as I-26.
 - **Choice:** (a): step 8a is I-23 to I-26, 4 SP; the row `0.5.0` of the releases file names I-26 · **Decided by:** the orchestrator, under the owner's approval of the issues of flow 2 ("I agree with your recommendations go apply them").
+
+### 2026-11-07 17:05 — decision D3: the workers start in the mode `auto`, and the consumer is a repository of the flow
+- **Options:** (a) `permissions.mode` `auto` and `repos.consumer` AndLD/bot-rts (`consumer-take`), as flow 2 has them; (b) leave the settings as they are.
+- **Own analysis:** (a). In flow 2 the mode `acceptEdits` asked the owner for almost every command of a worker until the owner set `auto` (flow 2, 2026-11-07 11:00), and the take of the consumer (step 8, 6.8, and the take that step 9 inserts) runs in AndLD/bot-rts, which a step can name only when the flow's `repos` lists it; the local folder is in `harness-profile.local.json` (`repos.consumer`).
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (a) · **Decided by:** the owner ("Yes, set both").
