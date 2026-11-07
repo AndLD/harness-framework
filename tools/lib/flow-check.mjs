@@ -69,6 +69,22 @@ function fallbackProblem(expected, flow, heading, body, stepId) {
   return `${expected}: the entry "${heading.slice(4, 60)}" names the executor ${said.executor}, but step ${stepId} is planned for ${planned}; write "**Executor:** ${said.executor}, the fallback of ${planned}: <the reason>" (\`harness flow dispatch\` prints the line)`
 }
 
+/** The problems of a `permissions` value (a flow's setting, or the profile role `flows.permissions`): an object with a mode name and a list of tools by name. */
+export function permissionsProblems(permissions, label) {
+  if (permissions === undefined) return []
+  if (typeof permissions !== 'object' || permissions === null || Array.isArray(permissions))
+    return [`${label} is not an object ({ "mode", "allow" })`]
+  const problems = []
+  if (permissions.mode !== undefined && !(typeof permissions.mode === 'string' && permissions.mode.trim()))
+    problems.push('the permissions mode must be a name of the runtime')
+  if (
+    permissions.allow !== undefined &&
+    !(Array.isArray(permissions.allow) && permissions.allow.every((tool) => typeof tool === 'string' && tool.trim()))
+  )
+    problems.push('the permissions allow must be a list of tools by name')
+  return problems
+}
+
 function settingsProblems(settings) {
   const problems = []
   if (!LEVELS.slice(1).includes(settings.askAt))
@@ -96,22 +112,7 @@ function settingsProblems(settings) {
     problems.push('the setting orchestratorLimits is not an object')
   else if (own?.context !== undefined && !(own.context > 0 && own.context <= 100))
     problems.push('the orchestrator limit context must be a percent from 1 to 100')
-  const permissions = settings.permissions
-  if (permissions !== undefined) {
-    if (typeof permissions !== 'object' || permissions === null || Array.isArray(permissions))
-      problems.push('the setting permissions is not an object ({ "mode", "allow" })')
-    else {
-      if (permissions.mode !== undefined && !(typeof permissions.mode === 'string' && permissions.mode.trim()))
-        problems.push('the permissions mode must be a name of the runtime')
-      if (
-        permissions.allow !== undefined &&
-        !(
-          Array.isArray(permissions.allow) && permissions.allow.every((tool) => typeof tool === 'string' && tool.trim())
-        )
-      )
-        problems.push('the permissions allow must be a list of tools by name')
-    }
-  }
+  problems.push(...permissionsProblems(settings.permissions, 'the setting permissions'))
   const usage = settings.usage ?? {}
   if (usage.subscription !== undefined && !(typeof usage.subscription === 'string' && usage.subscription.trim()))
     problems.push('the usage subscription must be a name, or "local"')
@@ -348,7 +349,10 @@ export function checkFlows({ root, profile }) {
     })
   )
   return {
-    problems: flowProblems(read, planFacts({ root, profile }), logs),
+    problems: [
+      ...permissionsProblems(profile.flows?.permissions, 'the profile role flows.permissions'),
+      ...flowProblems(read, planFacts({ root, profile }), logs)
+    ],
     message: `Checked ${read.flows.length} flow(s): their parts, their steps, what they need and their logs.`
   }
 }
