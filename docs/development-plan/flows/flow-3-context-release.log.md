@@ -253,3 +253,45 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Options:** for each, take, hand on, or leave.
 - **Own analysis:** start the `0.5.0` note from the fragment `6.8-phase-6-take.md`: handed to the cut step that step 9 inserts. Jest and pytest quiet options on a real project first: handed to 6.9. A migration script that sets the quiet roles: left, as 6.3 decided (a project may have its own commands). The report's extra lines are a small deviation from the 6.4 schema; it stayed within the cap in spirit (about 2.3k characters).
 - **Choice:** as above · **Decided by:** the orchestrator.
+
+### 2026-11-07 19:14 — step 8a started
+- **Executor:** cli, the fallback of session: the app refuses a session start on a turn that a background task's end began · **Worker:** `claude -p` named flow-3-step-8a, in a detached worktree of `origin/develop` · **Account:** nil10035@gmail.com · **Model:** Sonnet 5.5 at medium effort · **Permissions:** auto · **Estimate:** 6 SP, 5-hour 10.8%, weekly 1.5%
+- **Usage before:** 5-hour 44% (resets 2026-11-07T20:10:00Z) · weekly 83% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-07 19:47 — step 8a ended: done
+- **Usage after:** 5-hour 49% (resets 2026-11-07T20:10:00Z) · weekly 83% (resets 2026-11-08T21:00:00Z) · **Measured:** 5-hour +5%, weekly +0%, against an estimate of 5-hour 10.8% and weekly 1.5% (5.11 M cache-read and 22k output tokens, $1.04 at list price, 32 minutes) · **Pull requests merged:** #199 (I-23), #200 (I-24), #201 (I-25), #202 (I-26), #203 (I-28), #204 (I-29) · **Ids done:** I-23, I-24, I-25, I-26, I-28, I-29 · **Worker:** cli 478d45e3-64a5-4e63-9f2a-07236c849bd3, 77 turns
+- **Report** (in the schema, with sub-lines): no decision, no contract changed; `harness check notes` is a new check (`check all` runs 19). I-26 fixed by a message to run the project's formatter, not by matching Prettier (its output depends on the project's width); the scaffold's and the adoption's writes got no such message. I-28: a superseded take reads ✅ when a merged pull request names its version, or when the host cannot be asked. I-29: `--plan` in any case, named in the usage lines.
+
+### 2026-11-07 19:47 — decision D1: the recommendations of step 8a, and the fix of I-26
+- **Options:** I-26 as fixed (a message), or (b) a new issue for the scaffold's and the adoption's writes; for the rest, take or leave.
+- **Own analysis:** I-26 as fixed: the message is a fair fix, since the framework cannot know a project's formatter; the scaffold and the adoption write the file once at the start, before a project's formatter has run, so they are left (named in the digest). `flow status 2` checked after the merges: flow 3 no longer waits for flow 2; flow 1 still shows its three development takes ⬜ because no pull request of the consumer names those versions (they were taken in one pull request); a display of a finished flow, not a blocker, named in the digest. Branches off the merged `develop`: as the workers do. Fragments for I-23 and I-24: left to the cut, whose note is written from the fragments and the issues it lists.
+- **Choice:** as above · **Decided by:** the orchestrator.
+
+### 2026-11-07 19:48 — step 8b started
+- **Executor:** cli, the fallback of session: the app refuses a session start on a turn that a background task's end began · **Worker:** `claude -p` named flow-3-step-8b, in a detached worktree of `origin/develop` · **Account:** nil10035@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 2 SP, 5-hour 3.6%, weekly 0.5%
+- **Usage before:** 5-hour 49% (resets 2026-11-07T20:10:00Z) · weekly 83% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-07 19:56 — step 8b ended: partial
+- **Usage after:** 5-hour 53% (resets 2026-11-07T20:10:00Z) · weekly 84% (resets 2026-11-08T21:00:00Z) · **Measured:** 5-hour +4%, weekly +1%, against an estimate of 5-hour 3.6% and weekly 0.5% (3.88 M cache-read and 23k output tokens, $0.96 at list price) · **Pull requests merged:** none; #206 (I-27) stays a draft · **Ids done:** none · **Worker:** cli 00b2c24b-fce1-49af-82dd-2afa772fef8a, 50 turns
+- **Report:** built and tested: the profile role `flows.permissions` (schema, `profile/roles.md`), `workerPermissions` (a flow's own setting wins as a whole), `harness check flows` checks it, the runtime contract and the plan README say "absent from a flow: the project's default, else absent"; 842 tests pass. Not done: this repository's own value (`flows.permissions` `auto` in `harness-profile.json`), which the permission classifier refused to the worker as a self-modification; and a bootstrap question, whose first form broke two tests and was dropped. `flow prompt` does not read the role.
+
+### 2026-11-07 19:56 — decision D3: the runtime contract takes the project's default for the workers' permissions (`contract.change`)
+- **Options:** (a) accept the text and the role as built in #206; (b) refuse.
+- **Own analysis** (written before the worker's recommendations): (a). It is I-27 as the owner asked it, in the form logged at 17:30: an adapter still never sets a mode; the default is the project's, in its profile. This entry is the approval #206 needs when it merges.
+- **Worker's recommendation:** D3, accept.
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode, `contract.change` D3).
+
+### 2026-11-07 19:56 — decision D2: the bootstrap question is split from I-27 as I-30
+- **Options:** (a) close I-27 on the role, the value and the texts, and record the `init` question as I-30 for a later release; (b) design the question inside step 8b.
+- **Own analysis** (written before the worker's recommendations): (a). The owner asked for a default, which the role and this repository's value give; a question of the bootstrap is a design of its own (it shows only where the runtime offers modes) and broke tests in its first form. I-30 (2 SP, C2) is recorded; it joins no release yet.
+- **Worker's recommendation:** the same, if the owner skips the question.
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode).
+
+### 2026-11-07 19:56 — decision D4: this repository's `flows.permissions` value, asked of the owner
+- **Options:** (a) the owner adds `"flows": { "permissions": { "mode": "auto", "allow": [the six tools of flow 3] } }` to `harness-profile.json` on the branch of #206; (b) the owner tells the orchestrator to write it; (c) leave this repository without the value, each flow keeping its own block.
+- **Own analysis:** (b) or (a); the value is what the owner asked for ("You can put auto mode as default"). But the runtime's permission classifier refused the write to the worker as a self-modification, and the procedure gives the orchestrator no way around a refusal: it continues a worker only with a mode the owner's settings give, else stops and asks.
+- **Worker's recommendation:** D4: the owner adds it, or says to retry.
+- **Choice:** asked of the owner; step 8b is ⏸.
+
+### 2026-11-07 19:56 — stop: waits for the owner
+- **Digest:** done: steps 1 to 8a (6.1 to 6.8; I-23 to I-26, I-28, I-29), the records #184 to #205; step 8b (I-27) is built in the draft #206 but for this repository's value; decided alone, for "review later": flow 2 counts as finished (17:20, D1), I-28 and I-29 into 8a (17:25, D2), the contract changes of 6.1 `transcripts` (17:38), 6.3 `quiet-commands` (17:54), 6.4 the procedures' budgets (18:14), 6.5 the restart threshold (18:25), 6.6 delegated reading (18:32) and I-27 (above), all D3; 6.7 not building the briefs (19:00, D1); **the split of 6.8 into 6.8 and 6.9 (19:01, D2)**; I-30 split from I-27 (above, D2); left for the owner: method §8 has no line on delegated reading (6.6 left it); flow 1 shows its three development takes ⬜ (no consumer pull request names those versions); the scaffold's and the adoption's writes of the settings file have no formatter message (I-26); the provisional Opus coefficient is about seven times too high (step 7); usage: 5-hour 53% (resets 20:10 UTC), weekly 84% (resets 2026-11-08 21:00 UTC, threshold 95%); next: the owner answers the D4 above, then 8b closes and step 9 (the decision that inserts the cut of `0.5.0`, the consumer's take and 6.9).
