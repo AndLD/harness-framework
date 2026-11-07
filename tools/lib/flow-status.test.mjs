@@ -167,6 +167,13 @@ test('a step in an external repository is checked through the host: the lock it 
     merged.evidence,
     /pull request #6 \(take 1\.0\.0\) is merged, but the lock on the default branch does not name 1\.0\.0 yet/
   )
+  // a take that a later take superseded is done when its pull request is merged
+  const newer = { version: '1.1.0' }
+  const superseded = take(newer, prs({ number: 6, title: 'take 1.0.0', state: 'merged' }))
+  assert.equal(superseded.computed, '✅')
+  assert.match(superseded.evidence, /names 1\.1\.0, a later version than 1\.0\.0; pull request #6 .* is merged/)
+  assert.equal(take(newer, prs({ number: 5, title: 'other', state: 'closed' })).computed, '⬜')
+  assert.equal(take(newer, () => ({ pullRequests: [], error: 'no access' })).computed, '✅')
   assert.match(
     take(old, prs({ number: 5, title: 'other', state: 'closed' })).evidence,
     /no pull request names 1\.0\.0 in its title/

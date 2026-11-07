@@ -1,0 +1,1 @@
+Fixed: `harness flow status` reads the take of a version that a later take superseded as done (the lock names a later version and the take's pull request is merged), not as a mismatch, so a flow that needs a finished flow no longer waits for it. Nothing to do for a project.
