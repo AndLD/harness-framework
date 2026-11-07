@@ -197,3 +197,23 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis:** (1) merge #152 before the next step: done by the decision above; (2) an explicit permission for workers to merge their pull requests: the classifier of the mode `auto` refuses a merge as "merge without review" in the workers and in the orchestrator alike; the permission settings are the owner's, never the orchestrator's (and an agent is refused writing its own), so it goes to the owner.
 - **Choice:** (1) done; (2) to the owner · **Decided by:** the orchestrator.
 - **Merged:** #152 by auto-merge (merge commit `54b63af`), after the decision of 11:20; 2.6 is done, and step 2 is ✅.
+
+### 2026-11-07 11:30 — decision D0: step 3: the app refused the session start on a turn that a background event began, so the cli executor runs it
+- **Options:** (a) a session (tried first); (b) `cli` for this step only; (c) `manual`.
+- **Own analysis:** (a) was refused (the turn began with the end of the wait for #152); the order of the executors says to run the step on the next one, logged, and to dispatch the next step from `session` again. The prompt tells the worker that it is a `cli` worker, since the variables of a desktop session it inherits misled the worker of step 1a.
+- **Worker's recommendation:** none (the worker had not started).
+- **Choice:** (b), in the worktree `.claude/worktrees/flow-2-step-3` cut from `origin/develop` (54b63af), in the flow's mode `auto` · **Decided by:** the orchestrator.
+
+### 2026-11-07 11:30 — step 3 started
+- **Executor:** cli, the fallback of session: the app refused the start on a turn that a background event began (the entry above) · **Worker:** `claude -p --name flow-2-step-3` (its `session_id` is in the step-ended entry) · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 3 SP, 5-hour 36%, weekly 4.8%
+- **Usage before:** 5-hour 29% (resets 2026-11-07T13:30:00Z) · weekly 45% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-07 11:50 — step 3 ended: done
+- **Usage after:** 5-hour 38% (resets 2026-11-07T13:30:00Z) · weekly 46% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +9%, weekly +1%, against an estimate of 5-hour 36% and weekly 4.8%; tokens 226913 (input, output and cache creation of `modelUsage`; 9,760,212 cache-read tokens left out) · **Pull requests merged:** #157 by auto-merge (merge commit `42fc758`, the required checks green) · **Ids done:** 2.3 · **Worker:** `claude -p`, session `3a12d518-9eca-4269-be07-bd1365e0e629`, 77 turns, 12 minutes, 2.23 USD at list price; two commands refused (an assignment of a shell variable), no blocker
+- **Report:** `harness review measure` prints M6, M20, M5, M21, M7 and M3 against the budgets of the bindings and exits 1 over a ceiling; the measuring step of the method cites it, and `tests/harness-budget.test.mjs` holds this repository within its ceilings. Verified against the harness review of bot-rts of 2026-11-03, rebuilt at its commit in a scratch folder: equal for the words always loaded, the normative and exception words, the M5 counts and the two highest fan-outs; one fan-out differs by one (a link to a folder without a README, counted by hand); M3 and M7 have no number in that report. 777 tests, lint, typecheck and `docs:check` passed. The push from the worktree was not refused (I-19 not met). No contract change, no report filed. One open decision (below).
+
+### 2026-11-07 11:50 — decision D2: the ceilings of the new measurements
+- **Options:** (a) set ceilings now from the baselines the worker measured (words always loaded 2,729, normative 33, exception 5, highest fan-out 25, unreachable files 82, references against the dependency rule 19); (b) leave them `—` until the first harness review.
+- **Own analysis** (written before I read the worker's recommendations): (b). The method has the owner approve ceilings, so a flow does not set them; without a ceiling the command prints the numbers without a verdict, which is what a first review needs to judge them. Nothing in this release depends on a ceiling.
+- **Worker's recommendation:** review M3 and M7 at the first harness review, since their baselines may show that the rule or the roots are wrong rather than the documents; wire the command into `harness check all` once ceilings exist. Both agree with (b); the wiring is later work, named in the digest.
+- **Choice:** (b) · **Decided by:** the orchestrator.
