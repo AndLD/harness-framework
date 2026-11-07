@@ -255,9 +255,12 @@ Recommendations
 const readJson = (root, path) => JSON.parse(readFileSync(join(root, path), 'utf8'))
 const skill = (root, name) => readFileSync(join(root, '.claude/skills', name, 'SKILL.md'), 'utf8')
 
-// A project of the last release, with the profile it holds before the take (`edit` changes it, as a migration note tells a project to), takes this tree
+// The release before Phase 6, whatever the tree is: a tree of 0.5.0 or later has Phase 6 in its last release already
+const BEFORE_PHASE_6 = '0.5.0'
+
+// A project of the last release before Phase 6, with the profile it holds before the take (`edit` changes it, as a migration note tells a project to), takes this tree
 function takeOfLastRelease(edit) {
-  const root = bootstrapFrom(lastRelease(currentTree().version))
+  const root = bootstrapFrom(lastRelease(BEFORE_PHASE_6))
   projectGit(root, 'checkout', '-q', '-b', 'chore/take-version')
   if (edit) {
     const file = join(root, 'harness-profile.json')
