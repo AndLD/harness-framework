@@ -1,0 +1,1 @@
+Changed: `harness plan-write on` and `off` say, in their last message, to run the project's formatter on the settings file when the project's lint checks formatting (the file is written with one array entry a line). Nothing to do for a project.
