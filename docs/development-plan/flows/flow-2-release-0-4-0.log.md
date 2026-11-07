@@ -149,3 +149,25 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Decided alone (review later):** as in the stop of 01:22, and the contract change of 2.11 (D3, the entry above).
 - **For the owner:** the flow's `allow` list and the project's allow rules (read-only tools that both workers asked for); optionally, the wake-up test of a `claude -p` worker.
 - **Next step:** at "Continue flow 2": step 2 (task 2.6, 3 SP, Sonnet); read the usage and run the gate first.
+
+### 2026-11-07 00:10 — running
+- **Orchestrator:** the desktop-app session of andrey.larionov.me@gmail.com, started by "Continue flow 2" (the stop entry of 2026-11-06 23:55 ended the earlier claim) · **Mode:** seamless · **Steps:** 2 to 7
+- **Usage:** 5-hour 18% (resets 2026-11-06T22:39:59Z) · weekly 41% (resets 2026-11-10T06:59:59Z) (Pro)
+- **Permissions:** the owner added the flow's `allow` tools and the read-only tools (`grep`, `cat`, `head`, `tail`, `wc`, `npx prettier`) to the ignored `.claude/settings.local.json` (the orchestrator was refused writing it, as an agent's change of its own permissions), so a session started in `acceptEdits` gets them.
+
+### 2026-11-07 00:15 — step 2 started
+- **Executor:** session · **Worker:** local_c7c56016-5645-47e3-8128-41cc660f5441 · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** acceptEdits · **Estimate:** 3 SP, 5-hour 36%, weekly 4.8%
+- **Usage before:** 5-hour 18% (resets 2026-11-06T22:39:59Z) · weekly 41% (resets 2026-11-10T06:59:59Z)
+- **Note:** the app cut the worker's worktree from `main`, 32 commits behind `develop`; the orchestrator told the worker by message to branch from `origin/develop` and read the plan and the tools there.
+
+### 2026-11-07 10:35 — stop: paused by the owner
+- **Done:** steps 1 and 1a; step 2 (task 2.6) is running in its worker session, which claimed it in #152; the orchestrator lets that worker finish its task and starts no further step.
+- **Decided alone (review later):** as in the stop of 2026-11-06 23:55.
+- **Usage:** read at the start of step 2: 5-hour 18%, weekly 41% (Pro).
+- **Next step:** at "Continue flow 2": read the report of step 2's worker (local_c7c56016-5645-47e3-8128-41cc660f5441, by `list_events`), log "step 2 ended" with the usage after it, then step 3 (task 2.3).
+
+### 2026-11-07 11:00 — decision D3: the workers of this flow start in the mode `auto`
+- **Options:** (a) keep `acceptEdits`; (b) `auto`, where the runtime's classifier judges each command and refuses only the risky ones; (c) a more permissive mode.
+- **Own analysis:** none was needed: the `permissions` setting is the owner's choice. What led to it: the worker of step 2 started in `acceptEdits` with the flow's tools as allow rules of the owner's local settings, and still asked the owner for almost every command, because the runtime asks in that mode for what it cannot check before it runs, whatever the rules: shell operators (`&&`, pipes, subshells, redirections), nested commands (`$(…)`), and heredocs with braces and quotes ("expansion obfuscation"). The owner set that worker's session to `auto` by hand during the step.
+- **Worker's recommendation:** none.
+- **Choice:** (b), `"mode": "auto"`; the `allow` list stays · **Decided by:** the owner ("yes", to the question whether the flow's mode should be `auto`).

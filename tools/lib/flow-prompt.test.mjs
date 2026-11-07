@@ -67,6 +67,7 @@ test('the template has a section for every part of a prompt', () => {
     'consumer-take',
     'triage-fix',
     'decision',
+    'commands',
     'git',
     'stop',
     'report'
@@ -140,4 +141,37 @@ test('a line with a word that has no value is left out, and the text of a sectio
   assert.equal(fillWords('a {x}\nb {y}\nc', { x: 1, y: '' }), 'a 1\nc')
   assert.equal(fillWords('m {model}', { model: '—' }), '')
   assert.deepEqual(promptSections('intro\n## one\n\ntext <!-- gone -->\n## two\nmore\n'), { one: 'text', two: 'more' })
+})
+
+test('the setting commands "plain" adds the section of plain commands before the Git wording; "any", the default, leaves it out', () => {
+  const withCommands = (commands) =>
+    parseFlow(
+      'flow-3-plain.md',
+      `# Flow 3 — Plain
+
+**Releases:** \`1.0.0\` · **Needs:** — · **Log:** [log](./flow-3-plain.log.md)
+
+## Settings
+
+\`\`\`json
+${commands ? `{ "commands": "${commands}" }` : '{}'}
+\`\`\`
+
+## Steps
+
+| # | Kind | Scope | Needs | Stops for | SP | Est. usage | Model | State |
+| - | ---- | ----- | ----- | --------- | -- | ---------- | ----- | ----- |
+${row(1, 'tasks', '1.1', '—', '—', 1, '—', 'C2', '⬜')}
+`
+    )
+  const render = (commands) =>
+    renderPrompt({ flow: withCommands(commands), step: '1', facts, template: TEMPLATE, values }).prompt
+  const plain = render('plain')
+  assert.match(plain, /Run plain commands/)
+  assert.match(plain, /never by a heredoc/)
+  assert.ok(plain.indexOf('Run plain commands') < plain.indexOf('Git rules for this step'))
+  assert.doesNotMatch(plain, /<!--/)
+  assert.doesNotMatch(render('any'), /Run plain commands/)
+  assert.doesNotMatch(render(undefined), /Run plain commands/)
+  assert.equal(withCommands(undefined).settings.commands, 'any')
 })

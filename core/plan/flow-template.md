@@ -26,6 +26,7 @@ The orchestrator reads this block (the procedure `run-flow`); a setting left out
   "reuse": "auto",
   "reuseLimits": { "context": 40, "steps": 3 },
   "commits": "per-step",
+  "commands": "any",
   "usage": {
     "subscription": "local",
     "stopAt": { "fiveHour": 85, "weekly": 90 },
