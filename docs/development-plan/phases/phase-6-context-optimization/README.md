@@ -13,7 +13,7 @@ Planned with the owner on 2026-11-05, after a measurement of the long session th
 <!-- phase-tasks:start -->
 | # | Task | Agent | SP | Status |
 | - | ---- | ----- | -- | ------ |
-| [6.1](./6.1.md) | `harness flow audit`: where the tokens of a flow went, and the baseline | C2 | 5 | ⬜ |
+| [6.1](./6.1.md) | `harness flow audit`: where the tokens of a flow went, and the baseline | C2 | 5 | ✅ |
 | [6.2](./6.2.md) | Quiet by default: the output of the framework's commands and hooks | C2 | 3 | ⬜ |
 | [6.3](./6.3.md) | Quiet variants of the stack's commands (lint, typecheck, test, coverage, format) | C2 | 3 | ⬜ |
 | [6.4](./6.4.md) | Output budgets for agents and a short schema for step reports | C2 | 3 | ⬜ |

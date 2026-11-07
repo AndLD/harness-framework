@@ -303,3 +303,30 @@ test('a usage role that cannot be read or has an incomplete table fails the usag
   const suite = await runSuite({ dir, only: /^usage/ })
   assert.deepEqual(failedNames(suite), [])
 })
+
+test('a transcripts role whose parse or locate does not meet the contract fails the transcripts check; a runtime without the role skips it', async () => {
+  for (const [replace, problem] of [
+    ['return { means: MEANS, locate, parse }', /no `parse\(\)` operation/],
+    ['return { means: MEANS, locate, parse }', /no `locate\(\)` operation/]
+  ]) {
+    const dir = broken('runtime', 'claude-code', {
+      'transcripts.mjs': (text) =>
+        text.replace(
+          replace,
+          /parse/.test(problem.source) ? 'return { means: MEANS, locate }' : 'return { means: MEANS, parse }'
+        )
+    })
+    const suite = await runSuite({ dir, only: /^transcripts/ })
+    assert.deepEqual(failedNames(suite), [
+      'transcripts: where the sessions of a flow are, and how to read one into the neutral records'
+    ])
+    assert.match(failed(suite)[0].message, problem)
+  }
+  const dir = broken('runtime', 'claude-code', {
+    'manifest.json': json((manifest) => {
+      delete manifest.roles.transcripts
+      return manifest
+    })
+  })
+  assert.deepEqual(failedNames(await runSuite({ dir, only: /^transcripts/ })), [])
+})

@@ -26,6 +26,7 @@
 //   harness flow check | status <n> | next <n> | prompt <n> <step>   the flows of the plan (the procedure run-flow): check them (`check flows`), recompute the state of
 //     | dispatch <n> <step> [--context <percent>] [--account <id>] [--at <time>]     a flow's steps from the repository, print its next step with its prompt, the prompt of a step, or
 //                                                                 how to hand a step to a worker: its executor, a fresh or the previous worker (reuse), the means
+//     | audit <n> [--orchestrator <id>[,<id>]] [--top <n>] [--json]   where the tokens of a flow went, by tool, command, step and session, from the runtime's transcripts
 //     | calibrate [--min <n>] [--subscription <id>]   propose new usage coefficients from the flows' usage.jsonl (it writes nothing)
 //     | estimate <n> | gate <n> <step> [--five-hour <pct>[@<reset>]] [--weekly …] [--cost <usd>]   the usage of a flow: the estimate of each step, whether the next step may start
 //     | sample <n> <event> [<step>] [same flags] [--tokens <n>] [--start cold|warm]    now, and a sample appended to the flows' usage.jsonl
@@ -101,6 +102,7 @@ const USAGE = `usage: harness <command>
   check <${Object.keys(CHECKS).join('|')}|all>
   plan summary [--check]
   flow check | status <n> | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--account <id>] [--at <time>]
+  flow audit <n> [--orchestrator <id>[,<id>]] [--top <n>] [--json]
   flow calibrate [--min <n>] [--subscription <id>]
   flow estimate <n> | gate <n> <step> [--five-hour <pct>[@<reset>]] [--weekly <pct>[@<reset>]] [--cost <usd>] [--plan <name>] [--at <time>]
   flow sample <n> <flow-start|step-start|step-end|flow-end> [<step>] [the reading flags] [--tokens <n>] [--model <name>] [--start cold|warm]
@@ -155,6 +157,8 @@ const FLAGS_WITH_VALUE = new Set([
   '--model',
   '--start',
   '--min',
+  '--orchestrator',
+  '--top',
   '--subscription',
   '--folders',
   '--scope'
@@ -176,7 +180,8 @@ const BOOLEAN_FLAGS = new Set([
   '--upstream',
   '--approved',
   '--no-plan-write',
-  '--off-plan'
+  '--off-plan',
+  '--json'
 ])
 
 export function parseArgs(argv) {
