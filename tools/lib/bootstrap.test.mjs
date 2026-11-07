@@ -190,6 +190,20 @@ test('a project with two stacks gets one CI workflow whose job ids are unique, e
   assert.match(files['pyproject.toml'], /members = \["api"\]/)
 })
 
+test('the scaffold allows the plan folders in the project settings, and the option to leave it off writes no rule', () => {
+  const profile = withDefaults(readSchema(), completeProfile(ANSWERS))
+  const settings = (options) =>
+    JSON.parse(
+      scaffoldPlan({ profile, modules, ...options }).find(({ path }) => path === '.claude/settings.json').content
+    )
+  assert.ok(settings().permissions.allow.includes('Edit(docs/development-plan/**)'))
+  assert.equal(
+    settings().permissions.allow.some((rule) => /\.claude|\.git|hooks/.test(rule)),
+    false
+  )
+  assert.equal(settings({ planWrite: false }).permissions.allow, undefined)
+})
+
 test('without an agent runtime the project gets the agent-neutral minimum', () => {
   const profile = withDefaults(readSchema(), completeProfile({ ...ANSWERS, adapters: { stacks: ['node-ts'] } }))
   const files = scaffoldPlan({ profile, modules })
