@@ -50,3 +50,28 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis:** (a). The stops were set on 2026-11-05, when a change of the meaning of a contract needed the owner's approval in its pull request whatever the mode; since I-20 (`0.4.0`) it is the kind `contract.change` (D3), which this seamless flow decides, logs with its options and lists in its digest. What stays the owner's without the column: a change of the meaning of a core rule or of a non-negotiable (6.4 may add one, its budgets being "a rule"), and a merge into `main` outside a cut the flow decides. The texts of the flow and of tasks 6.4 and 6.5 now say so.
 - **Worker's recommendation:** none (no worker is involved).
 - **Choice:** (a) · **Decided by:** the owner ("Yes, you can remove pauses").
+
+### 2026-11-07 17:20 — running
+- **Orchestrator:** a desktop session of the owner's account nil10035@gmail.com ("Run flow 3") · **Mode:** seamless · **Steps:** 1 to 9
+- **Usage:** 5-hour 2% (resets 2026-11-07T20:10:00Z) · weekly 77% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-07 17:20 — decision D1: flow 2 counts as finished, and `flow status` is wrong about a superseded take
+- **Options:** (a) start the flow: flow 2 is finished; (b) stop, since `harness flow status 3` says it "waits for flow 2, which is not finished".
+- **Own analysis:** (a). Flow 2's log ends with "stop: finished" (2026-11-07 16:05), and its only mismatch is step 7b, the take of `0.4.0-dev.1`: AndLD/bot-rts#302 merged, and the consumer's lock has since moved on to `0.4.0`. The status of a `consumer-take` step compares the lock with its version exactly, so every take that a later take supersedes reads ⬜ (flow 1 shows the same for its four takes), and every flow after one with a take would wait forever. It is a defect of the tool, recorded as I-28 with this step's record.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode).
+
+### 2026-11-07 17:20 — decision D0: the gate reads the subscription from `--plan Pro`
+- **Options:** (a) pass the plan the account reports (`--plan Pro`), since `harness-profile.local.json` sets no `usage.subscription`; (b) gate without an estimate.
+- **Own analysis:** (a). `--plan pro` in lower case and `--subscription` give no estimate; `--plan Pro` maps to the Pro coefficients. The gate: GO, 5-hour 2% + 10.8% and weekly 77% + 1.6% with the safety factor.
+- **Choice:** (a) · **Decided by:** the orchestrator.
+
+### 2026-11-07 17:21 — step 1 started
+- **Executor:** session · **Worker:** local_a78ad07c-2b51-4fa1-b1c3-868ec0ad4ae3 · **Account:** nil10035@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 5 SP, 5-hour 9%, weekly 1.3%
+- **Usage before:** 5-hour 2% (resets 2026-11-07T20:10:00Z) · weekly 77% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-07 17:25 — decision D2: I-28 and I-29 join step 8a
+- **Options:** (a) record both and add them to step 8a; (b) record them for a later release.
+- **Own analysis:** (a). I-28 (a superseded take reads ⬜, so a flow after a flow with takes looks blocked) and I-29 (the gate's `--plan` knows `Pro` but not `pro`, and `estimate` takes none) each cost every orchestrator a detour at the claim; they are 1 SP of C1, the kind of step 8a, and `0.5.0` is the next release. Step 8a is now 6 SP.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (a): I-28 and I-29 recorded, step 8a holds them, the row `0.5.0` of the releases file names them · **Decided by:** the orchestrator (seamless mode).
