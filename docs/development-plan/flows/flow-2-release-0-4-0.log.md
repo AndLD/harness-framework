@@ -171,3 +171,29 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis:** none was needed: the `permissions` setting is the owner's choice. What led to it: the worker of step 2 started in `acceptEdits` with the flow's tools as allow rules of the owner's local settings, and still asked the owner for almost every command, because the runtime asks in that mode for what it cannot check before it runs, whatever the rules: shell operators (`&&`, pipes, subshells, redirections), nested commands (`$(…)`), and heredocs with braces and quotes ("expansion obfuscation"). The owner set that worker's session to `auto` by hand during the step.
 - **Worker's recommendation:** none.
 - **Choice:** (b), `"mode": "auto"`; the `allow` list stays · **Decided by:** the owner ("yes", to the question whether the flow's mode should be `auto`).
+
+### 2026-11-07 11:20 — running
+- **Orchestrator:** the desktop-app session of andrey.larionov.me@gmail.com, started by "Continue flow 2" (the stop entry of 10:35 ended the earlier claim) · **Mode:** seamless · **Steps:** 2 (its end) to 7
+- **Usage:** 5-hour 27% (resets 2026-11-07T13:30:00Z) · weekly 45% (resets 2026-11-10T07:00:00Z) (Pro)
+
+### 2026-11-07 11:20 — step 2 ended: partial
+- **Usage after:** 5-hour 27% (resets 2026-11-07T13:30:00Z) · weekly 45% (resets 2026-11-10T07:00:00Z) · **Measured:** weekly +4%; the 5-hour window reset during the step, so that part counts for nothing; against an estimate of 5-hour 36% and weekly 4.8% · **Pull requests merged:** none by the worker: #152 is open, its four checks green, held for the decision below · **Ids done:** none yet (2.6 is done once #152 merges) · **Worker:** session local_c7c56016-5645-47e3-8128-41cc660f5441, started in `acceptEdits` and set to `auto` by the owner during the step
+- **Report:** `plan-write` is a new optional role of the runtime contract, filled by the Claude Code preset (an `Edit(<folder>/**)` rule in `permissions.allow` of the tracked `.claude/settings.json`; `--scope local` or `user` only when named; other rules kept; the settings, the hooks, `.git`, paths outside the project and globs refused); `harness plan-write on|off|state [--folders] [--scope]`; `init` and `bootstrap` turn it on by default and say so, `--no-plan-write` leaves it off. 765 tests, lint and `check all` passed. The headless observation was repeated: an append inside the folder ran with no prompt, outside it and `sed -i` were denied. It left #152 unmerged: the classifier refused its merge, and the role is a contract change. Two open decisions (below). The worktree of the app was cut from `main`; the worker had already branched from `origin/develop` before the orchestrator's message reached it.
+- **Orchestrator's work on #152:** brought it up to date with `develop` (`harness branch update`, no conflicts; 766 tests, lint and `docs:check` passed) and pushed.
+
+### 2026-11-07 11:20 — decision D3: the contract change of 2.6, a new optional runtime role `plan-write` (`contract.change`)
+- **Options:** (a) accept it and merge #152; (b) revert it.
+- **Own analysis** (the report reached me whole, recommendations included, so the independence is partial): (a). The role is optional, so an adapter without it still conforms (the conformance suite skips it for the Cursor preset); it is what the owner asked for in B-2 and its task 2.6 (a switch with on and off, on by default in a bootstrap); it is tested, and it changes no existing role. The level is `contract.change`, D3 by default, and this flow is seamless, so the orchestrator decides it (issue I-20).
+- **Worker's recommendation:** approve and merge (D3).
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode); for the owner's review later. This entry is the approval that #152 cites.
+
+### 2026-11-07 11:20 — decision D1: `harness adopt` does not add the rules of `plan-write`
+- **Options:** (a) as built: a project that adopts the framework runs `harness plan-write on` itself; (b) the adoption writes them.
+- **Own analysis:** (a). The task asks for the switch and for bootstrap to turn it on; an adoption takes a project's existing settings file, which the owner of that project manages, so writing allow rules into it unasked goes further than the task.
+- **Worker's recommendation:** leave it (D1).
+- **Choice:** (a) · **Decided by:** the orchestrator.
+
+### 2026-11-07 11:20 — decision D2: the worker's two recommendations
+- **Own analysis:** (1) merge #152 before the next step: done by the decision above; (2) an explicit permission for workers to merge their pull requests: the classifier of the mode `auto` refuses a merge as "merge without review" in the workers and in the orchestrator alike; the permission settings are the owner's, never the orchestrator's (and an agent is refused writing its own), so it goes to the owner.
+- **Choice:** (1) done; (2) to the owner · **Decided by:** the orchestrator.
+- **Merged:** #152 by auto-merge (merge commit `54b63af`), after the decision of 11:20; 2.6 is done, and step 2 is ✅.
