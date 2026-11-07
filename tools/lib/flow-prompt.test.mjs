@@ -69,6 +69,7 @@ test('the template has a section for every part of a prompt', () => {
     'decision',
     'commands',
     'git',
+    'budget',
     'stop',
     'report'
   ])
@@ -84,7 +85,11 @@ test('a tasks step lists its ids in order with their state, and gets the header,
   assert.match(text, /Read AGENTS\.md first/)
   assert.match(text, /integration branch \(develop\)[\s\S]*retarget the pull request to develop[\s\S]*Never touch main/)
   assert.match(text, /Stop when this step is done/)
-  assert.match(text, /End with a step report[\s\S]*Recommendations, last/)
+  assert.match(text, /Output budgets[\s\S]*a few lines/)
+  assert.match(
+    text,
+    /End with a step report of at most 30 lines and 2400 characters[\s\S]*Status:[\s\S]*Recommendations/
+  )
   assert.doesNotMatch(text, /\{|\}/, 'no word is left unfilled')
 })
 
@@ -119,7 +124,7 @@ test('a custom step carries its own text, between the header and the standard en
   const { prompt: text } = prompt('5a')
   assert.match(
     text,
-    /Scope: a probe\nRead AGENTS\.md first[^\n]*\nYou do this step and no other[^\n]*\n\nRun the probe in a scratch folder\.\nIt reads only the folder\.\n\nStop when/
+    /Scope: a probe\nRead AGENTS\.md first[^\n]*\nYou do this step and no other[^\n]*\n\nRun the probe in a scratch folder\.\nIt reads only the folder\.\n\nOutput budgets[\s\S]*?\n\nStop when/
   )
   assert.doesNotMatch(text, /Not part of the step/)
   assert.equal(customText(flow.text, '5a'), 'Run the probe in a scratch folder.\nIt reads only the folder.')
