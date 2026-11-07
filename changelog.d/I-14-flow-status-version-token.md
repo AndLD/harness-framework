@@ -1,1 +1,0 @@
-Fixed: `harness flow status` takes a pull request of a consuming repository for the take of a version only when its title names the version as a whole token, so the take of `0.3.0-dev.1` is no longer read as the take of `0.3.0` (nor of `0.3.0-dev.10`, nor the reverse). A project has nothing to do.
