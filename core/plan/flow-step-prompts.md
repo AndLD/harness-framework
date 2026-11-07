@@ -79,7 +79,7 @@ what was verified and what was not, in a few lines; long text goes into a file o
 ## delegate
 
 <!-- Only for the kinds that read a lot: tasks, consumer-take and triage-fix. -->
-Keep verbose reading out of the context that decides: hand it to a subagent of the runtime (the executor `subagent` of the runtime contract) when you must read a large log, a long diff, the output of a long
+Keep verbose reading out of the context that decides: hand it to a subagent of the runtime when you must read a large log, a long diff, the output of a long
 test run or a research of sources. Tell it what to find, and ask for a **summary of at most {summaryLines} lines** whose evidence is pointers (file and line, command, commit), not quoted text. You keep the
 decision. Never delegate a decision, a write, a merge, or a reading that a procedure requires in full (the migration note before a cut, the file a step names).
 
