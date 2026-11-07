@@ -166,3 +166,28 @@ Entries are written from the entry templates of the [flow-log template](../../..
 
 ### 2026-11-07 18:14 — stop: waits for the owner
 - **Digest:** done: steps 1 to 4 (6.1 #183, 6.2 #185, 6.3 #187, 6.4 #189), with the records #184, #186 and #188; decided alone, for "review later": flow 2 counts as finished (17:20, D1), I-28 and I-29 into step 8a (17:25, D2), the runtime role `transcripts` (17:38, D3), the stack role `quiet-commands` (17:54, D3), the procedures' budgets (above, D3); usage: 5-hour 27% (resets 20:10 UTC), weekly 80% (resets 2026-11-08 21:00 UTC; the owner's threshold 95%); next: the owner answers the decision on method §8 and §4 above, then step 5 (6.5), whose worker starts fresh.
+
+### 2026-11-07 18:20 — decision D3: the new rules of the method (§8 and the line of §4) stay
+- **Options:** (a) keep them as merged in #189; (b) keep them as guidance; (c) revert them.
+- **Own analysis:** (a), as in the entry that asked (2026-11-07 18:14).
+- **Worker's recommendation:** none on this point.
+- **Choice:** (a) · **Decided by:** the owner ("Keep them"). Step 4 is ✅.
+
+### 2026-11-07 18:20 — step 5 started
+- **Executor:** session · **Worker:** local_f81a0ff8-9d8b-4481-8d12-ddb6d4da1d1f · **Account:** nil10035@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 3 SP, 5-hour 5.4%, weekly 0.8%
+- **Usage before:** 5-hour 28% (resets 2026-11-07T20:10:00Z) · weekly 81% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-07 18:25 — step 5 ended: done
+- **Usage after:** 5-hour 31% (resets 2026-11-07T20:10:00Z) · weekly 81% (resets 2026-11-08T21:00:00Z) · **Measured:** 5-hour +3%, weekly +0%, against an estimate of 5-hour 5.4% and weekly 0.8% · **Pull requests merged:** #191 (6.5), by auto-merge once its checks pass (the worker reported "partial" only because CI was pending) · **Ids done:** 6.5 · **Worker:** session local_f81a0ff8-9d8b-4481-8d12-ddb6d4da1d1f, 30 turns, context 13% after the step
+- **Report:** the first report under the 6.4 schema (7 lines, read whole): a restart threshold for the orchestrator (`orchestratorLimits.context`, default 50% of its window) in `run-flow` step 9 and the runtime contract's `context` role; details in `6.5.log.md` of the phase. Deviation: the before-and-after audit of a long orchestration needs a finished run with the setting, so 6.8 measures it.
+
+### 2026-11-07 18:25 — decision D3: `run-flow` step 9 and the runtime role `context` take the restart threshold (`contract.change`)
+- **Options:** (a) accept as built in #191; (b) refuse and revert.
+- **Own analysis** (written before the worker's recommendations): (a). It is what task 6.5 asks for: the baseline's largest sink is the orchestrator's cache re-reads, and a threshold with a default keeps every flow valid. No core rule changes (the worker says so, and the change is in a procedure and a contract). This entry is the approval #191 needs; the step's record cites it.
+- **Worker's recommendation:** D3, accept.
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode, `contract.change` D3).
+
+### 2026-11-07 18:25 — decision D1: the recommendations of step 5
+- **Options:** for each, take or leave.
+- **Own analysis:** `orchestratorLimits` written in flow 3's settings: left; the default 50 applies and a setting that repeats a default adds nothing. Check that #191 merged before step 6: taken (the orchestrator waits for it). This orchestrator's context is 17%, under the threshold.
+- **Choice:** as above · **Decided by:** the orchestrator.

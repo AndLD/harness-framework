@@ -27,8 +27,8 @@ Phase 6 (context optimization for agents and consumers), in the release `0.5.0` 
 | 1 | tasks | 6.1 | — | — | 5 | 8.0% | C2 | ✅ |
 | 2 | tasks | 6.2 | 1 | — | 3 | 4.8% | C2 | ✅ |
 | 3 | tasks | 6.3 | 2 | — | 3 | 4.8% | C2 | ✅ |
-| 4 | tasks | 6.4 | 3 | — | 3 | 4.8% | C2 | ⏸ |
-| 5 | tasks | 6.5 | 4 | — | 3 | 4.8% | C2 | ⬜ |
+| 4 | tasks | 6.4 | 3 | — | 3 | 4.8% | C2 | ✅ |
+| 5 | tasks | 6.5 | 4 | — | 3 | 4.8% | C2 | ✅ |
 | 6 | tasks | 6.6 | 5 | — | 2 | 3.2% | C2 | ⬜ |
 | 7 | tasks | 6.7 | 6 | — | 2 | 5.4% | C3 | ⬜ |
 | 8 | tasks | 6.8 | 7 | — | 3 | 4.8% | C2 | ⬜ |
