@@ -242,3 +242,13 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Decided alone (review later):** the earlier entries; since the stop of 10:35: the contract change of 2.6 (D3, `contract.change`), `harness adopt` leaves `plan-write` alone (D1), the ceilings of the new measurements wait for the first harness review (D2), the rule of 2.5 accepted as planned work (D2), steps 3 and 4 on `cli` (D0).
 - **Usage:** 5-hour 45% (resets 2026-11-07T13:30:00Z) · weekly 47% (resets 2026-11-10T07:00:00Z) (Pro). `harness flow gate 2 5` says WAIT: step 5 (5 SP) is estimated at 60% of the 5-hour window, 72% with the factor, by the provisional coefficients; the steps of Sonnet measured in this flow used 7% to 9% for 3 SP, far below them, which the calibration at the end of the flow will take up.
 - **Next step:** after the reset at 15:30, step 5 (I-19, I-18, I-7).
+
+### 2026-11-07 12:45 — decision D2: step 5 starts before the reset, at the owner's word
+- **Options:** (a) wait for the reset of the 5-hour window at 15:30, as the gate says (WAIT); (b) start now.
+- **Own analysis:** the gate's WAIT comes from the provisional coefficients (12% of the 5-hour window per SP of Sonnet), which this flow's measured steps of Sonnet contradict (7% to 9% for 3 SP, against 36%); the owner judged the same and asked to continue. The hard limits do not include the gate, and the procedure keeps it as a rule of the orchestrator, so the owner may set it aside for a step. The risk: at 47%, a step that used as much as its estimate would cross the window; the measured rate puts step 5 near 10% to 15%.
+- **Worker's recommendation:** none.
+- **Choice:** (b) · **Decided by:** the owner ("Step 5 will not take so many usage, it is false assumption I guess. Make sure to continue").
+
+### 2026-11-07 12:45 — step 5 started
+- **Executor:** session · **Worker:** local_005a7405-e755-4514-b443-8c03bddae292 · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at medium effort · **Permissions:** auto · **Estimate:** 5 SP, 5-hour 60%, weekly 8%
+- **Usage before:** 5-hour 47% (resets 2026-11-07T13:30:00Z) · weekly 47% (resets 2026-11-10T07:00:00Z)
