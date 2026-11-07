@@ -21,13 +21,16 @@ import { planPhases, readBacklogOf, readQueueOf } from './plan.mjs'
 export const LOG_TITLE = /^# Flow (\d+) — (.+) — log$/m
 // An entry of the log: `### 2026-11-04 10:30 — running`, `… — step 3 started`, `… — step 3 ended: done`, `… — decision D2: …`, `… — stop: …`
 export const ENTRY_HEADING =
-  /^### (\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}) — (running|step (\d+[a-z]?) started|step (\d+[a-z]?) ended: (done|partial|blocked)|decision (D[0-4]): .+|stop: .+)\s*$/
+  /^### (\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}) — (running|step (\d+[a-z]?) started|step (\d+[a-z]?) ended: (done|partial|blocked)|decision (D[0-4]): .+|handoff: .+|stop: .+)\s*$/
 const SETTING_VALUES = {
   executor: EXECUTORS,
   reuse: ['auto', 'never'],
   commits: ['per-step', 'per-cut'],
   commands: ['any', 'plain']
 }
+
+/** The fields a handoff entry of the orchestrator carries (the log template): what the next orchestrator session reads to continue. */
+export const HANDOFF_FIELDS = Object.freeze(['State', 'Decisions', 'Next step', 'Waiting for'])
 
 /** The part of a log text under "## Entries", outside fenced blocks, split into its `###` headings: `[{ heading, line }]`. */
 export function logHeadings(logText) {
@@ -88,6 +91,11 @@ function settingsProblems(settings) {
     if (limits?.cacheMinutes !== undefined && !(Number.isFinite(limits.cacheMinutes) && limits.cacheMinutes >= 0))
       problems.push('the reuse limit cacheMinutes must be a number of minutes')
   }
+  const own = settings.orchestratorLimits
+  if (own !== undefined && (typeof own !== 'object' || own === null || Array.isArray(own)))
+    problems.push('the setting orchestratorLimits is not an object')
+  else if (own?.context !== undefined && !(own.context > 0 && own.context <= 100))
+    problems.push('the orchestrator limit context must be a percent from 1 to 100')
   const permissions = settings.permissions
   if (permissions !== undefined) {
     if (typeof permissions !== 'object' || permissions === null || Array.isArray(permissions))
@@ -239,7 +247,7 @@ function logProblems(flow, logText) {
     const entry = heading.match(ENTRY_HEADING)
     if (!entry) {
       problems.push(
-        `${expected}: the entry "${heading.slice(4, 60)}" does not read "### YYYY-MM-DD HH:MM — running | step <#> started | step <#> ended: <status> | decision <D0-D4>: <question> | stop: <why>"`
+        `${expected}: the entry "${heading.slice(4, 60)}" does not read "### YYYY-MM-DD HH:MM — running | step <#> started | step <#> ended: <status> | decision <D0-D4>: <question> | handoff: <why> | stop: <why>"`
       )
     } else if ((entry[4] ?? entry[5]) && !ids.has(entry[4] ?? entry[5])) {
       problems.push(
@@ -248,6 +256,14 @@ function logProblems(flow, logText) {
     } else if (entry[4]) {
       const problem = fallbackProblem(expected, flow, heading, entryBody(logText, heading), entry[4])
       if (problem) problems.push(problem)
+    } else if (heading.includes(' — handoff: ')) {
+      const missing = HANDOFF_FIELDS.filter(
+        (name) => !new RegExp(`\\*\\*${name}:\\*\\*\\s*\\S`).test(entryBody(logText, heading))
+      )
+      if (missing.length)
+        problems.push(
+          `${expected}: the handoff entry "${heading.slice(4, 60)}" lacks ${missing.map((name) => `"**${name}:**"`).join(', ')}`
+        )
     }
   }
   return problems
