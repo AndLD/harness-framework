@@ -12,7 +12,7 @@
     "host": "github"
   },
   "managed": {
-    "docs/profile.md": "183c76ece8cd4d0fd8b403bb0920dd45902a121e50278b7b4b3539de92f5fbd1",
+    "docs/profile.md": "3fdd2e1da8d10d312b3080a30b87e98775b49ca6e23d9c644d7471af5a802ddd",
     "docs/quality-reviews/harness/bindings.md#layers": "3b11a01af0d9af7bdc65ece067d8b461b57b321be2eb2391c6bbbe417a7399f1",
     "docs/engineering/rule-checks.md#rule-map": "29ba3b98dac41697fdb10b36b6edb3012b52eec2f9860c4700e3e72a3888cd5b",
     "AGENTS.md#procedures": "21df0a29be988664932920d05f335913ee0ae7e6049d2d671779f7a5d0b9479e",
@@ -32,5 +32,5 @@
     ".claude/skills/update-framework/SKILL.md": "468b47b54d82064692222bad6c800f0116493d6665f8ee9173b93b30e98c0fe0",
     ".claude/skills/change-framework/SKILL.md": "6350a68afdce8cfc481269a81eee0713df00aca24cedbaba07ec9666db68c628"
   },
-  "profile": "6babb35353048932d44f187053944efdd00cc9ba2a821e0ea7346a921d9d4a32"
+  "profile": "78a35a4560c8c5fa4673854367c8306790fcf744d3c300b04b57bb99c15c08fe"
 }
