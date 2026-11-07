@@ -105,7 +105,7 @@ test('the proposal is the median per SP of each window; a step that a reset cut 
       n: 4,
       used: { fiveHour: { n: 4, basis: 'percent' }, weekly: { n: 5, basis: 'percent' } },
       proposed: { fiveHour: 7, weekly: 0.8 },
-      current: { fiveHour: 12, weekly: 1.6 },
+      current: { fiveHour: 1.8, weekly: 0.25 },
       enough: true,
       unknownTable: false
     }
@@ -113,7 +113,7 @@ test('the proposal is the median per SP of each window; a step that a reset cut 
   assert.equal(cut.kind, 'cut')
   assert.equal(cut.enough, false)
   assert.deepEqual(cut.proposed, { fiveHour: 2, weekly: 0.3 })
-  assert.deepEqual(cut.current, { fiveHour: 3.42, weekly: 1.03 })
+  assert.deepEqual(cut.current, { fiveHour: 3.42, weekly: 0.69 })
   assert.equal(
     proposals({ steps, usage, min: 1 }).every((row) => row.enough),
     true
@@ -227,7 +227,7 @@ test('the report names the proposals, the cold and warm verdict and the limits, 
   )
   assert.match(
     text,
-    /pro · sonnet · tasks: 5-hour 7%, weekly 0\.8% \(table: 5-hour 12%, weekly 1\.6%\), n=4, from percents/
+    /pro · sonnet · tasks: 5-hour 7%, weekly 0\.8% \(table: 5-hour 1\.8%, weekly 0\.25%\), n=4, from percents/
   )
   assert.match(
     text,
