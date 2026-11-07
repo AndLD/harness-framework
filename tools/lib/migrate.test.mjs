@@ -234,6 +234,23 @@ const noteVersions = (messages) =>
     .filter((line) => line.startsWith('Migration note of'))
     .map((line) => /^Migration note of (\S+) /.exec(line)[1])
 
+test('a development target prints the final note of its line too when the tree holds it, and a development-only jump does not leave it out', async () => {
+  const notes = { ...notesUpTo('0.2.0-dev.2'), '0.2.0.md': '# Migration to 0.2.0\n' }
+  const root = scriptedProject(scriptedFramework('0.2.0-dev.2', notes))
+  assert.deepEqual(noteVersions((await migrate({ root, generators: [] })).messages), [
+    '0.1.1',
+    '0.2.0-dev.1',
+    '0.2.0-dev.2',
+    '0.2.0'
+  ])
+  const again = scriptedProject(scriptedFramework('0.2.0-dev.1', notes))
+  const first = await migrate({ root: again, generators: [] })
+  sync({ root: again, from: scriptedFramework('0.2.0-dev.2', notes), generators: [], startMigrate: () => [] })
+  const second = await migrate({ root: again, generators: [] })
+  assert.deepEqual(noteVersions(first.messages), ['0.1.1', '0.2.0-dev.1', '0.2.0'])
+  assert.deepEqual(noteVersions(second.messages), ['0.2.0-dev.2', '0.2.0'])
+})
+
 test('a development version has a note of its own: a project that follows the development versions reads each one, and the final note replaces them', async () => {
   const root = scriptedProject(scriptedFramework('0.2.0-dev.1', notesUpTo('0.2.0-dev.1')))
   assert.deepEqual(noteVersions((await migrate({ root, generators: [] })).messages), ['0.1.1', '0.2.0-dev.1'])

@@ -360,6 +360,22 @@ test('the migration writes only ids the tools read into the column of the tasks,
   assert.deepEqual(planSummary({ root, profile: after, check: true }).problems, [])
 })
 
+test('the migration says apart an order of arrows that no release holds, and names a release whose cell gave no id', () => {
+  const index = PROSE_INDEX.replace('**5 → 6 → 5**', '')
+    .replace('| `0.2.0` | 5.2 |', '| `0.2.0` | 5.2 |\n| `0.3.0` | taken by task 17.18; Phase 17 is closed |')
+    .replace('Notes of the owner.', 'Notes of the owner. Phase 7 → 8 → 9.')
+  const { root, profile } = project({ index, withRole: false })
+  const messages = migration({ root, profile })
+  assert.ok(messages.some((message) => /no release of the table holds those phases/.test(message)))
+  assert.ok(
+    !messages.some((message) => /^Required action: .* also wrote the order of the phases as arrows/.test(message))
+  )
+  const unread = messages.find((message) => /held words and no task id the tools can read/.test(message))
+  assert.match(unread, /^Required action: .*"`0\.3\.0`"/)
+  assert.match(unread, /by hand/)
+  assert.ok(messages.some((message) => /🏷, which the tools never set, so set it by hand/.test(message)))
+})
+
 test('the migration leaves an order written in prose where it is and says what to do by hand', () => {
   const prose =
     '# Plan\n\n<!-- plan-summary:start -->\n<!-- plan-summary:end -->\n\n**Order of development.** Phase 0 → 1 → 2 → 3.\n\n---\n\n<!-- plan-contents:start -->\n<!-- plan-contents:end -->\n'
