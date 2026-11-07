@@ -18,7 +18,7 @@ Planned with the owner on 2026-11-05, after a measurement of the long session th
 | [6.3](./6.3.md) | Quiet variants of the stack's commands (lint, typecheck, test, coverage, format) | C2 | 3 | ✅ |
 | [6.4](./6.4.md) | Output budgets for agents and a short schema for step reports | C2 | 3 | ✅ |
 | [6.5](./6.5.md) | A restart threshold for the orchestrator, and steps paced for the cache | C2 | 3 | ✅ |
-| [6.6](./6.6.md) | Delegating verbose reading to a subagent | C2 | 2 | ⬜ |
+| [6.6](./6.6.md) | Delegating verbose reading to a subagent | C2 | 2 | ✅ |
 | [6.7](./6.7.md) | Agent briefs and section reads of the documents, decided on the audit's numbers | C3 | 2 | ⬜ |
 | [6.8](./6.8.md) | Consumers take the phase, and the fall is measured | C2 | 3 | ⬜ |
 <!-- phase-tasks:end -->

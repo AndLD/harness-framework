@@ -38,7 +38,7 @@ which is the agent-neutral minimum. The machine form is the `manifest.json` of t
 before it, **for one step at a time**. When the start of a step's executor is refused or fails, the orchestrator does not retry it and does not wait: it
 starts the step on the next executor of the order that the runtime offers, logs a decision D0 with the reason, and names the fallback in the step's log
 line (`cli, the fallback of session: <the reason>`); the next step is dispatched again from its own executor, so a fallback is never carried on by habit.
-A `subagent` stands outside the order, for a short step of analysis only. A step in another repository than the flow's (the plan method, section 10) goes
+A `subagent` stands outside the order, for a short step of analysis only, and for the reading an agent hands off to keep its own context small (the standard step prompts, section `delegate`): its summary comes back capped, a decision, a write or a merge is never its work. A step in another repository than the flow's (the plan method, section 10) goes
 to `cli` when the runtime offers it, logged as the fallback of `session` with that reason, because a session cannot be counted on to start there without
 the owner's message; a step's own executor in the steps table, and a flow's own `executor` setting other than `session`, are kept as they are.
 
