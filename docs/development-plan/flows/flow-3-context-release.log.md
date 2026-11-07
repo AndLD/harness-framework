@@ -240,3 +240,16 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis:** (a). 6.8 asks for the consumer's take "as a flow step", but nothing of `0.5.0` is cut yet, and the cut is a step of its own that step 9 inserts; (b) puts a cut inside a tasks step, and (c) leaves step 8 never done, so 8a and 8b would wait for it. The split keeps the phase at 24 SP and gives the measurement its real input, the take of the cut version.
 - **Worker's recommendation:** none (no worker is involved).
 - **Choice:** (a): 6.8 and 6.9 in the phase, step 8 is 2 SP, step 9 inserts 6.9 after the take, the row `0.5.0` of the releases file names 6.9 · **Decided by:** the orchestrator (seamless mode).
+
+### 2026-11-07 19:04 — step 8 started
+- **Executor:** cli, the fallback of session: the app refuses a session start on a turn that a background task's end began · **Worker:** `claude -p` named flow-3-step-8, in a detached worktree of `origin/develop` · **Account:** nil10035@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 2 SP, 3.2%
+- **Usage before:** 5-hour 39% (resets 2026-11-07T20:10:00Z) · weekly 82% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-07 19:14 — step 8 ended: done
+- **Usage after:** 5-hour 44% (resets 2026-11-07T20:10:00Z) · weekly 83% (resets 2026-11-08T21:00:00Z) · **Measured:** 5-hour +5%, weekly +1%, against an estimate of 5-hour 3.6% and weekly 0.5% (3.07 M cache-read and 23k output tokens, $0.87 at list price) · **Pull requests merged:** #197 (6.8) · **Ids done:** 6.8 · **Worker:** cli cd92c143-7fdd-4bb8-9fba-d9fa98ceeec6
+- **Report** (over the schema's one line an item: a "Distribution", a "Fixture" and a "Notes" line with sub-items; read whole): `framework.json` needed no change (every change since `v0.4.0` is under distributed paths, all mapped to eight probe areas); four new tests in `tests/migration/released-tags.test.mjs` (a `0.4.0` project that sets nothing keeps working; one that sets the quiet commands; new `node-ts` and `python` projects from `init`); the fragment `6.8-phase-6-take.md` holds the whole take for the `0.5.0` note (nothing required; the quiet roles, `--verbose` and the flow setting recommended). No decision, no contract changed. Not verified: Jest and pytest quiet options on a real project, the measured fall (both 6.9's).
+
+### 2026-11-07 19:14 — decision D1: the recommendations of step 8
+- **Options:** for each, take, hand on, or leave.
+- **Own analysis:** start the `0.5.0` note from the fragment `6.8-phase-6-take.md`: handed to the cut step that step 9 inserts. Jest and pytest quiet options on a real project first: handed to 6.9. A migration script that sets the quiet roles: left, as 6.3 decided (a project may have its own commands). The report's extra lines are a small deviation from the 6.4 schema; it stayed within the cap in spirit (about 2.3k characters).
+- **Choice:** as above · **Decided by:** the orchestrator.
