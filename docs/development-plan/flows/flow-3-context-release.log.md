@@ -113,3 +113,28 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Options:** for each, take it, hand it to its step, or leave it.
 - **Own analysis:** the failing-lines pattern as a setting of the stack adapter: handed to step 3 (6.3, the stack's commands), whose report names whether it took it. The orchestrator uses `flow dispatch --brief`: taken from step 3. An audit of a flow's pushes before 6.8: left to 6.8, which measures the fall by the audit already.
 - **Choice:** as above · **Decided by:** the orchestrator.
+
+### 2026-11-07 17:44 — step 3 started
+- **Executor:** session, reused from step 2 · **Worker:** local_a78ad07c-2b51-4fa1-b1c3-868ec0ad4ae3 · **Account:** nil10035@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 3 SP, 4.8%
+- **Usage before:** 5-hour 15% (resets 2026-11-07T20:10:00Z) · weekly 79% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-07 17:51 — decision D2: the weekly threshold of the usage gate is 95% for this flow
+- **Options:** (a) `usage.stopAt.weekly` 95 in the flow's settings; (b) keep the default 90.
+- **Own analysis:** none was needed: the settings of a flow are the owner's, and the owner asked for it. The 5-hour threshold stays 85%. With the weekly window at 79% and about 1–1.6% a step, the flow's remaining steps fit under 95% before the reset of 2026-11-08 21:00 UTC.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (a) · **Decided by:** the owner ("take up to 95% weekly border").
+
+### 2026-11-07 17:53 — step 3 ended: done
+- **Usage after:** 5-hour 21% (resets 2026-11-07T20:10:00Z) · weekly 80% (resets 2026-11-08T21:00:00Z) · **Measured:** 5-hour +6%, weekly +1%, against an estimate of 5-hour 5.4% and weekly 0.8% · **Pull requests merged:** #187 (6.3), by auto-merge once its checks pass (behind `develop`; the orchestrator updated its branch) · **Ids done:** 6.3 · **Worker:** session local_a78ad07c-2b51-4fa1-b1c3-868ec0ad4ae3 (reused, warm, its third step), 26 turns, context 28% after the step
+- **Report:** the profile roles `commands.lintQuiet`, `typecheckQuiet`, `formatQuiet`, `testQuiet` and `testCoverageQuiet`; an optional stack role `quiet-commands` in the manifest schema and the stack contract, filled by both presets where the stack defines the plain command; `open-pull-request`, `end-session`, `release` and `update-framework` cite the quiet variants (a project without them gets the plain command); the gate runs a step's `quiet` variant unless `--verbose`; the conformance suite checks the role when present; this repository's profile sets its quiet commands. Measured: the test run prints 212,044 characters plainly and 857 with the dot reporter. Not taken: the failing-lines pattern as a stack setting (with quiet variants a failure prints the runner's own lines, so it would serve only projects without them). Not verified: the Jest and pytest quiet options against a real project. No migration note (at the cut); the fragment `6.3-quiet-stack-commands` names the roles.
+
+### 2026-11-07 17:54 — decision D3: the stack contract gains the optional role `quiet-commands`, and the profile its quiet commands (`contract.change`)
+- **Options:** (a) accept them as built in #187; (b) refuse and revert.
+- **Own analysis** (written before the worker's recommendations): (a). Task 6.3 asks for quiet variants that only the stack knows, so they belong to the stack adapter (design §4) and to the profile's command roles; the role and the roles are optional, a project that sets none runs the plain command, every adapter conforms as it is, and the change is a minor version's. This entry is the approval #187 needs as a change of the meaning of a contract; the step's record cites it if #187 merges first.
+- **Worker's recommendation:** named as a `contract.change`, no pick.
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode, `contract.change` D3).
+
+### 2026-11-07 17:54 — decision D1: the failing-lines pattern stays generic, and the recommendations of step 3
+- **Options:** for the pattern: (a) leave it generic, as the worker did; (b) a setting of the stack adapter. For the recommendations: take, hand on, or leave.
+- **Own analysis:** (a): the worker's reason holds; a new role for projects without quiet variants is not worth its weight. The check of the Jest options in a real project: handed to step 8 (6.8), whose take in bot-rts runs them first; the orchestrator adds it to that step's prompt. A hard line cap for the step report of 6.4: handed to step 4 as a note of its prompt (the agents' own output was 59% of the baseline).
+- **Choice:** as above · **Decided by:** the orchestrator.
