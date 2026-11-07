@@ -75,7 +75,10 @@ before(() => {
 after(disposeFixtures)
 
 test('a project that selects local:<name> passes check all, with the adapter judged by the conformance suite', () => {
-  const checked = harness('check', 'all')
+  const quiet = harness('check', 'all')
+  assert.equal(quiet.status, 0, output(quiet))
+  assert.match(output(quiet), /^harness check all: \d+ checks passed\s*$/)
+  const checked = harness('check', 'all', '--verbose')
   assert.equal(checked.status, 0, output(checked))
   assert.match(output(checked), /Ran the conformance suite on 1 adapters of the project's own repository/)
   assert.match(output(checked), /\(1 of the project's own repository\)/)

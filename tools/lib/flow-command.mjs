@@ -107,6 +107,30 @@ function statusLines(flow, truth, blocked) {
   return lines
 }
 
+// The groups of a dispatch that the orchestrator needs only when it follows the whole procedure, not to start the worker (`--brief`): reading the report and the
+// context after the step, the usage reading and its measures, and the explanations that follow the means of starting
+const BRIEF_DROPS = [
+  /^Fetch its full step report/,
+  /^Read its context/,
+  /^Usage:/,
+  /^Then `/,
+  /^Measure it:/,
+  /^  - (its permissions|fetch its report|read the account)/
+]
+
+/** The dispatch without the groups of `BRIEF_DROPS` (a group is a line and the indented lines under it): the step, its worker and model, how to start it, and the line to log. */
+export function briefDispatch(lines) {
+  const kept = []
+  let dropping = false
+  for (const line of lines) {
+    const indented = /^\s/.test(line)
+    if (!indented || BRIEF_DROPS.some((pattern) => pattern.test(line)))
+      dropping = BRIEF_DROPS.some((pattern) => pattern.test(line))
+    if (!dropping) kept.push(line)
+  }
+  return kept
+}
+
 /**
  * Runs one `harness flow` command.
  * @param {{ words: string[], flags?: object, root: string, profile: object, git?: Function, lockOf?: Function, template?: string, runtimes?: object, now?: string, remote?: object }} options
@@ -177,7 +201,8 @@ export function flowCommand({ words, flags = {}, root, profile, git, lockOf, tem
     })
     const harness = `node ${inFramework(profile, 'tools/harness.mjs')}`
     const usage = dispatchUsageLines({ flow, step: target, profile, root, runtimes, harness, warm: plan.reuse })
-    return { lines: [...lines, ...usage], code: 0 }
+    const all = [...lines, ...usage]
+    return { lines: flags.brief ? briefDispatch(all) : all, code: 0 }
   }
   if (action === 'next') {
     if (blocked.length)
