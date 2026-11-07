@@ -236,3 +236,9 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis:** the rule "nothing merges without a record" is new in a core document; a change of the meaning of a core rule stays the owner's, but this is the rule that task 2.5 itself states in its words, in the plan the owner approved (2026-10-30, Phase 2: "the core method states the rule …"), so it is planned work and not a change for the flow to approve; no contract changed. The worker's recommendations: (1) fix I-19 first in step 5: it is first there already; (2) a scaffold template so that a bootstrap creates the off-plan folder: not asked by the task, a small follow-up, left to the owner in the digest; (3) the records of a flow carry `Plan: flow <n>`, which the check accepts, so nothing changes.
 - **Worker's recommendation:** as above (read after my own analysis of the rule).
 - **Choice:** accept the rule as planned work; (1) unchanged; (2) to the owner; (3) nothing to do · **Decided by:** the orchestrator.
+
+### 2026-11-07 11:55 — stop: usage
+- **Done:** steps 1, 1a, 2, 3 and 4 (2.7, 2.11, 2.6, 2.3, 2.5).
+- **Decided alone (review later):** the earlier entries; since the stop of 10:35: the contract change of 2.6 (D3, `contract.change`), `harness adopt` leaves `plan-write` alone (D1), the ceilings of the new measurements wait for the first harness review (D2), the rule of 2.5 accepted as planned work (D2), steps 3 and 4 on `cli` (D0).
+- **Usage:** 5-hour 45% (resets 2026-11-07T13:30:00Z) · weekly 47% (resets 2026-11-10T07:00:00Z) (Pro). `harness flow gate 2 5` says WAIT: step 5 (5 SP) is estimated at 60% of the 5-hour window, 72% with the factor, by the provisional coefficients; the steps of Sonnet measured in this flow used 7% to 9% for 3 SP, far below them, which the calibration at the end of the flow will take up.
+- **Next step:** after the reset at 15:30, step 5 (I-19, I-18, I-7).
