@@ -15,25 +15,26 @@ is updated in the change that starts or finishes it.
 | Phase | Theme | Story points | Agent complexity | Status |
 | ----- | ----- | ------------ | ---------------- | ------ |
 | 1 | Adoption, presets, examples and the proof | 12 | C1–C2 | ✅ Done |
-| 2 | Security and review automation | 17 | C2–C3 | ⬜ Not started |
+| 2 | Security and review automation | 38 | C2–C3 | ⬜ Not started |
 | 3 | Stabilization, migrations and local adapters | 71 | C1–C2 | ✅ Done |
 | 4 | Reaching and holding the structure of documents | 27 | C1–C2 | 🟡 In progress |
-| 5 | Releases in a file of their own, and flows run by an orchestrator | 43 | C2–C3 | ⬜ Not started |
-|  | **Total of Phases 1–5** | **170** | | |
+| 5 | Releases in a file of their own, and flows run by an orchestrator | 43 | C2–C3 | ✅ Done |
+| 6 | Context optimization for agents and consumers | 24 | C2–C3 | ⬜ Not started |
+|  | **Total of Phases 1–6** | **215** | | |
 <!-- plan-summary:end -->
 
 <!-- plan-issues:start -->
-**Issue queue** (not a phase; its size is not in the totals above): [3 open](./issues/README.md), 5 SP; 12 archived.
+**Issue queue** (not a phase; its size is not in the totals above): [1 open](./issues/README.md), 1 SP; 21 archived.
 <!-- plan-issues:end -->
 
 <!-- plan-backlog:start -->
-**Backlog** (proposals the owner has not approved; not a phase, and not in the totals above): [0 proposed](./backlog/README.md); 1 promoted.
+**Backlog** (proposals the owner has not approved; not a phase, and not in the totals above): [0 proposed](./backlog/README.md); 3 promoted.
 <!-- plan-backlog:end -->
 
 **Releases** (the order of the releases and of their tasks is the file [releases](./releases.md), not a section of this index; the line below is written by `harness plan summary`)
 
 <!-- plan-releases:start -->
-Current release: `0.3.0-dev.1` (🏷 a development version cut). Next: next (⬜ planned). The order of the releases and of their tasks: [releases](./releases.md). The flows that run them: [flows](./flows/README.md).
+No release is being developed. Next: `0.4.0` (⬜ planned). The order of the releases and of their tasks: [releases](./releases.md). The flows that run them: [flows](./flows/README.md).
 <!-- plan-releases:end -->
 
 ---
@@ -50,8 +51,9 @@ Current release: `0.3.0-dev.1` (🏷 a development version cut). Next: next (⬜
 
 <!-- plan-contents:start -->
 - [Phase 1 — Adoption, presets, examples and the proof (12 SP)](./phases/phase-1-adoption-presets-proof.md)
-- [Phase 2 — Security and review automation (17 SP)](./phases/phase-2-security/README.md)
+- [Phase 2 — Security and review automation (38 SP)](./phases/phase-2-security/README.md)
 - [Phase 3 — Stabilization, migrations and local adapters (71 SP)](./phases/phase-3-stabilization/README.md)
 - [Phase 4 — Reaching and holding the structure of documents (27 SP)](./phases/phase-4-document-extension/README.md)
 - [Phase 5 — Releases in a file of their own, and flows run by an orchestrator (43 SP)](./phases/phase-5-release-flows/README.md)
+- [Phase 6 — Context optimization for agents and consumers (24 SP)](./phases/phase-6-context-optimization/README.md)
 <!-- plan-contents:end -->

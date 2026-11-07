@@ -43,6 +43,7 @@
     "flows": "docs/development-plan/flows",
     "issues": "docs/development-plan/issues",
     "backlog": "docs/development-plan/backlog",
+    "offPlan": "docs/development-plan/off-plan",
     "procedures": "docs/procedures",
     "changelog": "CHANGELOG.md",
     "changelogFragments": "changelog.d",

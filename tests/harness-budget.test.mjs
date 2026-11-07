@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { test } from 'node:test'
 import { FRAMEWORK_DIR } from '../tools/lib/bootstrap.mjs'
+import { measureReview } from '../tools/lib/review-measure.mjs'
 
 const read = (path) => readFileSync(join(FRAMEWORK_DIR, path), 'utf8')
 
@@ -43,4 +44,13 @@ test('the method counts the block, requires the extension probes, and says how a
   const stub = read('core/templates/scaffold/harness-bindings.md')
   assert.match(stub, /Rows of the `procedures` block of the entry file/)
   assert.match(stub, /separate session started in this repository/)
+})
+
+test('`harness review measure` finds the repository within every ceiling of its bindings, and the same procedures block as this test', () => {
+  const profile = JSON.parse(read('harness-profile.json'))
+  const { lines, exceeded } = measureReview({ root: FRAMEWORK_DIR, profile })
+  assert.deepEqual(exceeded, [])
+  const { rows, words } = block()
+  assert.ok(lines.some((line) => line.includes(`procedures block of AGENTS.md: ${rows} rows`)))
+  assert.ok(lines.some((line) => line.includes(`${words} words`)))
 })

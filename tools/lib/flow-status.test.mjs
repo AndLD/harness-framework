@@ -2,7 +2,16 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { parseStep } from './flow-steps.mjs'
-import { flowTruth, gatherFacts, logEntries, mergedPlanIds, stepIds, stepTruth, tagsOf } from './flow-status.mjs'
+import {
+  flowTruth,
+  gatherFacts,
+  logEntries,
+  mergedPlanIds,
+  namesVersion,
+  stepIds,
+  stepTruth,
+  tagsOf
+} from './flow-status.mjs'
 import { parseFlow } from './flows.mjs'
 
 const row = (...cells) => `| ${cells.join(' | ')} |`
@@ -167,6 +176,14 @@ test('a step in an external repository is checked through the host: the lock it 
     take(old, prs({ number: 3, title: 'docs: the order of the plan', state: 'merged' })).evidence,
     /no pull request names 1\.0\.0 in its title/
   )
+  // the take of a development version is not the take of the final version it extends, nor of another development version
+  const dev = (title) => take(old, prs({ number: 8, title, state: 'open' }))
+  assert.equal(dev('chore(framework): take 1.0.0-dev.1').computed, '⬜')
+  assert.equal(dev('chore(framework): take 1.0.0.1').computed, '⬜')
+  assert.equal(dev('chore(framework): take 11.0.0').computed, '⬜')
+  assert.equal(dev('chore(framework): take 1.0.0').computed, '🟡')
+  assert.equal(dev('chore(framework): take v1.0.0.').computed, '🟡')
+  assert.equal(dev('chore(framework): take 1.0.0-dev.1 and 1.0.0').computed, '🟡')
   assert.match(
     take(old, () => ({ pullRequests: [], error: 'no access' })).evidence,
     /its pull requests could not be read \(no access\)/
@@ -177,6 +194,14 @@ test('a step in an external repository is checked through the host: the lock it 
   const home = parseStep({ '#': '1', kind: 'consumer-take', repo: 'home', scope: '`1.0.0`' })
   const never = () => assert.fail('the host is not asked for the home repository')
   assert.equal(stepTruth(home, { lockOf: () => old, pullRequestsOf: never }).state, '⬜')
+})
+
+test('a version is named as a whole token, a development version apart from its final version and from another development version', () => {
+  assert.equal(namesVersion('take 1.0.0-dev.1', '1.0.0'), false)
+  assert.equal(namesVersion('take 1.0.0-dev.1', '1.0.0-dev.1'), true)
+  assert.equal(namesVersion('take 1.0.0-dev.12', '1.0.0-dev.1'), false)
+  assert.equal(namesVersion('take 1.0.0-dev.2', '1.0.0-dev.1'), false)
+  assert.equal(namesVersion('take 1.0.0 (final)', '1.0.0'), true)
 })
 
 test('a decision or a custom step has nothing to recompute; a step the owner holds is no mismatch until the repository shows it done', () => {

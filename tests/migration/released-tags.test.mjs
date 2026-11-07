@@ -135,7 +135,11 @@ for (const tag of TAGS) {
       projectTools,
       oldSync.status === 0 ? ['migrate', '--root', root] : ['sync', '--from', current, '--root', root]
     )
-    assert.equal(next.status, 0, `${oldSync.stderr}\n${next.stdout}${next.stderr}`)
+    assert.equal(
+      next.status,
+      0,
+      `bootstrapped from ${tag}, taking ${version} (a tag newer than this tree's version is a downgrade; run the tests from a branch at the release):\n${oldSync.stderr}\n${next.stdout}${next.stderr}`
+    )
 
     assert.equal(readLock(root).version, version)
     // The script of 0.2.0 runs for a project that starts before 0.2.0: it split the open phase the scaffold made into a folder, made the open-ended

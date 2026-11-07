@@ -156,7 +156,8 @@ the adapters in `adapters/`, and nothing is vendored. The projects that use the 
   `harness check core` (part of `npm run docs:check`) returns 0. A core document cites a value by its role in the profile file, never by its content.
 - **Distribution.** `framework.json` lists the paths a sync copies (`distributable`) and the adapters the framework ships. A change to a distributed file
   reaches projects with the next version; the changelog says what a project must do about it. A change of the meaning of a core rule, or of a contract
-  (design §1.4), needs the owner's approval in the pull request; a major version too.
+  (design §1.4), needs the owner's approval in the pull request; a major version too. A flow the owner started may approve a change of the meaning of a contract
+  in the owner's place at the level its settings give it (`contract.change`, D3 by default; the procedure `run-flow`), and the pull request then cites its decision entry.
 - **Tools.** Plain Node 22, no dependency at run time (Prettier is the only dependency of this repository, for development). A check is a pure function with
   a test next to it (`*.test.mjs`, `node --test`); a seam (the host's command line, the clock, the file system root) is a parameter, so a test replaces it.
 - **Adapters.** Every adapter passes the conformance suite: `node tools/harness.mjs adapter test adapters/<axis>/<name>`; the framework's tests run it on

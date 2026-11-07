@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { execFileSync, spawnSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { copyFileSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { after, test } from 'node:test'
@@ -166,4 +166,26 @@ test('a push from a linked worktree runs the gate without the Git variables of t
     'harness/tools/git-hooks',
     'the step acted on its own folder'
   )
+})
+
+test('a hook installed from the main checkout runs the tools of the linked worktree that pushes, so the worktree is checked against its own core', () => {
+  const main = mkdtempSync(join(tmpdir(), 'git-guards-main-'))
+  dirs.push(main)
+  const git = (cwd, ...args) =>
+    spawnSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', ...args], { cwd, encoding: 'utf8' })
+  const stub = (label) => `process.stderr.write('tools of ${label}\\n')\n`
+  git(main, 'init', '--quiet', '--initial-branch', 'develop')
+  mkdirSync(join(main, 'tools', 'git-hooks'), { recursive: true })
+  for (const hook of ['pre-push', 'pre-commit']) copyFileSync(join(HOOKS, hook), join(main, 'tools', 'git-hooks', hook))
+  writeFileSync(join(main, 'tools', 'harness.mjs'), stub('main'))
+  git(main, 'add', '.')
+  git(main, 'commit', '--quiet', '-m', 'root')
+  const worktree = join(main, 'linked')
+  assert.equal(git(main, 'worktree', 'add', '--quiet', '-b', 'feature/x', worktree).status, 0)
+  writeFileSync(join(worktree, 'tools', 'harness.mjs'), stub('worktree'))
+  const run = (cwd, hook) =>
+    spawnSync('sh', [join(main, 'tools', 'git-hooks', hook)], { cwd, input: '', encoding: 'utf8' })
+  assert.match(run(worktree, 'pre-push').stderr, /tools of worktree/)
+  assert.match(run(worktree, 'pre-commit').stderr, /tools of worktree/)
+  assert.match(run(main, 'pre-push').stderr, /tools of main/)
 })

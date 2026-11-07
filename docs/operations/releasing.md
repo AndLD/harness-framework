@@ -11,4 +11,4 @@ branches, merge commits, the owner's approval of each merge, or that of a flow t
    the [changelog](../../CHANGELOG.md) under the version.
 4. Run `npm run docs:check`, `npm run lint` and `npm run test:coverage`, commit, and open the pull request into the production
    branch; after it is merged, merge the production branch back into the integration branch by a second pull request.
-5. Tag the merge commit on the production branch `v<x.y.z>`; the host's release workflow publishes the changelog section of the version.
+5. Tag the merge commit on the production branch `v<x.y.z>`; the host's release workflow publishes the changelog section of the version. Push the tag from a local branch at that merge commit, before the production branch is merged back into the integration branch (a hotfix the same): the pre-push hook runs the tests on the branch that is checked out, and the migration tests bootstrap a project from each local tag and take the current tree, so a tag newer than the version of that tree (a branch of the integration branch, still on the previous version) is a downgrade and fails them. The failure message names the tag.

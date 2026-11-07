@@ -42,6 +42,12 @@ ${settings}
 | 2 | cut | home | \`1.0.0\` | 1 | — | 1 | ${usage[1]} | — | ${states[1]} |
 `
 
+test('a change of the meaning of a contract is a decision kind of the levels, D3 by default, in the code and in the flow template', () => {
+  assert.equal(FLOW_DEFAULTS.levels['contract.change'], 'D3')
+  const template = readFileSync(new URL('../../core/plan/flow-template.md', import.meta.url), 'utf8')
+  assert.match(template, /"contract\.change": "D3"/)
+})
+
 test('a flow file is read: its releases, its settings over the defaults, the size and the usage of its steps, and a status from their states', () => {
   const read = parseFlow('flow-1-ship-one.md', flow())
   assert.deepEqual(read.problems, [])

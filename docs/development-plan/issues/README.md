@@ -14,7 +14,5 @@ A request for something new, which is not a defect, is an item of the [backlog](
 <!-- issue-queue:start -->
 | Issue | Title | Area | Agent | SP | Status | Reported |
 | ----- | ----- | ---- | ----- | -- | ------ | -------- |
-| [I-7](./I-7.md) | `harness branch update` left merge conflict markers in a file it reported as resolved, and no check refuses them | Git rules | C1 | 2 | ⬜ | — |
-| [I-14](./I-14.md) | `harness flow status` takes a consumer's pull request for a development version as the take of the final version it extends | checks | C1 | 1 | ⬜ | — |
-| [I-16](./I-16.md) | The notes of a development version and the migration say too little: the final note is not printed on a development-only path, a check is false after the next version, and the arrows action has no answer for phases no release holds | bootstrap and sync | C1 | 2 | ⬜ | — |
+| [I-23](./I-23.md) | The take of a version names no services that the project's gate needs | procedures | C1 | 1 | ⬜ | — |
 <!-- issue-queue:end -->

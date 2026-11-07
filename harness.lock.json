@@ -12,7 +12,7 @@
     "host": "github"
   },
   "managed": {
-    "docs/profile.md": "183c76ece8cd4d0fd8b403bb0920dd45902a121e50278b7b4b3539de92f5fbd1",
+    "docs/profile.md": "3fdd2e1da8d10d312b3080a30b87e98775b49ca6e23d9c644d7471af5a802ddd",
     "docs/quality-reviews/harness/bindings.md#layers": "3b11a01af0d9af7bdc65ece067d8b461b57b321be2eb2391c6bbbe417a7399f1",
     "docs/engineering/rule-checks.md#rule-map": "29ba3b98dac41697fdb10b36b6edb3012b52eec2f9860c4700e3e72a3888cd5b",
     "AGENTS.md#procedures": "21df0a29be988664932920d05f335913ee0ae7e6049d2d671779f7a5d0b9479e",
@@ -25,12 +25,12 @@
     ".claude/skills/harness-review/SKILL.md": "9807ed551c0c0a7c1137d305b34faac5b90b0a5230527f37776d14d58b4fc950",
     ".claude/skills/new-adapter/SKILL.md": "59c45440c88897a90b3dcc5cdd59b6cd4143dd3b1d2853b64e80b655994ef81b",
     ".claude/skills/open-pull-request/SKILL.md": "fee36ad6b22af9805762a67ca570d5781511c2da9e132642647da0fc1e165ddd",
-    ".claude/skills/release/SKILL.md": "37bdd343b6aab30ea7d1a36fa35121037448446f2da53430e1ae58a920915773",
-    ".claude/skills/run-flow/SKILL.md": "35e563e80ab7c141a4d4d12e10ef279286be772fc1bd6c59118e59df7b7a396d",
+    ".claude/skills/release/SKILL.md": "6465ad2cb7536645b6de76b8278c123b29c3d2dcb709141d30bb7baaf089de85",
+    ".claude/skills/run-flow/SKILL.md": "97bd55b1070f71ea75bf514ba3bc0b24ada549dcba0f84e17c7d4808e39eb4fe",
     ".claude/skills/start-task/SKILL.md": "cabbb344263eadd49b7983f4bca27cf075be14ae0e267f7c2ab5c861913e039e",
     ".claude/skills/triage-reports/SKILL.md": "63c26dd08442fa1d40a14b8a33b2ed990548a4edddf38b72fd7e99d01432e04b",
     ".claude/skills/update-framework/SKILL.md": "468b47b54d82064692222bad6c800f0116493d6665f8ee9173b93b30e98c0fe0",
-    ".claude/skills/change-framework/SKILL.md": "e6032cf4adae64efc2b1de6a497f85c0c3537153b51d35a6656fd6b20b1a66d4"
+    ".claude/skills/change-framework/SKILL.md": "6350a68afdce8cfc481269a81eee0713df00aca24cedbaba07ec9666db68c628"
   },
-  "profile": "6babb35353048932d44f187053944efdd00cc9ba2a821e0ea7346a921d9d4a32"
+  "profile": "78a35a4560c8c5fa4673854367c8306790fcf744d3c300b04b57bb99c15c08fe"
 }

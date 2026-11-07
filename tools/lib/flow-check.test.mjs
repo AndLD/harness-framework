@@ -142,7 +142,7 @@ test('the settings hold valid levels, executors, reuse limits, thresholds and a 
   const problems = one(
     flowText({
       settings:
-        '{ "askAt": "D0", "levels": { "cut.final": "D9" }, "executor": "robot", "reuse": "maybe", "reuseLimits": { "context": 0, "steps": 1.5, "cacheMinutes": -1 }, "commits": "never", "usage": { "stopAt": { "fiveHour": 0, "weekly": 120 } }, "repos": { "home": "../elsewhere" } }'
+        '{ "askAt": "D0", "levels": { "cut.final": "D9" }, "executor": "robot", "reuse": "maybe", "reuseLimits": { "context": 0, "steps": 1.5, "cacheMinutes": -1 }, "commits": "never", "commands": "heredocs", "usage": { "stopAt": { "fiveHour": 0, "weekly": 120 } }, "repos": { "home": "../elsewhere" } }'
     })
   ).join('\n')
   for (const part of [
@@ -154,6 +154,7 @@ test('the settings hold valid levels, executors, reuse limits, thresholds and a 
     /reuse limit steps must be a whole number/,
     /reuse limit cacheMinutes must be a number of minutes/,
     /setting commits "never"/,
+    /setting commands "heredocs"/,
     /threshold fiveHour/,
     /threshold weekly/,
     /the home repository is "\."/
@@ -244,4 +245,31 @@ test('the permissions setting is an object with a mode name and a list of tools 
     /the permissions allow must be a list of tools by name/
   )
   assert.match(problems('{ "permissions": { "allow": ["Edit", ""] } }'), /the permissions allow must be a list/)
+})
+
+test('a step started on another executor than its plan names the fallback and its reason, so a switch to the command line shows (task 2.7)', () => {
+  const started = (executor) =>
+    logText(`### 2026-11-06 00:41 — step 1 started
+- **Executor:** ${executor} · **Worker:** w-1 · **Account:** — · **Model:** Opus 5.5 at high effort · **Estimate:** 3 SP, —
+`)
+  const check = (executor, text = flowText()) => one(text, { logs: { 'flow-1-ship.md': started(executor) } })
+  assert.deepEqual(check('session'), [])
+  assert.deepEqual(check('cli, the fallback of session: the app refused the start on a turn that a worker began'), [])
+  assert.deepEqual(check('manual, the fallback of session: <why the cli start failed>'), [])
+  assert.deepEqual(check('cli, reused from step 9, the fallback of session: a step in another repository'), [])
+  // the executor the step is planned for needs no reason: the flow's setting, or the step's own override
+  assert.deepEqual(check('cli', flowText({ settings: '{ "executor": "cli" }' })), [])
+  const own = ROWS.map((row, index) => (index ? row : row.with(3, '`1.0.0` (executor: manual)')))
+  assert.deepEqual(check('manual', flowText({ rows: own })), [])
+  // an older line that wrote the command line under the session executor is read as a session, as it was logged
+  assert.deepEqual(check('session, on the command line (`claude -p`)'), [])
+  const [problem, ...rest] = check('cli')
+  assert.deepEqual(rest, [])
+  assert.match(
+    problem,
+    /names the executor cli, but step 1 is planned for session; write "\*\*Executor:\*\* cli, the fallback of session: <the reason>"/
+  )
+  assert.match(check('cli, the fallback of session:').join('\n'), /planned for session/, 'a fallback without a reason')
+  assert.match(check('subagent').join('\n'), /names the executor subagent, but step 1 is planned for session/)
+  assert.deepEqual(check('orchestrator, no worker'), [], 'a step the orchestrator ran itself names no executor')
 })

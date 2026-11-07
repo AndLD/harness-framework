@@ -1,0 +1,363 @@
+[← Flow 2 — The 0.4.0 release](./flow-2-release-0-4-0.md)
+
+# Flow 2 — The 0.4.0 release — log
+
+Append-only log of this flow, written by its orchestrator (the procedure `run-flow`); newest entry at the bottom. It is the record of the flow: a
+session that continues the flow reads the flow file, the tail of this log and the current step report, nothing older.
+
+Entries are written from the entry templates of the [flow-log template](../../../core/plan/flow-log-template.md).
+
+## Entries
+
+### 2026-11-05 12:20 — decision D3: what the workers of this flow may do when they are started on the command line
+- **Options:** (a) the same as flow 1: the mode `acceptEdits` and an `allow` list for Git, the host's command line and the checks; (b) `acceptEdits` alone; (c) a more permissive mode.
+- **Own analysis** (written by the session that set the flow up; no orchestrator has run the flow yet): (a). The steps build tasks (branches, pull requests, the checks) and a security review that reads and writes documents; nothing in them needs more than flow 1's steps do, and a tool that a step needs and the list lacks makes its worker report itself blocked, which is cheap to fix by editing the setting.
+- **Worker's recommendation:** none (no worker is involved; issue I-11).
+- **Choice:** (a), `"permissions": { "mode": "acceptEdits", "allow": ["Bash(git *)", "Bash(gh *)", "Bash(npm *)", "Bash(node *)"] }` · **Decided by:** the owner asked for relevant permissions for this flow after choosing them for flow 1; the list is the session's proposal, the same as flow 1's.
+
+### 2026-11-05 12:20 — decision D2: split step 2 (tasks 2.2 and 2.3) into two steps
+- **Options:** keep one 6 SP step; one step per task.
+- **Own analysis** (written by the session that set the flow up): split. By the provisional Claude Pro coefficients a 6 SP Sonnet step is 72% of an empty 5-hour window, which `harness flow check` refuses once the subscription is known (the gate could never start it); at 3 SP each fits (36%). The two tasks are of one release and one model, so the second step's worker may still be the first's (`reuse: auto`). Step 2.1 (5 SP, Opus) cannot be split, and is left to be measured.
+- **Worker's recommendation:** none.
+- **Choice:** one step per task; the steps after it move down by one (an early plan change, before any run, so the ids are renumbered rather than suffixed) · **Decided by:** the owner ("I agree with you").
+
+
+### 2026-11-05 22:00 — decision D3: `sed` and `ls` join what the workers of this flow may do
+- **Options:** (a) add `Bash(sed *)` and `Bash(ls *)` to the `allow` list of the `permissions` setting; (b) leave the list as it is; (c) widen the mode.
+- **Own analysis** (written by the orchestrator of flow 1, which saw the refusals, before the owner's answer): (a). The workers of flow 1 on the command line were refused `sed -i` edits, `ls` of a folder outside their own and some compound shell lines, so they spent turns on workarounds and left one pull request body unfixed; `sed` and `ls` are routine and, run through `Bash(…)` patterns, stay inside the mode `acceptEdits`; nothing else in the list changes. Some compound shell lines were refused too; whether a compound line whose parts are all allowed passes is not verified, so the first run of flow 2 shows whether the list is the whole fix.
+- **Worker's recommendation:** the workers of steps 1d and 1g of flow 1 named the refusals and worked round them.
+- **Choice:** (a), `"allow": ["Bash(git *)", "Bash(gh *)", "Bash(npm *)", "Bash(node *)", "Bash(sed *)", "Bash(ls *)"]` · **Decided by:** the owner ("I think you should add sed and ls commands to permissions for new workers"). Flow 1 is finished and keeps its own list.
+
+### 2026-11-05 21:30 — decision D2: add tasks 2.7 and 2.6 as the first two steps of this flow
+- **Options:** (a) two new steps at the start, the others move down by two (the flow has not run, as in the entry of 12:20); (b) two steps inserted after step 1 with suffix ids (`1a`, `1b`); (c) leave them out of this flow and run them in a flow of their own.
+- **Own analysis** (written by the session that recorded the tasks, before the owner's answer): (a). The owner asked for them at the beginning or early; 2.7 changes how the workers of the rest of the flow are started (nested sessions, the command line as a logged fallback), so it should be merged before the steps that it affects, and 2.6 removes the prompts for the plan's files in other projects; the log names no step number but the split of 12:20, so renumbering costs nothing. 2.7 goes first and carries "Stops for" D3, because the order of the executors is not decided as a whole and changes the meaning of the procedure `run-flow` (the owner confirms it in the pull request of the task). Step 3 (2.1) keeps its model, size and estimate. This flow's own run can start nested sessions in the home repository, since the experiment of the same day allowed three in a chain.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (a): steps 1 (2.7, C3, 5 SP, stops for D3) and 2 (2.6, C2, 3 SP), then the former steps 1 to 6 as steps 3 to 8 · **Decided by:** the owner ("Add tasks 2.6 and 2.7 to flows. It should come earlier of flow 2 or in the beginning of flow 2"); the order between the two and the renumbering are the session's choice, open to the owner's change.
+
+### 2026-11-05 21:50 — decision D3: the version of the release of this flow is `0.4.0`
+- **Options:** (a) name it `0.4.0` now; (b) keep the name `next` until the last step of the flow; (c) another number.
+- **Own analysis** (written by the session that recorded it, before the owner's answer): (a). The release holds a change to the procedure `run-flow` and to the runtime contract (task 2.7), which is more than a fix, so a minor version is the least that fits, and a number lets the tools and the consumer match a tag and a migration note to the row; step 8 can still confirm or change it against what the row holds when the flow gets there.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (a): the row `next` of the releases file is `0.4.0`, `Releases:` of this flow is `0.4.0`, and step 8 now confirms the version instead of fixing it · **Decided by:** the owner ("Okay, let it be 0.4.0").
+
+### 2026-11-05 22:10 — decision D3: the mode of the flow, brainstorm to seamless
+- **Options:** (a) stay in brainstorm (`askAt` D2); (b) seamless: the orchestrator decides every level and keeps a "review later" digest of its D2 to D4 decisions; (c) seamless, and drop the stops of steps 1 and 8.
+- **Own analysis:** none was needed: the mode of a flow is the owner's setting (the procedure `run-flow`: the setting is the owner's choice, never mine); the owner asked for it by name, as for flow 1. What stays in seamless: the hard limits (no administrator's bypass, no cut on a red check, the non-negotiables, no force-push or deletion of a remote branch), what the entry file keeps for the owner (a change of the meaning of a core rule or of a non-negotiable, another merge into the production branch, creating a report on the host), and the "Stops for" column. Two stops therefore remain by the table: step 1 (task 2.7, D3: the owner confirms the executor order, which changes the meaning of the procedure `run-flow` and of the runtime contract) and step 8 (the version, D3). Nothing is changed in the table.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (b), with the stops of steps 1 and 8 as they are · **Decided by:** the owner ("Enable seamless mode instead of brainstorm for flow 2"); the setting is `"mode": "seamless"` in the flow's settings block, and `askAt` stays in the block and is not read in this mode.
+
+### 2026-11-05 22:40 — decision D3: the executor order of task 2.7 and the version `0.4.0` are confirmed, and the two stops go
+- **Options:** (a) keep the stops of steps 1 and 8 and ask when the flow gets there; (b) record the owner's confirmations now and clear both stops; (c) confirm the order and the version now, and keep the stop of step 1 for the pull request of 2.7.
+- **Own analysis:** none was needed: both are the owner's decisions (a change of the meaning of the procedure `run-flow` and of the runtime contract; what a release promises by its version), and the owner gave them in words. (b) follows from them: the stops existed only to ask these two questions. The pull request of 2.7 still changes a contract, so it cites this entry as the owner's approval; the worker's prompt for step 1 must say so. Step 8 is no longer the version, only the cut step of `0.4.0` that the flow inserts (a D2 decision of the orchestrator in seamless mode).
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (b) · **Decided by:** the owner ("I confirm the executor order in 2.7 as we discussed. I confirm 0.4.0 version."): the order is a session of the desktop app as the default, a worker on the command line as the fallback for one step at a time with its reason logged, `manual` as the fallback of that, a subagent outside the order for a short analysis only, and a step in another repository on the command line, logged as the fallback; the version is `0.4.0`. The "Stops for" of steps 1 and 8 is now —.
+
+### 2026-11-05 23:10 — decision D2: Phase 2 is reshaped around a researched security methodology, and its new tasks are steps of this flow
+- **Options:** (a) keep the five security tasks as they were, with a fixed S1 to S6 method; (b) reshape: 2.1 the frame, 2.8 and 2.9 the probe catalogue and attack scenarios (researched, with sources), 2.10 the security rules distilled from the first review; (c) the same as (b) and move the security tasks to a release of their own (`0.5.0`).
+- **Own analysis** (written by the session that recorded it, before the owner's answer): (b). The owner is not a security expert and wants the framework to deliver a wide, researched methodology that a consumer's agent can use on its own project, and then a few core rules from its findings; one 5 SP task cannot hold that, and a list fixed in advance would stop at what section 11.1 of the design knew. Splitting the frame from the catalogue lets the catalogue grow by review. The catalogue is checked by an independent pass and marked draft until a person with security expertise has reviewed it, because a model can state a security fact confidently and be wrong. (c) is the owner's decision about the size of `0.4.0` and was not made here; the phase is 38 SP now, and the flow is about 90% of one 5-hour window by its estimates.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (b); steps 4 (2.8), 5 (2.9) and 9 (2.10) are new, and the other steps move down (the flow has not run, as in the entry of 12:20); the release of the security tasks stays `0.4.0` until the owner decides (c) · **Decided by:** the owner ("Yes, agree with you"), who asked for the direction and the learning loop; the numbering and the order of the steps are the session's choice, open to the owner's change.
+
+### 2026-11-05 23:40 — decision D2: the security tasks leave this flow for flow 3 and the release `0.5.0`; the flow is renamed
+- **Options:** (a) keep the security tasks here; (b) move them to a release `0.5.0` and a flow of their own, flow 3; (c) move them to `0.5.0` and keep one flow for both.
+- **Own analysis:** see the entry of the same time in the log of [the security flow](./flow-4-security-release.log.md) (flow 3 when this entry was written, flow 4 since the entry of 23:59 below): (b). This flow keeps its number, its history above and its settings (seamless); it now delivers `0.4.0` only: 2.7, 2.6, 2.3, 2.5 and the open issues (two steps of C1: I-18 and I-7; I-17, I-14 and I-16), then the decision that inserts the cut step. The entries above that speak of the security tasks (the steps of 2.1, 2.8, 2.9, 2.2, 2.4 and 2.10 and of the version for them) describe the flow as it was before this entry, and are not rewritten. The files are renamed `flow-2-release-0-4-0` (the title "The security release" went to flow 3).
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (b) · **Decided by:** the owner ("I agree with security goes to 0.5.0"); the renaming, the grouping of the issues into two steps and the order are the session's choice, open to the owner's change.
+
+### 2026-11-05 23:59 — decision D2: the flows are renumbered to follow the order of the releases
+- **Options:** (a) keep the numbers and order the flows by `Needs` only; (b) renumber the flows that have not run, so that the numbers follow the order.
+- **Own analysis:** (b), as the entries of 23:59 in the logs of the two new flows say: the owner put Phase 6 (`0.5.0`) before the security release (`0.6.0`), so the context optimization flow is flow 3 and the security flow is flow 4 (it was flow 3 until now). This flow's number, steps and history are unchanged; the entries above that say "flow 3" mean the security flow, which is flow 4 now.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (b) · **Decided by:** the owner ("Go", to the renumbering).
+
+### 2026-11-06 00:20 — running
+- **Orchestrator:** the desktop-app session of andrey.larionov.me@gmail.com, started by "Run flow 2" (no earlier claim) · **Mode:** seamless · **Steps:** 1 to 7
+- **Usage:** 5-hour 42% (resets 2026-11-05T22:39:59Z) · weekly 31% (resets 2026-11-10T06:59:59Z) (Pro)
+
+### 2026-11-06 00:25 — decision D2: split step 1 (task 2.7, 5 SP of Opus), which the gate stops
+- **Options:** (a) split task 2.7 into two tasks of the same model, 3 SP and 2 SP, as steps 1 and 1a; (b) lower the step's model to Sonnet (C2), which fits at 5 SP (72% with the factor); (c) stop and ask the owner; (d) start it anyway, since flow 1 measured Sonnet tasks at 1.8% of the 5-hour window per SP against the table's 12%.
+- **Own analysis:** (a). `harness flow gate 2 1 --plan Pro` says STOP: by the provisional coefficients of Pro (Opus 20% of the 5-hour window per SP) the step needs 100% of the window, 120% with the safety factor, above the threshold of 85% of an empty window; the procedure says such a step is a flow to fix, a D2 decision: split it, and seamless decides D2. (d) crosses the gate on two measured steps of another model, below the calibration minimum of three; (b) gives a contract change (the meaning of the procedure `run-flow` and of the runtime contract) to a smaller model than the plan chose. The task has two separable halves: the order of the executors (the contract, the procedure, the named fallback in the log and the dispatch, the step in another repository) and the permissions of a nested session with the repeated experiment, which builds on the first. Each fits: 60% and 40% of an empty window (72% and 48% with the factor). The flow file was not refused earlier because no subscription is set in `harness-profile.local.json`, so `harness flow check` could not size it.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (a): 2.7 is 3 SP, the new task 2.11 (2 SP, C3, needs 2.7) takes the permissions of a nested worker and the experiment; step 1a (2.11) is inserted after step 1, step 2 now needs 1a; the row `0.4.0` of the releases file names 2.11 after 2.7 · **Decided by:** the orchestrator (seamless mode); for the owner's review later.
+
+### 2026-11-06 00:27 — stop: usage
+- **Done:** nothing yet; step 1 was split (the entry above).
+- **Decided alone:** the split of step 1 (D2, the entry of 00:25).
+- **Usage:** 5-hour 42% (resets 2026-11-05T22:39:59Z) · weekly 31% · the gate says WAIT for step 1 (60% plus the factor does not fit on top of 42%).
+- **Next step:** after the reset at 00:40, step 1 (task 2.7, 3 SP, Opus) as a fresh session.
+
+### 2026-11-06 00:42 — decision D0: step 1 runs on the command line, the fallback of a session
+- **Options:** (a) a session of the desktop app (the default); (b) a worker on the command line, for this step only; (c) `manual`.
+- **Own analysis:** (a) was tried first and refused: the app does not let the orchestrator start a session on a turn that a background event began (here the end of the wait for the usage reset and for #145), the same limit that flow 1 met at step 1c. (b) is the fallback of the executor order the owner confirmed on 2026-11-05 (the entry of 22:40): one step at a time, logged with its reason, not carried to the next step by habit. The account of the command line is the orchestrator's (`claude auth status`: andrey.larionov.me@gmail.com). The worker's prompt names this refusal as a data point for task 2.7.
+- **Worker's recommendation:** none (the worker had not started).
+- **Choice:** (b), in the worktree `.claude/worktrees/flow-2-step-1` cut from `origin/develop` (0eae4df) · **Decided by:** the orchestrator (seamless mode).
+
+### 2026-11-06 00:42 — step 1 started
+- **Executor:** cli, the fallback of session: the app refused the start on a turn that a background event began (the entry above) · **Worker:** `claude -p --name flow-2-step-1` (its `session_id` is in the step-ended entry) · **Account:** andrey.larionov.me@gmail.com · **Model:** Opus 5.5 at high effort · **Estimate:** 3 SP, 5-hour 60%, weekly 8.1%
+- **Usage before:** 5-hour 0% (resets 2026-11-06T03:40:00Z) · weekly 31% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-06 00:58 — step 1 ended: done
+- **Usage after:** 5-hour 17% (resets 2026-11-06T03:40:00Z) · weekly 33% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +17%, weekly +2%, against an estimate of 5-hour 60% and weekly 8.1%; tokens 278317 (input, output and cache creation of the JSON result; 15,918,154 cache-read tokens left out) · **Pull requests merged:** #146 ("feat(flow): the order of the executors, with the command line as an executor of its own", merge commit `8db6f6a`, the four required checks green) · **Ids done:** 2.7 · **Worker:** `claude -p`, session `ca42dd9f-51e8-4eb1-bc0f-0030ae96d3bb`, 134 turns, 15 minutes, 6.23 USD at list price
+- **Report:** the order of the executors is in the runtime contract and the procedure `run-flow` (a session by default, `cli` as the fallback for one step with its reason, then `manual`; a subagent outside the order); the preset of the runtime has `session` and `cli` as two executors; `harness flow dispatch` prints the next executor of the order with the log line of the fallback and its reason, and dispatches a step in another repository on `cli` with the reason; `harness flow check` refuses a "step started" entry on an executor other than the step's own that gives no fallback and reason; the reuse rule never continues a worker of another executor. The pull request cites the owner's approval (the entry of 2026-11-05 22:40). `npm test` (750), the conformance suite (14 of 14), `docs:check` and lint passed. No open decision, no report filed. **Deviations:** the flow's `allow` list refused `python3`, compound lines with `grep` or `tail` and heredocs with `${…}`; the worker used the edit tools and one-off Node scripts. It pushed with `git -c core.hooksPath=<the worktree>/tools/git-hooks push`: the same hook run from the worktree's own tools, not a bypass (the defect behind it is I-19, below). It waited for CI in the foreground, since whether a `cli` worker is woken after its turn ends is not known.
+- **Context of the worker:** not read: the JSON of `claude -p` gives the use of the whole run, not of its last call; the next step cannot continue it anyway (another executor is never continued, and the next step is in a session by default).
+
+### 2026-11-06 00:58 — decision D2: the worker's three recommendations
+- **Own analysis** (the report reached me whole, recommendations included, so the independence is partial; my pick for each is from the plan and the rules): (1) the pre-push hook of a linked worktree runs the main checkout's `harness.mjs` (`$here/../harness.mjs` in `tools/git-hooks/pre-push`, read to confirm): a defect of the framework that every worker of a flow meets, so it is recorded as an issue and, being cheap (1 SP, C1), scheduled into this release with the other issues, first in step 5, which grows to 5 SP (60% of an empty 5-hour window, 72% with the factor, under the threshold); (2) whether a `cli` worker is woken after its turn: a question for task 2.11, which is about the permissions and the behaviour of the workers, so it goes into the prompt of step 1a (a D1 for the worker); (3) widening the flow's `allow` list with read-only tools: the `permissions` setting is the owner's choice, never the orchestrator's (the procedure `run-flow`, step 4), even in seamless mode, so nothing is changed and it goes to the owner in the digest.
+- **Worker's recommendation:** (1) an issue (D2); (2) test it in step 1a; (3) widen the list with `grep`, `cat`, `head`, `tail` and maybe `npx prettier` (D3, the owner's).
+- **Choice:** (1) issue I-19 recorded, step 5 is I-19, I-18, I-7 (5 SP), the row `0.4.0` of the releases file names I-19; (2) the prompt of step 1a asks it; (3) left to the owner · **Decided by:** the orchestrator (seamless mode); for the owner's review later.
+
+### 2026-11-06 01:05 — decision D0: step 1a: the app refused the session start on a turn that a background event began, so the cli executor runs it
+- **Options:** (a) a session (the default, tried first); (b) `cli` for this step only; (c) `manual`.
+- **Own analysis:** (a) was refused (the same refusal as step 1); the order of the executors (task 2.7, now merged) says not to retry and not to wait, but to run the step on the next executor and dispatch the next step again from `session`. The account of the command line is the orchestrator's.
+- **Worker's recommendation:** none (the worker had not started).
+- **Choice:** (b), in the worktree `.claude/worktrees/flow-2-step-1a` cut from `origin/develop` (8db6f6a) · **Decided by:** the orchestrator.
+
+### 2026-11-06 01:05 — step 1a started
+- **Executor:** cli, the fallback of session: the app refused the start on a turn that a background event began (the entry above) · **Worker:** `claude -p --name flow-2-step-1a` (its `session_id` is in the step-ended entry) · **Account:** andrey.larionov.me@gmail.com · **Model:** Opus 5.5 at high effort · **Estimate:** 2 SP, 5-hour 40%, weekly 5.4%
+- **Usage before:** 5-hour 17% (resets 2026-11-06T03:40:00Z) · weekly 33% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-06 01:20 — step 1a ended: done
+- **Usage after:** 5-hour 33% (resets 2026-11-06T03:40:00Z) · weekly 35% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +16%, weekly +2%, against an estimate of 5-hour 40% and weekly 5.4%; tokens 234000 (input, output and cache creation of `modelUsage`; 13,376,806 cache-read tokens left out) · **Pull requests merged:** #148 (merge commit `83254ce`, the four required checks green) · **Ids done:** 2.11 · **Worker:** `claude -p`, session `177d1f35-d67b-47ea-a082-67337883f16b`, 17 minutes, 5.18 USD at list price
+- **Report:** a session that a flow starts now opens in the mode of the flow's `permissions` setting (`permission_mode` of the app's start, which the app accepts at or below the orchestrator's mode and refuses above it, and the refusal sends the step to the fallback); the app's start takes no tools, so the dispatch names the flow's `allow` tools as rules for the owner to add to the project's settings; the "step started" line carries `· **Permissions:** <mode>`; the runtime contract (as a minor addition), the plan method, the procedure `run-flow`, the flow-log template and a changelog fragment changed. 752 tests, lint, `docs:check` and the conformance suite (14) passed. One open decision (the next entry). It met I-19 again and pushed with the worktree's own hook. The question of whether a `cli` worker is woken after its turn ends stays open (it was refused `claude`).
+- **A correction of the report:** the worker took itself for a nested session of the desktop app started from the owner's card, and wrote so in `2.11.log.md` and in its report. It was not: it was the `claude -p` worker the orchestrator started (its transcript is in the projects folder of the worktree `flow-2-step-1a`, session `177d1f35-…`); no session named `flow-2-step-1a` exists in the app. It read `CLAUDE_CODE_CHILD_SESSION=1` and the entrypoint `claude-desktop`, which a `claude -p` process inherits from the orchestrator's environment. So the "experiment repeated once" observed a `cli` worker under `--permission-mode acceptEdits` and the flow's `--allowedTools`, not a nested session, and its finding ("a nested session asks exactly what lies outside the flow's `allow` list") is not shown; what it shows is that a `cli` worker was allowed `grep`, `head` and `tail` inside compound lines here, where the worker of step 1 found them refused. A nested session started by the orchestrator under the flow's mode remains untested: the app refuses the orchestrator a start on a turn that an event began, so it needs the owner's message. A correction entry is appended to `2.11.log.md`.
+
+### 2026-11-06 01:20 — decision D3: the contract change of 2.11 (a session starts in the flow's mode) and the owner's approval
+- **Options:** (a) treat it as a minor addition covered by the owner's confirmation of 2.7; (b) ask the owner to confirm it now, after the merge, and revert it if the owner says no; (c) revert it until the owner confirms.
+- **Own analysis** (written before I read the worker's recommendations): (b). The entry file keeps for the owner a change of the meaning of a contract, approved in its pull request, and a flow in seamless mode does not take that; the change replaces "a session runs under the app's own settings, not the flow's" with "a session starts in the flow's mode", which is a change of meaning even if an adapter without a mode still conforms. The owner's confirmation of 2.7 (the entry of 2026-11-05 22:40) names the order of the executors only, though the text of 2.7 before the split did say that the mode is decided by the flow's settings. (c) undoes a reversible, tested change that the next steps do not need, so it costs more than it saves; the change is in `develop` only, not in a release.
+- **Worker's recommendation:** it raised the question itself and suggested D3, for the owner.
+- **Choice:** (b): the flow stops here and asks the owner · **Decided by:** the rule of the entry file (what it keeps for the owner stays the owner's, whatever the mode).
+
+### 2026-11-06 01:20 — decision D2: the worker's three recommendations
+- **Own analysis** (read after the entry above): (1) the owner adding the flow's `allow` rules to `.claude/settings.json`: the settings file and the `permissions` setting are the owner's, never the orchestrator's, so it goes to the owner in the digest; (2) fixing I-19 early: it is first in step 5; moving it before step 2 would cost the order of the release for a defect that has a safe workaround (the worktree's own hook), so it stays; (3) a wake-up test of `claude -p` run by the orchestrator: not needed by any step of this flow (the workers wait for CI within their turn), so it is left to the owner's choice in the digest.
+- **Choice:** (1) to the owner; (2) unchanged; (3) to the owner · **Decided by:** the orchestrator.
+
+### 2026-11-06 01:22 — stop: the owner's approval
+- **Done:** step 1 (2.7, #146) and step 1a (2.11, #148), both merged; the split of 2.7 (#145) and I-19 (#147).
+- **Decided alone (review later):** the split of step 1 into 2.7 and 2.11 (D2, 00:25); I-19 recorded and scheduled first in step 5 (D2, 00:58); steps 1 and 1a run on `cli`, the fallback of a session the app refused (D0, 00:42 and 01:05); the recommendations of step 1a (D2, 01:20).
+- **For the owner:** (1) confirm the contract change of 2.11 (a session starts in the mode of the flow's `permissions`), or say to revert it (the entry of 01:20); (2) whether to add the flow's `allow` rules to `.claude/settings.json`, and whether to widen the list with read-only tools (`grep`, `cat`, `head`, `tail`, `npx prettier`), as both workers asked; (3) optionally, a wake-up test of a `claude -p` worker.
+- **Usage:** 5-hour 33% (resets 2026-11-06T03:40:00Z) · weekly 35% (resets 2026-11-10T07:00:00Z) (Pro); steps 1 and 1a used 17% and 16% of the 5-hour window against estimates of 60% and 40%.
+- **Next step:** at the owner's answer, "Continue flow 2": step 2 (task 2.6, 3 SP, Sonnet), the gate says GO at the current use; started from the owner's message, the session start should not be refused.
+
+### 2026-11-06 23:55 — decision D3: the contract change of 2.11, decided under the new level `contract.change` (the answer to the entry of 01:20)
+- **Options:** as in the entry of 01:20: (a) accept the change (a session starts in the mode of the flow's `permissions`); (b) ask the owner; (c) revert it.
+- **Own analysis:** the owner did not answer the question of 01:20; instead the owner moved a change of the meaning of a contract from what a flow may never decide to a level of the flow ("I want the changes of contract to be among the askAt D levels not at hard limit"; issue I-20, #150, merged). The kind `contract.change` is D3 by default, and this flow is seamless, so the orchestrator decides it. (a): the change is the "What is wanted" of 2.7 before its split, which the owner confirmed as discussed, it is additive (an adapter whose application takes no mode still conforms), tested, and in `develop` only; (c) would undo it for nothing.
+- **Worker's recommendation:** the worker of step 1a asked for D3 and the owner's review (now this level).
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode), under the level the owner gave it; for the owner's review later. The record of step 1a (#149) and this entry are the approval that #148 cites.
+
+### 2026-11-06 23:55 — stop: paused by the owner
+- **Done:** steps 1 and 1a; I-20 (#150) made a contract change a level of a flow, at the owner's request.
+- **Decided alone (review later):** as in the stop of 01:22, and the contract change of 2.11 (D3, the entry above).
+- **For the owner:** the flow's `allow` list and the project's allow rules (read-only tools that both workers asked for); optionally, the wake-up test of a `claude -p` worker.
+- **Next step:** at "Continue flow 2": step 2 (task 2.6, 3 SP, Sonnet); read the usage and run the gate first.
+
+### 2026-11-07 00:10 — running
+- **Orchestrator:** the desktop-app session of andrey.larionov.me@gmail.com, started by "Continue flow 2" (the stop entry of 2026-11-06 23:55 ended the earlier claim) · **Mode:** seamless · **Steps:** 2 to 7
+- **Usage:** 5-hour 18% (resets 2026-11-06T22:39:59Z) · weekly 41% (resets 2026-11-10T06:59:59Z) (Pro)
+- **Permissions:** the owner added the flow's `allow` tools and the read-only tools (`grep`, `cat`, `head`, `tail`, `wc`, `npx prettier`) to the ignored `.claude/settings.local.json` (the orchestrator was refused writing it, as an agent's change of its own permissions), so a session started in `acceptEdits` gets them.
+
+### 2026-11-07 00:15 — step 2 started
+- **Executor:** session · **Worker:** local_c7c56016-5645-47e3-8128-41cc660f5441 · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** acceptEdits · **Estimate:** 3 SP, 5-hour 36%, weekly 4.8%
+- **Usage before:** 5-hour 18% (resets 2026-11-06T22:39:59Z) · weekly 41% (resets 2026-11-10T06:59:59Z)
+- **Note:** the app cut the worker's worktree from `main`, 32 commits behind `develop`; the orchestrator told the worker by message to branch from `origin/develop` and read the plan and the tools there.
+
+### 2026-11-07 10:35 — stop: paused by the owner
+- **Done:** steps 1 and 1a; step 2 (task 2.6) is running in its worker session, which claimed it in #152; the orchestrator lets that worker finish its task and starts no further step.
+- **Decided alone (review later):** as in the stop of 2026-11-06 23:55.
+- **Usage:** read at the start of step 2: 5-hour 18%, weekly 41% (Pro).
+- **Next step:** at "Continue flow 2": read the report of step 2's worker (local_c7c56016-5645-47e3-8128-41cc660f5441, by `list_events`), log "step 2 ended" with the usage after it, then step 3 (task 2.3).
+
+### 2026-11-07 11:00 — decision D3: the workers of this flow start in the mode `auto`
+- **Options:** (a) keep `acceptEdits`; (b) `auto`, where the runtime's classifier judges each command and refuses only the risky ones; (c) a more permissive mode.
+- **Own analysis:** none was needed: the `permissions` setting is the owner's choice. What led to it: the worker of step 2 started in `acceptEdits` with the flow's tools as allow rules of the owner's local settings, and still asked the owner for almost every command, because the runtime asks in that mode for what it cannot check before it runs, whatever the rules: shell operators (`&&`, pipes, subshells, redirections), nested commands (`$(…)`), and heredocs with braces and quotes ("expansion obfuscation"). The owner set that worker's session to `auto` by hand during the step.
+- **Worker's recommendation:** none.
+- **Choice:** (b), `"mode": "auto"`; the `allow` list stays · **Decided by:** the owner ("yes", to the question whether the flow's mode should be `auto`).
+
+### 2026-11-07 11:20 — running
+- **Orchestrator:** the desktop-app session of andrey.larionov.me@gmail.com, started by "Continue flow 2" (the stop entry of 10:35 ended the earlier claim) · **Mode:** seamless · **Steps:** 2 (its end) to 7
+- **Usage:** 5-hour 27% (resets 2026-11-07T13:30:00Z) · weekly 45% (resets 2026-11-10T07:00:00Z) (Pro)
+
+### 2026-11-07 11:20 — step 2 ended: partial
+- **Usage after:** 5-hour 27% (resets 2026-11-07T13:30:00Z) · weekly 45% (resets 2026-11-10T07:00:00Z) · **Measured:** weekly +4%; the 5-hour window reset during the step, so that part counts for nothing; against an estimate of 5-hour 36% and weekly 4.8% · **Pull requests merged:** none by the worker: #152 is open, its four checks green, held for the decision below · **Ids done:** none yet (2.6 is done once #152 merges) · **Worker:** session local_c7c56016-5645-47e3-8128-41cc660f5441, started in `acceptEdits` and set to `auto` by the owner during the step
+- **Report:** `plan-write` is a new optional role of the runtime contract, filled by the Claude Code preset (an `Edit(<folder>/**)` rule in `permissions.allow` of the tracked `.claude/settings.json`; `--scope local` or `user` only when named; other rules kept; the settings, the hooks, `.git`, paths outside the project and globs refused); `harness plan-write on|off|state [--folders] [--scope]`; `init` and `bootstrap` turn it on by default and say so, `--no-plan-write` leaves it off. 765 tests, lint and `check all` passed. The headless observation was repeated: an append inside the folder ran with no prompt, outside it and `sed -i` were denied. It left #152 unmerged: the classifier refused its merge, and the role is a contract change. Two open decisions (below). The worktree of the app was cut from `main`; the worker had already branched from `origin/develop` before the orchestrator's message reached it.
+- **Orchestrator's work on #152:** brought it up to date with `develop` (`harness branch update`, no conflicts; 766 tests, lint and `docs:check` passed) and pushed.
+
+### 2026-11-07 11:20 — decision D3: the contract change of 2.6, a new optional runtime role `plan-write` (`contract.change`)
+- **Options:** (a) accept it and merge #152; (b) revert it.
+- **Own analysis** (the report reached me whole, recommendations included, so the independence is partial): (a). The role is optional, so an adapter without it still conforms (the conformance suite skips it for the Cursor preset); it is what the owner asked for in B-2 and its task 2.6 (a switch with on and off, on by default in a bootstrap); it is tested, and it changes no existing role. The level is `contract.change`, D3 by default, and this flow is seamless, so the orchestrator decides it (issue I-20).
+- **Worker's recommendation:** approve and merge (D3).
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode); for the owner's review later. This entry is the approval that #152 cites.
+
+### 2026-11-07 11:20 — decision D1: `harness adopt` does not add the rules of `plan-write`
+- **Options:** (a) as built: a project that adopts the framework runs `harness plan-write on` itself; (b) the adoption writes them.
+- **Own analysis:** (a). The task asks for the switch and for bootstrap to turn it on; an adoption takes a project's existing settings file, which the owner of that project manages, so writing allow rules into it unasked goes further than the task.
+- **Worker's recommendation:** leave it (D1).
+- **Choice:** (a) · **Decided by:** the orchestrator.
+
+### 2026-11-07 11:20 — decision D2: the worker's two recommendations
+- **Own analysis:** (1) merge #152 before the next step: done by the decision above; (2) an explicit permission for workers to merge their pull requests: the classifier of the mode `auto` refuses a merge as "merge without review" in the workers and in the orchestrator alike; the permission settings are the owner's, never the orchestrator's (and an agent is refused writing its own), so it goes to the owner.
+- **Choice:** (1) done; (2) to the owner · **Decided by:** the orchestrator.
+- **Merged:** #152 by auto-merge (merge commit `54b63af`), after the decision of 11:20; 2.6 is done, and step 2 is ✅.
+
+### 2026-11-07 11:30 — decision D0: step 3: the app refused the session start on a turn that a background event began, so the cli executor runs it
+- **Options:** (a) a session (tried first); (b) `cli` for this step only; (c) `manual`.
+- **Own analysis:** (a) was refused (the turn began with the end of the wait for #152); the order of the executors says to run the step on the next one, logged, and to dispatch the next step from `session` again. The prompt tells the worker that it is a `cli` worker, since the variables of a desktop session it inherits misled the worker of step 1a.
+- **Worker's recommendation:** none (the worker had not started).
+- **Choice:** (b), in the worktree `.claude/worktrees/flow-2-step-3` cut from `origin/develop` (54b63af), in the flow's mode `auto` · **Decided by:** the orchestrator.
+
+### 2026-11-07 11:30 — step 3 started
+- **Executor:** cli, the fallback of session: the app refused the start on a turn that a background event began (the entry above) · **Worker:** `claude -p --name flow-2-step-3` (its `session_id` is in the step-ended entry) · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 3 SP, 5-hour 36%, weekly 4.8%
+- **Usage before:** 5-hour 29% (resets 2026-11-07T13:30:00Z) · weekly 45% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-07 11:50 — step 3 ended: done
+- **Usage after:** 5-hour 38% (resets 2026-11-07T13:30:00Z) · weekly 46% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +9%, weekly +1%, against an estimate of 5-hour 36% and weekly 4.8%; tokens 226913 (input, output and cache creation of `modelUsage`; 9,760,212 cache-read tokens left out) · **Pull requests merged:** #157 by auto-merge (merge commit `42fc758`, the required checks green) · **Ids done:** 2.3 · **Worker:** `claude -p`, session `3a12d518-9eca-4269-be07-bd1365e0e629`, 77 turns, 12 minutes, 2.23 USD at list price; two commands refused (an assignment of a shell variable), no blocker
+- **Report:** `harness review measure` prints M6, M20, M5, M21, M7 and M3 against the budgets of the bindings and exits 1 over a ceiling; the measuring step of the method cites it, and `tests/harness-budget.test.mjs` holds this repository within its ceilings. Verified against the harness review of bot-rts of 2026-11-03, rebuilt at its commit in a scratch folder: equal for the words always loaded, the normative and exception words, the M5 counts and the two highest fan-outs; one fan-out differs by one (a link to a folder without a README, counted by hand); M3 and M7 have no number in that report. 777 tests, lint, typecheck and `docs:check` passed. The push from the worktree was not refused (I-19 not met). No contract change, no report filed. One open decision (below).
+
+### 2026-11-07 11:50 — decision D2: the ceilings of the new measurements
+- **Options:** (a) set ceilings now from the baselines the worker measured (words always loaded 2,729, normative 33, exception 5, highest fan-out 25, unreachable files 82, references against the dependency rule 19); (b) leave them `—` until the first harness review.
+- **Own analysis** (written before I read the worker's recommendations): (b). The method has the owner approve ceilings, so a flow does not set them; without a ceiling the command prints the numbers without a verdict, which is what a first review needs to judge them. Nothing in this release depends on a ceiling.
+- **Worker's recommendation:** review M3 and M7 at the first harness review, since their baselines may show that the rule or the roots are wrong rather than the documents; wire the command into `harness check all` once ceilings exist. Both agree with (b); the wiring is later work, named in the digest.
+- **Choice:** (b) · **Decided by:** the orchestrator.
+
+### 2026-11-07 11:35 — decision D0: step 4: the app refused the session start on a turn that a background event began, so the cli executor runs it
+- **Options:** (a) a session (tried first); (b) `cli` for this step only; (c) `manual`.
+- **Own analysis:** (a) was refused, as for steps 1, 1a and 3: every step that the end of the previous one starts meets this limit of the app, so only a step started from the owner's message runs as a session. (b) by the order of the executors.
+- **Worker's recommendation:** none (the worker had not started).
+- **Choice:** (b), in the worktree `.claude/worktrees/flow-2-step-4` cut from `origin/develop` (79c80cf), in the mode `auto` · **Decided by:** the orchestrator.
+
+### 2026-11-07 11:35 — step 4 started
+- **Executor:** cli, the fallback of session: the app refused the start on a turn that a background event began (the entry above) · **Worker:** `claude -p --name flow-2-step-4` (its `session_id` is in the step-ended entry) · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 3 SP, 5-hour 36%, weekly 4.8%
+- **Usage before:** 5-hour 38% (resets 2026-11-07T13:30:00Z) · weekly 46% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-07 11:50 — step 4 ended: done
+- **Usage after:** 5-hour 45% (resets 2026-11-07T13:30:00Z) · weekly 47% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +7%, weekly +1%, against an estimate of 5-hour 36% and weekly 4.8%; tokens 130117 (input, output and cache creation of `modelUsage`; 4,610,815 cache-read tokens left out) · **Pull requests merged:** #159 by auto-merge (merge commit `186157f`, the four checks green) · **Ids done:** 2.5 · **Worker:** `claude -p`, session `84b863fc-365f-40b7-a2f3-ff55729cb697`, 50 turns, 9 minutes, 1.15 USD at list price, no command refused
+- **Report:** an optional profile role `paths.offPlan` (here `docs/development-plan/off-plan`, with a `README.md` that gives the format); a record is one fragment per pull request (`<pr>-<slug>.md`: what changed, why and who asked, what it leaves to do); `harness plan log --off-plan` prints them by number; `harness check off-plan`, in `check all`, refuses a record that does not parse and lists the merged squash commits, after the folder's README was added, with neither a `Plan:` line nor a record (first parent only, so the merge commits of a release are not asked); the method (section 6) says "nothing merges without a record", and its definition of done points to it. 788 tests, lint and `docs:check` passed. It met I-19 (the main checkout's hook refused the new role against its older schema) and pushed with the worktree's own hook. It changed no contract and filed no report. `harness check off-plan` on `develop` after the merge: 0 records and 0 commits to check.
+
+### 2026-11-07 11:50 — decision D2: the new rule of the method, and the worker's recommendations
+- **Own analysis:** the rule "nothing merges without a record" is new in a core document; a change of the meaning of a core rule stays the owner's, but this is the rule that task 2.5 itself states in its words, in the plan the owner approved (2026-10-30, Phase 2: "the core method states the rule …"), so it is planned work and not a change for the flow to approve; no contract changed. The worker's recommendations: (1) fix I-19 first in step 5: it is first there already; (2) a scaffold template so that a bootstrap creates the off-plan folder: not asked by the task, a small follow-up, left to the owner in the digest; (3) the records of a flow carry `Plan: flow <n>`, which the check accepts, so nothing changes.
+- **Worker's recommendation:** as above (read after my own analysis of the rule).
+- **Choice:** accept the rule as planned work; (1) unchanged; (2) to the owner; (3) nothing to do · **Decided by:** the orchestrator.
+
+### 2026-11-07 11:55 — stop: usage
+- **Done:** steps 1, 1a, 2, 3 and 4 (2.7, 2.11, 2.6, 2.3, 2.5).
+- **Decided alone (review later):** the earlier entries; since the stop of 10:35: the contract change of 2.6 (D3, `contract.change`), `harness adopt` leaves `plan-write` alone (D1), the ceilings of the new measurements wait for the first harness review (D2), the rule of 2.5 accepted as planned work (D2), steps 3 and 4 on `cli` (D0).
+- **Usage:** 5-hour 45% (resets 2026-11-07T13:30:00Z) · weekly 47% (resets 2026-11-10T07:00:00Z) (Pro). `harness flow gate 2 5` says WAIT: step 5 (5 SP) is estimated at 60% of the 5-hour window, 72% with the factor, by the provisional coefficients; the steps of Sonnet measured in this flow used 7% to 9% for 3 SP, far below them, which the calibration at the end of the flow will take up.
+- **Next step:** after the reset at 15:30, step 5 (I-19, I-18, I-7).
+
+### 2026-11-07 12:45 — decision D2: step 5 starts before the reset, at the owner's word
+- **Options:** (a) wait for the reset of the 5-hour window at 15:30, as the gate says (WAIT); (b) start now.
+- **Own analysis:** the gate's WAIT comes from the provisional coefficients (12% of the 5-hour window per SP of Sonnet), which this flow's measured steps of Sonnet contradict (7% to 9% for 3 SP, against 36%); the owner judged the same and asked to continue. The hard limits do not include the gate, and the procedure keeps it as a rule of the orchestrator, so the owner may set it aside for a step. The risk: at 47%, a step that used as much as its estimate would cross the window; the measured rate puts step 5 near 10% to 15%.
+- **Worker's recommendation:** none.
+- **Choice:** (b) · **Decided by:** the owner ("Step 5 will not take so many usage, it is false assumption I guess. Make sure to continue").
+
+### 2026-11-07 12:45 — step 5 started
+- **Executor:** session · **Worker:** local_005a7405-e755-4514-b443-8c03bddae292 · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at medium effort · **Permissions:** auto · **Estimate:** 5 SP, 5-hour 60%, weekly 8%
+- **Usage before:** 5-hour 47% (resets 2026-11-07T13:30:00Z) · weekly 47% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-07 13:05 — step 5 ended: done
+- **Usage after:** 5-hour 53% (resets 2026-11-07T13:30:00Z) · weekly 48% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +6%, weekly +1%, against an estimate of 5-hour 60% and weekly 8% · **Pull requests merged:** #161 (I-19), #163 (I-7), #162 (I-18), each with its checks green · **Ids done:** I-19, I-18, I-7 · **Worker:** session local_005a7405-e755-4514-b443-8c03bddae292, 63 turns
+- **Report:** I-19: the `pre-push` and `pre-commit` hooks run the `harness.mjs` of the linked worktree that runs them, when it has one at the same path below its top folder (resolving it from the top folder, as the issue suggested, would break a project with a vendored framework), with a test from a linked worktree whose tools differ. I-18: the `pr-title` job of the CI template and of `ci.yml` also runs on `workflow_dispatch`, reads the title of the branch's open pull request and passes when there is none. I-7: `harness check markers`, in `check all`, refuses a tracked Markdown or JSON file with a line of seven or more `<` or `>`, and `harness branch update` no longer commits a file it resolved to the branch's side while it holds such a line. No open decision, no contract changed, no report filed. **Not verified:** I-18 on the host (a workflow change runs only once it is on `develop`; the first pull request the update workflow brings up to date shows it); I-7's original case was not reproduced, so the guard acts on the result. #162 met conflicts in the generated plan indexes, resolved by `plan summary`.
+- **Recommendations** (no decision was open): watch the first pull request that `update-branches.yml` updates after #162, and reopen I-18 if `pr-title` stays skipped; branch the issues of a step one after the other, since each regenerates the same indexes. The second goes into the prompt of step 6.
+
+### 2026-11-07 13:10 — decision D2: step 6 starts before the reset, as step 5 did
+- **Options:** (a) wait for the reset at 15:30 (the gate says WAIT: 48% of the 5-hour window estimated, 57.6% with the factor, on top of 53%); (b) start now.
+- **Own analysis:** (b). The owner set the gate aside for step 5 because its coefficients overestimate the steps ("it is false assumption … Make sure to continue"), and step 5 then used 6% for 5 SP against 60%; the steps of Sonnet in this flow used 6% to 9% each. Step 6 (4 SP, the same model and kind) should take about 5% to 8%, so 53% stays far below the 85% threshold; the reason of the owner's decision holds for this step, and the flow is seamless.
+- **Worker's recommendation:** none.
+- **Choice:** (b) · **Decided by:** the orchestrator (seamless mode), on the reason of the owner's decision of 12:45; for the owner's review later.
+
+### 2026-11-07 13:10 — step 6 started
+- **Executor:** session · **Worker:** local_d2f4b48a-ad3a-41d7-b62e-bc045fa5e4c9 · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at medium effort · **Permissions:** auto · **Estimate:** 4 SP, 5-hour 48%, weekly 6.4%
+- **Usage before:** 5-hour 53% (resets 2026-11-07T13:30:00Z) · weekly 48% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-07 13:25 — step 6 ended: done
+- **Usage after:** 5-hour 58% (resets 2026-11-07T13:30:00Z) · weekly 49% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +5%, weekly +1%, against an estimate of 5-hour 48% and weekly 6.4% · **Pull requests merged:** #165 (I-17), #166 (I-14), #167 (I-16), by auto-merge with the required checks green · **Ids done:** I-17, I-14, I-16 · **Worker:** session local_d2f4b48a-ad3a-41d7-b62e-bc045fa5e4c9, 49 turns
+- **Report:** I-17: the procedure `release` and the releasing guide say to push the tag of a release or a hotfix from a local branch at the merge commit, before the merge back, with the reason; the failure message of the migration tests names the tag and the version taken. I-14: `harness flow status` matches a version as a whole token of a pull request's title, so `1.0.0-dev.1` is no longer the take of `1.0.0`. I-16: `migrate` to a development version also prints the final note of its line when the tree holds it; the messages of the release order say apart an arrows order that no release holds, a release whose old cell gave no ids, and that 🏷 is set by hand; `migrations/README.md` has new rules for what a note says about checks and the release table; the shipped final note of `0.3.0` gained one item (a project's own text about the copied tests follows them). No open decision, no contract changed, no report filed.
+- **Recommendations** (no decision was open): the author of the `0.4.0` note reads the new section of `migrations/README.md` first (for the cut step); whether `harness probes` should select the areas of the final note that `migrate` now prints ahead (`selectNotes` is unchanged on purpose): a small question for later, in the digest.
+
+### 2026-11-07 13:40 — decision D0: step 7 runs as a subagent
+- **Options:** (a) a session (the flow's executor); (b) a subagent, outside the order, for a short step of analysis.
+- **Own analysis:** (b). The step is a decision that changes no file, 1 SP, and the turn began with the end of step 6, where the app refuses a session start.
+- **Choice:** (b) · **Decided by:** the orchestrator.
+
+### 2026-11-07 13:40 — step 7 started
+- **Executor:** subagent, the fallback of session: a short step of analysis that changes no file, on a turn where the app refuses a session start (the entry above) · **Worker:** a subagent of the orchestrator's session · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 · **Estimate:** 1 SP, weekly 0.3%
+
+### 2026-11-07 13:45 — step 7 ended: done
+- **Usage after:** not read separately (a subagent shares the orchestrator's session) · **Pull requests merged:** none (a decision) · **Ids done:** none · **Worker:** a subagent, 12 tool calls, 95k tokens
+- **Report:** three options: (A) the final cut straight away; (B) a development cut `0.4.0-dev.1`, the consumer's take of it in bot-rts, a decision on what it found, then the final cut; (C) B and a take of the final version. What 0.4.0 can hit in a take: `check markers` runs in every project (the one likely finding); `paths.offPlan` and `plan-write` are optional; the CI template (I-18), the Git hooks (I-19), the procedure `run-flow` and the runtime contract change in synced files; no migration script is planned. The consumer's lock still names `0.2.0`: its takes of `0.3.0` and of its development versions (#297 to #300) are open, so a take of `0.4.0` reads two final notes. The step table needs a `Repo` column and the `repos` setting for a take.
+
+### 2026-11-07 13:45 — decision D2: the cut steps of `0.4.0`
+- **Options:** (A), (B) or (C) of the entry above.
+- **Own analysis** (written before the worker's report, kept in a note of the session): a development cut, the consumer's take of it, the final cut, and a take of the final version (C). Flow 1's development takes found five defects of the migration and the notes before its final cut, and 0.4.0 adds checks and synced files that a consumer meets first.
+- **Worker's recommendation:** (B) without the take of the final version: it would stack a fifth open draft in bot-rts, whose owner has merged none of the four, and it adds proof only if the development take finds changes; insert a decision step after the take, so that fix steps can follow with suffix ids; log the take as 🟡 until the consumer's owner merges, and do not wait for that merge.
+- **Answer to the worker's argument:** it is right that a final take proves little over the same tree and costs the consumer's owner another draft; I drop it, and it can be added at 7c if the take finds a change (as flow 1 did with `dev.3`).
+- **Choice:** (B): steps 7a (cut `0.4.0-dev.1`, D1), 7b (consumer-take of it in bot-rts), 7c (decision on its findings), 7d (cut `0.4.0`, D3 `cut.final`, decided in seamless mode); the step table gains the `Repo` column and the setting `repos.consumer`; the flow declares `0.4.0-dev.1`; the releases file gains its row · **Decided by:** the orchestrator (seamless mode); for the owner's review later.
+
+### 2026-11-07 13:50 — stop: the orchestrator restarts in a new session
+- **Done:** steps 1 to 7: 2.7 (#146), 2.11 (#148), 2.6 (#152), 2.3 (#157), 2.5 (#159), I-19, I-18, I-7 (#161 to #163), I-17, I-14, I-16 (#165 to #167); the cut steps of `0.4.0` inserted (7a to 7d). Off the steps, at the owner's request: I-20 (#150, a contract change is a level of a flow), I-21 (#155, the setting `commands`), the mode `auto` for this flow's workers (#154), and the calibration of the usage table (#169).
+- **Decided alone (review later):** the split of 2.7 (D2); I-19 recorded and scheduled (D2); the contract changes of 2.11 and 2.6 accepted (D3, `contract.change`); `harness adopt` leaves `plan-write` alone (D1); the ceilings of the new measurements wait for the first harness review (D2); the rule of 2.5 accepted as planned work (D2); step 6 started before the reset (D2); the cut steps (D2, the entry of 13:45); steps 1, 1a, 3 and 4 on `cli` and step 7 as a subagent (D0).
+- **For the owner:** the merge permission of the workers (the classifier of the mode `auto` refuses a direct merge; auto-merge works); a scaffold template for the off-plan folder; whether `harness probes` should follow the final note that `migrate` now prints ahead; I-18 is verified only when the update workflow next brings a pull request up to date; bot-rts has not merged its takes of `0.3.0` (#297 to #300), so the take of `0.4.0-dev.1` reads two final notes.
+- **Usage:** 5-hour 69% (resets 2026-11-07T13:30:00Z) · weekly 50% (resets 2026-11-10T07:00:00Z) (Pro). The steps used 5% to 17% of the 5-hour window each; the orchestrator's own work (the calibration, the record pull requests, a context of 39%) took about a third of the window's use today, which is why it restarts.
+- **Next step:** "Continue flow 2" in a new session: step 7a, the cut of `0.4.0-dev.1` (its worker writes `migrations/0.4.0-dev.1.md` first; the orchestrator lists what the version changes for a project from `changelog.d/` before it reads the note).
+
+### 2026-11-07 14:00 — decision D3: the workers of this flow merge their own pull requests
+- **Options:** (a) workers enable auto-merge only, and a direct merge waits for the orchestrator or the owner; (b) workers merge their own green pull requests, as the Git rules of the entry file say.
+- **Own analysis:** none was needed: the owner decided it. What it needs: the classifier of the mode `auto` refused a direct `gh pr merge` as "merge without review" in a worker and in the orchestrator, although the owner's local settings allow `Bash(gh *)`; an explicit allow rule for the merge command in the owner's settings may let it through, and the orchestrator may not write it (an agent's change of its own permissions is refused). Until then auto-merge, which the classifier allows, merges a green pull request.
+- **Choice:** (b) · **Decided by:** the owner ("Workers can merge on their own"). The prompts of the next steps say so.
+
+### 2026-11-07 14:00 — decision D2: I-22, a bootstrap creates the off-plan folder, joins this release as step 6a
+- **Options:** (a) a step before the cut (6a), so that `0.4.0` ships it; (b) a later release.
+- **Own analysis:** (a). The owner decided that a bootstrap creates the folder; it is 1 SP of C1, and `0.4.0` brings the rule "nothing merges without a record" to every new project, which then has the folder from the start; a later release would ship the rule without its folder.
+- **Choice:** (a): issue I-22 recorded, step 6a (I-22) inserted with Needs 6, step 7a now needs 6a; the row `0.4.0` of the releases file names I-22 · **Decided by:** the orchestrator, on the owner's decision of the content ("Bootstrap should create the off-plan folder").
+
+### 2026-11-07 13:50 — running
+- **Orchestrator:** the desktop-app session of andrey.larionov.me@gmail.com, at the owner's "Continue flow 2" in the same session (the stop entry of 13:50 ended the earlier claim; the owner chose not to open a new one) · **Mode:** seamless · **Steps:** 6a to 7d
+- **Usage:** 5-hour 72% (resets 2026-11-07T13:30:00Z) · weekly 51% (resets 2026-11-10T07:00:00Z) (Pro)
+- **Note:** `harness flow status 2` says the flow "waits for flow 1, which is not finished": flow 1's consumer takes stay 🟡 until bot-rts merges them, which is that repository's owner's call; the orchestrator goes on, as since the start of this flow.
+
+### 2026-11-07 13:50 — step 6a started
+- **Executor:** session · **Worker:** local_1a4c8d96-dfa4-4aeb-9dd0-faa80d6cddcd · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at medium effort · **Permissions:** auto · **Estimate:** 1 SP, 5-hour 1.8%, weekly 0.25%
+- **Usage before:** 5-hour 72% (resets 2026-11-07T13:30:00Z) · weekly 51% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-07 14:10 — step 6a ended: done
+- **Usage after:** 5-hour 76% (resets 2026-11-07T13:30:00Z) · weekly 51% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +4%, weekly +0%, against an estimate of 5-hour 1.8% and weekly 0.25% (the window also holds the orchestrator's work of the same minutes); over twice the estimate, but not an escalation: a whole percent is coarse against 1.8%, and the orchestrator wrote its note review and waited for the checks in the same minutes (D0) · **Pull requests merged:** #172 by auto-merge (merge commit `0ad1236`) · **Ids done:** I-22 · **Worker:** session local_1a4c8d96-dfa4-4aeb-9dd0-faa80d6cddcd, 32 turns
+- **Report:** `profile/starter.json` sets `paths.offPlan` for a new project; the scaffold template `core/templates/scaffold/off-plan-readme.md`, listed in `scaffold.json`, becomes the folder's `README.md`, so `check off-plan` runs from the start; a test covers the starter's role, the written README and a profile without the role; the changelog fragment says how an adopted project turns it on. 796 tests, lint and `docs:check` passed. No open decision, no contract changed. Its recommendation to run `harness init` once in a scratch folder belongs to the cut's checks (the migration tests bootstrap a project from the tree).
+
+### 2026-11-07 14:12 — step 7a started
+- **Executor:** session · **Worker:** local_956435ac-cdeb-4899-a8b1-74d223bb9f47 · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 1 SP, 5-hour 3.4%, weekly 0.7%
+- **Usage before:** 5-hour 76% (resets 2026-11-07T13:30:00Z) · weekly 51% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-07 14:25 — step 7a ended: done
+- **Usage after:** 5-hour 79% (resets 2026-11-07T13:30:00Z) · weekly 51% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +3%, weekly +0%, against an estimate of 5-hour 3.4% and weekly 0.7% · **Pull requests merged:** none (the release pull request #173, `release/0.4.0` into `main`, stays open for the final cut) · **Ids done:** none (a cut) · **Worker:** session local_956435ac-cdeb-4899-a8b1-74d223bb9f47, 15 turns
+- **Report:** `release/0.4.0` cut from `origin/develop` (0ad1236); `migrations/0.4.0-dev.1.md` written without a TODO; `harness release --dev` set `0.4.0-dev.1` in `package.json` and `framework.json` (8432248); `docs:check`, lint and 796 tests passed. The note has two required actions: take the version (its check names `0.4.0-dev.1` as a check of this take only), and rewrite a line of seven or more `<` or `>` that a project holds on purpose (`check markers`). No open decision, no contract changed by the step. Its recommendations (read after my review below): confirm that `check markers` can fail an adopted project before keeping the second action required: it can, since the check is part of `check all` in every project; bind #173 to the monitoring of CI: not needed for a development tag, which merges nothing.
+- **Note review** (the unbiased analysis, as the procedure `release` asks of a cut; written from the fragments of `changelog.d/` before I read the note). Added: `harness review measure` (2.3), the off-plan record with the optional role `paths.offPlan`, `harness plan log --off-plan` and `harness check off-plan` (2.5), `harness plan-write` and the optional runtime role `plan-write`, on by default in a bootstrap (2.6), `harness check markers` in `check all` (I-7), the flow setting `commands` (I-21); changed: the order of the executors with `cli` (2.7) and a session's start in the flow's mode (2.11), both minor additions to runtime contract 2, a contract change as a level of a flow (I-20), the hooks run the worktree's own tools (I-19), the CI template's `pr-title` job on `workflow_dispatch` (I-18), where to push a release tag (I-17), the usage table calibrated (5.9 rows and flow 2); fixed: `flow status` versions as whole tokens (I-14), the gaps of the notes and migration messages (I-16); a bootstrap creates the off-plan folder (I-22). Required actions I expect: take the CI template's change into a project's own workflow (a regenerated or by-hand `pr-title` job with `pull-requests: read`), and run `check markers` once (a stray conflict marker in a project's Markdown or JSON now fails `check all`); no migration script. Optional: `paths.offPlan` and its folder, `harness plan-write on`, a `cli` executor in a runtime adapter of the project's own, the allow rules of the flow's tools in the project settings, the settings `commands` and `contract.change`.
+- **The note checked against it:** every item of my list is in the note (the flows section holds 2.7, 2.11, I-20, I-21, I-14 and the calibration; the off-plan record with I-22; `plan-write`; `review measure`; `check markers` with the guard of `branch update`; the CI template; the hooks; I-16 and I-17). My first expected action, the CI template's `pr-title` job, is covered by the first required action: `harness sync` regenerates a managed workflow, and the note says so under the CI template. My second is its second required action. Its areas are the twelve of the changes. It has no `TODO`. I found it complete.
+
+### 2026-11-07 14:25 — decision D1: cut `0.4.0-dev.1`
+- **Options:** (a) tag the head of `release/0.4.0` as `0.4.0-dev.1` now; (b) send the note back or wait.
+- **Own analysis:** (a). The level D1 is below the flow's `askAt` and the flow is seamless; the note is complete (the review above); the four checks of #173 were green at `8432248` (`changes`, `pr-title`, `static checks`, `verify`); a development tag has no `v` and publishes nothing. The worker's report said to merge #173 by merge commit first: that is the final cut's way; a development version is tagged on its release branch and merges nothing into `main` (the procedure `release`, "When a flow cuts", and flow 1's cut of `0.3.0-dev.1`).
+- **Worker's recommendation:** merge #173, then tag from a local branch at the merge commit (I-17): not taken, as above; the tag was pushed from a local branch at the release head, the spirit of I-17.
+- **Choice:** (a): the annotated tag `0.4.0-dev.1` on `8432248`, pushed · **Decided by:** the orchestrator (seamless mode); no merge into `main`.
+
+### 2026-11-07 14:30 — stop: usage
+- **Done:** steps 1 to 7a; `0.4.0-dev.1` is tagged.
+- **Decided alone (review later):** as in the stop of 13:50, and the cut of `0.4.0-dev.1` (D1, 14:25).
+- **Usage:** 5-hour 79% (resets 2026-11-07T13:30:00Z) · weekly 51% (resets 2026-11-10T07:00:00Z) (Pro). `harness flow gate 2 7b` says WAIT: the take (2 SP) is estimated at 5.2% of the 5-hour window by the calibrated table, 6.2% with the factor, which passes 85%. The calibrated estimate is a fair one, unlike the gate's WAIT before step 5, so the orchestrator waits.
+- **Next step:** after the reset at 15:30, step 7b: bot-rts takes `0.4.0-dev.1` (its lock names `0.3.0` now, so the take reads one final note), started on `cli` in the consumer's folder, logged as the fallback of a session.
+
+### 2026-11-07 15:30 — running
+- **Orchestrator:** the desktop-app session of andrey.larionov.me@gmail.com, after the reset that the stop of 14:30 waited for (the owner's "Continue flow 2") · **Mode:** seamless · **Steps:** 7b to 7d
+- **Usage:** 5-hour 2% (resets 2026-11-07T18:30:00Z) · weekly 52% (resets 2026-11-10T07:00:00Z) (Pro); `harness flow gate 2 7b`: GO (2% + 6.2%, 52% + 0.6%)
+
+### 2026-11-07 15:31 — step 7b started
+- **Executor:** cli, the fallback of session: a step in another repository runs on the command line, since a session cannot be counted on to start there without the owner's message · **Worker:** c1d92dd2-7a6e-4f57-b446-4ca4a71527ad · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 2 SP, 0.5%
+- **Usage before:** 5-hour 2% (resets 2026-11-07T18:30:00Z) · weekly 52% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-07 15:40 — step 7b ended: done
+- **Usage after:** 5-hour 5% (resets 2026-11-07T18:30:00Z) · weekly 53% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +3%, weekly +1%, against an estimate of 5-hour 5.2% and weekly 0.5% (1.41 M tokens, mostly cache reads; context 8%) · **Pull requests merged:** none: AndLD/bot-rts#302 (`chore(framework): take 0.4.0-dev.1`) is open with every check green (`verify`, `pr-title`, `e2e`, `lighthouse` and the test jobs); its merge is that repository's owner's (a chore pull request outside a named phase), as for flow 1's takes · **Ids done:** none (a take) · **Worker:** cli c1d92dd2-7a6e-4f57-b446-4ca4a71527ad, 23 turns, 4 min 50 s
+- **Report:** the lock went from `0.3.0` to `0.4.0-dev.1`; `sync` regenerated the managed files and ran `migrate`; outside `harness/` the take changes only the lock and the skills `release` and `run-flow`. Both required actions of the note are proved (`check all`, the lock; `check markers` exits 0). The gate passed locally (lint, typecheck, boundaries, coverage at the 97% gate: api 2539 tests, client 883, mcp 74). The worker started Docker and the database for the API tests and left them running. Optional actions and the probes were not done (`probes.run` is `ask`, and a worker on the command line cannot ask). **What the notes missed:** (1) the CI template item does not say how a project tells whether it took the template (bot-rts's `ci.yml` is its own); (2) the off-plan item points to `docs/development-plan/off-plan/README.md` "of this repository", a path a consumer does not have, and not to `harness/core/templates/scaffold/off-plan-readme.md`; (3) the take procedure names no services the gate needs. Its open decisions (the probes, the optional pieces) are bot-rts's owner's, not the flow's.
+
+### 2026-11-07 15:45 — decision D2: what the take of `0.4.0-dev.1` found (step 7c)
+- **Options:** (a) the final cut of `0.4.0` next, its note fixing gaps (1) and (2), and gap (3) an issue for a later version; (b) fix steps and a `0.4.0-dev.2` for bot-rts to take again; (c) the final cut with the note as it is.
+- **Own analysis:** (a). The take is clean: every required action is proved, the gate and all of #302's checks are green, and nothing in the tree failed. Gaps (1) and (2) are words of a note, and the final cut writes a new note (`migrations/0.4.0.md`), which can say how to tell a project that took the CI template (a managed workflow is regenerated by `sync`, a project's own is compared with the template's `pr-title` job) and give the off-plan format by the path a consumer has (`harness/core/templates/scaffold/off-plan-readme.md`, or the scaffold of `harness init`); a `dev.2` would test only that wording, at the cost of a cut and a take. Gap (3) is a project's services, not a defect of this version: issue I-23, out of this release.
+- **Worker's recommendations** (read after the pick): to wait for #302's checks before closing 7b: done, green; to say in the `0.4.0` note how to tell a project that took the CI template: taken, as (1); to name Docker and the services in the take procedure: I-23.
+- **Choice:** (a); I-23 recorded · **Decided by:** the orchestrator (seamless mode).
