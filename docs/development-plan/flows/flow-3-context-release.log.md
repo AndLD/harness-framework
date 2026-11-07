@@ -26,3 +26,9 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis:** (a). I-23 (the take procedure names no services the gate needs), I-24 (the tests fail on the tree that `harness release` leaves before its commit) and I-25 (the list of notes in `migrations/README.md` stops at `0.2.0`) are 1 SP of C1 each, found by flow 2's take and cut; each costs every later take or cut a little, and `0.5.0` is the next release.
 - **Worker's recommendation:** none (no worker is involved).
 - **Choice:** (a): step 8a (I-23, I-24, I-25, 3 SP, C1) inserted, step 9 now needs 8a; the row `0.5.0` of the releases file names the three issues · **Decided by:** the owner ("I agree with your recommendations go apply them", on the orchestrator's advice after flow 2).
+
+### 2026-11-07 16:50 — decision D2: I-26 joins step 8a
+- **Options:** (a) add I-26 to step 8a; (b) a later release.
+- **Own analysis:** (a). The take of `0.4.0` in bot-rts (AndLD/bot-rts#303) found that `harness plan-write on` writes `.claude/settings.json` in a form the project's Prettier check rejects; every project that turns the switch on and checks formatting meets it, and it is 1 SP of C1, the same kind as the other issues of 8a.
+- **Worker's recommendation:** report the defect upstream; this repository is upstream, so it is recorded here as I-26.
+- **Choice:** (a): step 8a is I-23 to I-26, 4 SP; the row `0.5.0` of the releases file names I-26 · **Decided by:** the orchestrator, under the owner's approval of the issues of flow 2 ("I agree with your recommendations go apply them").
