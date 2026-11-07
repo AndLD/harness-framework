@@ -142,7 +142,7 @@ test('the settings hold valid levels, executors, reuse limits, thresholds and a 
   const problems = one(
     flowText({
       settings:
-        '{ "askAt": "D0", "levels": { "cut.final": "D9" }, "executor": "robot", "reuse": "maybe", "reuseLimits": { "context": 0, "steps": 1.5, "cacheMinutes": -1 }, "commits": "never", "usage": { "stopAt": { "fiveHour": 0, "weekly": 120 } }, "repos": { "home": "../elsewhere" } }'
+        '{ "askAt": "D0", "levels": { "cut.final": "D9" }, "executor": "robot", "reuse": "maybe", "reuseLimits": { "context": 0, "steps": 1.5, "cacheMinutes": -1 }, "commits": "never", "commands": "heredocs", "usage": { "stopAt": { "fiveHour": 0, "weekly": 120 } }, "repos": { "home": "../elsewhere" } }'
     })
   ).join('\n')
   for (const part of [
@@ -154,6 +154,7 @@ test('the settings hold valid levels, executors, reuse limits, thresholds and a 
     /reuse limit steps must be a whole number/,
     /reuse limit cacheMinutes must be a number of minutes/,
     /setting commits "never"/,
+    /setting commands "heredocs"/,
     /threshold fiveHour/,
     /threshold weekly/,
     /the home repository is "\."/

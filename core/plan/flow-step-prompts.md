@@ -4,7 +4,7 @@
 
 The standard wording that `harness flow prompt <n> <step>` renders for the worker of a step: the header, the text of the step's kind, the Git wording, where to stop and
 the step report, each written once here. The tool reads this file by the headings of its sections (`header`, `tasks`, `cut`, `consumer-take`, `triage-fix`,
-`decision`, `external`, `git`, `stop`, `report`) and fills the words in braces from the flow, the step and the profile; a line whose word has no value is left out. A `custom` step
+`decision`, `external`, `commands`, `git`, `stop`, `report`) and fills the words in braces from the flow, the step and the profile; a line whose word has no value is left out. A `custom` step
 has no section of its own: its prompt is the section `## Step <#>` of the flow file, and it still gets the sections `stop` and `report`. Change the wording here, in one
 place, and every flow takes it.
 
@@ -53,6 +53,14 @@ Creating, answering or closing a report on the host is not yours unless the flow
 
 This step is a decision, not a build. Change no file. Write the options for the question in the scope, what each costs and what it changes for a project, and the level you
 suggest for the decision (D0 to D4 of the procedure `run-flow`). Put your recommendation last, under the heading "Recommendations", so that the orchestrator can write its own pick before it reads yours.
+
+## commands
+
+<!-- Only when the flow's setting `commands` is `plain`. -->
+Run plain commands, so that a strict permission mode of the agent runtime can check each one before it runs:
+- Write and change files with the runtime's edit and write tools, never by a heredoc or a redirection into a file.
+- No nested commands (`$(…)`, backticks) and no subshells.
+- Run independent commands as parallel calls of one message, not as one line joined by `&&`, `;` or a pipe.
 
 ## git
 
