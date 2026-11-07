@@ -308,3 +308,20 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Options:** (a) a step before the cut (6a), so that `0.4.0` ships it; (b) a later release.
 - **Own analysis:** (a). The owner decided that a bootstrap creates the folder; it is 1 SP of C1, and `0.4.0` brings the rule "nothing merges without a record" to every new project, which then has the folder from the start; a later release would ship the rule without its folder.
 - **Choice:** (a): issue I-22 recorded, step 6a (I-22) inserted with Needs 6, step 7a now needs 6a; the row `0.4.0` of the releases file names I-22 · **Decided by:** the orchestrator, on the owner's decision of the content ("Bootstrap should create the off-plan folder").
+
+### 2026-11-07 13:50 — running
+- **Orchestrator:** the desktop-app session of andrey.larionov.me@gmail.com, at the owner's "Continue flow 2" in the same session (the stop entry of 13:50 ended the earlier claim; the owner chose not to open a new one) · **Mode:** seamless · **Steps:** 6a to 7d
+- **Usage:** 5-hour 72% (resets 2026-11-07T13:30:00Z) · weekly 51% (resets 2026-11-10T07:00:00Z) (Pro)
+- **Note:** `harness flow status 2` says the flow "waits for flow 1, which is not finished": flow 1's consumer takes stay 🟡 until bot-rts merges them, which is that repository's owner's call; the orchestrator goes on, as since the start of this flow.
+
+### 2026-11-07 13:50 — step 6a started
+- **Executor:** session · **Worker:** local_1a4c8d96-dfa4-4aeb-9dd0-faa80d6cddcd · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at medium effort · **Permissions:** auto · **Estimate:** 1 SP, 5-hour 1.8%, weekly 0.25%
+- **Usage before:** 5-hour 72% (resets 2026-11-07T13:30:00Z) · weekly 51% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-07 14:10 — step 6a ended: done
+- **Usage after:** 5-hour 76% (resets 2026-11-07T13:30:00Z) · weekly 51% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +4%, weekly +0%, against an estimate of 5-hour 1.8% and weekly 0.25% (the window also holds the orchestrator's work of the same minutes); over twice the estimate, but not an escalation: a whole percent is coarse against 1.8%, and the orchestrator wrote its note review and waited for the checks in the same minutes (D0) · **Pull requests merged:** #172 by auto-merge (merge commit `0ad1236`) · **Ids done:** I-22 · **Worker:** session local_1a4c8d96-dfa4-4aeb-9dd0-faa80d6cddcd, 32 turns
+- **Report:** `profile/starter.json` sets `paths.offPlan` for a new project; the scaffold template `core/templates/scaffold/off-plan-readme.md`, listed in `scaffold.json`, becomes the folder's `README.md`, so `check off-plan` runs from the start; a test covers the starter's role, the written README and a profile without the role; the changelog fragment says how an adopted project turns it on. 796 tests, lint and `docs:check` passed. No open decision, no contract changed. Its recommendation to run `harness init` once in a scratch folder belongs to the cut's checks (the migration tests bootstrap a project from the tree).
+
+### 2026-11-07 14:12 — step 7a started
+- **Executor:** session · **Worker:** local_956435ac-cdeb-4899-a8b1-74d223bb9f47 · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 1 SP, 5-hour 3.4%, weekly 0.7%
+- **Usage before:** 5-hour 76% (resets 2026-11-07T13:30:00Z) · weekly 51% (resets 2026-11-10T07:00:00Z)
