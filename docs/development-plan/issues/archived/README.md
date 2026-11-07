@@ -28,4 +28,5 @@ It is read to find out whether a new report is a problem that was fixed already.
 | [I-19](./I-19.md) | The pre-push hook of a linked worktree runs the main checkout's tools, so it checks the worktree's generated files against the wrong `core/` | Git rules | 1 | — |
 | [I-20](./I-20.md) | A flow cannot decide a change of the meaning of a contract at a level: it stops for the owner whatever the mode | procedures | 1 | — |
 | [I-21](./I-21.md) | A flow cannot ask its workers for plain commands, which a strict permission mode would let through | procedures | 1 | — |
+| [I-22](./I-22.md) | A bootstrap does not create the folder of the off-plan record | bootstrap and sync | 1 | — |
 <!-- issue-queue:end -->

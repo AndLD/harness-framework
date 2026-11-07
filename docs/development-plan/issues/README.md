@@ -14,5 +14,4 @@ A request for something new, which is not a defect, is an item of the [backlog](
 <!-- issue-queue:start -->
 | Issue | Title | Area | Agent | SP | Status | Reported |
 | ----- | ----- | ---- | ----- | -- | ------ | -------- |
-| [I-22](./I-22.md) | A bootstrap does not create the folder of the off-plan record | bootstrap and sync | C1 | 1 | ⬜ | — |
 <!-- issue-queue:end -->
