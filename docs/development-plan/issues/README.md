@@ -14,6 +14,5 @@ A request for something new, which is not a defect, is an item of the [backlog](
 <!-- issue-queue:start -->
 | Issue | Title | Area | Agent | SP | Status | Reported |
 | ----- | ----- | ---- | ----- | -- | ------ | -------- |
-| [I-27](./I-27.md) | A project cannot give its flows a default for the workers' permissions | plan format | C2 | 2 | ⬜ | — |
 | [I-30](./I-30.md) | The bootstrap does not ask for the flows' default permissions | bootstrap and sync | C2 | 2 | ⬜ | — |
 <!-- issue-queue:end -->

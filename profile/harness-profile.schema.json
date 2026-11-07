@@ -366,6 +366,27 @@
       },
       "additionalProperties": false
     },
+    "flows": {
+      "type": "object",
+      "description": "The defaults of the flows of the plan (issue I-27), for a project with `paths.flows`. A flow's own setting of the same name wins; the core names no value, since the words are the runtime's.",
+      "default": {},
+      "properties": {
+        "permissions": {
+          "type": "object",
+          "description": "What the workers of a flow may do, when the flow's settings block has no `permissions` of its own: the same shape (`{ \"mode\": \"<a mode of the runtime>\", \"allow\": [\"<a tool by name>\"] }`, in the runtime's own words). Absent: a flow without the setting starts its workers in the runtime's strictest mode. What a worker may do is the owner's decision, so no adapter sets it.",
+          "properties": {
+            "mode": { "type": "string", "description": "A permission mode of the agent runtime." },
+            "allow": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Tools the workers may use without asking, by name."
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
     "reports": {
       "type": "object",
       "description": "Reports from users on the repository host (task 3.16): whether an agent takes them in, and whether a consuming project sends the defects it finds in the framework upstream. Both need a host adapter with the `reports` role; a host without it keeps both switches `off`. A local, ignored file, `harness-profile.local.json`, may override these three values at once without a pull request (for example `{ \"reports\": { \"intake\": \"off\" } }` pauses the intake when reports flood in).",

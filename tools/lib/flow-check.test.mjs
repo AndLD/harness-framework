@@ -1,7 +1,10 @@
 // `harness flow check` (task 5.4): a valid flow passes, and each check holds with a planted defect.
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { ENTRY_HEADING, flowProblems, logHeadings } from './flow-check.mjs'
+import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { ENTRY_HEADING, checkFlows, flowProblems, logHeadings, permissionsProblems } from './flow-check.mjs'
 import { flowsTable, parseFlow, FLOWS_END, FLOWS_START } from './flows.mjs'
 
 const ROWS = [
@@ -246,6 +249,44 @@ test('the permissions setting is an object with a mode name and a list of tools 
     /the permissions allow must be a list of tools by name/
   )
   assert.match(problems('{ "permissions": { "allow": ["Edit", ""] } }'), /the permissions allow must be a list/)
+})
+
+test('the profile role flows.permissions is checked like the setting, under its own name (issue I-27)', () => {
+  assert.deepEqual(permissionsProblems(undefined, 'the profile role flows.permissions'), [])
+  assert.deepEqual(
+    permissionsProblems({ mode: 'auto', allow: ['Bash(git *)'] }, 'the profile role flows.permissions'),
+    []
+  )
+  assert.deepEqual(permissionsProblems('auto', 'the profile role flows.permissions'), [
+    'the profile role flows.permissions is not an object ({ "mode", "allow" })'
+  ])
+  assert.deepEqual(permissionsProblems({ mode: '', allow: [1] }, 'x'), [
+    'the permissions mode must be a name of the runtime',
+    'the permissions allow must be a list of tools by name'
+  ])
+})
+
+test('`harness check flows` reports a malformed profile role flows.permissions (issue I-27)', () => {
+  const root = mkdtempSync(join(tmpdir(), 'flows-role-'))
+  mkdirSync(join(root, 'flows'))
+  writeFileSync(join(root, 'flows', 'README.md'), `${FLOWS_START}\nNo flow yet.\n${FLOWS_END}\n`)
+  const check = (flows) =>
+    checkFlows({
+      root,
+      profile: {
+        paths: { flows: 'flows', plan: 'plan', phases: 'plan/phases', issues: 'plan/issues' },
+        ...(flows ? { flows } : {})
+      }
+    }).problems
+  assert.deepEqual(
+    check(undefined).filter((problem) => /flows\.permissions/.test(problem)),
+    []
+  )
+  assert.deepEqual(
+    check({ permissions: { mode: 'auto' } }).filter((problem) => /flows\.permissions/.test(problem)),
+    []
+  )
+  assert.match(check({ permissions: 'auto' }).join('\n'), /the profile role flows\.permissions is not an object/)
 })
 
 test('a step started on another executor than its plan names the fallback and its reason, so a switch to the command line shows (task 2.7)', () => {

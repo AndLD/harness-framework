@@ -49,6 +49,12 @@
     "changelogFragments": "changelog.d",
     "frameworkDir": "."
   },
+  "flows": {
+    "permissions": {
+      "mode": "auto",
+      "allow": ["Bash(git *)", "Bash(gh *)", "Bash(npm *)", "Bash(node *)", "Bash(sed *)", "Bash(ls *)"]
+    }
+  },
   "plan": {
     "taskId": "`<phase>.<number>`, with an optional letter suffix (`2.1`, `2.1a`)",
     "phasesWithFragments": "every phase: each task writes its own log `<task id>.log.md` beside its task file in the phase folder (template: `core/plan/task-log-template.md`); a phase of the older layout keeps its fragments in `work-logs/phase-<n>/`",

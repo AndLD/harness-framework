@@ -307,6 +307,36 @@ test("dispatch passes the flow's permissions to the means and says what a worker
   assert.doesNotMatch(dispatch({}, { session: executor }), /Permissions:/)
 })
 
+test("a flow without its own permissions takes the project's default of the profile role flows.permissions; the flow's own setting wins (issue I-27)", () => {
+  const session = {
+    ...executor,
+    start: (request) => [{ via: 'cli', command: ['run', JSON.stringify(request.permissions ?? null), PROMPT_SLOT] }],
+    permissions: ({ permissions }) => (permissions ? `allowed: ${permissions.mode}` : 'none set')
+  }
+  const dispatch = (settings, flows) =>
+    dispatchStep({
+      flow: flowOf(STEPS, settings),
+      step: STEPS[0],
+      profile: { adapters: { runtimes: ['rt'] }, ...(flows ? { flows } : {}) },
+      runtimes: {
+        rt: {
+          manifest: { roles: { executors: { module: 'm', export: 'e' } } },
+          modules: { m: { e: () => ({ session }) } }
+        }
+      },
+      logText: '',
+      now: '2026-11-07 10:00',
+      harness: 'h'
+    }).lines.join('\n')
+  const role = { permissions: { mode: 'auto', allow: ['Bash(git *)'] } }
+  const defaulted = dispatch({}, role)
+  assert.match(defaulted, /Permissions: allowed: auto\./)
+  assert.match(defaulted, /run '\{"mode":"auto","allow":\["Bash\(git \*\)"\]\}' /)
+  assert.match(dispatch({ permissions: { mode: 'plan' } }, role), /Permissions: allowed: plan\./)
+  assert.match(dispatch({}), /Permissions: none set\./)
+  assert.match(dispatch({}, {}), /Permissions: none set\./)
+})
+
 // A runtime with the three executors of the order (task 2.7): a session, a worker on the command line, and the manual one of the framework
 const cli = {
   ...executor,

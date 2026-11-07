@@ -23,6 +23,9 @@ export const OPERATIONS = Object.freeze(['start', 'continue', 'report', 'context
  * the reuse rule does not compare accounts.
  */
 export const OPTIONAL_OPERATIONS = Object.freeze(['account'])
+/** What the workers of a flow may do (issue I-27): the flow's own `permissions` setting, else the project's default (the profile role `flows.permissions`), else nothing set. */
+export const workerPermissions = (flow, profile) => flow.settings.permissions ?? profile?.flows?.permissions
+
 /** The optional executor operation that says in one line what a worker will be allowed to do under the flow's `permissions` setting (a text, not means). */
 export const PERMISSIONS_OPERATION = 'permissions'
 /** The limits of `reuse: auto` when the flow's `reuseLimits` leaves one out: the worker's context in percent of its window, and the steps it has run. */
@@ -449,7 +452,7 @@ export function dispatchStep({
   const promptCommand = `${harness} flow prompt ${flow.number} ${step.id}`
   const repo = repoPaths[step.repo] ?? '.'
   const name = `flow-${flow.number}-step-${step.id}`
-  const permissions = flow.settings.permissions
+  const permissions = workerPermissions(flow, profile)
   const startFresh = (text, executor = picked.executor) => {
     const split = splitModel(text)
     return executor.start({
