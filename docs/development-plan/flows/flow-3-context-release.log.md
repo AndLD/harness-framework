@@ -210,3 +210,33 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Options:** for each, take or leave.
 - **Own analysis:** wait for #193 before step 7: taken. Look at the prompt of step 7 for the `delegate` paragraph: taken, the orchestrator reads it before the dispatch.
 - **Choice:** as above · **Decided by:** the orchestrator.
+
+### 2026-11-07 18:55 — decision D0: step 7 runs on the command line
+- **Options:** (a) the cli executor, the fallback of the session; (b) wait for the owner's message to start a session.
+- **Own analysis:** (a). This turn began with a background task's end, on which the app refuses a session start (as for step 4); the procedure says not to retry or wait. A fresh worker, since the model changes to Opus. Its worktree links `node_modules` from the main checkout (step 4's worker found Prettier missing in a bare worktree).
+- **Choice:** (a) · **Decided by:** the orchestrator.
+
+### 2026-11-07 18:55 — step 7 started
+- **Executor:** cli, the fallback of session: the app refuses a session start on a turn that a background task's end began · **Worker:** `claude -p` named flow-3-step-7, in a detached worktree of `origin/develop` · **Account:** nil10035@gmail.com · **Model:** Opus 5.5 at high effort · **Permissions:** auto · **Estimate:** 2 SP, 5-hour 40%, weekly 5.4%
+- **Usage before:** 5-hour 33% (resets 2026-11-07T20:10:00Z) · weekly 81% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-07 19:00 — step 7 ended: done
+- **Usage after:** 5-hour 39% (resets 2026-11-07T20:10:00Z) · weekly 82% (resets 2026-11-08T21:00:00Z) · **Measured:** 5-hour +6%, weekly +1%, against an estimate of 5-hour 40% and weekly 5.4% (the provisional Opus coefficient is far too high: 1.82 M cache-read and 21k output tokens, $1.48 at list price) · **Pull requests merged:** #195 (6.7) · **Ids done:** 6.7 · **Worker:** cli e95316dc-d9e0-4021-b8f4-28346741bdde
+- **Report** (in the schema, read whole from the `result`): 6.7 decided "do not build" on the audit's numbers: the rule documents are 7.2% of the tool results of flows 1 to 3 (48k of 667k tokens), so briefs and `harness docs get` (5+ SP) would save 3.9% at most; recorded in the phase log (2026-11-07, "briefs of the documents: not built"); no task added.
+
+### 2026-11-07 19:00 — decision D1: the briefs of the documents are not built
+- **Options:** (a) do not build them; (b) build the briefs and `harness docs get` (5+ SP, a task of a later release).
+- **Own analysis** (written before the worker's recommendations): (a). Task 6.7 exists to decide on the numbers, and 7.2% of tool results with a ceiling of 3.9% saved is below what 6.2 to 6.6 already took; 5 SP for it is not worth it now. The figures stay in the phase log, so the question can be reopened on a later audit.
+- **Worker's recommendation:** (a), D1.
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode).
+
+### 2026-11-07 19:00 — decision D1: the recommendations of step 7
+- **Options:** for each, take, hand on, or leave.
+- **Own analysis:** the larger file sinks (code: 126k, `tools/harness.mjs` read 57 times; the plan's own files: 68k, read whole): handed to step 8 (6.8), whose measurement says whether the budgets of 6.4 cut them. The orchestrator's session id in each flow's log: this desktop session cannot read its own id; left, and named in the digest for the owner.
+- **Choice:** as above · **Decided by:** the orchestrator.
+
+### 2026-11-07 19:01 — decision D2: task 6.8 is split, and its take and measurement (6.9) come after the cut
+- **Options:** (a) split 6.8: 6.8 the delivery (distribution, `init`, `sync` and `migrate`, the notes as fragments, a consumer fixture; 2 SP) in step 8, and a new 6.9 (the first consumer's take and the measured fall; 1 SP) that step 9 inserts after the cut and the take; (b) run 6.8 whole in step 8 and let its worker cut a development version; (c) run step 8 and leave 6.8 open after it.
+- **Own analysis:** (a). 6.8 asks for the consumer's take "as a flow step", but nothing of `0.5.0` is cut yet, and the cut is a step of its own that step 9 inserts; (b) puts a cut inside a tasks step, and (c) leaves step 8 never done, so 8a and 8b would wait for it. The split keeps the phase at 24 SP and gives the measurement its real input, the take of the cut version.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (a): 6.8 and 6.9 in the phase, step 8 is 2 SP, step 9 inserts 6.9 after the take, the row `0.5.0` of the releases file names 6.9 · **Decided by:** the orchestrator (seamless mode).
