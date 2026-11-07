@@ -24,7 +24,7 @@ is updated in the change that starts or finishes it.
 <!-- plan-summary:end -->
 
 <!-- plan-issues:start -->
-**Issue queue** (not a phase; its size is not in the totals above): [1 open](./issues/README.md), 1 SP; 21 archived.
+**Issue queue** (not a phase; its size is not in the totals above): [3 open](./issues/README.md), 3 SP; 21 archived.
 <!-- plan-issues:end -->
 
 <!-- plan-backlog:start -->
