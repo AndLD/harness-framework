@@ -12,7 +12,10 @@ The security methodology of Phase 2, in the release `0.6.0` (named by the owner 
 {
   "mode": "seamless",
   "askAt": "D2",
-  "permissions": { "mode": "acceptEdits", "allow": ["Bash(git *)", "Bash(gh *)", "Bash(npm *)", "Bash(node *)", "Bash(sed *)", "Bash(ls *)"] }
+  "repos": {
+    "consumer": { "remote": "AndLD/bot-rts", "role": "consumer", "kinds": ["consumer-take"] }
+  },
+  "permissions": { "mode": "auto", "allow": ["Bash(git *)", "Bash(gh *)", "Bash(npm *)", "Bash(node *)", "Bash(sed *)", "Bash(ls *)"] }
 }
 ```
 
