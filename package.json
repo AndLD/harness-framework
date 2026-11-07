@@ -1,6 +1,6 @@
 {
   "name": "harness-framework",
-  "version": "0.5.0-dev.1",
+  "version": "0.5.0",
   "private": true,
   "license": "MIT",
   "description": "A framework for the harness of a software project: rules, method documents, checks, Git hooks and agent-runtime configuration.",
