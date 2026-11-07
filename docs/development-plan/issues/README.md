@@ -15,4 +15,6 @@ A request for something new, which is not a defect, is an item of the [backlog](
 | Issue | Title | Area | Agent | SP | Status | Reported |
 | ----- | ----- | ---- | ----- | -- | ------ | -------- |
 | [I-23](./I-23.md) | The take of a version names no services that the project's gate needs | procedures | C1 | 1 | ⬜ | — |
+| [I-24](./I-24.md) | The tests fail on the tree that `harness release` leaves before its commit | checks | C1 | 1 | ⬜ | — |
+| [I-25](./I-25.md) | The list of notes in `migrations/README.md` is written by hand and stops at `0.2.0` | bootstrap and sync | C1 | 1 | ⬜ | — |
 <!-- issue-queue:end -->
