@@ -33,7 +33,7 @@ Phase 6 (context optimization for agents and consumers), in the release `0.5.0` 
 | 7 | tasks | 6.7 | 6 | — | 2 | 5.4% | C3 | ✅ |
 | 8 | tasks | 6.8 | 7 | — | 2 | 3.2% | C2 | ✅ |
 | 8a | tasks | I-23, I-24, I-25, I-26, I-28, I-29 | 8 | — | 6 | 1.5% | C1 | ✅ |
-| 8b | tasks | I-27 | 8a | — | 2 | 0.5% | C2 | ⬜ |
+| 8b | tasks | I-27 | 8a | — | 2 | 0.5% | C2 | ⏸ |
 | 9 | decision | the cut step of `0.5.0`, the consumer's take and 6.9 (the measurement) to insert after this one (the version is named by the owner, 2026-11-05) | 8b | — | 1 | 0.3% | — | ⬜ |
 
 State: ⬜ not started · 🟡 running · ⏸ waits for the owner · ⛔ blocked · ✅ done. The State column is a cache of the repository's state; the log is the record.
