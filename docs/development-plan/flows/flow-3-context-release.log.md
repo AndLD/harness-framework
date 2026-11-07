@@ -75,3 +75,24 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis:** (a). I-28 (a superseded take reads ⬜, so a flow after a flow with takes looks blocked) and I-29 (the gate's `--plan` knows `Pro` but not `pro`, and `estimate` takes none) each cost every orchestrator a detour at the claim; they are 1 SP of C1, the kind of step 8a, and `0.5.0` is the next release. Step 8a is now 6 SP.
 - **Worker's recommendation:** none (no worker is involved).
 - **Choice:** (a): I-28 and I-29 recorded, step 8a holds them, the row `0.5.0` of the releases file names them · **Decided by:** the orchestrator (seamless mode).
+
+### 2026-11-07 17:36 — step 1 ended: done
+- **Usage after:** 5-hour 10% (resets 2026-11-07T20:10:00Z) · weekly 78% (resets 2026-11-08T21:00:00Z) · **Measured:** 5-hour +8%, weekly +1%, against an estimate of 5-hour 9% and weekly 1.3% · **Pull requests merged:** #183 (6.1), merged by the host's auto-merge once its required checks pass · **Ids done:** 6.1 · **Worker:** session local_a78ad07c-2b51-4fa1-b1c3-868ec0ad4ae3, 58 turns, context 19% after the step
+- **Report:** a new optional role of the runtime contract, `transcripts` (`locate()` the sessions of a flow, `parse()` one into neutral records), filled by the Claude Code adapter, in the manifest schema, `core/contracts/runtime.md` and the conformance suite; `harness flow audit <n> [--orchestrator <id>] [--top <n>] [--json]`, which finds the workers in the "step started" entries; the baseline of flow 1 in the phase log: 1,137k tokens into context over 14 sessions, tool results 41% (shell commands 85% of them: `cat`, `grep`, `git show`, `sed`, `git fetch`), the orchestrator's peak context 485k, a median of 28.6k tool-result tokens a step and an aim of at most 19.1k; step 1f counted by hand agrees with the audit. 809 tests, `docs:check`, lint and typecheck pass locally. Deviations: no migration note (written at the cut) and no consumer fixture (6.8's); a changelog fragment; the orchestrator's id is a flag, since the log does not record it.
+
+### 2026-11-07 17:38 — decision D1: the aim of the phase
+- **Options:** (a) keep the phase's default, a third fewer tool-result tokens per comparable step (at most 19.1k against the median of 28.6k); (b) name another figure.
+- **Own analysis** (written before the worker's recommendations): (a). The phase sets the third as its default and leaves another figure to the owner; the baseline gives no reason to move it, and 6.8 measures against it.
+- **Worker's recommendation:** (a), the same.
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode).
+
+### 2026-11-07 17:38 — decision D3: the runtime contract gains the optional role `transcripts` (`contract.change`)
+- **Options:** (a) accept the role as built in #183; (b) refuse it and revert, and audit from a tool outside the contract.
+- **Own analysis** (written before the worker's recommendations): (a). Task 6.1 needs the transcripts of a flow, and only the runtime knows where they are, so the core can read them only through the runtime adapter (design §4); the role is optional and additive, so every adapter conforms as it is, a runtime without it says "the audit cannot run", and the change is a minor version's, which `0.5.0` is. This entry is the approval that #183 needs as a change of the meaning of a contract (the procedure `run-flow`); #183 may merge before it, so the step's record cites it.
+- **Worker's recommendation:** named as a decision of the kind `contract.change`, no pick.
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode, `contract.change` D3).
+
+### 2026-11-07 17:39 — decision D1: the worker's recommendations
+- **Options:** for each, take it now, hand it to its step, or leave it.
+- **Own analysis:** the orchestrator's session id in the "running" entry: taken from now on where the session can read it (this one cannot read its own id; the audit takes `--orchestrator`). Hook output and whole-document reads as the first cuts of 6.2: handed to step 2 by its report, which the worker of step 2 reads in the phase log. An earlier restart of the orchestrator in 6.5 (in flow 1 it re-read 163M tokens from the cache): handed to step 5, the task's own subject.
+- **Choice:** as above · **Decided by:** the orchestrator.
