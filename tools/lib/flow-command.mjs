@@ -12,13 +12,14 @@ import { flowTruth, gatherFacts, logEntries } from './flow-status.mjs'
 import { HOME_REPO, stepById } from './flow-steps.mjs'
 import { readFlowsOf } from './flows.mjs'
 import { auditCommand } from './flow-audit.mjs'
+import { reportCheckCommand } from './step-report.mjs'
 import { calibrateCommand, dispatchUsageLines, usageCommand } from './flow-usage-command.mjs'
 import { repoRows, localRepoPaths } from './flow-repos.mjs'
 import { hostModule } from './host.mjs'
 import { inFramework, LOCK_FILE, readLock } from './lock.mjs'
 
 const USAGE =
-  'usage: harness flow check | status <n> | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--account <id>] [--at <YYYY-MM-DD HH:MM>] | audit <n> [--orchestrator <id>[,<id>]] [--top <n>] [--json] | calibrate [--min <n>] [--subscription <id>] | estimate <n> | gate <n> <step> [--five-hour <pct>[@<reset>]] [--weekly <pct>[@<reset>]] [--cost <usd>] [--plan <name>] | sample <n> <flow-start|step-start|step-end|flow-end> [<step>] [the reading flags] [--tokens <n>] [--model <name>] [--start cold|warm]'
+  'usage: harness flow check | status <n> | next <n> | prompt <n> <step> | dispatch <n> <step> [--context <percent>] [--account <id>] [--at <YYYY-MM-DD HH:MM>] | audit <n> [--orchestrator <id>[,<id>]] [--top <n>] [--json] | report-check <file> | calibrate [--min <n>] [--subscription <id>] | estimate <n> | gate <n> <step> [--five-hour <pct>[@<reset>]] [--weekly <pct>[@<reset>]] [--cost <usd>] [--plan <name>] | sample <n> <flow-start|step-start|step-end|flow-end> [<step>] [the reading flags] [--tokens <n>] [--model <name>] [--start cold|warm]'
 
 const pad = (number) => String(number).padStart(2, '0')
 /** The time now as the log writes it, `YYYY-MM-DD HH:MM`, local. */
@@ -145,6 +146,7 @@ export function flowCommand({ words, flags = {}, root, profile, git, lockOf, tem
     const { problems, message } = checkFlowsWithUsage({ root, profile, runtimes })
     return { lines: [message, ...problems], code: problems.length ? 1 : 0 }
   }
+  if (action === 'report-check') return reportCheckCommand({ words: words.slice(1) })
   if (action === 'calibrate' && words.length === 1) return calibrateCommand({ flags, root, profile, runtimes })
   if (action === 'audit' && words.length === 2 && /^\d+$/.test(number ?? ''))
     return auditCommand({ number, flags, root, profile, runtimes })

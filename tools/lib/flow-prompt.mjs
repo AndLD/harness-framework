@@ -5,6 +5,7 @@ import { join } from 'node:path'
 import { inFramework } from './lock.mjs'
 import { repoWords } from './flow-repos.mjs'
 import { stepIds } from './flow-status.mjs'
+import { REPORT_CAP } from './step-report.mjs'
 
 export const PROMPT_TEMPLATE = 'core/plan/flow-step-prompts.md'
 const WORD = /\{(\w+)\}/g
@@ -81,6 +82,7 @@ export function renderPrompt({ flow, step: id, facts, template, values, repoPath
     step.kind === 'custom' ? null : step.kind,
     ...(flow.settings.commands === 'plain' ? ['commands'] : []),
     ...(GIT_KINDS.includes(step.kind) ? ['git'] : []),
+    'budget',
     'stop',
     'report'
   ].filter(Boolean)
@@ -111,6 +113,8 @@ export function renderPrompt({ flow, step: id, facts, template, values, repoPath
     model: step.model,
     scope: step.scope.replace(/\s*\(executor:[^)]*\)/i, '').trim(),
     version: step.versions[0],
+    reportLines: REPORT_CAP.lines,
+    reportCharacters: REPORT_CAP.characters,
     idList: step.kind === 'tasks' || step.kind === 'triage-fix' ? idList(step, facts) : ''
   }
   const parts = wanted.map((name) => fillWords(sections[name], words))
