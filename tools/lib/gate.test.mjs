@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { after, test } from 'node:test'
@@ -193,7 +193,7 @@ test('the files of a push come from Git, and a range that cannot be read makes t
 })
 
 // The run of a plan, with the steps' processes and the project's preparation stood in for
-function gateRun({ results = {}, prepare, stdin = 'refs/heads/x HEAD refs/heads/x ' }) {
+function gateRun({ results = {}, prepare, verbose = false, text = '' }) {
   const root = mkdtempSync(join(tmpdir(), 'gate-run-'))
   dirs.push(root)
   const git = (...args) =>
@@ -211,7 +211,12 @@ function gateRun({ results = {}, prepare, stdin = 'refs/heads/x HEAD refs/heads/
   const ran = []
   const out = []
   const err = []
-  const run = (step) => {
+  const files = []
+  const run = (step, _root, _env, { file } = {}) => {
+    if (file) {
+      files.push(file)
+      writeFileSync(file, text)
+    }
     ran.push(`${step.command} ${step.args.join(' ')}`.trim())
     return results[step.command] ?? results[step.label] ?? 0
   }
@@ -221,16 +226,17 @@ function gateRun({ results = {}, prepare, stdin = 'refs/heads/x HEAD refs/heads/
     stdin: `refs/heads/x ${head} refs/heads/x ${base}`,
     out: (line) => out.push(line),
     err: (line) => err.push(line),
+    verbose,
     run,
     prepare
   })
-  return promise.then((code) => ({ code, ran, out, err }))
+  return promise.then((code) => ({ code, ran, out, err, files }))
 }
 
 test('a failing test fails the push with its exit code, names the step and runs nothing after it', async () => {
   const result = await gateRun({ results: { 'typecheck api': 0, 'lint api': 3 }, prepare: async () => ({}) })
   assert.equal(result.code, 3)
-  assert.deepEqual(result.err, ['pre-push: "lint api" failed'])
+  assert.equal(result.err[0], 'pre-push: "lint api" failed')
   assert.ok(!result.ran.some((command) => command.includes('test:coverage') || command.includes('jest')))
 })
 
@@ -241,9 +247,35 @@ test('a passing push runs every step in order, announcing each once', async () =
     result.out[0],
     /pre-push: 1 changed file\(s\); checks: typecheck api, lint api, format changed files, tests related to 1 changed file\(s\) of api/
   )
-  assert.equal(result.out.filter((line) => line === 'pre-push: lint api').length, 1)
   assert.ok(result.out.includes('a database answers'))
+  assert.equal(result.out.at(-1), `pre-push: passed (${result.ran.length} step(s))`)
+  assert.ok(!result.out.some((line) => line === 'pre-push: lint api'), 'a quiet gate does not announce the steps')
+  assert.ok(
+    result.files.length > 0 && result.files.length === result.ran.length,
+    'every step wrote to a file of its own'
+  )
+  const loud = await gateRun({ verbose: true, prepare: async () => ({}) })
+  assert.equal(loud.out.filter((line) => line === 'pre-push: lint api').length, 1)
+  assert.deepEqual(loud.files, [], 'a verbose gate lets the steps print')
+  assert.ok(!loud.out.some((line) => line.startsWith('pre-push: passed')))
   assert.ok(result.ran.at(-1).startsWith('git diff --exit-code'))
+})
+
+test('a failed step prints where its output is and its failing lines only, at most the cap, with the rest counted', async () => {
+  const noise = Array.from({ length: 200 }, (_, index) => `ok line ${index}`)
+  const failures = Array.from({ length: 60 }, (_, index) => `not ok ${index} - broke in a.test.mjs:${index}`)
+  const result = await gateRun({
+    results: { 'lint api': 2 },
+    text: [...noise.slice(0, 100), ...failures, ...noise.slice(100)].join('\n'),
+    prepare: async () => ({})
+  })
+  assert.equal(result.code, 2)
+  assert.match(result.err[1], /^full output: .*lint-api\.log$/)
+  const shown = result.err.slice(2, -1)
+  assert.equal(shown.length, 40)
+  assert.ok(shown.every((line) => line.startsWith('not ok')))
+  assert.match(result.err.at(-1), /… 220 more line\(s\) in the file/)
+  assert.equal(readFileSync(result.files.at(-1), 'utf8').split('\n').length, 260, 'the file holds everything')
 })
 
 test('a need is prepared once, before the first step that has it; when the preparation stops the push, nothing runs', async () => {
@@ -265,10 +297,8 @@ test('a need is prepared once, before the first step that has it; when the prepa
 test('a failed diff check prints the hint of the step', async () => {
   const result = await gateRun({ results: { git: 1 }, prepare: async () => ({}) })
   assert.equal(result.code, 1)
-  assert.deepEqual(result.err.slice(-2), [
-    'pre-push: "generated files are up to date" failed',
-    'Commit the regenerated files first'
-  ])
+  assert.equal(result.err.at(-1), 'Commit the regenerated files first')
+  assert.ok(result.err.includes('pre-push: "generated files are up to date" failed'))
 })
 
 test('--dry-run prints the plan and runs nothing', async () => {
