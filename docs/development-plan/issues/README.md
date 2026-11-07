@@ -14,7 +14,6 @@ A request for something new, which is not a defect, is an item of the [backlog](
 <!-- issue-queue:start -->
 | Issue | Title | Area | Agent | SP | Status | Reported |
 | ----- | ----- | ---- | ----- | -- | ------ | -------- |
-| [I-26](./I-26.md) | `harness plan-write on` writes a settings file that the project's formatter rejects | runtime adapters | C1 | 1 | ⬜ | — |
 | [I-27](./I-27.md) | A project cannot give its flows a default for the workers' permissions | plan format | C2 | 2 | ⬜ | — |
 | [I-28](./I-28.md) | `harness flow status` reads a take that a later take superseded as not done | checks | C1 | 1 | ⬜ | — |
 | [I-29](./I-29.md) | The usage gate does not know the plan `pro` in lower case | checks | C1 | 1 | ⬜ | — |

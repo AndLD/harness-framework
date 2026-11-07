@@ -48,6 +48,7 @@ test('on writes one rule per folder to the tracked settings, keeps the other rul
   const on = planWrite({ ...request, action: 'on' })
   assert.equal(on.on, true)
   assert.equal(on.path, '.claude/settings.json')
+  assert.match(on.messages.at(-1), /run the project's formatter on \.claude\/settings\.json\.$/)
   apply(root, on)
   const settings = read(root, '.claude/settings.json')
   assert.deepEqual(settings.permissions.allow, ['Bash(ls)', 'Edit(docs/plan/**)', 'Edit(notes/backlog/**)'])
