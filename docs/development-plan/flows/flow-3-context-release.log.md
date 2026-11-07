@@ -191,3 +191,22 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Options:** for each, take or leave.
 - **Own analysis:** `orchestratorLimits` written in flow 3's settings: left; the default 50 applies and a setting that repeats a default adds nothing. Check that #191 merged before step 6: taken (the orchestrator waits for it). This orchestrator's context is 17%, under the threshold.
 - **Choice:** as above · **Decided by:** the orchestrator.
+
+### 2026-11-07 18:27 — step 6 started
+- **Executor:** session, reused from step 5 · **Worker:** local_f81a0ff8-9d8b-4481-8d12-ddb6d4da1d1f · **Account:** nil10035@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 2 SP, 3.2%
+- **Usage before:** 5-hour 31% (resets 2026-11-07T20:10:00Z) · weekly 81% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-07 18:32 — step 6 ended: done
+- **Usage after:** 5-hour 33% (resets 2026-11-07T20:10:00Z) · weekly 81% (resets 2026-11-08T21:00:00Z) · **Measured:** 5-hour +2%, weekly +0%, against an estimate of 5-hour 3.6% and weekly 0.5% · **Pull requests merged:** #193 (6.6), by auto-merge once its checks pass · **Ids done:** 6.6 · **Worker:** session local_f81a0ff8-9d8b-4481-8d12-ddb6d4da1d1f (reused, warm), 12 turns, context 14% after the step
+- **Report** (7 lines, in the schema): `start-task` and the runtime contract's `subagent` row say when verbose reading goes to a subagent, and the step prompts of a `tasks` step carry a `delegate` paragraph; method §8 untouched (the owner's); details in `6.6.log.md`. Deviation: the audit of a read through a subagent against a direct read needs a real run; 6.8 measures it.
+
+### 2026-11-07 18:32 — decision D3: `start-task` and the runtime contract's `subagent` row take delegated reading (`contract.change`)
+- **Options:** (a) accept as built in #193; (b) refuse and revert. And: (c) also name delegation in method §8, which would be the owner's.
+- **Own analysis** (written before the worker's recommendations): (a), without (c). It is task 6.6; the change is in a procedure and a contract, additive. Method §8 already says "read with a filter", and the step prompts carry the delegation, so a line in the method adds little and would need the owner; it is left out and named in the digest. This entry is the approval #193 needs.
+- **Worker's recommendation:** D3, accept; (c) left to the owner.
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode, `contract.change` D3).
+
+### 2026-11-07 18:32 — decision D1: the recommendations of step 6
+- **Options:** for each, take or leave.
+- **Own analysis:** wait for #193 before step 7: taken. Look at the prompt of step 7 for the `delegate` paragraph: taken, the orchestrator reads it before the dispatch.
+- **Choice:** as above · **Decided by:** the orchestrator.
