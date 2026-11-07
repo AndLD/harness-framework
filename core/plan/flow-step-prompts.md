@@ -4,7 +4,7 @@
 
 The standard wording that `harness flow prompt <n> <step>` renders for the worker of a step: the header, the text of the step's kind, the Git wording, the output budgets, where to stop and
 the step report, each written once here. The tool reads this file by the headings of its sections (`header`, `tasks`, `cut`, `consumer-take`, `triage-fix`,
-`decision`, `external`, `commands`, `git`, `budget`, `stop`, `report`) and fills the words in braces from the flow, the step and the profile; a line whose word has no value is left out. A `custom` step
+`decision`, `external`, `commands`, `git`, `budget`, `delegate`, `stop`, `report`) and fills the words in braces from the flow, the step and the profile; a line whose word has no value is left out. A `custom` step
 has no section of its own: its prompt is the section `## Step <#>` of the flow file, and it still gets the sections `budget`, `stop` and `report`. Change the wording here, in one
 place, and every flow takes it.
 
@@ -75,6 +75,13 @@ Git rules for this step, from {entryFile}:
 Output budgets (the method, section 8): read with a filter and not a whole output (fields of the host's command, `--stat` and a path for a diff, the tail of a log, an offset and a limit for a file); read a whole
 file only where a procedure says so; run a command that may print a lot in its quiet variant, or cap its output. A pull request body, a commit message, a log entry and your last message say what changed,
 what was verified and what was not, in a few lines; long text goes into a file of the plan, and the message links it.
+
+## delegate
+
+<!-- Only for the kinds that read a lot: tasks, consumer-take and triage-fix. -->
+Keep verbose reading out of the context that decides: hand it to a subagent of the runtime (the executor `subagent` of the runtime contract) when you must read a large log, a long diff, the output of a long
+test run or a research of sources. Tell it what to find, and ask for a **summary of at most {summaryLines} lines** whose evidence is pointers (file and line, command, commit), not quoted text. You keep the
+decision. Never delegate a decision, a write, a merge, or a reading that a procedure requires in full (the migration note before a cut, the file a step names).
 
 ## stop
 

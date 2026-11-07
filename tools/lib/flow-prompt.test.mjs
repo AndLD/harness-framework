@@ -70,6 +70,7 @@ test('the template has a section for every part of a prompt', () => {
     'commands',
     'git',
     'budget',
+    'delegate',
     'stop',
     'report'
   ])
@@ -179,4 +180,14 @@ ${row(1, 'tasks', '1.1', '—', '—', 1, '—', 'C2', '⬜')}
   assert.doesNotMatch(render('any'), /Run plain commands/)
   assert.doesNotMatch(render(undefined), /Run plain commands/)
   assert.equal(withCommands(undefined).settings.commands, 'any')
+})
+
+test('the paragraph on delegating verbose reading is in the prompts of the kinds that read a lot and not in the others (task 6.6)', () => {
+  const tasks = prompt('1').prompt
+  assert.match(
+    tasks,
+    /hand it to a subagent[\s\S]*summary of at most 10 lines[\s\S]*Never delegate a decision, a write, a merge/
+  )
+  assert.doesNotMatch(tasks, /\{|\}/)
+  assert.doesNotMatch(prompt('2').prompt, /subagent/, 'a cut reads its note in full')
 })
