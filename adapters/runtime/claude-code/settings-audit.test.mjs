@@ -7,7 +7,8 @@ import { loadProfile } from '../../../tools/lib/profile.mjs'
 import { auditSettings, broadRules } from './settings-audit.mjs'
 import { settingsFor } from './settings.mjs'
 
-const profile = loadProfile(join(import.meta.dirname, '..', '..', '..'))
+// the repository's own profile accepts a rule (security.allowedRules), which these tests must not inherit
+const profile = { ...loadProfile(join(import.meta.dirname, '..', '..', '..')), security: {} }
 const dirs = []
 after(() => dirs.forEach((dir) => rmSync(dir, { recursive: true, force: true })))
 
