@@ -305,6 +305,27 @@ test('changelog: a fragment needs a kind; a release on its branch sets the versi
   )
 })
 
+test('changelog: the release sets the version of the npm lock file too, and the check compares it', () => {
+  const lock = `{\n  "name": "shop",\n  "version": "1.0.0",\n  "lockfileVersion": 3,\n  "packages": {\n    "": {\n      "name": "shop",\n      "version": "1.0.0",\n      "license": "MIT"\n    },\n    "node_modules/x": {\n      "version": "1.0.0"\n    }\n  }\n}\n`
+  const root = project({ 'app/package-lock.json': lock })
+  assert.deepEqual(checkChangelog({ root, profile: profileOf(root) }).problems, [])
+  git(root, 'checkout', '--quiet', '-b', 'release/1.1.0')
+  release({ root, profile: profileOf(root), date: '2026-10-31' })
+  const after = readFileSync(join(root, 'app/package-lock.json'), 'utf8')
+  assert.equal(
+    after,
+    lock
+      .replace('"version": "1.0.0",\n  "lockfileVersion"', '"version": "1.1.0",\n  "lockfileVersion"')
+      .replace('"shop",\n      "version": "1.0.0"', '"shop",\n      "version": "1.1.0"')
+  )
+  assert.deepEqual(checkChangelog({ root, profile: profileOf(root) }).problems, [])
+  write(root, { 'app/package-lock.json': lock })
+  assert.match(
+    checkChangelog({ root, profile: profileOf(root) }).problems.join('\n'),
+    /app\/package-lock\.json: version is 1\.0\.0, not 1\.1\.0 of package\.json[\s\S]*packages\[""\]\.version is 1\.0\.0/
+  )
+})
+
 test('changelog: a development version of a release sets only the versions, and numbers itself by the tags', () => {
   const root = project()
   git(root, 'checkout', '--quiet', '-b', 'release/1.1.0')
