@@ -40,5 +40,6 @@ It is read to find out whether a new report is a problem that was fixed already.
 | [I-32](./I-32.md) | `harness flow audit` misses the command-line workers of a flow | checks | 1 | — |
 | [I-33](./I-33.md) | The migration tests take "the last release" from the newest tag, so they fail once a version is tagged | checks | 1 | — |
 | [I-34](./I-34.md) | The bootstrap and the adoption write the settings file without the formatter's message | bootstrap and sync | 1 | — |
+| [I-35](./I-35.md) | `package-lock.json` names the version `0.1.0` | checks | 1 | — |
 | [I-36](./I-36.md) | `harness flow status` reads a development take whose draft was closed as not done | checks | 1 | — |
 <!-- issue-queue:end -->
