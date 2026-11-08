@@ -22,7 +22,7 @@ After `0.1.0`: a security review method next to the code review and the harness 
 | [2.9](./2.9.md) | Security probe catalogue and attack scenarios for the product (S5 and S6) | C3 | 5 | ✅ |
 | [2.10](./2.10.md) | Security rules of core, distilled from the first review | C3 | 3 | ✅ |
 | [2.11](./2.11.md) | A nested worker session asks no more than a worker on the command line under the same settings | C3 | 2 | ✅ |
-| [2.12](./2.12.md) | A security policy file, here and in the scaffold | C2 | 1 | ⬜ |
+| [2.12](./2.12.md) | A security policy file, here and in the scaffold | C2 | 1 | ✅ |
 <!-- phase-tasks:end -->
 
 Task status: ⬜ not started · 🟡 in progress (branch noted in the work log) · ✅ done. Agent: the task's agent-complexity marker (plan method, section 7).
