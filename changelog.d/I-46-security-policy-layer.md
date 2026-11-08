@@ -1,1 +1,0 @@
-Fixed: `harness check layers` puts the `SECURITY.md` of the scaffold in the PROFILE layer when the project's layer map does not place it, so a project with a layer map needs no edit of its map for the file that 0.6.0 asks for.
