@@ -200,3 +200,14 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis:** (a), the recommendation of the stop above: until the pins land, the framework's own CI templates break the third rule.
 - **Worker's recommendation:** decide the pins before or with #238: agrees.
 - **Choice:** (a); the worker removes the third rule from #238 and records the approval there; #236 has merged, so step 5 is ✅ · **Decided by:** the owner ("First two; pins later").
+
+### 2026-11-08 13:42 — step 6 ended: done
+- **Usage after:** 5-hour 99% (resets 2026-11-08T12:50:00Z) · weekly 68% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +14% with the continuation after the owner's decision, weekly +2%; estimated 5-hour 12%, weekly 1.8% · **Pull requests merged:** #238 · **Ids done:** 2.10 · **Worker:** local_bec9bf04-20c4-4615-8e0b-ef4e4b0f189f
+- **Report:** the two approved rules of core are in; `sec.pinned-actions` returns with the pins. **Deviation:** the permission check of the runtime refused the worker's auto-merge, because the approval reached it through the orchestrator; the orchestrator did not step around the refusal, asked the owner, and enabled it on the owner's word ("Yes, enable it").
+
+### 2026-11-08 13:42 — stop: usage
+- **Done:** steps 1 to 6: tasks 2.1, 2.8, 2.9, 2.2, 2.4 and 2.10 (#227, #229, #231, #233, #236, #238).
+- **Decided alone:** the entries of steps 4 and 5 (D1, two D2, two D3) and the D0 entries.
+- **For the owner:** the settings of the repository (S-08, S-10, S-03) and a private advisory for the 4 high findings; for the cut, the workers' recommendation of a human review of the catalogue.
+- **Usage:** 5-hour 99% (resets 2026-11-08T12:50:00Z) · weekly 68% (resets 2026-11-10T07:00:00Z) · no step starts before the reset.
+- **Next:** after the reset, step 6a (I-30), then step 7, each gated: `harness flow next 4`. Step 7 schedules the pins with `sec.pinned-actions`, the issues of the findings and the guard against an empty pull request. To record as an issue: `update-branches.yml` leaves a bot's run in `action_required` and a pull request with no checks.
