@@ -393,3 +393,9 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **For the owner:** the settings S-08, S-10, S-03 and the private advisory for the 4 high findings.
 - **Usage:** 5-hour 33% (resets 2026-11-08T17:00:00Z) · weekly 98% (resets 2026-11-08T21:00:00Z), account nil10035@gmail.com. The gate would pass the cut (98% + 0.8% under 99%), but every step of this run measured at or over its estimate, so the cut would reach the owner's 99%: no step starts before the weekly reset.
 - **Next:** after the weekly reset of 21:00Z, step 7e cuts `0.6.0-dev.1` (D1, decided by the flow): the orchestrator reads its migration note in full against its own list (what a project must do: run `harness sync` for the regenerated workflows, pinned and with the write grants on the job, and the three rules of the entry file; pin the actions of a hand-written workflow; optional: turn `checks.security` on, with `security.allowedRules`, and keep the pins current), then 7f, the consumer's take: `harness flow next 4`.
+
+### 2026-11-08 15:55 — decision D2: I-44 joins `0.6.0` before the cut, and I-45 is filed unscheduled
+- **Options:** (a) I-44 (a security policy file, S-10) in `0.6.0` before the cut, and I-45 (a host-side gate before production, S-03) unscheduled; (b) both unscheduled; (c) both in `0.6.0`.
+- **Own analysis:** (a), my recommendation to the owner: I-44 is 1 SP and a security release should say how to report a weakness in private; I-45 changes the host adapter and needs an identity the owner creates first, so the owner places it. I-44 takes step 7e, so the cut, the consumer's take and the decision move to 7f, 7g and 7h; none had started.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (a) · **Decided by:** the owner ("File them now"); the host's settings for S-08 and S-10 stay the owner's.
