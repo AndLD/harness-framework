@@ -622,6 +622,10 @@ export async function bootstrap({
       }
     }
     const messages = [`Wrote ${PROFILE_FILE} and ${files.length} scaffolded files.`]
+    const jsonFiles = [PROFILE_FILE, ...files.map((file) => file.path).filter((path) => path.endsWith('.json'))]
+    messages.push(
+      `The JSON files are written with two-space indents and one array entry a line: if the project's lint checks formatting, run the project's formatter on ${jsonFiles.join(', ')}.`
+    )
     const runtimeModules = (await loadModules(fetched.dir)).runtime
     if (
       planWrite &&
