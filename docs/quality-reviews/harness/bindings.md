@@ -19,7 +19,7 @@ tools already know.
 | **DOMAIN** | – |
 | **ADAPTER** | `docs/engineering/**`, `docs/operations/**`, `docs/procedures/**`, `.github/**`, `.claude/**`, `scripts/**` |
 | **PROFILE** | `harness-profile.json`, `harness.lock.json`, `docs/profile.md`, `**/bindings.md` |
-| **STATE** | `docs/development-plan/**`, `docs/design.md`, `docs/quality-reviews/harness/20*.md`, `CHANGELOG.md`, `changelog.d/**` |
+| **STATE** | `docs/development-plan/**`, `docs/design.md`, `docs/quality-reviews/harness/20*.md`, `docs/quality-reviews/security/20*.md`, `CHANGELOG.md`, `changelog.d/**` |
 | **ENTRY** | `AGENTS.md`, `CLAUDE.md`, `README.md` |
 
 Not in the map: nothing.
