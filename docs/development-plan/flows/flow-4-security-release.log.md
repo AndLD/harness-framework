@@ -83,3 +83,37 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Usage after:** 5-hour 60% (resets 2026-11-08T12:50:00Z) · weekly 63% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +13%, weekly +2%; estimated 5-hour 20%, weekly 3% · **Pull requests merged:** #231 · **Ids done:** 2.9 · **Worker:** local_3b6de3fc-b672-47c5-9ef3-10f2489cca3b, context 39% after the step
 - **Report:** the probes and the attack scenarios of the product (S5 and S6) are in; the catalogue is a draft and no scenario has been run. No open decision, no deviation.
 - **Recommendations of the worker, read after the report:** task 2.2 starts from the 28 probes marked scriptable and reads the fields by their labels (goes to step 4); the owner keeps S5 and S6 out of the first reviews of real products until the catalogue has had a human review, because the independent pass disputed 15 of 81 items, 9 of them scenarios, most of which could have broken the rules of engagement as first written. The second joins the recommendation of step 2 for the decision of step 7 and the digest to the owner.
+
+### 2026-11-08 11:30 — step 4 started
+- **Executor:** session · **Worker:** local_bb6216f4-0182-419d-b659-6cc2ccd9e24b · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 3 SP, 4.8%
+- **Usage before:** 5-hour 60% (resets 2026-11-08T12:50:00Z) · weekly 63% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-08 11:54 — step 4 ended: done
+- **Usage after:** 5-hour 74% (resets 2026-11-08T12:50:00Z) · weekly 64% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +14%, weekly +1%; estimated 5-hour 5.4%, weekly 0.8% · **Pull requests merged:** #233 · **Ids done:** 2.2 · **Worker:** local_bb6216f4-0182-419d-b659-6cc2ccd9e24b, 112 turns, context 23% after the step
+- **Report:** `harness check security [--range a..b] [--audit]` automates 14 of the 28 scriptable probes, each with a test that plants a defect; the other 14 are printed as gaps and listed in the task's log. Not verified: a real network audit, and any project other than this repository. **Contracts:** three roles added (`dependency-audit`, `ci-audit`, `settings-audit`), each logic-optional, a minor addition that an adapter without it still satisfies, so no change of the meaning of a contract. **Deviations:** the worker's last message was over the cap and out of the form; the report in the form was in a file of its scratchpad and passes `report-check`; `check security` joins `check all` only when `checks.security` is true, because this repository has 10 findings S2-004.
+- **Over twice the estimate** (+14% against 5.4%): an escalation (the procedure run-flow, step 7); the work stayed in its scope and is done; the stop entry below asks the owner.
+
+### 2026-11-08 11:54 — decision D2: what counts as a broad allow rule in `check security`
+- **Options:** (a) an interpreter, a package runner or a fetcher allowed with any argument is broad, while `git *`, a named script and an exact command are not, and `security.allowedRules` lets a project accept one; (b) report every prefix rule.
+- **Own analysis** (written before the worker's recommendations): (a). The risk is the arbitrary code that such a rule lets a worker run, and (b) would report rules that run one known program; the setting keeps it a project's choice.
+- **Worker's recommendation:** (a), the same.
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode).
+
+### 2026-11-08 11:54 — decision D1: a caret or a tilde range counts as bounded in the manifest check
+- **Options:** (a) bounded, since the lock file pins it; (b) report every range.
+- **Own analysis** (written before the worker's recommendations): (a). The same check requires a lock file beside each manifest, so the version installed is pinned; (b) would report nearly every manifest.
+- **Worker's recommendation:** (a), the same.
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode).
+
+### 2026-11-08 11:54 — decision D3: the 10 unpinned actions (S2-004) go to the review of step 5
+- **Options:** (a) step 5 (task 2.4) takes them as findings and decides the pins with the evidence of the review, and `checks.security` is turned on after that; (b) pin the actions now, as a step of its own, which changes the generated workflows of every project; (c) leave them and keep the check out of `check all`.
+- **Own analysis** (written before the worker's recommendations): (a). Pinned actions change every project's generated files and bring a duty to update them, a trade-off the review should weigh with its other findings; (c) would leave the check out of CI.
+- **Worker's recommendation:** fix the pins before 2.4 closes or record them as its findings, then turn `checks.security` on: agrees with (a). Its other two (wire `check security --range` into the pre-push guard for S1-007; a host-settings role for five gaps) are new work, kept for the findings of step 5.
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode); for review later.
+
+### 2026-11-08 11:54 — stop: usage
+- **Done:** steps 1 to 4: tasks 2.1 (#227), 2.8 (#229), 2.9 (#231), 2.2 (#233); records #228, #230, #232.
+- **Decided alone:** the three decisions above (D2, D1, D3), and the report of step 2 and 3 on the catalogue, kept for step 7: a human security review before `0.6.0` is called more than a draft, and S5 and S6 out of reviews of real products until then.
+- **Usage:** 5-hour 74% (resets 2026-11-08T12:50:00Z) · weekly 64% (resets 2026-11-10T07:00:00Z) · the gate says WAIT for step 5 (74% + 14.4% passes 85%).
+- **Escalation:** step 4 used +14% of the 5-hour window against an estimate of 5.4%; the owner says whether to go on.
+- **Next:** after the reset and the owner's word, step 5 (task 2.4): `harness flow next 4`; a new orchestrator session reads this entry and the flow file.
