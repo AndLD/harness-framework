@@ -18,4 +18,5 @@ A request for something new, which is not a defect, is an item of the [backlog](
 | [I-40](./I-40.md) | The template repository does not ask for the flows' permissions | bootstrap and sync | C2 | 1 | ⬜ | — |
 | [I-41](./I-41.md) | Auto-merge can be turned on for a pull request with no changed files | Git rules | C2 | 1 | ⬜ | — |
 | [I-42](./I-42.md) | The branch update by the workflow leaves a pull request with no checks | host adapters | C2 | 2 | ⬜ | — |
+| [I-43](./I-43.md) | The security gate is off: the template still grants write at the top, and a local allow rule blocks every push | host adapters | C2 | 2 | ⬜ | the [first security review](../../quality-reviews/security/2026-11-08.md), findings S-20261108-06 and S-20261108-12; found again by the worker of I-39 (step 7c of flow 4) |
 <!-- issue-queue:end -->
