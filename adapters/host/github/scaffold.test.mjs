@@ -12,6 +12,7 @@ const dirs = []
 after(() => dirs.forEach((dir) => rmSync(dir, { recursive: true, force: true })))
 
 const profile = {
+  project: { name: 'shop', title: 'Shop' },
   adapters: { stacks: ['node-ts'], host: 'github' },
   branches: { production: 'main', integration: 'develop' },
   requiredChecks: ['verify', 'pr-title'],
@@ -69,4 +70,12 @@ test('the workflow that updates the pull requests waiting on auto-merge is writt
     'pr-title also runs when dispatched'
   )
   assert.match(ci, /gh pr list --head "\$BRANCH"/)
+})
+
+test('the security policy names the project and the production branch, and says how to report in private', () => {
+  const policy = scaffoldFiles(profile, { jobs: [ciJobs(profile)] }).find(({ path }) => path === 'SECURITY.md').content
+  assert.match(policy, /latest release of Shop, which is built from the `main` branch/)
+  assert.match(policy, /Report a vulnerability/)
+  assert.match(policy, /public/)
+  assert.doesNotMatch(policy, /<%=/)
 })
