@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { after, test } from 'node:test'
 import { checkValues } from '../../../tools/lib/values.mjs'
+import { isPinned } from '../../host/github/ci-audit.mjs'
 import { renderWorkflow } from '../../host/github/templates.mjs'
 import { readJobNames } from '../../host/github/workflows.mjs'
 import { ciJobs } from './ci-jobs.mjs'
@@ -59,4 +60,13 @@ test('among several stacks the static job is named after the stack, runs its own
   assert.equal(first.yaml.includes('run-lint'), false, "the stack runs its own lint command, not the first stack's")
   assert.equal(ciJobs(profile, { ...many, first: false }).yaml.includes('run-docs'), false)
   assert.deepEqual(ciJobs(profile).ids, ['static', 'api', 'web'], 'a project with one stack is as it was')
+})
+
+test('every action of the jobs is pinned to a full commit, with its version in a comment', () => {
+  const uses = ciJobs(profile).yaml.match(/uses: .*/g) ?? []
+  assert.ok(uses.length > 0)
+  for (const line of uses) {
+    assert.ok(isPinned(line.split(/\s+/)[1]), line)
+    assert.match(line, / # v\d+\.\d+\.\d+$/, line)
+  }
 })

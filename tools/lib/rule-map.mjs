@@ -34,7 +34,8 @@ export const SECURITY_RULES = Object.freeze([
     when: 'review',
     by: 'probes S4-016 and S4-020 of the security review',
     probes: ['S4-016', 'S4-020']
-  }
+  },
+  { rule: 'sec.pinned-actions', when: 'review', by: 'probe S2-004 of the security review', probes: ['S2-004'] }
 ])
 
 const ITEM_START = /^\s*(?:[-*] |\d+\. |#{1,6} |\*\*)/
