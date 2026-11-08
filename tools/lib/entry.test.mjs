@@ -17,7 +17,16 @@ const profile = () => ({
 
 // The rule ids are stable: the rule-to-check map cites them, so a removed or renamed id is a change of the framework, made on purpose
 const IDS = {
-  'non-negotiables': ['nn.change', 'nn.tests', 'nn.coverage', 'nn.typed', 'nn.clean', 'nn.secrets'],
+  'non-negotiables': [
+    'nn.change',
+    'nn.tests',
+    'nn.coverage',
+    'nn.typed',
+    'nn.clean',
+    'nn.secrets',
+    'sec.outside-text',
+    'sec.own-authority'
+  ],
   'git-rules': [
     'git.branches',
     'git.merge',

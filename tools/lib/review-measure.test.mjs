@@ -212,6 +212,19 @@ test('the measurements of the project are printed with the verdict of each budge
   assert.deepEqual(exceeded, ['procedureWords', 'normative'])
 })
 
+test('the security rules of the entry file are counted by their ids, and their budget is read from the bindings', () => {
+  const entry = `${FILES['AGENTS.md']}\n- One two three. <!-- rule:sec.one -->\n- Four five. <!-- rule:sec.two -->\n`
+  const bindings = `${FILES['docs/quality/bindings.md']}\n\n| Number | Baseline | Ceiling |\n| --- | --- | --- |\n| Lines of the security rules (M6) | 2 | 1 |\n| Words of the security rules (M6) | 7 | 100 |\n`
+  const texts = { ...FILES, 'AGENTS.md': entry, 'docs/quality/bindings.md': bindings }
+  const { lines, exceeded } = measureReview({ root: emptyRoot, profile: PROFILE, files, read: (path) => texts[path] })
+  assert.match(
+    lines.join('\n'),
+    /^M6 {2}security rules of AGENTS\.md: 2 lines \(ceiling 1: EXCEEDED\), 7 words \(ceiling 100: met\)$/m
+  )
+  assert.ok(exceeded.includes('securityLines'))
+  assert.ok(!exceeded.includes('securityWords'))
+})
+
 test('a project without a rule map, a layer map, an entry file or a procedures block is measured as far as it goes', () => {
   const bare = { 'README.md': '# Project\n' }
   const { lines, exceeded } = measureReview({
