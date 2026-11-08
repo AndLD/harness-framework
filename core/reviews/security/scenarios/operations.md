@@ -9,11 +9,11 @@ First edition, a draft. Each playbook runs only under [the rules of engagement](
 - **Dimension:** S5
 - **Goal:** Find out whether the limits exist, without stressing the service.
 - **Applies:** product: http-api
-- **Preconditions:** The scope's maximum for requests per second, and a test account.
-- **Steps:** Below that maximum, repeat one request until a limit answers; send one oversized body, one deep structure and one very large page size, once each.
-- **Safe behaviour:** The limit answers before the scope's maximum, and the oversized requests are refused quickly.
+- **Preconditions:** The scope's maximum for requests per second, its maximum number of requests, its sizes for a large body, a deep structure and a large page, and a test account.
+- **Steps:** Within those maximums, repeat one request until a limit answers or the number is reached; send one body, one structure and one page size of the scope's sizes, once each, and stop if the service slows.
+- **Safe behaviour:** The limit answers before the scope's number, and the large requests are refused quickly.
 - **Evidence:** The count at the limit and the responses.
-- **Cleanup:** None: stop at the first refusal.
+- **Cleanup:** None: stop at the first refusal, or at the scope's number.
 - **Severity:** 🟠; 🔴 when one request can take the service down.
 - **Probes:** S5-038
 - **Sources:** OWASP-API API4 (verified 2026-11-08); CS-RATE application attacks (verified 2026-11-08)
@@ -37,7 +37,7 @@ First edition, a draft. Each playbook runs only under [the rules of engagement](
 - **Dimension:** S6
 - **Goal:** Find out whether the backups really restore, and how long it takes.
 - **Applies:** product: user-data
-- **Preconditions:** An isolated test environment; a backup that holds test data, or one handled under the project's rules on real data, which the scope must state.
+- **Preconditions:** An isolated test environment, and a backup that holds only test data. A drill on a backup of real data is an operation of the project, outside this scenario.
 - **Steps:** Restore; start the service; run the checks that validate the data; record the time.
 - **Safe behaviour:** The service runs on the restored data, and the time is within the stated objective.
 - **Evidence:** The record of the drill, with times.
@@ -66,9 +66,9 @@ First edition, a draft. Each playbook runs only under [the rules of engagement](
 - **Goal:** Find out whether code that the product runs for users is confined.
 - **Applies:** product: untrusted-code
 - **Preconditions:** A test tenant; a harmless test program; a canary file and a listener of the test environment named in the scope.
-- **Steps:** From the sandbox, try to read the canary, reach the listener, read the environment, and reach the other test tenant's data.
+- **Steps:** From the sandbox, try to read the canary, reach the listener, list the names (never the values) of the environment's variables, and reach the other test tenant's data.
 - **Safe behaviour:** Each attempt fails, and the attempts are logged.
-- **Evidence:** The program's output and the listener's log.
+- **Evidence:** The program's output, with no value of a secret, and the listener's log.
 - **Cleanup:** Remove the program, the canary and the test tenant.
 - **Severity:** 🔴.
 - **Probes:** S5-036

@@ -29,6 +29,7 @@ No scenario runs here: S5 and S6 do not apply, and the framework has no running 
 | Environments and their addresses | none |
 | Accounts and data to use (test only) | none |
 | Tools allowed | none |
+| Limits for scenarios (requests, sizes, test mail domain, listener) | none |
 | Out of scope | production, every system of a third party |
 | Approved by, on | — |
 

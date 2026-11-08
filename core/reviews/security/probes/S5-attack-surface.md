@@ -103,13 +103,13 @@ The categories of the OWASP Top 10 (2025), and where each is covered:
 ### S5-008 — Password reset cannot be used to take over an account
 
 - **Dimension:** S5
-- **Checks:** Is a reset token random, single-use, short-lived, bound to the account, delivered only to the verified address, and does a reset end the other sessions?
+- **Checks:** Is a reset token random, single-use, short-lived, bound to the account, delivered only to the verified address, and does a reset end the other sessions or offer to end them?
 - **Why:** An attacker predicts, reuses or redirects a reset token and takes the account.
 - **Evidence:** `scenario` (SC-AUTHN-03, SC-AUTHN-04); `file` (the flow)
 - **Severity:** 🔴 when takeover works; 🟠 for one missing property.
 - **Applies:** product: passwords
 - **Decided by:** judged
-- **Sources:** WSTG ATHN-09 (verified 2026-11-08); CS-FORGOT forgot password service (verified 2026-11-08); CS-FORGOT methods (verified 2026-11-08); ASVS V6.4 (verified 2026-11-08)
+- **Sources:** WSTG ATHN-09 (verified 2026-11-08); CS-FORGOT forgot password service (verified 2026-11-08); CS-FORGOT methods (verified 2026-11-08); ASVS V6.4, V7.4 (verified 2026-11-08)
 
 ### S5-009 — Sensitive changes ask for the user again
 
@@ -415,8 +415,8 @@ The categories of the OWASP Top 10 (2025), and where each is covered:
 - **Evidence:** `command` (send requests with a foreign origin to the test environment)
 - **Severity:** 🟠; 🔴 with credentials allowed.
 - **Applies:** product: web, http-api
-- **Decided by:** scriptable
-- **Sources:** WSTG CLNT-07 (verified 2026-11-08); ASVS V3.5 (verified 2026-11-08)
+- **Decided by:** judged
+- **Sources:** WSTG CLNT-07 (verified 2026-11-08); ASVS V3.4 (verified 2026-11-08)
 
 ## Isolation and abuse
 

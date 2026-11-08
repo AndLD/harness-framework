@@ -9,13 +9,13 @@ First edition, a draft: see [the index](./README.md). The format is section 3 of
 ### S6-001 — The deployment configuration is reviewed and reproducible
 
 - **Dimension:** S6
-- **Checks:** Is the production configuration kept under version control, reviewed, and free of defaults meant for development?
+- **Checks:** Is the production configuration repeatable, reviewed, and free of defaults meant for development?
 - **Why:** A manual change or a development default reaches production and nobody can tell.
 - **Evidence:** `file` (the deployment definitions); `judgment`
 - **Severity:** 🟠.
 - **Applies:** project: deploys
 - **Decided by:** judged
-- **Sources:** OWASP-TOP10 A02 (verified 2026-11-08); WSTG CONF-02 (verified 2026-11-08); ASVS V13.1 (verified 2026-11-08)
+- **Sources:** OWASP-TOP10 A02 (verified 2026-11-08); WSTG CONF-02 (verified 2026-11-08); ASVS V13.4 (verified 2026-11-08)
 
 ### S6-002 — Only what must be exposed is exposed
 
@@ -26,7 +26,7 @@ First edition, a draft: see [the index](./README.md). The format is section 3 of
 - **Severity:** 🔴 for an open database or console.
 - **Applies:** project: deploys
 - **Decided by:** judged
-- **Sources:** WSTG CONF-01, CONF-05 (verified 2026-11-08); ASVS V13.2 (verified 2026-11-08)
+- **Sources:** WSTG CONF-01, CONF-05 (verified 2026-11-08); ASVS V15.2 (verified 2026-11-08)
 
 ### S6-003 — Transport is encrypted everywhere, and certificates are watched
 
@@ -81,15 +81,15 @@ First edition, a draft: see [the index](./README.md). The format is section 3 of
 - **Severity:** 🟠; 🔴 for a known-exploited flaw on an exposed service.
 - **Applies:** project: deploys
 - **Decided by:** judged
-- **Sources:** OWASP-TOP10 A02 (verified 2026-11-08)
+- **Sources:** OWASP-TOP10 A03 (verified 2026-11-08)
 
 ## Backups
 
 ### S6-008 — Backups exist, off-site and protected
 
 - **Dimension:** S6
-- **Checks:** Are backups taken at a frequency that fits the data's importance, kept apart from production, and protected from the attacker who controls production?
-- **Why:** Ransomware or a mistake destroys production and the backups together.
+- **Checks:** Are backups taken at a frequency that fits the data's importance, kept apart from production, and protected, including from someone who controls production (that last part is this catalogue's own addition)?
+- **Why:** A mistake or ransomware destroys production and the backups together.
 - **Evidence:** `file` (the backup configuration); `judgment` (the frequency fits, and the copies are out of production's reach)
 - **Severity:** 🔴 when user data has no independent copy.
 - **Applies:** product: user-data

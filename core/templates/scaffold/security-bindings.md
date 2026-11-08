@@ -31,6 +31,7 @@ project's own probes and the review log. The first security review fills them; u
 | Environments and their addresses | — |
 | Accounts and data to use (test only) | — |
 | Tools allowed | — |
+| Limits for scenarios (requests, sizes, test mail domain, listener) | — |
 | Out of scope | production, every system of a third party |
 | Approved by, on | — |
 

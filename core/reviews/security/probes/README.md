@@ -12,7 +12,7 @@ Each probe has the format of section 3 of the method. The playbooks of attack sc
 | S2 Dependencies and supply chain | [S2-dependencies-supply-chain.md](./S2-dependencies-supply-chain.md) | 22 | 8 | 13 | 1 |
 | S3 CI and the repository host | [S3-ci-repository-host.md](./S3-ci-repository-host.md) | 22 | 7 | 10 | 5 |
 | S4 Agent harness | [S4-agent-harness.md](./S4-agent-harness.md) | 25 | 3 | 20 | 2 |
-| S5 The product's attack surface | [S5-attack-surface.md](./S5-attack-surface.md) | 44 | 5 | 39 | 0 |
+| S5 The product's attack surface | [S5-attack-surface.md](./S5-attack-surface.md) | 44 | 4 | 40 | 0 |
 | S6 Operations | [S6-operations.md](./S6-operations.md) | 13 | 0 | 12 | 1 |
 
 ## Project traits

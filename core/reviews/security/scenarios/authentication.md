@@ -9,7 +9,7 @@ First edition, a draft. Each playbook runs only under [the rules of engagement](
 - **Dimension:** S5
 - **Goal:** Find out whether the product reveals which accounts exist.
 - **Applies:** product: accounts
-- **Preconditions:** Two test accounts, and an address that has no account.
+- **Preconditions:** Two test accounts, and an address that has no account, in the test mail domain of the scope.
 - **Steps:** Log in, register and request a reset once for a test account and once for the unknown address; compare the text, the status and the time of the answers.
 - **Safe behaviour:** The answers are the same in text and status, and the timing shows no usable difference.
 - **Evidence:** The pairs of responses and their timings, with no real address.
@@ -39,7 +39,7 @@ First edition, a draft. Each playbook runs only under [the rules of engagement](
 - **Applies:** product: passwords
 - **Preconditions:** Two test accounts, and access to the test mailbox.
 - **Steps:** Request a reset; use the token; use it again; request another and wait past its stated life; try a token of the first account while acting on the second.
-- **Safe behaviour:** The second use, the late use and the use on another account all fail, and a reset ends the account's other sessions.
+- **Safe behaviour:** The second use, the late use and the use on another account all fail, and a reset ends the account's other sessions or offers to.
 - **Evidence:** The requests and responses, with token values removed.
 - **Cleanup:** Delete the test accounts.
 - **Severity:** 🔴 when takeover works; 🟠 for one missing property.

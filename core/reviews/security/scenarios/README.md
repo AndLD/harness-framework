@@ -4,7 +4,7 @@
 
 **First edition (2026-11-08), and a draft**, on the same terms as [the catalogue of probes](../probes/README.md): researched by agents, and a draft until a person with security expertise has reviewed it.
 
-These playbooks are for a project's agent or team to run against its **own** test environment, as a penetration test does. **Every one runs only under [the rules of engagement](../README.md#5-rules-of-engagement):** the project's own system, a development or test environment, the scope written in the bindings first, nothing destructive, test data only, and an agent that would leave the scope stops and asks. A playbook names no target: an address, an account or a listener comes from the scope. A scenario with no scope is recorded as not run.
+These playbooks are for a project's agent or team to run against its **own** test environment, as a penetration test does. **Every one runs only under [the rules of engagement](../README.md#5-rules-of-engagement):** the project's own system, a development or test environment, the scope written in the bindings first, nothing destructive, test data only, and an agent that would leave the scope stops and asks. A playbook names no target: an address, an account or a listener comes from the scope. A scenario with no scope is recorded as not run. A value that a step needs (a size, a number of requests, an address of a test mailbox) comes from the scope as well.
 
 | Area | File |
 | ---- | ---- |

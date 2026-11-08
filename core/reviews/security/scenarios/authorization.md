@@ -24,10 +24,10 @@ First edition, a draft. Each playbook runs only under [the rules of engagement](
 - **Goal:** Walk the permission matrix role by role.
 - **Applies:** product: multi-user
 - **Preconditions:** One test user for each role.
-- **Steps:** For each role, call each function that the matrix denies it, directly and not through the interface.
+- **Steps:** For each role, call each function that the matrix denies it, directly and not through the interface, on test objects of the scope only. A function with a global effect (deleting users, changing settings, purging) is tried with a request that cannot complete, or left out and recorded.
 - **Safe behaviour:** Every call is refused on the server.
 - **Evidence:** A table of role, function and response.
-- **Cleanup:** Delete the test users.
+- **Cleanup:** Undo what a call changed on the test objects, and delete the test users.
 - **Severity:** 🔴.
 - **Probes:** S5-020
 - **Sources:** OWASP-API API5 (verified 2026-11-08); WSTG ATHZ-02, ATHZ-03 (verified 2026-11-08); CS-AUTHZ deny by default (verified 2026-11-08)
@@ -37,11 +37,11 @@ First edition, a draft. Each playbook runs only under [the rules of engagement](
 - **Dimension:** S5
 - **Goal:** Find out whether a request can write protected fields.
 - **Applies:** product: multi-user, http-api
-- **Preconditions:** A test user, and the list of fields of its object.
-- **Steps:** Add the fields for role, owner and status to an update and to a creation request; then read the object.
+- **Preconditions:** A test user, and the list of fields of its object; the only values used are the roles and test accounts of the scope.
+- **Steps:** Add the fields for role, owner and status, with those values, to an update and to a creation request; then read the object.
 - **Safe behaviour:** The fields are ignored or the request is refused, and the object's privileges are unchanged.
 - **Evidence:** The requests, and the object before and after.
-- **Cleanup:** Delete the test user.
+- **Cleanup:** Delete the test user and the objects it created.
 - **Severity:** 🔴 when a privilege can be set.
 - **Probes:** S5-021
 - **Sources:** OWASP-API API3 (verified 2026-11-08)
