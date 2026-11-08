@@ -169,11 +169,11 @@ test('gate refuses a bad reading, an unknown step and a bad time; --at moves the
     late.lines.join('\n'),
     /5-hour window reset at 2026-11-05T12:30:00Z, after the reading: counted as empty/
   )
-  // a step too big for an empty window says to split it (8 SP of Opus on Pro)
+  // a step too big for an empty window says to split it (6 SP of Fable on Pro)
   const big = project('{ "usage": { "subscription": "pro" } }')
   big.write(
     'plan/flows/flow-1-ship-one.md',
-    FLOW('{ "usage": { "subscription": "pro" } }').replace('| 5 | — | C2 |', '| 8 | — | Opus 5.5 |')
+    FLOW('{ "usage": { "subscription": "pro" } }').replace('| 5 | — | C2 |', '| 6 | — | Fable 5.1 |')
   )
   const split = call(['gate', '1', '1'], big, READING)
   assert.match(split.lines.join('\n'), /Gate: STOP[\s\S]*of an empty window: split it/)
@@ -272,19 +272,19 @@ test('flow check flags a step that does not fit one window where the subscriptio
   assert.equal(call(['check'], scratch).code, 0)
   scratch.write(
     'plan/flows/flow-1-ship-one.md',
-    FLOW('{ "usage": { "subscription": "pro" } }').replace('| 5 | — | C2 |', '| 8 | — | Opus 5.5 |')
+    FLOW('{ "usage": { "subscription": "pro" } }').replace('| 5 | — | C2 |', '| 6 | — | Fable 5.1 |')
   )
   planSummary({ root: scratch.root, profile: scratch.profile })
   const big = call(['check'], scratch)
   assert.equal(big.code, 1)
   assert.match(
     big.lines.join('\n'),
-    /plan\/flows\/flow-1-ship-one\.md: step 1: its estimate of 160% of the 5-hour window \(times 1\.2\) does not fit within the threshold 85% even when the window is empty; split the step/
+    /plan\/flows\/flow-1-ship-one\.md: step 1: its estimate of 180% of the 5-hour window \(times 1\.2\) does not fit within the threshold 85% even when the window is empty; split the step/
   )
   // on a larger subscription the same step fits; an unknown subscription is not checked
   scratch.write(
     'plan/flows/flow-1-ship-one.md',
-    FLOW('{ "usage": { "subscription": "max5x" } }').replace('| 5 | — | C2 |', '| 8 | — | Opus 5.5 |')
+    FLOW('{ "usage": { "subscription": "max5x" } }').replace('| 5 | — | C2 |', '| 6 | — | Fable 5.1 |')
   )
   planSummary({ root: scratch.root, profile: scratch.profile })
   assert.equal(call(['check'], scratch).code, 0)

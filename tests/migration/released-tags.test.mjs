@@ -85,6 +85,16 @@ function currentTree() {
   return { dir, version }
 }
 
+// The last release a tree takes over: the newest tag whose version is lower than the tree's, so a tree equal to a tag (a released one) takes the one before it
+const lastRelease = (version, tags = TAGS) => tags.filter((tag) => compareVersions(tag, version) < 0).at(-1)
+
+test('the last release is the newest tag lower than the tree, also when the tree equals the newest tag', () => {
+  const tags = ['v0.3.0', 'v0.4.0', 'v0.5.0']
+  assert.equal(lastRelease('0.6.0', tags), 'v0.5.0')
+  assert.equal(lastRelease('0.5.0', tags), 'v0.4.0')
+  assert.equal(lastRelease('0.4.5', tags), 'v0.4.0')
+})
+
 test('the tags of the released versions are present', () => {
   assert.ok(
     TAGS.length >= 3,
@@ -133,7 +143,8 @@ function takeTree(root, source) {
   return { oldSync, next, projectTools }
 }
 
-for (const tag of TAGS) {
+// Only the tags lower than the tree: a project cannot take a tree that is its own version or older
+for (const tag of TAGS.filter((candidate) => compareVersions(candidate, currentTree().version) < 0)) {
   test(`a project bootstrapped from ${tag} takes the current tree, migrates, passes check all, and rolls back to an empty diff`, () => {
     const root = bootstrapFrom(tag)
     // A version is taken on a branch of its own, and the migration is one commit on the commit it starts from
@@ -196,8 +207,8 @@ function developmentTree(version, notes) {
 const notesRead = (output) => [...output.matchAll(/^Migration note of (\S+) /gm)].map((match) => match[1])
 
 test('a project takes a development version, then the next one, then the final one, and reads the right notes at each step', () => {
-  const root = bootstrapFrom(TAGS.at(-1))
   const { version } = currentTree()
+  const root = bootstrapFrom(lastRelease(version))
   const tools = join(root, 'harness/tools/harness.mjs')
   projectGit(root, 'checkout', '-q', '-b', 'chore/take-version')
   const take = (target, notes) => {
@@ -244,9 +255,12 @@ Recommendations
 const readJson = (root, path) => JSON.parse(readFileSync(join(root, path), 'utf8'))
 const skill = (root, name) => readFileSync(join(root, '.claude/skills', name, 'SKILL.md'), 'utf8')
 
-// A project of the last release, with the profile it holds before the take (`edit` changes it, as a migration note tells a project to), takes this tree
+// The release before Phase 6, whatever the tree is: a tree of 0.5.0 or later has Phase 6 in its last release already
+const BEFORE_PHASE_6 = '0.5.0'
+
+// A project of the last release before Phase 6, with the profile it holds before the take (`edit` changes it, as a migration note tells a project to), takes this tree
 function takeOfLastRelease(edit) {
-  const root = bootstrapFrom(TAGS.at(-1))
+  const root = bootstrapFrom(lastRelease(BEFORE_PHASE_6))
   projectGit(root, 'checkout', '-q', '-b', 'chore/take-version')
   if (edit) {
     const file = join(root, 'harness-profile.json')

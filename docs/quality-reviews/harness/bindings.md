@@ -18,8 +18,8 @@ tools already know.
 | **CORE** | `AGENTS.md` (the managed blocks non-negotiables, git-rules), `harness/**` (the vendored copy) |
 | **DOMAIN** | – |
 | **ADAPTER** | `docs/engineering/**`, `docs/operations/**`, `docs/procedures/**`, `.github/**`, `.claude/**`, `scripts/**` |
-| **PROFILE** | `harness-profile.json`, `harness.lock.json`, `docs/profile.md`, `**/bindings.md` |
-| **STATE** | `docs/development-plan/**`, `docs/design.md`, `docs/quality-reviews/harness/20*.md`, `CHANGELOG.md`, `changelog.d/**` |
+| **PROFILE** | `harness-profile.json`, `harness.lock.json`, `docs/profile.md`, `**/bindings.md`, `SECURITY.md` |
+| **STATE** | `docs/development-plan/**`, `docs/design.md`, `docs/quality-reviews/harness/20*.md`, `docs/quality-reviews/security/20*.md`, `CHANGELOG.md`, `changelog.d/**` |
 | **ENTRY** | `AGENTS.md`, `CLAUDE.md`, `README.md` |
 
 Not in the map: nothing.
@@ -50,6 +50,8 @@ The ceilings of the numbers the method budgets (section 3). Task 4.5 of the plan
 | ------ | -------- | ------- |
 | Rows of the `procedures` block of `AGENTS.md` (M6, M20) | 12 | 16 |
 | Words of the `procedures` block of `AGENTS.md` (M6) | 277 | 400 |
+| Lines of the security rules of `AGENTS.md` (M6) | 2 | 5 |
+| Words of the security rules of `AGENTS.md` (M6) | 89 | 150 |
 | Words in the always-loaded set (M6) | 2,729 | — |
 | Normative words in the always-loaded set (M20) | 33 | — |
 | Exception words in the always-loaded set (M20) | 5 | — |

@@ -31,6 +31,16 @@ const profile = (runtimes) => ({
 // The runtime adapter of the framework, loaded from its folder
 const { ADAPTER_RUNTIMES } = await import('./runtimes.mjs')
 
+test('the security review is packaged for each runtime that the framework ships', () => {
+  const procedure = listProcedures().find(({ name }) => name === 'security-review')
+  assert.ok(Object.keys(ADAPTER_RUNTIMES).length >= 2)
+  for (const [name, runtime] of Object.entries(ADAPTER_RUNTIMES)) {
+    const packaging = runtime.modules['packaging.mjs']
+    assert.match(packaging.skillPath(procedure, profile([name])), /security-review/, name)
+    assert.match(packaging.packageProcedure(procedure, 'Body of the review.'), /Body of the review\./, name)
+  }
+})
+
 test('the Claude Code preset packages each procedure as a skill, explicit ones with disable-model-invocation', () => {
   const generators = skillGenerators(ADAPTER_RUNTIMES, procedures)
   assert.deepEqual(
@@ -252,6 +262,7 @@ test('the procedures that every agent starts unasked are auto, and the explicit 
     'release',
     'code-review',
     'harness-review',
+    'security-review',
     'new-adapter',
     'update-framework',
     'report-upstream'

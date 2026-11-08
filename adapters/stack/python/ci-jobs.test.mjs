@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
+import { isPinned } from '../../host/github/ci-audit.mjs'
 import { ciJobs } from './ci-jobs.mjs'
 
 const profile = {
@@ -20,7 +21,7 @@ test('the static job installs the locked environment and runs the commands of th
   )
   for (const line of [
     'node-version-file: .nvmrc',
-    'astral-sh/setup-uv@v6',
+    'astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0',
     'run: uv sync --locked',
     '- run: uv run ruff check .',
     '- run: uv run mypy .',
@@ -54,4 +55,13 @@ test('among several stacks the static job is named after the stack, runs its own
     'the documentation check runs once, in the first stack'
   )
   assert.ok(ciJobs(profile, { ...many, first: true }).yaml.includes('- run: node harness/tools/harness.mjs check all'))
+})
+
+test('every action of the jobs is pinned to a full commit, with its version in a comment', () => {
+  const uses = ciJobs(profile).yaml.match(/uses: .*/g) ?? []
+  assert.ok(uses.length > 0)
+  for (const line of uses) {
+    assert.ok(isPinned(line.split(/\s+/)[1]), line)
+    assert.match(line, / # v\d+\.\d+\.\d+$/, line)
+  }
 })

@@ -146,3 +146,5 @@ A hit of the CORE scan in the vendored framework core that the project reported 
 | Code quality reviews | [`core/reviews/code/README.md`](../core/reviews/code/README.md) |
 | Harness quality reviews | [`core/reviews/harness/README.md`](../core/reviews/harness/README.md) |
 | Harness review bindings | [`quality-reviews/harness/bindings.md`](./quality-reviews/harness/bindings.md) |
+| Security reviews | [`core/reviews/security/README.md`](../core/reviews/security/README.md) |
+| Security review bindings | [`quality-reviews/security/bindings.md`](./quality-reviews/security/bindings.md) |

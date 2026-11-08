@@ -159,6 +159,13 @@ test('the scaffold writes a risk register and a template of design records once,
   const files = Object.fromEntries(scaffoldPlan({ profile, modules }).map(({ path, content }) => [path, content]))
   const risks = files['docs/development-plan/cross-cutting/risk-register.md']
   const rfcs = files['docs/development-plan/cross-cutting/decisions/README.md']
+  const security = files['docs/quality-reviews/security/bindings.md']
+  assert.match(
+    security,
+    /^\[← Security review method\]\(\.\.\/\.\.\/\.\.\/harness\/core\/reviews\/security\/README\.md\)/
+  )
+  assert.match(security, /^## Scope of active tests$/m)
+  assert.doesNotMatch(security, /\{\{/)
   assert.ok(risks.startsWith('[← Development plan](../README.md)\n\n# Risk register'))
   assert.match(risks, /\| ID \| Risk \| Likelihood \| Impact \| Mitigation \| Owner \| Status \| Reviewed \|/)
   assert.match(risks, /\[the decision records\]\(\.\/decisions\/README\.md\)/)
@@ -170,8 +177,9 @@ test('the scaffold writes a risk register and a template of design records once,
   const without = structuredClone(profile)
   without.documents.riskRegister = ''
   without.documents.rfcs = ''
+  without.documents.securityBindings = ''
   const none = scaffoldPlan({ profile: without, modules }).map(({ path }) => path)
-  assert.ok(!none.some((path) => /cross-cutting/.test(path)))
+  assert.ok(!none.some((path) => /cross-cutting|security/.test(path)))
 })
 
 test('a project with two stacks gets one CI workflow whose job ids are unique, each stack with its own static job and its own coverage jobs', () => {
@@ -329,6 +337,61 @@ test('init asks only what no flag answered, and an empty reply takes the value o
   assert.deepEqual(written.branches, { production: 'main', integration: 'next' })
 })
 
+test("init asks for the flows' default permissions only when a selected runtime lists its modes, and the answer writes the role (I-30)", async () => {
+  const run = async (flags, replies) => {
+    const root = fresh()
+    const prompts = []
+    await assert.rejects(
+      init({
+        root,
+        flags: { name: 'acme', repository: 'acme/shop', from: join(root, 'missing'), ...flags },
+        input: replies.join('\n'),
+        out: (line) => prompts.push(line)
+      }),
+      /holds no framework\.json/
+    )
+    return { prompts, written: JSON.parse(readFileSync(join(root, 'harness-profile.json'), 'utf8')) }
+  }
+
+  // Without a runtime that lists modes (no runtime, or Cursor, which lists none) the question is not asked and no role is written
+  for (const runtime of ['', 'cursor']) {
+    const { prompts, written } = await run({ runtime }, ['node-ts', '', '80', '', ''])
+    assert.equal(prompts.filter((line) => /permission/i.test(line)).length, 0)
+    assert.equal(written.flows, undefined)
+  }
+
+  // With Claude Code: the modes are shown, the mode and the tools are asked, and the answers write the role
+  const asked = await run({ runtime: 'claude-code' }, ['node-ts', '', '80', '', '', 'auto', 'Bash(git *), Bash(npm *)'])
+  const prompt = asked.prompts.find((line) => /permission mode/i.test(line))
+  assert.match(prompt, /available: default, acceptEdits, auto, dontAsk, plan, bypassPermissions; empty for none/)
+  assert.ok(asked.prompts.some((line) => line.startsWith('Tools those workers may use without asking')))
+  assert.deepEqual(asked.written.flows.permissions, { mode: 'auto', allow: ['Bash(git *)', 'Bash(npm *)'] })
+
+  // An empty reply sets no role, and the tools are then not asked
+  const empty = await run({ runtime: 'claude-code' }, ['node-ts', '', '80', '', '', ''])
+  assert.equal(empty.prompts.filter((line) => /Tools those workers/.test(line)).length, 0)
+  assert.equal(empty.written.flows, undefined)
+
+  // A mode the runtime does not offer is refused
+  await assert.rejects(
+    run({ runtime: 'claude-code' }, ['node-ts', '', '80', '', '', 'yolo']),
+    /"yolo" is not one of default/
+  )
+
+  // A flag-style answer (--set) is not asked again
+  const given = await run({ runtime: 'claude-code', set: ['flows.permissions.mode=plan'] }, [
+    'node-ts',
+    '',
+    '',
+    '80',
+    '',
+    '',
+    ''
+  ])
+  assert.equal(given.prompts.filter((line) => /permission mode/i.test(line)).length, 0)
+  assert.deepEqual(given.written.flows.permissions, { mode: 'plan' })
+})
+
 test('retarget points the framework paths of the starting values at another framework folder', () => {
   assert.equal(retarget('`node harness/tools/harness.mjs plan log <n>`', '.'), '`node tools/harness.mjs plan log <n>`')
   assert.deepEqual(retarget({ a: ['harness/core/x.md', 'a harness/ b'] }, 'vendor'), {
@@ -381,6 +444,7 @@ test('--self makes the framework tree at the root a project of its own: mode sel
   assert.ok(!existsSync(join(root, 'harness')), 'nothing is vendored')
   assert.equal(readFileSync(join(root, 'README.md'), 'utf8'), readme, 'the framework keeps its own README')
   assert.match(done.join('\n'), /Kept the files of the framework itself: .*README\.md/)
+  assert.match(done.join('\n'), /run the project's formatter on .*\.claude\/settings\.json/)
 
   const settings = JSON.parse(readFileSync(join(root, '.claude', 'settings.json'), 'utf8'))
   assert.equal(

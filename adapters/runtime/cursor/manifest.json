@@ -93,7 +93,7 @@
     {
       "rule": "nn.secrets",
       "when": "early",
-      "by": "native mode: `guard-edit` on `preToolUse` (Write) refuses the edit of an environment file; the `.cursorignore` block of `access.denyRead` keeps secrets out of the agent's reads (terminal commands and MCP tools are outside it); nothing scans the committed content for a secret",
+      "by": "native mode: `guard-edit` on `preToolUse` (Write) refuses the edit of an environment file; the `.cursorignore` block of `access.denyRead` keeps secrets out of the agent's reads (terminal commands and MCP tools are outside it); `harness check security` scans the committed content for a secret (in `harness check all`, so in CI, once `checks.security` is on), and no hook stops the commit that holds one",
       "partial": true
     }
   ]

@@ -49,6 +49,12 @@
     "changelogFragments": "changelog.d",
     "frameworkDir": "."
   },
+  "checks": {
+    "security": true
+  },
+  "security": {
+    "allowedRules": ["Bash(node *)"]
+  },
   "flows": {
     "permissions": {
       "mode": "auto",
@@ -108,7 +114,9 @@
     "releasing": "docs/operations/releasing.md",
     "codeReviews": "core/reviews/code/README.md",
     "harnessReviews": "core/reviews/harness/README.md",
-    "harnessBindings": "docs/quality-reviews/harness/bindings.md"
+    "harnessBindings": "docs/quality-reviews/harness/bindings.md",
+    "securityReviews": "core/reviews/security/README.md",
+    "securityBindings": "docs/quality-reviews/security/bindings.md"
   },
   "layers": {
     "scope": [
@@ -136,6 +144,7 @@
       "docs/development-plan/**",
       "docs/design.md",
       "docs/quality-reviews/harness/20*.md",
+      "docs/quality-reviews/security/20*.md",
       "CHANGELOG.md",
       "changelog.d/**"
     ],

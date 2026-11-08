@@ -36,6 +36,18 @@ It is read to find out whether a new report is a problem that was fixed already.
 | [I-27](./I-27.md) | A project cannot give its flows a default for the workers' permissions | plan format | 2 | — |
 | [I-28](./I-28.md) | `harness flow status` reads a take that a later take superseded as not done | checks | 1 | — |
 | [I-29](./I-29.md) | The usage gate does not know the plan `pro` in lower case | checks | 1 | — |
+| [I-30](./I-30.md) | The bootstrap does not ask for the flows' default permissions | bootstrap and sync | 2 | — |
 | [I-31](./I-31.md) | The node-ts quiet test commands do not reach Jest from a workspaces root, and two quiet defaults are missing | stack adapters | 1 | — |
 | [I-32](./I-32.md) | `harness flow audit` misses the command-line workers of a flow | checks | 1 | — |
+| [I-33](./I-33.md) | The migration tests take "the last release" from the newest tag, so they fail once a version is tagged | checks | 1 | — |
+| [I-34](./I-34.md) | The bootstrap and the adoption write the settings file without the formatter's message | bootstrap and sync | 1 | — |
+| [I-35](./I-35.md) | `package-lock.json` names the version `0.1.0` | checks | 1 | — |
+| [I-36](./I-36.md) | `harness flow status` reads a development take whose draft was closed as not done | checks | 1 | — |
+| [I-37](./I-37.md) | The security review's method and checks, corrected from the first review | review method | 2 | the [first security review](../../../quality-reviews/security/2026-11-08.md), section 9 |
+| [I-38](./I-38.md) | The session start carries the text of users' reports, and no test plants a payload | procedures | 2 | the [first security review](../../../quality-reviews/security/2026-11-08.md), findings S-20261108-01 and S-20261108-02 |
+| [I-39](./I-39.md) | The actions of the generated workflows are pinned to tags | host adapters | 3 | the [first security review](../../../quality-reviews/security/2026-11-08.md), finding S-20261108-06 (probe S2-004) |
+| [I-43](./I-43.md) | The security gate is off: the template still grants write at the top, and a local allow rule blocks every push | host adapters | 2 | the [first security review](../../../quality-reviews/security/2026-11-08.md), findings S-20261108-06 and S-20261108-12; found again by the worker of I-39 (step 7c of flow 4) |
+| [I-46](./I-46.md) | A project with a layer map fails `check layers` on the `SECURITY.md` that 0.6.0 asks for | checks | 1 | — |
+| [I-47](./I-47.md) | `check security` reports S2-001 on each workspace that the root lock file covers | checks | 1 | — |
 <!-- issue-queue:end -->
+| [I-38](./I-38.md) | The session start carries the text of users' reports, and no test plants a payload | procedures | 2 | the [first security review](../../../quality-reviews/security/2026-11-08.md), findings S-20261108-01 and S-20261108-02 |

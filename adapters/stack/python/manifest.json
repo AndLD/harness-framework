@@ -72,6 +72,11 @@
     },
     "quiet-commands": {
       "fills": "`--quiet` for Ruff, `--no-error-summary` for mypy and `-q` for pytest; the gate's steps use the same options"
+    },
+    "dependency-audit": {
+      "fills": "the dependency files (`pyproject.toml` with one of the lock files of uv, Poetry or PDM, and `requirements*.txt`, which are their own record), the requirements in them that have no upper bound, and the audit command `uv run pip-audit`",
+      "module": "dependency-audit.mjs",
+      "export": "dependencyAudit"
     }
   },
   "enforces": [
@@ -114,7 +119,8 @@
       "lintQuiet": "uv run ruff check --quiet .",
       "typecheckQuiet": "uv run mypy --no-error-summary .",
       "testQuiet": "uv run pytest -q",
-      "testCoverageQuiet": "uv run coverage run -m pytest -q"
+      "testCoverageQuiet": "uv run coverage run -m pytest -q",
+      "audit": "uv run pip-audit"
     },
     "versions": {
       "runtime": "Python 3.12 (the harness tools run on Node.js 22 LTS)"

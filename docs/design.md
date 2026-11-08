@@ -572,9 +572,18 @@ with the framework's modules (two names in common, or its only one). The old pro
 `node harness/tools/harness.mjs <command>`, wrapped by the stack (`npm run harness -- …`, or a `make` target in the python preset).
 `harness check all` is what `npm run docs:check` runs today:
 `vendored`, `generated`, `scaffold`, `profile`, `values`, `links`, `paths`, `core` (in the framework source only), `layers`, `plan`,
-`changelog` and `product-knowledge`, then the **project's own checks**, the commands listed in `checks.project` of the profile file (in `bot-rts`, none of
+`changelog` and `product-knowledge` (and `security` once the project turns on `checks.security`), then the **project's own checks**, the commands listed in `checks.project` of the profile file (in `bot-rts`, none of
 today's checks stays outside the framework; another project lists, for example, its check of unfinished report pages). One command thus
 covers both, and the procedures and the definition of done cite only it.
+
+`harness check security` (task 2.2) runs the probes of the security review that a script can decide, 14 of the 28 scriptable ones of the first
+edition, and names the probe in each finding. What reads the project's files is core: the secret scan (the patterns are the profile role
+`security.secretPatterns`, a finding never prints the value, no download), the tracked files that `access.denyRead` names, the lock file beside each
+manifest, the tracked binaries. What depends on the stack, the host or the runtime is a logic-optional role of the adapter, so that core names none of
+them: `dependency-audit` of the stack (the manifests and their lock files, the open versions, the audit command), `ci-audit` of the host (the workflow
+files), `settings-audit` of the runtime (the committed settings). The dependency audit needs the network, so it runs only with `--audit`; `--range
+<a>..<b>` scans the lines that the commits of a push added. A check that cannot run says so in its messages (no role, no catalogue), the scriptable probes with
+no check are listed as the gaps for the next review, and `checks.security` (off by default) puts the check into `harness check all` once the project passes it.
 
 `harness check paths` fails on a repository path written in backticks in a document outside STATE that does not exist. The link check sees
 only links, and the harness documents name scripts and files in plain text: today 57 times in 10 documents, which the build moves or renames.
@@ -655,7 +664,7 @@ be up to date with its base. The bootstrap asks the host (`detectProtection`) be
   - `finish-phase`: exit criteria, status, the local database step where the profile has database commands (an optional role group,
     "not applicable" otherwise), the summary;
   - `release`;
-  - `harness-review` and `code-review`, the start prompts of the bindings as procedures;
+  - `harness-review`, `code-review` and `security-review`, the start prompts of the bindings as procedures;
   - `new-adapter` (section 5).
 - **Project procedures** (built in task 4.1). `bot-rts`'s own procedures (add an endpoint, add a migration, add a catalogue key) use the same format in
   `docs/procedures/` (the profile's `paths.procedures`, optional), and the same tool packages them: the skill of each is written for the selected
@@ -681,8 +690,8 @@ be up to date with its base. The bootstrap asks the host (`detectProtection`) be
     therefore classified when it is added, and not discovered by a later review.
 - **The staging folder** (until 17.15) is "framework source": the project's layer map leaves it out, and the framework's own checks (CORE scan,
   links, tests) cover it. The vendored copy is CORE.
-- **Framework-known paths** (`harness-profile.json`, `harness.lock.json`, `docs/profile.md`, the bindings files) are put in PROFILE by the
-  generator. This closes **H-20261019-23** for good: the profile file can no longer be missing from the map.
+- **Framework-known paths** (`harness-profile.json`, `harness.lock.json`, `docs/profile.md`, the bindings files, and the `SECURITY.md` of the host's scaffold,
+  unless the project's map already places it) are put in PROFILE by the generator. This closes **H-20261019-23** for good: the profile file can no longer be missing from the map.
 
 ### 8.3 Where the findings are absorbed
 
@@ -860,6 +869,7 @@ a report template, project bindings, dated reports that stay in each project, sc
 | S5 | The product's attack surface (project) | a threat model from the bindings: assets, trust boundaries, authentication and authorisation, input handling, isolation of untrusted code, abuse limits |
 | S6 | Operations (project) | deployment configuration, logs, backups, incident response |
 
+- **The method's own terms** (the probe, the rules of engagement of an active test, where results go, the loop of a review) are in [the method](../core/reviews/security/README.md).
 - **Automation.** What a script can decide moves into `harness check security` (task 2.2) and runs in CI. The review judges the rest, and checks
   that the automation still holds.
 - **Cadence.** A full review before a first release and once per major version. A targeted review after a change to authentication, the CI, the
