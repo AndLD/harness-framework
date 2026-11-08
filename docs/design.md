@@ -690,8 +690,8 @@ be up to date with its base. The bootstrap asks the host (`detectProtection`) be
     therefore classified when it is added, and not discovered by a later review.
 - **The staging folder** (until 17.15) is "framework source": the project's layer map leaves it out, and the framework's own checks (CORE scan,
   links, tests) cover it. The vendored copy is CORE.
-- **Framework-known paths** (`harness-profile.json`, `harness.lock.json`, `docs/profile.md`, the bindings files) are put in PROFILE by the
-  generator. This closes **H-20261019-23** for good: the profile file can no longer be missing from the map.
+- **Framework-known paths** (`harness-profile.json`, `harness.lock.json`, `docs/profile.md`, the bindings files, and the `SECURITY.md` of the host's scaffold,
+  unless the project's map already places it) are put in PROFILE by the generator. This closes **H-20261019-23** for good: the profile file can no longer be missing from the map.
 
 ### 8.3 Where the findings are absorbed
 
