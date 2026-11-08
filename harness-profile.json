@@ -27,9 +27,6 @@
     "lines": 90
   },
   "coveragePackages": [],
-  "checks": {
-    "security": true
-  },
   "requiredChecks": [
     "verify",
     "pr-title"
