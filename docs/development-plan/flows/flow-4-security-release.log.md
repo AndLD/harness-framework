@@ -406,3 +406,28 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Worker's recommendation:** none (no worker is involved).
 - **Choice:** (a): B-4 is promoted to task 2.12 (1 SP, C2), which step 7e builds; B-5 stays proposed · **Decided by:** the owner ("Promote into Phase 2", "0.6.1").
 - **Deviation:** the flow template says an inserted step takes a suffix id and never renumbers the others; the entries of 15:40 and 15:55 renamed the steps after 7c twice to keep one letter. None of them had started, and the entries say which old id is which.
+
+### 2026-11-08 19:38 — running
+- **Orchestrator:** the desktop session b1d10f69-cd53-40a2-bc31-82766d7686ce of the account andrey.larionov.me@gmail.com · **Mode:** seamless · **Steps:** 7e, 7f, 7g, then 7h, which stops for the owner
+- **Usage:** 5-hour 2% (resets 2026-11-08T22:30:00Z) · weekly 69% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-08 19:38 — step 7e started
+- **Executor:** session · **Worker:** local_f54f3cd8-bc98-4d89-8fe1-3a26bc67c84f · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 1 SP, 0.3% · **Start:** cold (fresh: another account, and the flow stopped for a usage reset since the last worker's turn)
+- **Usage before:** 5-hour 2% (resets 2026-11-08T22:30:00Z) · weekly 69% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-08 19:44 — step 7e ended: done
+- **Usage after:** 5-hour 6% (resets 2026-11-08T22:30:00Z) · weekly 69% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +4% with the orchestrator's own work, weekly +0%; estimated 5-hour 1.8%, weekly 0.3% · **Pull requests merged:** #255 · **Ids done:** 2.12 · **Worker:** local_f54f3cd8-bc98-4d89-8fe1-3a26bc67c84f, 36 turns, context 11% after the step
+- **Report:** `SECURITY.md` at the root and the same text as a scaffold file of the GitHub host adapter (core stays neutral, since the private-report steps name the host's feature); no role of the profile and no check added, S3-020 being a judged probe. Tests (904), lint, typecheck, `docs:check` and the adapter's conformance pass; a real bootstrap of a new project was not run, the scaffold test renders the file. No open decision, no deviation from the scope.
+- **Worker's recommendation, read with the report (the app's note showed it):** the owner confirms the 7 days of `SECURITY.md`: the next entry. The CI monitor was not attached; the pull request merged without it.
+
+### 2026-11-08 19:46 — decision D0: step 7e's use against its estimate is not an escalation
+- **Options:** (a) not an escalation; (b) escalate (a step over twice its estimate).
+- **Own analysis:** (a), as for step 9c of flow 3 with the same numbers. The 5-hour reading rose 4 points against 1.8%: twice over on paper, but the readings are whole percents and the window also holds this orchestrator's own turns over the step, at a context of 100k tokens; the weekly window rose 0 against 0.3%.
+- **Worker's recommendation:** none.
+- **Choice:** (a) · **Decided by:** the orchestrator.
+
+### 2026-11-08 19:46 — decision D3: the 7 days of `SECURITY.md` stay for `0.6.0-dev.1`, and the owner confirms them at step 7h
+- **Options:** (a) keep "acknowledges the report within 7 days" for the development version, and put it to the owner at the stop of 7h; (b) take the number out before the cut; (c) stop the flow now for the owner.
+- **Own analysis (the worker's recommendation was already seen):** (a). The wording is the worker's: neither the task nor the owner named a period, and it is a public promise made for a solo maintainer, so it is the owner's to confirm before a final version. A development version only reaches the consumer, and 7h already stops for the owner before `0.6.0`, so neither a stop now nor another pull request is needed.
+- **Worker's recommendation:** the owner confirms or changes it before the cut. The difference is one of timing: before the final cut, which is the version that makes the promise to projects.
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode), for review at 7h.
