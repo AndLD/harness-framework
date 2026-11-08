@@ -399,3 +399,10 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis:** (a), my recommendation to the owner: I-44 is 1 SP and a security release should say how to report a weakness in private; I-45 changes the host adapter and needs an identity the owner creates first, so the owner places it. I-44 takes step 7e, so the cut, the consumer's take and the decision move to 7f, 7g and 7h; none had started.
 - **Worker's recommendation:** none (no worker is involved).
 - **Choice:** (a) · **Decided by:** the owner ("File them now"); the host's settings for S-08 and S-10 stay the owner's.
+
+### 2026-11-08 16:10 — decision D2: the features go to the backlog; step 7e builds task 2.12
+- **Options:** for I-44 (a security policy file), now the backlog item B-4: (a) promote it into Phase 2 and keep it before the cut; (b) leave it in the backlog, out of `0.6.0`.
+- **Own analysis:** (a): it is 1 SP, and a security release should say how to report a weakness in private. The owner's rule (2026-11-08): a feature goes to the backlog queue, not the issue queue, so I-44 became B-4 and I-45 became B-5 (`Formerly:` keeps the ids); I-40, I-41 and I-42 are defects and stay issues, scheduled in `0.6.1` by flow 5.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (a): B-4 is promoted to task 2.12 (1 SP, C2), which step 7e builds; B-5 stays proposed · **Decided by:** the owner ("Promote into Phase 2", "0.6.1").
+- **Deviation:** the flow template says an inserted step takes a suffix id and never renumbers the others; the entries of 15:40 and 15:55 renamed the steps after 7c twice to keep one letter. None of them had started, and the entries say which old id is which.

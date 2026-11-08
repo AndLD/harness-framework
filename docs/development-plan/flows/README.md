@@ -15,4 +15,5 @@ The table is written from the flow files by `harness plan summary`; edit a flow 
 | [2 — The 0.4.0 release](./flow-2-release-0-4-0.md) | `0.4.0-dev.1`, `0.4.0` | seamless | 30 SP | 45.1% | ✅ |
 | [3 — The context optimization release](./flow-3-context-release.md) | `0.5.0-dev.1`, `0.5.0` | seamless | 41 SP | 45.9% | ✅ |
 | [4 — The security release](./flow-4-security-release.md) | `0.6.0-dev.1`, `0.6.0` | seamless | 41 SP | 66.4% | 🟡 |
+| [5 — The fixes after the security release](./flow-5-fixes-release.md) | `0.6.1` | brainstorm | 7 SP | 2.2% | ⬜ |
 <!-- flows-index:end -->
