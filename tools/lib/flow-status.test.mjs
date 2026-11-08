@@ -172,6 +172,11 @@ test('a step in an external repository is checked through the host: the lock it 
   const superseded = take(newer, prs({ number: 6, title: 'take 1.0.0', state: 'merged' }))
   assert.equal(superseded.computed, '✅')
   assert.match(superseded.evidence, /names 1\.1\.0, a later version than 1\.0\.0; pull request #6 .* is merged/)
+  // a closed draft of a superseded take ends it too; a closed pull request of a take not yet passed does not
+  const closedDraft = take(newer, prs({ number: 8, title: 'take 1.0.0', state: 'closed' }))
+  assert.equal(closedDraft.computed, '✅')
+  assert.match(closedDraft.evidence, /a later version than 1\.0\.0; pull request #8 .* is closed/)
+  assert.equal(take(old, prs({ number: 8, title: 'take 1.0.0', state: 'closed' })).computed, '⬜')
   assert.equal(take(newer, prs({ number: 5, title: 'other', state: 'closed' })).computed, '⬜')
   assert.equal(take(newer, () => ({ pullRequests: [], error: 'no access' })).computed, '✅')
   assert.match(
