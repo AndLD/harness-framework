@@ -47,7 +47,10 @@ test('a rule that nothing declares is judgment', () => {
 
 test('a rule held only in part is "partly", not "enforced"', () => {
   const table = renderRuleMap(profile(true))
-  assert.match(row(table, 'nn.secrets'), /nothing scans the committed content for a secret.*\| partly \|$/)
+  assert.match(
+    row(table, 'nn.secrets'),
+    /`harness check security` scans the committed content for a secret.*\| partly \|$/
+  )
   assert.match(row(table, 'nn.tests'), /\| enforced \|$/)
 })
 

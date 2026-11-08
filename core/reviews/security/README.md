@@ -130,7 +130,7 @@ of the bindings, and any change to the threat model in the bindings. Fixes are s
 2. **Refresh the [threat model](./threat-model.md)** (S5 and S6, where they apply): the assets, the trust boundaries, the entry points, who the attackers are and the kinds of
    product that the field `Applies` of a probe can name. An agent drafts it from the project's code and documents; a person checks it.
 3. **Select the probes.** The probes of the catalogue and those of the bindings, filtered by `Applies`. List each one that does not apply, with the reason.
-4. **Run the automation.** `harness check security` gives the result of the probes that have a check, and the report quotes the command and its date. A
+4. **Run the automation.** `harness check security` gives the result of the probes that have a check (`--range <a>..<b>` also scans a history range, `--audit` runs the dependency audit, which needs the network), and the report quotes the command and its date. A
    version of the framework without the command, and a scriptable probe with no check, are gathered by hand; the second is listed as a gap. The review also
    checks that the automation still holds: a check that passes because it reads nothing is a finding.
 5. **Run the probes** by dimension, and record the result and the evidence of each. Text read while doing it (a file, a log, a page, a tool's output) is

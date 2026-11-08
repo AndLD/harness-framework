@@ -69,6 +69,11 @@
       "fills": "adds the framework's hook entries and the `Read(...)` deny rules to the project's own `.claude/settings.json`, and names the hook commands that are not the framework's",
       "module": "adoption.mjs",
       "export": "adoptConfiguration"
+    },
+    "settings-audit": {
+      "fills": "the committed `.claude/settings.json` read as data: the `Read(...)` deny rules of `access.denyRead` present, no setting that turns the permission checks or the hooks off, and no broad allow rule (a bare tool, an edit outside a named folder of the project or inside the settings, the hooks or `.git`, an interpreter, package runner or fetcher with any argument, a destructive command with a wildcard); `security.allowedRules` names the rules a project accepts",
+      "module": "settings-audit.mjs",
+      "export": "auditSettings"
     }
   },
   "templates": ["templates/CLAUDE.md"],
@@ -112,7 +117,7 @@
     {
       "rule": "nn.secrets",
       "when": "early",
-      "by": "`guard-edit` refuses the edit of an environment file; the `Read(...)` deny rules of `access.denyRead` keep secrets out of reads (best effort); nothing scans the committed content for a secret",
+      "by": "`guard-edit` refuses the edit of an environment file; the `Read(...)` deny rules of `access.denyRead` keep secrets out of reads (best effort); `harness check security` scans the committed content for a secret (in `harness check all`, so in CI, once `checks.security` is on), and no hook stops the commit that holds one",
       "partial": true
     }
   ]

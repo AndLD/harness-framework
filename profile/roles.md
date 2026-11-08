@@ -143,6 +143,7 @@ Run from the repository root unless a package is named.
 | Tests with the coverage gate | `{{commands.testCoverage}}` |
 | Changed-file coverage | `{{commands.changedCoverage}}` (after `{{commands.testCoverage}}`) |
 | Import boundaries | `{{commands.boundaries}}` |
+| Dependency audit (needs the network) | `{{commands.audit}}` |
 | Message catalogues | `{{commands.i18n}}` |
 | Every check of the framework (`harness check all`): the vendored copy, the profile file, the layer map, links, backticked paths, the CORE scan, the plan summary, the changelog fragments and the product knowledge | `{{commands.docsCheck}}` |
 | Take the framework again from its source into `harness/`; regenerate the managed files only; show a local change of `harness/` | `{{commands.harnessSync}}`; `{{commands.harnessSyncLocal}}`; `{{commands.harnessDiff}}` |
