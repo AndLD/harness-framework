@@ -1,0 +1,1 @@
+Fixed: `harness check security` no longer reports S2-001 on a workspace manifest that a lock file at the root of its workspaces covers; the stack's `dependency-audit` role may give each manifest a `members` function (the node-ts adapter reads npm `workspaces`), a manifest with no lock at all is still reported.

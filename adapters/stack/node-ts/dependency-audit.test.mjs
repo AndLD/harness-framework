@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { dependencyAudit, openRange } from './dependency-audit.mjs'
+import { dependencyAudit, openRange, workspaceMembers } from './dependency-audit.mjs'
 
 test('S2-003: a range with no upper bound, any version and an address without a commit are open; an exact version, a caret, a tilde and a commit are not', () => {
   for (const open of [
@@ -49,4 +49,13 @@ test('the versions of the three dependency sections are read, the peer ones are 
   assert.deepEqual(versionProblems('package.json', '{'), ['package.json is not valid JSON'])
   assert.equal(command, 'npm audit --audit-level=high')
   assert.equal(manifests[0].glob, 'package.json')
+})
+
+test('the workspaces of a root manifest are read from the array and the packages form, and from nothing else', () => {
+  assert.deepEqual(workspaceMembers(JSON.stringify({ workspaces: ['a/*', '!a/x'] })), ['a/*', '!a/x'])
+  assert.deepEqual(workspaceMembers(JSON.stringify({ workspaces: { packages: ['b'] } })), ['b'])
+  assert.deepEqual(workspaceMembers(JSON.stringify({ workspaces: 'a' })), [])
+  assert.deepEqual(workspaceMembers('{}'), [])
+  assert.deepEqual(workspaceMembers('{'), [])
+  assert.equal(dependencyAudit().manifests[0].members, workspaceMembers)
 })
