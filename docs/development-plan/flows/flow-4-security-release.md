@@ -15,6 +15,7 @@ The security methodology of Phase 2, in the release `0.6.0` (named by the owner 
   "repos": {
     "consumer": { "remote": "AndLD/bot-rts", "role": "consumer", "kinds": ["consumer-take"] }
   },
+  "usage": { "stopAt": { "fiveHour": 85, "weekly": 97 } },
   "permissions": { "mode": "auto", "allow": ["Bash(git *)", "Bash(gh *)", "Bash(npm *)", "Bash(node *)", "Bash(sed *)", "Bash(ls *)"] }
 }
 ```
@@ -29,6 +30,7 @@ The security methodology of Phase 2, in the release `0.6.0` (named by the owner 
 | 4 | tasks | 2.2 | 3 | — | 3 | 4.8% | C2 | ⬜ |
 | 5 | tasks | 2.4 | 4 | — | 3 | 8.1% | C3 | ⬜ |
 | 6 | tasks | 2.10 | 5 | owner review | 3 | 8.1% | C3 | ⬜ |
-| 7 | decision | the cut step of `0.6.0` to insert after this one (the version is named by the owner, 2026-11-05) | 6 | — | 1 | 0.3% | — | ⬜ |
+| 6a | tasks | I-30 | 6 | — | 2 | 0.5% | C2 | ⬜ |
+| 7 | decision | the cut step of `0.6.0` to insert after this one (the version is named by the owner, 2026-11-05) | 6a | — | 1 | 0.3% | — | ⬜ |
 
 State: ⬜ not started · 🟡 running · ⏸ waits for the owner · ⛔ blocked · ✅ done. The State column is a cache of the repository's state; the log is the record.

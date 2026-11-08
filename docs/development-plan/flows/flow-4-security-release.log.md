@@ -40,3 +40,15 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis:** (a). The owner asked for `auto` in every flow to come; the mode `acceptEdits` asked the owner for almost every command of a worker in flow 2. The take of `0.6.0` that the decision step inserts runs in AndLD/bot-rts, which a step can name only when the flow's `repos` lists it (the same reason as flow 3, 17:05).
 - **Worker's recommendation:** none (no worker is involved).
 - **Choice:** (a) · **Decided by:** the owner ("Enable auto mode for all future flows if it is not enabled for them yet"); the consumer, by the orchestrator, as for flow 3 at the owner's "Yes, set both".
+
+### 2026-11-08 09:12 — decision D2: I-30 joins this release as step 6a
+- **Options:** (a) a step of its own before the cut decision (6a, I-30, 2 SP, C2); (b) a later release.
+- **Own analysis** (written by the orchestrator of flow 3, which split I-30 from I-27): (a). The role `flows.permissions` (I-27, `0.5.0`) is found today only in the profile's roles; the question of `harness init` makes a new project see it, and `0.6.0` is the next release.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (a): step 6a inserted, step 7 needs 6a; the row `0.6.0` of the releases file names I-30 · **Decided by:** the owner ("Agree", on the orchestrator's recommendation after flow 3).
+
+### 2026-11-08 09:12 — decision D2: the weekly threshold of the usage gate is 97% for this flow
+- **Options:** (a) `usage.stopAt.weekly` 97 in the flow's settings; (b) keep the default 90.
+- **Own analysis:** none was needed: the settings of a flow are the owner's, and the owner asked for it. The 5-hour threshold stays 85%. The estimate of the flow with the Opus coefficient of 2026-11-08 is about 14% of the week, so a flow started near 89% may wait for the weekly reset; the gate decides that step by step.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (a) · **Decided by:** the owner ("we gonna run flow 4 bypassing the weekly limit. We can set limit to 97%").
