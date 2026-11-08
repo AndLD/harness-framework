@@ -15,7 +15,7 @@ Only the maintainers of the repository can read a private report.
 
 ## What happens to a report
 
-- A maintainer acknowledges the report within 7 days and says whether it is accepted as a vulnerability.
+- A maintainer acknowledges the report as soon as they can, with no fixed deadline, and says whether it is accepted as a vulnerability.
 - The fix is made in private when the report is accepted, and the release that carries it names the problem in its changelog. The reporter is credited unless they ask not to be.
 - A report that is not accepted gets the reason.
 
