@@ -253,3 +253,25 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis:** (b). They are small and none makes a consumer's state worse, but a new version is the owner's to name. Filed: I-40 (the template does not ask for `flows.permissions`), I-41 (auto-merge on an empty pull request, #235), I-42 (`update-branches.yml` leaves a bot's run in `action_required`); "Not scheduled" in the releases file names them. The other findings (S-03, S-04, S-05, S-07 to S-14) stay as the review records them: the owner's settings and the private advisory are the owner's, and the rest waits for the owner's order of work.
 - **Worker's recommendation:** (a), a `0.6.1`. My entry answers it: the version is not mine to name.
 - **Choice:** (b) · **Decided by:** the orchestrator (seamless mode); for review later.
+
+### 2026-11-08 14:16 — step 7a started
+- **Executor:** session · **Worker:** local_40d8e207-d990-4126-81c3-a52dc7fb13c4 · **Account:** nil10035@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 2 SP, 0.5% · **Start:** warm (the worker of steps 6a and 7 continued; `dispatch` counts 1 of its 3 steps, because the entry of step 7 named it with "(continued)")
+- **Usage before:** 5-hour 7% (resets 2026-11-08T17:00:00Z) · weekly 94% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-08 14:21 — step 7a ended: done
+- **Usage after:** 5-hour 15% (resets 2026-11-08T17:00:00Z) · weekly 95% (resets 2026-11-08T21:00:00Z) · **Measured:** 5-hour +8%, weekly +1%, with a turn that the CI monitor woke to resolve the conflicts that #242 caused and the orchestrator's own work; estimated 5-hour 3.6%, weekly 0.5% · **Pull requests merged:** #243 (auto-merge on, checks running at the report) · **Ids done:** I-37 · **Worker:** local_40d8e207-d990-4126-81c3-a52dc7fb13c4, 61 turns, context 22% after the step
+- **Report:** the nine items of I-37 are changed; `check security` now flags a write grant at the top of a workflow, so the worker moved the grants of three workflows to the job (the release template, `release.yml`, `update-branches.yml`), with a changelog fragment. No decision: the role `settings-audit` also reads the local settings file, a sentence of the runtime contract; I read it as the role doing its stated job, not a change of its meaning (D1). No deviation.
+- **Worker's recommendations, read after the report:** the owner's local settings hold `Bash(node *)`, which S4-002 now reports (the owner's choice; `security.allowedRules` accepts it); the new scriptable probe S4-026 has no check yet (a later issue); the pins stay for I-39.
+
+### 2026-11-08 14:21 — decision D0: step 7a used over twice its estimate, so the flow stops for the owner
+- **Options:** none to weigh: the procedure run-flow, step 7, escalates a step over twice its estimate in any mode.
+- **Own analysis:** 5-hour +8% against an estimate of 3.6%. Part of it is the conflict turn and the orchestrator's work, which the reading cannot separate; the weekly window rose 1%, at 95% of the owner's 98% for this run.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** stop and ask the owner before step 7b · **Decided by:** the procedure.
+
+### 2026-11-08 14:21 — stop: escalation
+- **Done:** steps 6a (I-30, #241), 7 (the decision, recorded in #242) and 7a (I-37, #243 merging by auto-merge).
+- **Decided alone:** the three decisions of step 7 (two D2, one D3) and the D0 entry, for review later.
+- **For the owner:** whether to go on with step 7b (I-38) after the overrun of 7a; the decisions of step 7; the earlier items (the settings S-08, S-10, S-03, the private advisory for the 4 high findings).
+- **Usage:** 5-hour 15% (resets 2026-11-08T17:00:00Z) · weekly 95% (resets 2026-11-08T21:00:00Z), account nil10035@gmail.com.
+- **Next:** check that #243 merged; then step 7b (I-38), gated: `harness flow next 4`; 7c stops for the owner's review of `sec.pinned-actions`.
