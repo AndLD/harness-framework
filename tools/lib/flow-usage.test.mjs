@@ -267,7 +267,11 @@ test('a window reading is parsed from <percent>[@<reset>], and the reading from 
 test('a step that does not fit one window is flagged where the subscription is known, and the flow is sized from its steps', () => {
   const flow = {
     settings: { usage: { stopAt: STOP_AT } },
-    steps: [step({}), step({ '#': '2', sp: '6', model: 'Fable 5.1' }), step({ '#': '3', kind: 'cut', sp: '1', model: '—' })]
+    steps: [
+      step({}),
+      step({ '#': '2', sp: '6', model: 'Fable 5.1' }),
+      step({ '#': '3', kind: 'cut', sp: '1', model: '—' })
+    ]
   }
   const problems = fitProblems({ flow, profile, usage, subscription: 'pro' })
   assert.equal(problems.length, 1)
