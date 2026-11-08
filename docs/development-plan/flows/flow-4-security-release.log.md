@@ -502,3 +502,24 @@ Entries are written from the entry templates of the [flow-log template](../../..
 ### 2026-11-08 20:34 — running
 - **Orchestrator:** the desktop session b1d10f69-cd53-40a2-bc31-82766d7686ce of the account andrey.larionov.me@gmail.com · **Mode:** seamless · **Steps:** 7i, 7j, 7k, then 7l, which stops for the owner
 - **Usage:** 5-hour 18% (resets 2026-11-08T22:30:00Z) · weekly 71% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-08 20:36 — decision D0: step 7i: the app refuses a session start on a turn that a background task's end began, so the cli executor runs it
+- **Options:** (a) the cli executor, the fallback of the session; (b) wait for the owner's message to start a session.
+- **Own analysis:** (a): the start was refused, and the procedure says not to retry or wait. The worker gets a detached worktree of `origin/develop` that links `node_modules` from the main checkout, as in flow 3.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (a) · **Decided by:** the orchestrator.
+
+### 2026-11-08 20:36 — step 7i started
+- **Executor:** cli, the fallback of session: the app refuses a session start on a turn that a background task's end began · **Worker:** f57c03fb-6f55-4364-b02d-affc28a83855, in a detached worktree of `origin/develop` · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 2 SP, 5-hour 3.6%, weekly 0.5% · **Start:** cold
+- **Usage before:** 5-hour 18% (resets 2026-11-08T22:30:00Z) · weekly 71% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-08 20:45 — step 7i ended: done
+- **Usage after:** 5-hour 23% (resets 2026-11-08T22:30:00Z) · weekly 72% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +5% with the orchestrator's own work, weekly +1%; estimated 5-hour 3.6%, weekly 0.5% (2.53 M cache-read and 17k output tokens, $0.77 at list price, 8 minutes) · **Pull requests merged:** #261 (I-46), #262 (I-47) · **Ids done:** I-46, I-47 · **Worker:** cli f57c03fb-6f55-4364-b02d-affc28a83855, 40 turns
+- **Report:** `SECURITY.md` falls in the layer `PROFILE` unless the project's map places it; a root lock file covers the workspace manifests in S2-001, through an optional `members(text)` key of the stack's `dependency-audit` role, which the node-ts adapter fills. Tests (907) and `check all` pass; neither check was run on the real consumer. One slip, no force-push: a refused push after a rebase was cured by a merge.
+- **Worker's recommendations, read after the entry below:** prove it at the take (it named 7j; it is 7k), which agrees, except that `checks.security` stays off in that repository, whose 32 S1-001 findings are its own: 7k reads `check security` for S2-001 only. The python stack has no `members`, not filed: agrees, no project asks.
+
+### 2026-11-08 20:46 — decision D1: the two choices of step 7i
+- **Options:** I-46: `SECURITY.md` in `PROFILE` by default, or a line each project adds. I-47: an optional key of the stack role, or a special case for npm in the check.
+- **Own analysis (the worker's picks were already seen):** the default, since the point of I-46 is no edit by the project; the optional key, since the check stays neutral about stacks and every existing adapter still conforms. An optional key adds to the contract and changes the meaning of nothing, so it is not a `contract.change`.
+- **Worker's recommendation:** the same, at D0 and D1.
+- **Choice:** both as built · **Decided by:** the orchestrator (seamless mode).

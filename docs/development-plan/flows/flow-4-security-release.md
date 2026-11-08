@@ -40,7 +40,7 @@ The security methodology of Phase 2, in the release `0.6.0` (named by the owner 
 | 7f | cut | home | `0.6.0-dev.1` | 7e | — | 1 | 0.7% | C2 | ✅ |
 | 7g | consumer-take | consumer | `0.6.0-dev.1` | 7f | — | 2 | 0.5% | C2 | 🟡 |
 | 7h | decision | home | the final cut of `0.6.0`, or a `0.6.0-dev.2` first, after the consumer's take | 7g | owner review | 1 | 0.3% | — | ✅ |
-| 7i | tasks | home | I-46, I-47 | 7h | — | 2 | 0.5% | C2 | ⬜ |
+| 7i | tasks | home | I-46, I-47 | 7h | — | 2 | 0.5% | C2 | ✅ |
 | 7j | cut | home | `0.6.0-dev.2` | 7i | — | 1 | 0.7% | C2 | ⬜ |
 | 7k | consumer-take | consumer | `0.6.0-dev.2` | 7j | — | 2 | 0.5% | C2 | ⬜ |
 | 7l | decision | home | the final cut of `0.6.0`, after the second take | 7k | owner review | 1 | 0.3% | — | ⬜ |
