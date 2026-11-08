@@ -345,3 +345,20 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **For the owner:** approve or drop `sec.pinned-actions` in #247, then merge it (auto-merge stays off); for step 7d (I-43), narrow `Bash(node *)` in the local settings or accept it in `security.allowedRules`. The earlier items stay: the settings S-08, S-10, S-03 and the private advisory for the 4 high findings.
 - **Usage:** 5-hour 25% (resets 2026-11-08T17:00:00Z) · weekly 97% (resets 2026-11-08T21:00:00Z), account nil10035@gmail.com, 1% under the owner's 98% for this run: no step starts before the weekly reset.
 - **Next:** with the owner's approval recorded in #247, merge it and set 7c to ✅; after the weekly reset, step 7d (I-43), which stops for the owner's decision on the local rule, then 7e cut `0.6.0-dev.1`: `harness flow next 4`.
+
+### 2026-11-08 15:33 — decision D3: the rule `sec.pinned-actions` is approved
+- **Options:** (a) approve the rule and merge #247; (b) drop the rule and keep the pins.
+- **Own analysis:** (a), as recommended at the stop of step 6: the pins are in, so the framework's own workflows keep the rule.
+- **Worker's recommendation:** merge #247 by hand after the approval: agrees.
+- **Choice:** (a); the approval is in the body of #247, which the worker squash-merged once its checks were green · **Decided by:** the owner ("Approve and merge").
+
+### 2026-11-08 15:33 — step 7c ended: done
+- **Usage after:** 5-hour 27% (resets 2026-11-08T17:00:00Z) · weekly 97% (resets 2026-11-08T21:00:00Z) · **Measured:** with the closing turn, 5-hour +7%, weekly +1%; estimated 5-hour 5.4%, weekly 0.8% · **Pull requests merged:** #247 · **Ids done:** I-39 · **Worker:** local_169c4360-f42e-44e9-9f6d-52fa784e2fc3
+- **Report:** the owner's approval is recorded in #247, I-39 is archived as done, and the four checks passed before the merge, with no bypass.
+
+### 2026-11-08 15:33 — stop: usage
+- **Done:** steps 6a, 7, 7a, 7b and 7c (I-30, I-37, I-38, I-39; #241, #242, #243, #245, #247).
+- **Decided alone:** the three decisions of step 7, the two D2 of step 7c, the D1 and the D0 entries, for review later.
+- **For the owner:** before step 7d (I-43), narrow `Bash(node *)` in the local settings or accept it in `security.allowedRules`; the settings S-08, S-10, S-03 and the private advisory for the 4 high findings.
+- **Usage:** 5-hour 27% (resets 2026-11-08T17:00:00Z) · weekly 97% (resets 2026-11-08T21:00:00Z), account nil10035@gmail.com, 1% under the owner's 98% for this run: no step starts before the weekly reset.
+- **Next:** after the weekly reset of 21:00Z, step 7d (I-43), which stops for the owner's decision on the local rule; then 7e cuts `0.6.0-dev.1`: `harness flow next 4`.
