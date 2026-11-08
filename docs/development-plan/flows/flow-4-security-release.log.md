@@ -307,3 +307,41 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **For the owner:** the decisions of step 7; the review of `sec.pinned-actions` in step 7c; the earlier items (the settings S-08, S-10, S-03, the private advisory for the 4 high findings, and the local allow rule `Bash(node *)` that S4-002 reports).
 - **Usage:** 5-hour 19% (resets 2026-11-08T17:00:00Z) · weekly 96% (resets 2026-11-08T21:00:00Z), account nil10035@gmail.com.
 - **Next:** after the weekly reset, step 7c (I-39), gated: `harness flow next 4`. Its worker leaves the pull request with the rule ready and unmerged for the owner's review.
+
+### 2026-11-08 15:18 — decision D1: step 7c starts now, not after the weekly reset
+- **Options:** (a) wait for the weekly reset of 21:00Z, as decided at 15:16; (b) start now.
+- **Own analysis:** I recommended the reset (the D1 entry above): 7c would likely end at or over the owner's 98% for this run. The cap is the owner's, and the worker is told to stop at 98%.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (b) · **Decided by:** the owner ("Start 7c now").
+
+### 2026-11-08 15:18 — running
+- **Orchestrator:** the desktop session of the account nil10035@gmail.com, as at 13:55 · **Mode:** seamless · **Steps:** 7c, which stops for the owner's review
+- **Usage:** 5-hour 20% (resets 2026-11-08T17:00:00Z) · weekly 96% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-08 15:18 — step 7c started
+- **Executor:** session · **Worker:** local_169c4360-f42e-44e9-9f6d-52fa784e2fc3 · **Account:** nil10035@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 3 SP, 0.8% · **Start:** cold (fresh: the flow stopped for usage since the last worker's turn)
+- **Usage before:** 5-hour 20% (resets 2026-11-08T17:00:00Z) · weekly 96% (resets 2026-11-08T21:00:00Z)
+- **The stop of the step:** the worker leaves the pull request of I-39 ready and unmerged with auto-merge off, for the owner's review of `sec.pinned-actions`; it stops at once at 98% of the week.
+
+### 2026-11-08 15:40 — decision D2: I-39 keeps the security gate off, and turning it on is I-43
+- **Options** (the worker of 7c was blocked: with `checks.security` on, the pre-push gate reads the owner's `.claude/settings.local.json`, S4-002 reports `Bash(node *)`, and every push fails): (a) the owner narrows the rule; (b) the owner accepts it in `security.allowedRules`; (c) the owner pushes from a terminal; (d) I-39 keeps `checks.security` off, and turning it on becomes an issue of its own.
+- **Own analysis:** (d). The "Done when" of I-39 does not include the gate; (a) to (c) touch the owner's settings or a check's limits, which are the owner's; (c) would leave every later push blocked. The flow's own `permissions.allow` names `Bash(node *)`, so the choice between (a) and (b) is the owner's either way. The worker also found that the template `update-branches.yml` still grants write at the top (S3-001), so a generated project with the gate on fails it: the same issue turns the gate on after that fix. Filed as I-43, in `0.6.0` before the cut, as step 7d, which stops for the owner's decision on the local rule.
+- **Worker's recommendation:** the owner decides (D4); file the template's S3-001 and fix it before the cut; narrow the local rule. The first is answered by (d), which needs nothing of the owner now; the other two are I-43.
+- **Choice:** (d); the worker reverts the profile's line, pushes, and leaves #247 ready and unmerged for the review of `sec.pinned-actions` · **Decided by:** the orchestrator (seamless mode); for review later.
+
+### 2026-11-08 15:40 — decision D2: the steps after 7c are renamed for I-43
+- **Options:** none to weigh: a step id is a number with one letter, so I-43 takes 7d, and the cut, the consumer's take and the decision move to 7e, 7f and 7g. None had started; the entries above name them by their old ids.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** rename · **Decided by:** the orchestrator.
+
+### 2026-11-08 15:27 — step 7c ended: partial
+- **Usage after:** 5-hour 25% (resets 2026-11-08T17:00:00Z) · weekly 97% (resets 2026-11-08T21:00:00Z) · **Measured:** 5-hour +5%, weekly +1%; estimated 5-hour 5.4%, weekly 0.8% · **Pull requests merged:** none (#247 is ready, unmerged, auto-merge off) · **Ids done:** none (I-39 is 🟡) · **Worker:** local_169c4360-f42e-44e9-9f6d-52fa784e2fc3, 49 turns, context 12% after the step
+- **Report:** every action of the host templates, the stacks' `ci-jobs.mjs` and this repository's workflows is pinned to a full commit with its version in a comment, with a test per template set and stack; `sec.pinned-actions` is proposed again (the revert of a4486a6) with `harness sync --local`; the changelog fragment says how a project keeps the pins current; `checks.security` stays false (the D2 above). 902 tests and `check all` pass locally; a scratch project from `harness init --from` has no S2-004 finding. **Deviation:** the worker was blocked once by the push gate (the D2 above).
+- **Worker's recommendations, read after the report:** merge #247 by hand after the owner's approval, as auto-merge stays off: agrees (the flow's stop); I-43 carries the decision on `Bash(node *)` before the gate is turned on: agrees, it does.
+
+### 2026-11-08 15:27 — stop: owner review
+- **Done:** steps 6a (I-30, #241), 7 (#242), 7a (I-37, #243), 7b (I-38, #245); step 7c (I-39) is in #247, ready and unmerged.
+- **Decided alone:** the three decisions of step 7 (two D2, one D3), the two D2 of step 7c above, the D1 and the D0 entries, for review later.
+- **For the owner:** approve or drop `sec.pinned-actions` in #247, then merge it (auto-merge stays off); for step 7d (I-43), narrow `Bash(node *)` in the local settings or accept it in `security.allowedRules`. The earlier items stay: the settings S-08, S-10, S-03 and the private advisory for the 4 high findings.
+- **Usage:** 5-hour 25% (resets 2026-11-08T17:00:00Z) · weekly 97% (resets 2026-11-08T21:00:00Z), account nil10035@gmail.com, 1% under the owner's 98% for this run: no step starts before the weekly reset.
+- **Next:** with the owner's approval recorded in #247, merge it and set 7c to ✅; after the weekly reset, step 7d (I-43), which stops for the owner's decision on the local rule, then 7e cut `0.6.0-dev.1`: `harness flow next 4`.
