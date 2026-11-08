@@ -362,3 +362,9 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **For the owner:** before step 7d (I-43), narrow `Bash(node *)` in the local settings or accept it in `security.allowedRules`; the settings S-08, S-10, S-03 and the private advisory for the 4 high findings.
 - **Usage:** 5-hour 27% (resets 2026-11-08T17:00:00Z) · weekly 97% (resets 2026-11-08T21:00:00Z), account nil10035@gmail.com, 1% under the owner's 98% for this run: no step starts before the weekly reset.
 - **Next:** after the weekly reset of 21:00Z, step 7d (I-43), which stops for the owner's decision on the local rule; then 7e cuts `0.6.0-dev.1`: `harness flow next 4`.
+
+### 2026-11-08 15:34 — decision D3: the local rule `Bash(node *)` is accepted in the profile
+- **Options:** (a) accept it in `security.allowedRules` of the profile; (b) the owner narrows it in the local settings.
+- **Own analysis:** (a): the flow's own `permissions.allow` names the rule, so narrowing it would also narrow what a flow's workers may run.
+- **Worker's recommendation:** the worker of 7c recommended narrowing it; (a) answers that the workers need it.
+- **Choice:** (a); step 7d (I-43) adds the rule to `security.allowedRules` and cites this entry in its pull request as the owner's approval · **Decided by:** the owner ("Accept it in the profile").
