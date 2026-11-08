@@ -21,6 +21,7 @@ import { checkProbes } from './probe-areas.mjs'
 import { checkProductKnowledge } from './product-knowledge.mjs'
 import { checkProfile, loadProfile } from './profile.mjs'
 import { checkScaffold } from './scaffold.mjs'
+import { checkSecurity } from './security.mjs'
 import { checkGenerated, checkVendored } from './vendor.mjs'
 import { checkValues } from './values.mjs'
 
@@ -80,7 +81,8 @@ export const CHECKS = {
   notes: (context) => single(checkNotesList(context)),
   'off-plan': (context) => single(checkOffPlan(context)),
   probes: (context) => single(checkProbes(context)),
-  'product-knowledge': (context) => checkProductKnowledge(context)
+  'product-knowledge': (context) => checkProductKnowledge(context),
+  security: (context) => checkSecurity(context)
 }
 
 /** Runs one check by name; a check that throws reports the error as its problem. */
@@ -136,7 +138,7 @@ export function report(name, { problems, messages }, { out, err, verbose = false
 export function checkAll({ root, out, err, stdio, verbose = false }) {
   const profile = loadProfile(root)
   let failed = false
-  const names = Object.keys(CHECKS)
+  const names = Object.keys(CHECKS).filter((name) => name !== 'security' || profile.checks?.security)
   const passed = []
   for (const name of names) {
     const result = runCheck(name, { root, profile })

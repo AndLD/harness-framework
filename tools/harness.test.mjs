@@ -80,6 +80,10 @@ test('the arguments: words, flags with values and --local', () => {
     flags: { reason: 'r', issue: 'i' }
   })
   assert.deepEqual(parseArgs(['sync', '--local']), { words: ['sync'], flags: { local: true } })
+  assert.deepEqual(parseArgs(['check', 'security', '--range', 'a..b', '--audit']), {
+    words: ['check', 'security'],
+    flags: { range: 'a..b', audit: true }
+  })
   assert.deepEqual(parseArgs(['release', '--dry-run']), { words: ['release'], flags: { dryRun: true } })
   assert.deepEqual(parseArgs(['plan', 'summary', '--check']), { words: ['plan', 'summary'], flags: { check: true } })
 })

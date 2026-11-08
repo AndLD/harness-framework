@@ -572,9 +572,18 @@ with the framework's modules (two names in common, or its only one). The old pro
 `node harness/tools/harness.mjs <command>`, wrapped by the stack (`npm run harness -- …`, or a `make` target in the python preset).
 `harness check all` is what `npm run docs:check` runs today:
 `vendored`, `generated`, `scaffold`, `profile`, `values`, `links`, `paths`, `core` (in the framework source only), `layers`, `plan`,
-`changelog` and `product-knowledge`, then the **project's own checks**, the commands listed in `checks.project` of the profile file (in `bot-rts`, none of
+`changelog` and `product-knowledge` (and `security` once the project turns on `checks.security`), then the **project's own checks**, the commands listed in `checks.project` of the profile file (in `bot-rts`, none of
 today's checks stays outside the framework; another project lists, for example, its check of unfinished report pages). One command thus
 covers both, and the procedures and the definition of done cite only it.
+
+`harness check security` (task 2.2) runs the probes of the security review that a script can decide, 14 of the 28 scriptable ones of the first
+edition, and names the probe in each finding. What reads the project's files is core: the secret scan (the patterns are the profile role
+`security.secretPatterns`, a finding never prints the value, no download), the tracked files that `access.denyRead` names, the lock file beside each
+manifest, the tracked binaries. What depends on the stack, the host or the runtime is a logic-optional role of the adapter, so that core names none of
+them: `dependency-audit` of the stack (the manifests and their lock files, the open versions, the audit command), `ci-audit` of the host (the workflow
+files), `settings-audit` of the runtime (the committed settings). The dependency audit needs the network, so it runs only with `--audit`; `--range
+<a>..<b>` scans the lines that the commits of a push added. A check that cannot run says so in its messages (no role, no catalogue), the scriptable probes with
+no check are listed as the gaps for the next review, and `checks.security` (off by default) puts the check into `harness check all` once the project passes it.
 
 `harness check paths` fails on a repository path written in backticks in a document outside STATE that does not exist. The link check sees
 only links, and the harness documents name scripts and files in plain text: today 57 times in 10 documents, which the build moves or renames.
