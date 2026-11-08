@@ -138,6 +138,7 @@
       "docs/development-plan/**",
       "docs/design.md",
       "docs/quality-reviews/harness/20*.md",
+      "docs/quality-reviews/security/20*.md",
       "CHANGELOG.md",
       "changelog.d/**"
     ],
