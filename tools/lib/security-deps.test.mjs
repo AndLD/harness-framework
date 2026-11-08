@@ -10,6 +10,10 @@ after(removeRepos)
 const node = loadProfile(join(import.meta.dirname, '..', '..'))
 const python = { adapters: { stacks: ['python'] } }
 const manifests = (root, profile) => checkManifests({ root, profile, files: trackedFiles(root, profile) })
+const reported = (root) =>
+  manifests(root, node)
+    .problems.filter((problem) => problem.probe === 'S2-001')
+    .map((problem) => problem.text.split(':')[0])
 const texts = (found) => found.problems.map((problem) => `${problem.probe} ${problem.text}`)
 
 test('S2-001: a manifest with no tracked lock file beside it is reported, one with a lock file is not, and node_modules is skipped', () => {
@@ -27,6 +31,35 @@ test('S2-001: a manifest with no tracked lock file beside it is reported, one wi
     texts(found).map((text) => text.slice(0, 36)),
     ['S2-001 tools/a/package.json: no lock']
   )
+})
+
+test('S2-001: a workspace that the lock file at the root covers is not reported, one the root does not list or with no lock at all is', () => {
+  const covered = repo({
+    'package.json': JSON.stringify({ workspaces: ['packages/*', '!packages/skip'] }),
+    'package-lock.json': '{}',
+    'packages/a/package.json': '{}',
+    'packages/a/nested/package.json': '{}',
+    'packages/skip/package.json': '{}',
+    'tools/x/package.json': '{}'
+  })
+  assert.deepEqual(reported(covered), [
+    'packages/a/nested/package.json',
+    'packages/skip/package.json',
+    'tools/x/package.json'
+  ])
+
+  const object = repo({
+    'package.json': JSON.stringify({ workspaces: { packages: ['apps/**'] } }),
+    'yarn.lock': '',
+    'apps/web/deep/package.json': '{}'
+  })
+  assert.deepEqual(reported(object), [])
+
+  const unlocked = repo({
+    'package.json': JSON.stringify({ workspaces: ['packages/*'] }),
+    'packages/a/package.json': '{}'
+  })
+  assert.deepEqual(reported(unlocked), ['package.json', 'packages/a/package.json'])
 })
 
 test('S2-003: the open versions of a manifest are reported with the manifest, and a bounded one is not', () => {
