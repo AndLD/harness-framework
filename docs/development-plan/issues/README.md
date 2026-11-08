@@ -17,5 +17,4 @@ A request for something new, which is not a defect, is an item of the [backlog](
 | [I-30](./I-30.md) | The bootstrap does not ask for the flows' default permissions | bootstrap and sync | C2 | 2 | ⬜ | — |
 | [I-34](./I-34.md) | The bootstrap and the adoption write the settings file without the formatter's message | bootstrap and sync | C1 | 1 | ⬜ | — |
 | [I-35](./I-35.md) | `package-lock.json` names the version `0.1.0` | checks | C1 | 1 | ⬜ | — |
-| [I-36](./I-36.md) | `harness flow status` reads a development take whose draft was closed as not done | checks | C1 | 1 | ⬜ | — |
 <!-- issue-queue:end -->

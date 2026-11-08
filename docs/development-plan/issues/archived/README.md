@@ -39,4 +39,5 @@ It is read to find out whether a new report is a problem that was fixed already.
 | [I-31](./I-31.md) | The node-ts quiet test commands do not reach Jest from a workspaces root, and two quiet defaults are missing | stack adapters | 1 | — |
 | [I-32](./I-32.md) | `harness flow audit` misses the command-line workers of a flow | checks | 1 | — |
 | [I-33](./I-33.md) | The migration tests take "the last release" from the newest tag, so they fail once a version is tagged | checks | 1 | — |
+| [I-36](./I-36.md) | `harness flow status` reads a development take whose draft was closed as not done | checks | 1 | — |
 <!-- issue-queue:end -->
