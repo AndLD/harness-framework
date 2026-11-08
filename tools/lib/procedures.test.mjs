@@ -121,6 +121,7 @@ test("the framework's procedures render without a template tag left, with this r
   delete lean.documents.planMethod
   delete lean.paths.backlog
   delete lean.host.autoMerge
+  delete lean.documents.securityReviews
   delete lean.documents.securityBindings
   for (const each of [repository, lean]) {
     for (const procedure of listProcedures().filter((one) => procedureApplies(one, each))) {

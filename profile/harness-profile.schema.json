@@ -752,7 +752,7 @@
         },
         "securityBindings": {
           "type": "string",
-          "description": "The security review bindings. Optional: the bootstrap writes the framework's template there once; a project that leaves it empty has no such file."
+          "description": "The security review bindings; required when documents.securityReviews is set, since the procedure links them. The bootstrap writes the framework's template there once; a project that leaves it empty has no such file."
         },
         "frameworkPlan": {
           "type": "string",
