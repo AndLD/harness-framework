@@ -117,3 +117,42 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Usage:** 5-hour 74% (resets 2026-11-08T12:50:00Z) · weekly 64% (resets 2026-11-10T07:00:00Z) · the gate says WAIT for step 5 (74% + 14.4% passes 85%).
 - **Escalation:** step 4 used +14% of the 5-hour window against an estimate of 5.4%; the owner says whether to go on.
 - **Next:** after the reset and the owner's word, step 5 (task 2.4): `harness flow next 4`; a new orchestrator session reads this entry and the flow file.
+
+### 2026-11-08 12:12 — running
+- **Orchestrator:** the desktop session local_5388b1de-b1e0-4916-bc0b-0821efb3fed4 of the owner's account andrey.larionov.me@gmail.com ("Continue now"; the claim of 09:59 ended with the "stop: usage" entry above) · **Mode:** seamless · **Steps:** 5 to 7
+- **Usage:** 5-hour 75% (resets 2026-11-08T12:50:00Z) · weekly 65% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-08 12:12 — decision D2: step 5 starts past the gate's WAIT, and the flow goes on after the overrun of step 4
+- **Options:** (a) wait for the reset of 12:50Z, 159 minutes, as the gate says; (b) start step 5 now, past the threshold of 85%.
+- **Own analysis:** I asked to go on after the reset. The gate reads 75% and 14.4% to come, 89.4%, under the limit of the window but over the threshold; the measured steps of this flow ran from 0.65 to 2.6 times their estimate, so the step may reach the limit of the window, and the account's extra usage is enabled. The threshold is the owner's setting and no hard limit, so the owner's word decides it, for this step only; the next step is gated again. The owner's word also answers the escalation of step 4.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (b) · **Decided by:** the owner ("Continue now").
+
+### 2026-11-08 12:12 — step 5 started
+- **Executor:** session · **Worker:** local_d5f9fff1-98b6-453c-b344-b2d3de0875fe · **Account:** andrey.larionov.me@gmail.com · **Model:** Opus 5.5 at high effort · **Permissions:** auto · **Estimate:** 3 SP, 8.1%
+- **Usage before:** 5-hour 75% (resets 2026-11-08T12:50:00Z) · weekly 65% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-08 12:23 — step 5 ended: done
+- **Usage after:** 5-hour 84% (resets 2026-11-08T12:50:00Z) · weekly 66% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +9%, weekly +1%; estimated 5-hour 12%, weekly 1.8% · **Pull requests merged:** #235 (the empty claim); #236 holds the work and waits for CI · **Ids done:** none yet (2.4 is done when #236 merges) · **Worker:** local_d5f9fff1-98b6-453c-b344-b2d3de0875fe, 42 turns, context 18% after the step
+- **Report:** the first security review of the framework, `docs/quality-reviews/security/2026-11-08.md`: S1 3, S2 3, S3 3, S4 2, the gate fails on S4; 0 critical, 4 high, 7 medium, 3 low; the high ones are recorded at the level of a component (the method, section 7). I-37 filed (2 SP: three defects of the checks, edits of the catalogue and the method). **Not run:** the manual probes S3-007, S3-019, S3-021, S4-008 and S4-024; the CI logs; the history scan is by patterns only; no security expert checked the report.
+- **Deviations:** #235 merged empty: a push failed on the layer map, a chained command still enabled auto-merge and the claim was green, so `develop` has the empty commit 066aba3 (left, since published history is not rewritten); the work moved to the branch `docs/2.4-security-review-report`. The report needed a row of `layers` in the profile and a `harness sync --local`.
+- **Recommendations of the worker:** fix S-01 and S-02 first (both small: outsider text reaches every session on a public repository); the auto-merge guard refuses a pull request with no changed files (as #235); `check layers` sees staged and untracked reports; 2.10 takes the rule candidates S-02, S-03 and S-06. The guard and `check layers` are new work, kept for step 7.
+
+### 2026-11-08 12:23 — decision D3: the workflow actions are pinned to commits
+- **Options:** (a) pin every action of the templates and the stacks' `ci-jobs` to a full commit, with a migration note, and then turn `checks.security` on; (b) keep the tags and accept the finding.
+- **Own analysis** (the worker's recommendation was in the same report, so seen before this entry): (a). A moved tag runs someone else's code in CI, and `release.yml` holds a write token; the cost is new generated files for every project and a duty to update the pins, which the migration note states. It is a fix after the review, not part of 2.10.
+- **Worker's recommendation:** (a), the same.
+- **Choice:** (a), as a change of its own, scheduled with the fixes at the decision of step 7 · **Decided by:** the orchestrator (seamless mode); for review later.
+
+### 2026-11-08 12:23 — decision D2: the issues of the findings are opened per finding, at step 7
+- **Options:** (a) open issues for all 14 findings now; (b) open them per finding at the decision of step 7, once 2.10 has taken the rule candidates S-02, S-03 and S-06.
+- **Own analysis** (the worker's report seen first; it gave no preference): (b). 2.10 decides what becomes a rule, the queue is public, and each issue of an open finding must be written within section 7 of the method; step 6 stops for the owner's review, which is the natural approval of the list.
+- **Worker's recommendation:** none; it asked for the approval that the method's step 10 requires.
+- **Choice:** (b) · **Decided by:** the orchestrator (seamless mode); for review later.
+
+### 2026-11-08 12:23 — stop: usage
+- **Done:** steps 1 to 4: tasks 2.1, 2.8, 2.9 and 2.2 (#227, #229, #231, #233). Step 5 (task 2.4) is built in #236, with auto-merge on; its first CI run failed on a 504 of the host while setting up `uv` (the same one as step 4), and the failed jobs were run again (D0).
+- **Decided alone:** the pins (D3) and the issues (D2) above, and the three of the entries of step 4.
+- **For the owner:** the settings of the repository that the review names, which are the owner's: secret scanning and push protection (S-08), private reporting (S-10), a separate identity for agents (S-03); and whether to open a private advisory for the 4 high findings, which is the owner's approval by the method.
+- **Usage:** 5-hour 84% (resets 2026-11-08T12:50:00Z) · weekly 66% (resets 2026-11-10T07:00:00Z) · the gate says WAIT for step 6; the owner's word of 12:11 was for step 5 only.
+- **Next:** check that #236 has merged and set step 5 to ✅; after the reset, step 6 (task 2.10), which stops for the owner's review: `harness flow next 4`.

@@ -28,7 +28,7 @@ The security methodology of Phase 2, in the release `0.6.0` (named by the owner 
 | 2 | tasks | 2.8 | 1 | — | 5 | 13.5% | C3 | ✅ |
 | 3 | tasks | 2.9 | 2 | — | 5 | 13.5% | C3 | ✅ |
 | 4 | tasks | 2.2 | 3 | — | 3 | 4.8% | C2 | ✅ |
-| 5 | tasks | 2.4 | 4 | — | 3 | 8.1% | C3 | ⬜ |
+| 5 | tasks | 2.4 | 4 | — | 3 | 8.1% | C3 | 🟡 |
 | 6 | tasks | 2.10 | 5 | owner review | 3 | 8.1% | C3 | ⬜ |
 | 6a | tasks | I-30 | 6 | — | 2 | 0.5% | C2 | ⬜ |
 | 7 | decision | the cut step of `0.6.0` to insert after this one (the version is named by the owner, 2026-11-05) | 6a | — | 1 | 0.3% | — | ⬜ |
