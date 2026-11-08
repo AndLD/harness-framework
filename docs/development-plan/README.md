@@ -15,7 +15,7 @@ is updated in the change that starts or finishes it.
 | Phase | Theme | Story points | Agent complexity | Status |
 | ----- | ----- | ------------ | ---------------- | ------ |
 | 1 | Adoption, presets, examples and the proof | 12 | C1–C2 | ✅ Done |
-| 2 | Security and review automation | 39 | C2–C3 | 🟡 In progress |
+| 2 | Security and review automation | 39 | C2–C3 | ✅ Done |
 | 3 | Stabilization, migrations and local adapters | 71 | C1–C2 | ✅ Done |
 | 4 | Reaching and holding the structure of documents | 27 | C1–C2 | 🟡 In progress |
 | 5 | Releases in a file of their own, and flows run by an orchestrator | 43 | C2–C3 | ✅ Done |
@@ -24,11 +24,11 @@ is updated in the change that starts or finishes it.
 <!-- plan-summary:end -->
 
 <!-- plan-issues:start -->
-**Issue queue** (not a phase; its size is not in the totals above): [3 open](./issues/README.md), 4 SP; 41 archived.
+**Issue queue** (not a phase; its size is not in the totals above): [5 open](./issues/README.md), 6 SP; 41 archived.
 <!-- plan-issues:end -->
 
 <!-- plan-backlog:start -->
-**Backlog** (proposals the owner has not approved; not a phase, and not in the totals above): [1 proposed](./backlog/README.md); 4 promoted.
+**Backlog** (proposals the owner has not approved; not a phase, and not in the totals above): [6 proposed](./backlog/README.md); 4 promoted.
 <!-- plan-backlog:end -->
 
 **Releases** (the order of the releases and of their tasks is the file [releases](./releases.md), not a section of this index; the line below is written by `harness plan summary`)

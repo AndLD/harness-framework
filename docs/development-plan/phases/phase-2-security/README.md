@@ -2,7 +2,7 @@
 
 # Phase 2 — Security and review automation (39 SP)
 
-**Status:** 🟡 In progress · **Branches:** see the [implementation log](#implementation-log) · **Work log:** [log](./log.md), and a log beside each task (`<id>.log.md`)
+**Status:** ✅ Done · **Branches:** see the [implementation log](#implementation-log) · **Work log:** [log](./log.md), and a log beside each task (`<id>.log.md`)
 
 After `0.1.0`: a security review method next to the code review and the harness review, written for a project to review itself, with a researched and growing catalogue of probes and attack scenarios behind it (from the OWASP lists and testing guides, supply-chain and agent-security work, each probe with its sources); the automation of what a script can decide; security rules of core distilled from the findings of the first review, so that each review leaves the projects safer; the measurements that harness reviews ran by hand; and an off-plan record for work that no task covers. Reshaped with the owner on 2026-11-05 (tasks 2.8 to 2.10). Planned with the owner on 2026-10-30; the method outline is in section 11.1 of the design.
 
