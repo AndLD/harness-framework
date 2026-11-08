@@ -431,3 +431,29 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis (the worker's recommendation was already seen):** (a). The wording is the worker's: neither the task nor the owner named a period, and it is a public promise made for a solo maintainer, so it is the owner's to confirm before a final version. A development version only reaches the consumer, and 7h already stops for the owner before `0.6.0`, so neither a stop now nor another pull request is needed.
 - **Worker's recommendation:** the owner confirms or changes it before the cut. The difference is one of timing: before the final cut, which is the version that makes the promise to projects.
 - **Choice:** (a) · **Decided by:** the orchestrator (seamless mode), for review at 7h.
+
+### 2026-11-08 19:47 — step 7f started
+- **Executor:** session · **Worker:** local_f54f3cd8-bc98-4d89-8fe1-3a26bc67c84f (continued: the same repository, account, model and effort, context 11%, the first step's cache alive) · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 1 SP, 5-hour 3.4%, weekly 0.7% · **Start:** warm
+- **Usage before:** 5-hour 6% (resets 2026-11-08T22:30:00Z) · weekly 69% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-08 19:48 — decision D1: what the note of `0.6.0-dev.1` must say (own list, written before the note is read)
+- **Required of a project:** `harness sync`, taking the regenerated workflows (actions pinned to a commit, write grants on the job), or pin its own `uses:` lines and move top-level write grants to the job (I-39, I-43, I-37); add a `SECURITY.md` and turn on the host's private vulnerability reporting (2.12); update the K11 command of the code-review bindings when it gives one (2.1).
+- **Nothing to do, arrives with the sync:** the rules `sec.outside-text`, `sec.own-authority`, `sec.pinned-actions` and the rule-to-check map's column (2.10, I-39); the session start's counts instead of report titles (I-38); the review method, the catalogues (a draft until a person with security expertise reviews them) and the scenarios (2.1, 2.8, 2.9); the lock version in `harness release` (I-35); the Opus estimate.
+- **Optional:** turn `checks.security` on once `harness check security` passes, with `security.allowedRules`, `security.secretPatterns` and the stack role `dependency-audit` (2.2, I-43); Dependabot for the pins of `github-actions` (I-39); the role `flows.permissions` of `harness init` (I-30).
+
+### 2026-11-08 19:50 — decision D1: the note of `0.6.0-dev.1` goes back to the worker
+- **Checked against the own list of 19:48:** every required and optional action is there; the note also adds `*.pem` and `*.key` to `.gitignore`, which the scaffold's `gitignore` confirms. The worker's doubt on action 2 is settled: only `check all` filters on `checks.security` (`tools/lib/checks.mjs`), so `check security` runs while the switch is off.
+- **Wrong in the note:** `sec.pinned-actions` "waiting for the owner's approval" (approved at 15:33), "two" new rules (three), 147 probes (148) and 14 of 28 scriptable (14 of 29). The fragment of I-39 carries the same stale clause.
+- **Deviation:** the step report was 3170 characters, over the cap of 2400.
+- **Choice:** sent back (the procedure `release`, "When a flow cuts") · **Decided by:** the orchestrator.
+
+### 2026-11-08 19:53 — step 7f ended: done
+- **Usage after:** 5-hour 11% (resets 2026-11-08T22:30:00Z) · weekly 70% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +5% with the orchestrator's review of the note, weekly +1%; estimated 5-hour 3.4%, weekly 0.7% · **Pull requests:** #257 open, `release/0.6.0` into `main`, kept for the final version · **Worker:** local_f54f3cd8-bc98-4d89-8fe1-3a26bc67c84f, 18 turns and 5 for the corrections, context 14% after the step
+- **Report:** `release/0.6.0` at `a253a8f` with the versions of `0.6.0-dev.1` and a complete note; tests (904), lint, typecheck, `docs:check` and a dry run pass; no decision, no deviation besides the cap of the first report. The corrections are in the diff `31d50fe..a253a8f`, read in full: the four asked, nothing else.
+- **Worker's recommendation, read after the review:** `changelog.d/2.2-automated-security-checks.md` still says 14 of 28, stale since I-37; it goes into the changelog of `0.6.0`, so it is fixed with the final cut's preparation: agrees, and named for 7h.
+
+### 2026-11-08 19:55 — decision D1: the cut of `0.6.0-dev.1`
+- **Options:** (a) tag `0.6.0-dev.1` at `a253a8f` of `release/0.6.0` and keep #257 open for the final version; (b) merge #257 into `main` for the development version.
+- **Own analysis:** (a), as with `0.4.0-dev.1` and `0.5.0-dev.1`: a development version is tagged on its release branch (the procedure `release`, step 3), and `main` takes only the final one. The note is complete after the corrections, and the four required checks of #257 (`pr-title`, `changes`, `static checks`, `verify`) were green at `a253a8f`.
+- **Worker's recommendation:** merge and merge back, which its reports named as the next step; (a) answers it by the procedure: a development version does not reach `main`.
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode). **Done:** the annotated tag `0.6.0-dev.1` pushed from a local branch at `a253a8f` in a worktree of its own, through the pre-push gate (4 steps); the local branch and worktree removed; no remote branch touched. **Usage after the cut:** 5-hour 13% (resets 2026-11-08T22:30:00Z) · weekly 70% (resets 2026-11-10T07:00:00Z).
