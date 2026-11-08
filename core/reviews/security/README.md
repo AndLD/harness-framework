@@ -122,7 +122,7 @@ project's probe that would help any project is reported upstream (section 8), an
 
 ## 4. Procedure
 
-Work on a documentation-type branch cut from the integration branch, named after the review date. The review adds one report and its row in the review log
+Work on a documentation-type branch cut from the integration branch, named after the review date. A review that is a task of the plan has the branch of its task, and the name of the task wins over the date. The review adds one report and its row in the review log
 of the bindings, and any change to the threat model in the bindings. Fixes are separate changes after approval.
 
 1. **Prepare.** Record the commit under review, the date, the type of the review (section 10), the reviewer and the previous report. Prefer a reviewer who
@@ -209,6 +209,7 @@ A report and an issue are read by everyone who can read the repository, and late
 
 - **The dated report stays in the project**, in the folder that the bindings name, and is listed in their review log with the number and the severity of its findings, so that
   the trend across reviews can be seen.
+  A project that keeps a layer map adds the folder of the dated reports to a layer (the one that holds its other reports), or its first report belongs to no layer until the push finds it: the check of the layer map skips files that Git does not track yet.
 - **Each finding becomes an issue of the project's issue queue**, with the severity on the first line of its text and the id of the finding. Open issues in the
   order the report recommends, within section 7.
 - **A finding that is generic** (a defect of the framework, or a weakness that any project using it has) **is reported upstream** by the procedure `report-upstream`. A
@@ -250,6 +251,7 @@ A targeted report names the dimensions it did not re-score and carries their pre
 
 | Date | Change |
 | ---- | ------ |
+| 2026-11-08 | Corrections from the first review: `check security` follows S3-001 (write at the top is a finding), reads the local settings file, and lists the gaps in every result; S2-020 applies to `builds-artifacts`; S3-016 names the command that reads the token in use; the scriptable S4-026; the branch of a task wins over the date; the layer of the reports; a place for the project traits in the report template. |
 | 2026-11-08 | The procedure for the threat model, and the catalogue of S5 and S6 with the first playbooks. |
 | 2026-11-08 | The value `project:` of the field Applies, for what a project has rather than what it builds. |
 | 2026-11-08 | First version: dimensions S1 to S6, the probe, the rules of engagement, the procedure, where results go and the loop. The catalogue follows in `probes/` and `scenarios/`. |

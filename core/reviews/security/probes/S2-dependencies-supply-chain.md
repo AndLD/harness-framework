@@ -216,11 +216,11 @@ First edition, a draft: see [the index](./README.md). The format is section 3 of
 ### S2-020 — Provenance comes from the build platform, and its level is stated honestly
 
 - **Dimension:** S2
-- **Checks:** Is provenance produced by the build platform rather than by steps a change can edit, with signing identities out of reach of those steps, and is the build level actually reached stated?
+- **Checks:** (Only for a project that builds an artifact: a tag and notes have nothing to attest.) Is provenance produced by the build platform rather than by steps a change can edit, with signing identities out of reach of those steps, and is the build level actually reached stated?
 - **Why:** A tampered build step forges its own provenance, so the attestation says nothing about integrity.
 - **Evidence:** `file` (where signing and attestation happen); `judgment` (the level by the rules of the source, and the gap to the next)
 - **Severity:** 🔵 for a gap between low levels in a small project; 🟠 when a level is claimed that can be forged.
-- **Applies:** project: releases
+- **Applies:** project: builds-artifacts
 - **Decided by:** judged
 - **Sources:** SLSA Build requirements (verified 2026-11-08); HOST-DOCS artifact attestations (verified 2026-11-08)
 

@@ -43,4 +43,5 @@ It is read to find out whether a new report is a problem that was fixed already.
 | [I-34](./I-34.md) | The bootstrap and the adoption write the settings file without the formatter's message | bootstrap and sync | 1 | — |
 | [I-35](./I-35.md) | `package-lock.json` names the version `0.1.0` | checks | 1 | — |
 | [I-36](./I-36.md) | `harness flow status` reads a development take whose draft was closed as not done | checks | 1 | — |
+| [I-37](./I-37.md) | The security review's method and checks, corrected from the first review | review method | 2 | the [first security review](../../../quality-reviews/security/2026-11-08.md), section 9 |
 <!-- issue-queue:end -->

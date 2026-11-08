@@ -11,7 +11,7 @@ Each probe has the format of section 3 of the method. The playbooks of attack sc
 | S1 Secrets | [S1-secrets.md](./S1-secrets.md) | 21 | 6 | 15 | 0 |
 | S2 Dependencies and supply chain | [S2-dependencies-supply-chain.md](./S2-dependencies-supply-chain.md) | 22 | 8 | 13 | 1 |
 | S3 CI and the repository host | [S3-ci-repository-host.md](./S3-ci-repository-host.md) | 22 | 7 | 10 | 5 |
-| S4 Agent harness | [S4-agent-harness.md](./S4-agent-harness.md) | 25 | 3 | 20 | 2 |
+| S4 Agent harness | [S4-agent-harness.md](./S4-agent-harness.md) | 26 | 4 | 20 | 2 |
 | S5 The product's attack surface | [S5-attack-surface.md](./S5-attack-surface.md) | 44 | 4 | 40 | 0 |
 | S6 Operations | [S6-operations.md](./S6-operations.md) | 13 | 0 | 12 | 1 |
 
@@ -37,7 +37,7 @@ The value `project: <trait>` of the field Applies names what a project has. Seve
 | outside-contributions | takes pull requests from forks or outside collaborators |
 | past-secret-finding | has ever found a secret in its repository |
 | private-packages | uses private packages or a private registry |
-| releases | publishes a package, an image or tagged releases |
+| releases | publishes a package, an image or tagged releases; a tag with notes and no built artifact is `releases` without `builds-artifacts` |
 | self-hosted-runners | runs CI on its own runners |
 | tool-servers | connects its agents to tool servers |
 | unattended-agent | starts an agent from CI or another automation |
