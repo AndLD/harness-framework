@@ -47,3 +47,4 @@ The catalogue of probes was reviewed by a person with security expertise: — (w
 
 | Report | Type | Findings (🔴 / 🟠 / 🟡 / 🔵) |
 | ------ | ---- | ---------------------------- |
+| [2026-11-08](./2026-11-08.md) | full (S1 to S4) | 0 / 4 / 7 / 3 (gate: fail, S4) |
