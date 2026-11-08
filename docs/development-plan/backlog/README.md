@@ -15,4 +15,5 @@ the `Source:` line of the item that holds it. A defect found in use is an issue 
 <!-- backlog:start -->
 | Item | Title | Area | SP | Status | Source |
 | ---- | ----- | ---- | -- | ------ | ------ |
+| [B-5](./B-5.md) | A host-side gate between an agent and a merge to production | host adapters | 3 | Proposed | agent |
 <!-- backlog:end -->
