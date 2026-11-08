@@ -32,7 +32,7 @@ The security methodology of Phase 2, in the release `0.6.0` (named by the owner 
 | 6 | tasks | home | 2.10 | 5 | owner review | 3 | 8.1% | C3 | ✅ |
 | 6a | tasks | home | I-30 | 6 | — | 2 | 0.5% | C2 | ✅ |
 | 7 | decision | home | the cut step of `0.6.0` to insert after this one (the version is named by the owner, 2026-11-05) | 6a | — | 1 | 0.3% | — | ✅ |
-| 7a | tasks | home | I-37 | 7 | — | 2 | 0.5% | C2 | ⬜ |
+| 7a | tasks | home | I-37 | 7 | — | 2 | 0.5% | C2 | ✅ |
 | 7b | tasks | home | I-38 | 7a | — | 2 | 0.5% | C2 | ⬜ |
 | 7c | tasks | home | I-39 | 7b | owner review | 3 | 0.8% | C2 | ⬜ |
 | 7d | cut | home | `0.6.0-dev.1` | 7c | — | 1 | 0.7% | C2 | ⬜ |
