@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { after, test } from 'node:test'
 import { checkValues } from '../../../tools/lib/values.mjs'
+import { isPinned } from './ci-audit.mjs'
 import { renderTemplate, renderWorkflow } from './templates.mjs'
 import { readJobNames, readTriggers } from './workflows.mjs'
 
@@ -66,4 +67,18 @@ test('the pull-request title check takes the commit types, and the release reads
     /\^\(feat\|fix\|refactor\|test\|docs\|chore\|perf\|ci\)/
   )
   assert.match(renderWorkflow('release.yml', profile), /require\('\.\/package\.json'\)/)
+})
+
+test('every action of the workflow templates is pinned to a full commit, with its version in a comment', () => {
+  const texts = [
+    renderWorkflow('ci.yml', profile, { jobs: ['t'] }),
+    renderWorkflow('release.yml', profile),
+    renderWorkflow('update-branches.yml', profile)
+  ]
+  const uses = texts.flatMap((text) => text.match(/uses: .*/g) ?? [])
+  assert.ok(uses.length > 0)
+  for (const line of uses) {
+    assert.ok(isPinned(line.split(/\s+/)[1]), line)
+    assert.match(line, / # v\d+\.\d+\.\d+$/, line)
+  }
 })

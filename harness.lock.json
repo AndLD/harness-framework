@@ -14,9 +14,9 @@
   "managed": {
     "docs/profile.md": "353ff8157e6ef6f009dfdae171a25be04b519504ac5332fb84d22048d64e5581",
     "docs/quality-reviews/harness/bindings.md#layers": "2b53773726df5d63e14c0dd795a64f4b680a91fca9774a990a14a0a00dc93a3f",
-    "docs/engineering/rule-checks.md#rule-map": "23cc1812ffac95747586182451f991be4eb7339f0920320d17de8015e2fc6bcc",
+    "docs/engineering/rule-checks.md#rule-map": "573c9583abbeba12b6a7f820fbb97ae4a4ae93f5fc47f31634741135258daad8",
     "AGENTS.md#procedures": "2115eca9001c2edc85e864d66c91cd86c2273b4314a5e6526ae3a486821493ab",
-    "AGENTS.md#non-negotiables": "2571a6ea597680f6c506ac0e1786eb401e9cb15d1167f191c350c25f9f3a4d0b",
+    "AGENTS.md#non-negotiables": "a1c4d9725372a0d9723aaa8237040e4f795419643d23e7cefa8df25346822955",
     "AGENTS.md#git-rules": "ea6b06a031cd2fe6d3808d9afc2b38022ed23fc7d221694f4b9f97a7a6e037c2",
     ".claude/skills/change-plan/SKILL.md": "a2bef1be6b72480c4ce29dbe8b85c54bc64ec09685be006eebb2b69bb3f3f8c4",
     ".claude/skills/code-review/SKILL.md": "3a46b3ee03a74b1a464bff2d507dcaba5c739011e531e31a5d507cf11721fd46",
@@ -33,5 +33,5 @@
     ".claude/skills/update-framework/SKILL.md": "6490e3e6e44dfc0c8529e5ac9cf2b3d5b1b2654a5c4789ad31327ed10e34cfdd",
     ".claude/skills/change-framework/SKILL.md": "6350a68afdce8cfc481269a81eee0713df00aca24cedbaba07ec9666db68c628"
   },
-  "profile": "5df36a107513fd834061fbfb189aa7a060719e683a4a59afdff69a970b14355a"
+  "profile": "a8912b34f8cfbae9e24d21f613dd18690e9e8d84e88975826c7232cafecc639c"
 }
