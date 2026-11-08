@@ -52,3 +52,16 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis:** none was needed: the settings of a flow are the owner's, and the owner asked for it. The 5-hour threshold stays 85%. The estimate of the flow with the Opus coefficient of 2026-11-08 is about 14% of the week, so a flow started near 89% may wait for the weekly reset; the gate decides that step by step.
 - **Worker's recommendation:** none (no worker is involved).
 - **Choice:** (a) · **Decided by:** the owner ("we gonna run flow 4 bypassing the weekly limit. We can set limit to 97%").
+
+### 2026-11-08 09:59 — running
+- **Orchestrator:** the desktop session local_5388b1de-b1e0-4916-bc0b-0821efb3fed4 of the owner's account andrey.larionov.me@gmail.com ("Run flow 4") · **Mode:** seamless · **Steps:** 1 to 7
+- **Usage:** 5-hour 3% (resets 2026-11-08T12:50:00Z) · weekly 55% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-08 09:59 — step 1 started
+- **Executor:** session · **Worker:** local_3b6de3fc-b672-47c5-9ef3-10f2489cca3b · **Account:** andrey.larionov.me@gmail.com · **Model:** Opus 5.5 at high effort · **Permissions:** auto · **Estimate:** 5 SP, 13.5%
+- **Usage before:** 5-hour 3% (resets 2026-11-08T12:50:00Z) · weekly 55% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-08 10:10 — step 1 ended: done
+- **Usage after:** 5-hour 12% (resets 2026-11-08T12:50:00Z) · weekly 56% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +9%, weekly +1%; estimated 5-hour 20%, weekly 3% · **Pull requests merged:** #227 · **Ids done:** 2.1 · **Worker:** local_3b6de3fc-b672-47c5-9ef3-10f2489cca3b, context 19% after the step
+- **Report:** the frame of the method, the probe format and the rules of engagement are in; the method has not been run on a real repository (task 2.4 does that). No open decision. **Deviations:** the worker added the off-plan record of #223, which merged without one and made the check off-plan refuse every push; section 7 of the method (no secret in a report, open exploitable findings without reproduction steps) goes beyond the task's bullets and stays in the task's scope of rules of engagement.
+- **Recommendations of the worker, read after the report:** an orchestrator's off-plan pull request carries its record (the check off-plan holds it; #223 merged without one before this flow started), and task 2.8 follows the probe format of section 3 literally, since 2.2 reads it; the second goes to step 2. #227 was green and still open after its checks, so the orchestrator merged it (squash, no bypass).
