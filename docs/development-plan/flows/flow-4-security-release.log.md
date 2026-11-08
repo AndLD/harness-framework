@@ -211,3 +211,45 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **For the owner:** the settings of the repository (S-08, S-10, S-03) and a private advisory for the 4 high findings; for the cut, the workers' recommendation of a human review of the catalogue.
 - **Usage:** 5-hour 99% (resets 2026-11-08T12:50:00Z) · weekly 68% (resets 2026-11-10T07:00:00Z) · no step starts before the reset.
 - **Next:** after the reset, step 6a (I-30), then step 7, each gated: `harness flow next 4`. Step 7 schedules the pins with `sec.pinned-actions`, the issues of the findings and the guard against an empty pull request. To record as an issue: `update-branches.yml` leaves a bot's run in `action_required` and a pull request with no checks.
+
+### 2026-11-08 13:55 — running
+- **Orchestrator:** the desktop session of the owner's second account nil10035@gmail.com ("Continue flow 4"; the claim ended with the "stop: usage" entry above) · **Mode:** seamless · **Steps:** 6a, 7
+- **Usage:** 5-hour 29% (resets 2026-11-08T12:00:00Z) · weekly 93% (resets 2026-11-08T21:00:00Z). The readings of the entries above are of the account andrey.larionov.me@gmail.com; from here they are of this account. The owner allows the weekly window up to 98% for this run (the setting stays 97%).
+
+### 2026-11-08 13:55 — step 6a started
+- **Executor:** session · **Worker:** local_40d8e207-d990-4126-81c3-a52dc7fb13c4 · **Account:** nil10035@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 2 SP, 0.5% · **Start:** cold (fresh: the previous worker's cache had expired and it ran on the other account)
+- **Usage before:** 5-hour 29% (resets 2026-11-08T12:00:00Z) · weekly 93% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-08 14:07 — step 6a ended: done
+- **Usage after:** 5-hour 3% (resets 2026-11-08T17:00:00Z) · weekly 94% (resets 2026-11-08T21:00:00Z) · **Measured:** weekly +1%; the 5-hour window reset in between, so that part counts for nothing; estimated weekly 0.6% · **Pull requests merged:** #241 (auto-merge on, `verify` still running at the report) · **Ids done:** I-30 · **Worker:** local_40d8e207-d990-4126-81c3-a52dc7fb13c4, 62 turns, context 14% after the step
+- **Report:** `harness init` asks for the default permission mode of a flow's workers and the tools they may use, when a selected runtime lists its modes in the new optional manifest key `permissionModes`; 895 of 896 tests pass (1 skipped). No decision: the new key is optional and additive, so the meaning of the runtime contract stays (my reading, D1). **Deviation:** the report carried a block of details after its recommendations, outside the form; the worker was told for the next step. The worker's worktree was cut from `main`; it cut the branch from `origin/develop` as asked.
+
+### 2026-11-08 14:07 — decision D0: step 7 keeps the worker of step 6a
+- **Options:** none to weigh: `dispatch` says continue (the same repository, account and model, related, context 14%, cache warm).
+- **Choice:** continue, Sonnet 5.5 at high effort · **Decided by:** the orchestrator.
+
+### 2026-11-08 14:07 — step 7 started
+- **Executor:** session · **Worker:** local_40d8e207-d990-4126-81c3-a52dc7fb13c4 (continued) · **Account:** nil10035@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 1 SP, 0.3% · **Start:** warm
+- **Usage before:** 5-hour 3% (resets 2026-11-08T17:00:00Z) · weekly 94% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-08 14:12 — step 7 ended: done
+- **Usage after:** 5-hour 7% (resets 2026-11-08T17:00:00Z) · weekly 94% (resets 2026-11-08T21:00:00Z) · **Measured:** 5-hour +4% with the orchestrator's own work, weekly +0%; estimated 5-hour 2.4%, weekly 0.3% · **Pull requests merged:** none · **Ids done:** none · **Worker:** local_40d8e207-d990-4126-81c3-a52dc7fb13c4, 10 turns
+- **Report:** three decisions (below): what comes before the cut, how it is cut, and the items kept out. No deviation; the usage the worker cited was of the other account.
+
+### 2026-11-08 14:12 — decision D2: three fix steps before the cut, in the order of what blocks
+- **Options:** (A) cut `0.6.0-dev.1` now and fix later; (B) insert a core set of fixes, then cut; (C) fix all 14 findings first.
+- **Own analysis** (written before the recommendations): (B), with the pins, I-37 (it corrects the checks this release ships) and the high findings an agent can fix. A security release that ships its own known high finding S-01 and a check that I-37 says is wrong promises more than it holds; (C) spends a week the account does not have, and the rest of the findings are the owner's settings or larger work. Order: I-37 (7a), I-38 for S-01 and the planted payload of S-02 (7b), then I-39, the pins with `sec.pinned-actions` (7c), last, because the rule is a new rule of core that the owner keeps, so 7c stops for the owner's review and the other two run first.
+- **Worker's recommendation:** (B), the same set, with the pins first. Mine puts them last: the stop of the rule would otherwise hold the two fixes that need no one.
+- **Choice:** (B), steps 7a I-37, 7b I-38, 7c I-39 (stops for the owner's review: the rule) · **Decided by:** the orchestrator (seamless mode); for review later.
+
+### 2026-11-08 14:12 — decision D3: the cut is a development version first, and the final cut stops for the owner
+- **Options:** (a) `0.6.0-dev.1`, the consumer's take, then a decision on `dev.2` or the final; (b) the final at once.
+- **Own analysis:** (a), as flows 1 to 3 did: the consumer's take finds what blocks. The final cut promises consumers a catalogue of probes that two workers said needs a human security review, so its decision (7f) stops for the owner whatever the mode; the note of `dev.1` says the catalogue is a draft.
+- **Worker's recommendation:** (a), the same, the development cut D1 and the final D3 for the owner.
+- **Choice:** (a), steps 7d cut `0.6.0-dev.1`, 7e the consumer's take, 7f the decision (stops for the owner's review); the releases file has the row of `0.6.0-dev.1` and the three issues in `0.6.0` · **Decided by:** the orchestrator (seamless mode); for review later.
+
+### 2026-11-08 14:12 — decision D2: the items kept out are filed, not scheduled
+- **Options:** (a) file them and schedule them in a `0.6.1`; (b) file them and leave them unscheduled.
+- **Own analysis:** (b). They are small and none makes a consumer's state worse, but a new version is the owner's to name. Filed: I-40 (the template does not ask for `flows.permissions`), I-41 (auto-merge on an empty pull request, #235), I-42 (`update-branches.yml` leaves a bot's run in `action_required`); "Not scheduled" in the releases file names them. The other findings (S-03, S-04, S-05, S-07 to S-14) stay as the review records them: the owner's settings and the private advisory are the owner's, and the rest waits for the owner's order of work.
+- **Worker's recommendation:** (a), a `0.6.1`. My entry answers it: the version is not mine to name.
+- **Choice:** (b) · **Decided by:** the orchestrator (seamless mode); for review later.
