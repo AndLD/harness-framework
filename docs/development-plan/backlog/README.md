@@ -16,4 +16,9 @@ the `Source:` line of the item that holds it. A defect found in use is an issue 
 | Item | Title | Area | SP | Status | Source |
 | ---- | ----- | ---- | -- | ------ | ------ |
 | [B-5](./B-5.md) | A host-side gate between an agent and a merge to production | host adapters | 3 | Proposed | agent |
+| [B-6](./B-6.md) | A sandbox for agent sessions, with a list of hosts, in the runtime preset | runtime adapters | 3 | Proposed | agent |
+| [B-7](./B-7.md) | A gate on the host for the release path | host adapters | 3 | Proposed | agent |
+| [B-8](./B-8.md) | The host's secret scanning and push protection, in the bootstrap and the owner's settings | host adapters | 1 | Proposed | agent |
+| [B-9](./B-9.md) | Automated dependency and configuration audits | stack adapters | 2 | Proposed | agent |
+| [B-10](./B-10.md) | A record of agent sessions that the agent cannot write, and managed limits | runtime adapters | 3 | Proposed | agent |
 <!-- backlog:end -->

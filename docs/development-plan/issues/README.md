@@ -17,4 +17,6 @@ A request for something new, which is not a defect, is an item of the [backlog](
 | [I-40](./I-40.md) | The template repository does not ask for the flows' permissions | bootstrap and sync | C2 | 1 | ⬜ | — |
 | [I-41](./I-41.md) | Auto-merge can be turned on for a pull request with no changed files | Git rules | C2 | 1 | ⬜ | — |
 | [I-42](./I-42.md) | The branch update by the workflow leaves a pull request with no checks | host adapters | C2 | 2 | ⬜ | — |
+| [I-48](./I-48.md) | `harness host protect` sets required checks with no expected source | host adapters | C2 | 1 | ⬜ | the [first security review](../../quality-reviews/security/2026-11-08.md), finding S-20261108-05 |
+| [I-49](./I-49.md) | A policy hook that fails lets the call proceed | runtime adapters | C2 | 1 | ⬜ | the [first security review](../../quality-reviews/security/2026-11-08.md), finding S-20261108-09 |
 <!-- issue-queue:end -->
