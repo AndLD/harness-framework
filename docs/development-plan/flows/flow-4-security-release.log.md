@@ -523,3 +523,39 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis (the worker's picks were already seen):** the default, since the point of I-46 is no edit by the project; the optional key, since the check stays neutral about stacks and every existing adapter still conforms. An optional key adds to the contract and changes the meaning of nothing, so it is not a `contract.change`.
 - **Worker's recommendation:** the same, at D0 and D1.
 - **Choice:** both as built · **Decided by:** the orchestrator (seamless mode).
+
+### 2026-11-08 20:48 — decision D1: what the note of `0.6.0-dev.2` must say (own list, written before the note is read)
+- **Against `0.6.0-dev.1`:** `harness check layers` places the scaffold's `SECURITY.md` in `PROFILE` with no edit (I-46), and a project that edited its map for it may leave that or undo it; `check security` no longer reports S2-001 on a workspace covered by a root lock, with an optional `members` key of the stack role (I-47).
+- **What the first take found missing:** a project's own product terms against the words of the probes (`terms.productGeneric`); the hand pinning of a project's own workflows, including actions the preset has no pin for.
+- **Required:** take the version and prove `check all`, as for any development version; nothing else new.
+- **Worker's recommendation:** none yet.
+- **Choice:** the note is checked against this list · **Decided by:** the orchestrator.
+
+### 2026-11-08 20:48 — decision D0: step 7j: the app refuses a session start on a turn that a background task's end began, so the cli executor runs it
+- **Options:** (a) the cli executor; (b) wait for the owner's message.
+- **Own analysis:** (a): the start was refused again, and the procedure says not to retry or wait.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (a) · **Decided by:** the orchestrator.
+
+### 2026-11-08 20:48 — step 7j started
+- **Executor:** cli, the fallback of session: the app refuses a session start on a turn that a background task's end began · **Worker:** 3cf4cfa3-bd54-4892-81aa-83d885533a5e, in the worktree that held `release/0.6.0` · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 1 SP, 5-hour 3.4%, weekly 0.7% · **Start:** cold
+- **Usage before:** 5-hour 23% (resets 2026-11-08T22:30:00Z) · weekly 72% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-08 20:51 — step 7j ended: done
+- **Usage after:** 5-hour 26% (resets 2026-11-08T22:30:00Z) · weekly 72% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +3%, weekly +0%; estimated 5-hour 3.4%, weekly 0.7% (1.83 M cache-read and 11k output tokens, $0.54 at list price, 4 minutes) · **Pull requests:** #257 open, kept for the final version · **Worker:** cli 3cf4cfa3-bd54-4892-81aa-83d885533a5e, 29 turns
+- **Report:** `develop` merged into `release/0.6.0` at `7014821`, the versions of `0.6.0-dev.2`, a complete note, the fragment of 2.2 corrected to 14 of 29; `docs:check`, lint, typecheck and tests pass (907 of 908, one skipped). **Deviation:** the report was 2445 characters, 45 over the cap.
+- **Note review:** every item of the list of 20:48 is in the note. The five pins it names are the preset's, and its lookup command returns the commit of the pin of `actions/checkout`.
+- **Worker's recommendations, read after the review:** check the lookup command: done; update the releases file: done in this record.
+
+### 2026-11-08 20:53 — decision D1: the cut of `0.6.0-dev.2`
+- **Options:** (a) tag `0.6.0-dev.2` at `c8dd389` of `release/0.6.0` and keep #257 open for the final version; (b) merge #257 into `main`.
+- **Own analysis:** (a), as for `0.6.0-dev.1`. The note is complete, and the four required checks of #257 were green at `c8dd389`.
+- **Worker's recommendation:** the same.
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode). **Done:** the annotated tag `0.6.0-dev.2` pushed from a local branch at `c8dd389` in a worktree of its own, through the pre-push gate; the local branch and worktree removed; no remote branch touched.
+
+### 2026-11-08 20:53 — stop: step 7k needs AndLD/bot-rts#306 merged
+- **Done:** 7h (the owner's choice), 7i (I-46, I-47; #261, #262), 7j (the tag `0.6.0-dev.2`).
+- **Decided alone, for review later:** the two choices of I-46 and I-47 (20:46, D1) and the cut (D1).
+- **For the owner:** the second take starts from `0.6.0-dev.1` in that repository's lock, since the note of `dev.2` is written against it, so AndLD/bot-rts#306 (green) has to merge first, and that merge is that repository's owner's. The earlier items stay: the 7 days of `SECURITY.md`, the settings S-08, S-10, S-03 and the private advisory for the 4 high findings.
+- **Usage:** 5-hour 26% (resets 2026-11-08T22:30:00Z) · weekly 72% (resets 2026-11-10T07:00:00Z), account andrey.larionov.me@gmail.com.
+- **Next:** on the merge of #306, step 7k, the second take; then 7l stops for the owner's decision on the final cut.
