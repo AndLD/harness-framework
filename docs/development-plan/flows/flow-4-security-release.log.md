@@ -600,3 +600,33 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Named too:** `SECURITY.md` falls in `PROFILE` of a layer map with no edit, and removing a line a project added needs `harness sync --local`; S2-001 and workspaces; test values that look like credentials before `checks.security` is turned on; the catalogue is a draft until reviewed.
 - **Worker's recommendation:** none yet.
 - **Choice:** the note is checked against this list · **Decided by:** the orchestrator.
+
+### 2026-11-08 21:24 — decision D3: `SECURITY.md` makes no fixed-deadline promise
+- **Options:** keep the 7 days of acknowledgement, or change them; the entry of 21:11 had kept them because the owner did not name them.
+- **Own analysis:** the owner's to decide: it is a public promise made for a solo maintainer. Asked again before the merge, since the owner's approval of the cut came before the owner had seen the sentence.
+- **Worker's recommendation:** the worker of 7e recommended the owner's confirmation.
+- **Choice:** no fixed deadline, in `SECURITY.md` and the scaffold's copy, on `release/0.6.0` before the merge; this replaces the entry of 21:11 on the 7 days · **Decided by:** the owner ("change it to no fixed deadline").
+
+### 2026-11-08 21:12 — step 7m started
+- **Executor:** session · **Worker:** local_5d8e6118-77e3-486d-a139-67462610e19b · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 1 SP, 5-hour 3.4%, weekly 0.7% · **Start:** cold
+- **Usage before:** 5-hour 32% (resets 2026-11-08T22:30:00Z) · weekly 73% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-08 21:16 — step 7m ended: done
+- **Usage after:** 5-hour 36% (resets 2026-11-08T22:30:00Z) · weekly 73% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +4% with the orchestrator's own work, weekly +0%; estimated 5-hour 3.4%, weekly 0.7% · **Pull requests:** #257, retitled for the final version · **Worker:** local_5d8e6118-77e3-486d-a139-67462610e19b, 27 turns, context 11% after the step
+- **Report:** `develop` merged into `release/0.6.0`, the version `0.6.0`, `CHANGELOG.md` from 15 fragments, `migrations/0.6.0.md` from `0.5.0`; `docs:check`, lint and tests pass (907 of 908, one skipped). After the owner's word on the deadline (21:24) it changed only the two `SECURITY.md` files, at `3999d5d`. **Deviation:** the report was 2763 characters, over the cap.
+- **Note review:** every item of the list of 21:11 is in the note, with the corrected counts; the sentence on `harness sync --local` matches what the second take saw.
+- **Worker's recommendations, read after the review:** check that sentence against the take: done.
+
+### 2026-11-08 21:31 — decision D3: the cut of `0.6.0`
+- **Options:** the owner chose at 21:11, and the merges and the tag were done on that word.
+- **Own analysis:** the note is complete, and the four required checks were green on `3999d5d` for #257 and on `592de7d` for the merge back. Merged by merge commit, by the host's rules, with no auto-merge and no bypass.
+- **Worker's recommendation:** the same.
+- **Choice:** cut · **Decided by:** the owner. **Done:** #257 merged at `d5ccb49`; the annotated tag `v0.6.0` pushed from a local branch at it, through the pre-push gate; the GitHub release published by the workflow; `main` merged back into `develop` by #267, `f6629bd`; the local branches and worktrees removed; no remote branch touched.
+
+### 2026-11-08 21:31 — stop: flow 4 is done
+- **Done:** `0.6.0` is released, with the tag `v0.6.0` on `d5ccb49` of `main`. The flow ran 2.1, 2.8, 2.9, 2.2, 2.4, 2.10, I-30, I-37, I-38, I-39, I-43, 2.12, I-46 and I-47, two development versions and two takes by the consumer (AndLD/bot-rts#306 and #307, both merged).
+- **Decided alone, for review later:** the entries D2 and D3 of steps 7 to 7d, the 7 days kept for `dev.1` (19:46, then replaced by the owner), the D1 entries of the cuts and of I-46 and I-47.
+- **For the owner:** the settings S-08, S-10 (private vulnerability reporting, which `SECURITY.md` now promises) and S-03, and the private advisory for the 4 high findings; the probes of the consumer's takes; closing Phase 2, whose tasks are all ✅.
+- **Calibration:** `harness flow calibrate` proposes pro.perSp.opus.tasks 2.47 and 0.33, sonnet.consumer-take 2.5 and 0.04, sonnet.cut 3 and 0.09, sonnet.tasks 2 and 0.25 (5-hour and weekly per SP), and says warm starts do not pay off (a median of 1.22 of a cold start, on 5 warm steps). Nothing is written; each is the owner's by a pull request.
+- **Usage:** 5-hour 40% (resets 2026-11-08T22:30:00Z) · weekly 74% (resets 2026-11-10T07:00:00Z), account andrey.larionov.me@gmail.com.
+- **Next:** none in this flow; flow 5 (`0.6.1`) needs the owner's word.

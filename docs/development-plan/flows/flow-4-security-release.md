@@ -44,6 +44,6 @@ The security methodology of Phase 2, in the release `0.6.0` (named by the owner 
 | 7j | cut | home | `0.6.0-dev.2` | 7i | — | 1 | 0.7% | C2 | ✅ |
 | 7k | consumer-take | consumer | `0.6.0-dev.2` | 7j | — | 2 | 0.5% | C2 | ✅ |
 | 7l | decision | home | the final cut of `0.6.0`, after the second take | 7k | owner review | 1 | 0.3% | — | ✅ |
-| 7m | cut | home | `0.6.0` | 7l | — | 1 | 0.7% | C2 | ⬜ |
+| 7m | cut | home | `0.6.0` | 7l | — | 1 | 0.7% | C2 | ✅ |
 
 State: ⬜ not started · 🟡 running · ⏸ waits for the owner · ⛔ blocked · ✅ done. The State column is a cache of the repository's state; the log is the record.
