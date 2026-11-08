@@ -20,7 +20,7 @@ project's own probes and the review log. The first security review fills them; u
 
 ## Threat model
 
-<!-- S5 and S6: the assets, the trust boundaries, the entry points and who the attackers are, and the kinds of product (the words the `Applies` field of a probe uses). An agent drafts it from the project's code and documents; a person checks it. -->
+<!-- S5 and S6: the procedure is the file threat-model.md beside the method. The kinds of product (the words the `Applies` field of a probe uses) are listed in the index of the probes; a project adds its own here. An agent drafts it from the project's code and documents; a person checks it. -->
 
 ## Scope of active tests
 
@@ -31,6 +31,7 @@ project's own probes and the review log. The first security review fills them; u
 | Environments and their addresses | — |
 | Accounts and data to use (test only) | — |
 | Tools allowed | — |
+| Limits for scenarios (requests, sizes, test mail domain, listener) | — |
 | Out of scope | production, every system of a third party |
 | Approved by, on | — |
 

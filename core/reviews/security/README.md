@@ -127,7 +127,7 @@ of the bindings, and any change to the threat model in the bindings. Fixes are s
 
 1. **Prepare.** Record the commit under review, the date, the type of the review (section 10), the reviewer and the previous report. Prefer a reviewer who
    did not write what is reviewed, and say in the report who reviewed. Read the bindings and the open findings of the previous report.
-2. **Refresh the threat model** (S5 and S6, where they apply): the assets, the trust boundaries, the entry points, who the attackers are and the kinds of
+2. **Refresh the [threat model](./threat-model.md)** (S5 and S6, where they apply): the assets, the trust boundaries, the entry points, who the attackers are and the kinds of
    product that the field `Applies` of a probe can name. An agent drafts it from the project's code and documents; a person checks it.
 3. **Select the probes.** The probes of the catalogue and those of the bindings, filtered by `Applies`. List each one that does not apply, with the reason.
 4. **Run the automation.** `harness check security` gives the result of the probes that have a check, and the report quotes the command and its date. A
@@ -250,5 +250,6 @@ A targeted report names the dimensions it did not re-score and carries their pre
 
 | Date | Change |
 | ---- | ------ |
+| 2026-11-08 | The procedure for the threat model, and the catalogue of S5 and S6 with the first playbooks. |
 | 2026-11-08 | The value `project:` of the field Applies, for what a project has rather than what it builds. |
 | 2026-11-08 | First version: dimensions S1 to S6, the probe, the rules of engagement, the procedure, where results go and the loop. The catalogue follows in `probes/` and `scenarios/`. |
