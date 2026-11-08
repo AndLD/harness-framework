@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict'
+import { readdirSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { test } from 'node:test'
-import { coreRules, declarations, GIT_HOOK_RULES, renderRuleMap } from './rule-map.mjs'
+import { coreRules, declarations, GIT_HOOK_RULES, renderRuleMap, SECURITY_RULES } from './rule-map.mjs'
+import { AUTOMATED } from './security.mjs'
 
 const profile = (protection) => ({
   adapters: { stacks: ['node-ts'], runtimes: ['claude-code'], host: 'github' },
@@ -52,6 +55,37 @@ test('a rule held only in part is "partly", not "enforced"', () => {
     /`harness check security` scans the committed content for a secret.*\| partly \|$/
   )
   assert.match(row(table, 'nn.tests'), /\| enforced \|$/)
+})
+
+test('every security rule has its row, and the probes it names are in the catalogue', () => {
+  const folder = join(import.meta.dirname, '../../core/reviews/security/probes')
+  const catalogue = readdirSync(folder)
+    .map((file) => readFileSync(join(folder, file), 'utf8'))
+    .join('\n')
+  const rules = coreRules().filter(({ id }) => id.startsWith('sec.'))
+  assert.equal(rules.length, 3)
+  assert.deepEqual(rules.map(({ id }) => id).sort(), SECURITY_RULES.map(({ rule }) => rule).sort())
+  const table = renderRuleMap(profile(true))
+  for (const { rule, probes } of SECURITY_RULES) {
+    assert.ok(probes.length > 0, rule)
+    for (const probe of probes) {
+      assert.match(catalogue, new RegExp(`^### ${probe} `, 'm'), probe)
+      assert.match(row(table, rule), new RegExp(probe), rule)
+    }
+  }
+})
+
+test('a probe holds nothing at the moment of the action: alone it leaves the rule judgment, and a check beside it counts', () => {
+  const table = renderRuleMap(profile(true))
+  assert.match(
+    row(table, 'sec.outside-text'),
+    /\| – \| – \| – \| probes S4-007 and S4-021 of the security review \| judgment \|$/
+  )
+  assert.match(
+    row(table, 'sec.pinned-actions'),
+    /`harness check security`.*\| probe S2-004 of the security review \| partly \|$/
+  )
+  assert.ok(AUTOMATED['S2-004'])
 })
 
 test('a project without the runtime or the stack gets only what the framework and the host hold', () => {

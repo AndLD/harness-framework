@@ -80,6 +80,12 @@
   "templates": ["templates/ci.yml", "templates/release.yml", "templates/update-branches.yml"],
   "enforces": [
     {
+      "rule": "sec.pinned-actions",
+      "when": "remote",
+      "by": "`harness check security` finds an action that is not pinned to a full commit (in `harness check all`, so in CI, once `checks.security` is on)",
+      "partial": true
+    },
+    {
       "rule": "git.protection",
       "when": "remote",
       "by": "the repository ruleset of `harness host protect`: no direct push, no force-push, no deletion, a pull request for every change",

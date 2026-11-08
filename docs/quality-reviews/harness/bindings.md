@@ -50,6 +50,8 @@ The ceilings of the numbers the method budgets (section 3). Task 4.5 of the plan
 | ------ | -------- | ------- |
 | Rows of the `procedures` block of `AGENTS.md` (M6, M20) | 12 | 16 |
 | Words of the `procedures` block of `AGENTS.md` (M6) | 277 | 400 |
+| Lines of the security rules of `AGENTS.md` (M6) | 3 | 5 |
+| Words of the security rules of `AGENTS.md` (M6) | 110 | 150 |
 | Words in the always-loaded set (M6) | 2,729 | — |
 | Normative words in the always-loaded set (M20) | 33 | — |
 | Exception words in the always-loaded set (M20) | 5 | — |
