@@ -15,7 +15,7 @@ The security methodology of Phase 2, in the release `0.6.0` (named by the owner 
   "repos": {
     "consumer": { "remote": "AndLD/bot-rts", "role": "consumer", "kinds": ["consumer-take"] }
   },
-  "usage": { "stopAt": { "fiveHour": 85, "weekly": 97 } },
+  "usage": { "stopAt": { "fiveHour": 85, "weekly": 99 } },
   "permissions": { "mode": "auto", "allow": ["Bash(git *)", "Bash(gh *)", "Bash(npm *)", "Bash(node *)", "Bash(sed *)", "Bash(ls *)"] }
 }
 ```
@@ -35,7 +35,7 @@ The security methodology of Phase 2, in the release `0.6.0` (named by the owner 
 | 7a | tasks | home | I-37 | 7 | — | 2 | 0.5% | C2 | ✅ |
 | 7b | tasks | home | I-38 | 7a | — | 2 | 0.5% | C2 | ✅ |
 | 7c | tasks | home | I-39 | 7b | owner review | 3 | 0.8% | C2 | ✅ |
-| 7d | tasks | home | I-43 | 7c | owner review | 2 | 0.5% | C2 | ⬜ |
+| 7d | tasks | home | I-43 | 7c | — | 2 | 0.5% | C2 | ✅ |
 | 7e | cut | home | `0.6.0-dev.1` | 7d | — | 1 | 0.7% | C2 | ⬜ |
 | 7f | consumer-take | consumer | `0.6.0-dev.1` | 7e | — | 2 | 0.5% | C2 | ⬜ |
 | 7g | decision | home | the final cut of `0.6.0`, or a `0.6.0-dev.2` first, after the consumer's take | 7f | owner review | 1 | 0.3% | — | ⬜ |

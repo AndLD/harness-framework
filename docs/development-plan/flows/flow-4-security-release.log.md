@@ -368,3 +368,28 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis:** (a): the flow's own `permissions.allow` names the rule, so narrowing it would also narrow what a flow's workers may run.
 - **Worker's recommendation:** the worker of 7c recommended narrowing it; (a) answers that the workers need it.
 - **Choice:** (a); step 7d (I-43) adds the rule to `security.allowedRules` and cites this entry in its pull request as the owner's approval · **Decided by:** the owner ("Accept it in the profile").
+
+### 2026-11-08 15:36 — decision D2: the weekly threshold is 99%, and step 7d no longer stops
+- **Options:** none to weigh: the owner raised the cap for this run ("I give you limit 99%. Continue now"), so `usage.stopAt.weekly` is 99; step 7d stopped for the owner's decision on the local rule, which the owner gave at 15:34, so its "Stops for" is cleared and the worker merges it by auto-merge.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** both · **Decided by:** the owner (the threshold); the orchestrator (the stop, seamless mode).
+
+### 2026-11-08 15:36 — running
+- **Orchestrator:** the desktop session of the account nil10035@gmail.com, as at 13:55 · **Mode:** seamless · **Steps:** 7d, then 7e if the usage allows
+- **Usage:** 5-hour 29% (resets 2026-11-08T17:00:00Z) · weekly 97% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-08 15:36 — step 7d started
+- **Executor:** session · **Worker:** local_aa2a8ad5-f822-4b44-a779-b93f38619a56 · **Account:** nil10035@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 2 SP, 0.5% · **Start:** cold (fresh: the flow stopped for the owner since the last worker's turn)
+- **Usage before:** 5-hour 29% (resets 2026-11-08T17:00:00Z) · weekly 97% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-08 15:44 — step 7d ended: done
+- **Usage after:** 5-hour 32% (resets 2026-11-08T17:00:00Z) · weekly 97% (resets 2026-11-08T21:00:00Z) · **Measured:** 5-hour +3%, weekly +0%; estimated 5-hour 3.6%, weekly 0.5% · **Pull requests merged:** #251 (auto-merge on, `verify` running at the report) · **Ids done:** I-43 · **Worker:** local_aa2a8ad5-f822-4b44-a779-b93f38619a56, 42 turns, context 10% after the step
+- **Report:** the template `update-branches.yml` reads at the top and writes on the job, with a test that audits the three templates by S3-001; `checks.security` is true and `Bash(node *)` is accepted in `security.allowedRules`, with the owner's entry of 15:34 cited in #251; the test of `settings-audit` no longer inherits the accepted rule. 904 tests and `check all` pass with the local settings in place, and the push went through the gate with the check on. No decision, no deviation.
+- **Worker's recommendation, read after the report:** check that #251 merged before the cut: agrees.
+
+### 2026-11-08 15:47 — stop: usage
+- **Done:** steps 6a, 7, 7a, 7b, 7c and 7d (I-30, I-37, I-38, I-39, I-43; #241, #242, #243, #245, #247, #251); the security gate is on in this repository.
+- **Decided alone:** the three decisions of step 7, the D2 entries of steps 7c and 7d, the D1 and the D0 entries, for review later.
+- **For the owner:** the settings S-08, S-10, S-03 and the private advisory for the 4 high findings.
+- **Usage:** 5-hour 33% (resets 2026-11-08T17:00:00Z) · weekly 98% (resets 2026-11-08T21:00:00Z), account nil10035@gmail.com. The gate would pass the cut (98% + 0.8% under 99%), but every step of this run measured at or over its estimate, so the cut would reach the owner's 99%: no step starts before the weekly reset.
+- **Next:** after the weekly reset of 21:00Z, step 7e cuts `0.6.0-dev.1` (D1, decided by the flow): the orchestrator reads its migration note in full against its own list (what a project must do: run `harness sync` for the regenerated workflows, pinned and with the write grants on the job, and the three rules of the entry file; pin the actions of a hand-written workflow; optional: turn `checks.security` on, with `security.allowedRules`, and keep the pins current), then 7f, the consumer's take: `harness flow next 4`.
