@@ -76,7 +76,7 @@ the same result. A probe has these fields:
 | Why | The scenario: what an attacker or an accident does when the answer is wrong |
 | Evidence | How it is gathered, one or more of the kinds below |
 | Severity | Guidance for a failure: the usual severity, and what raises or lowers it |
-| Applies | When it applies: `every project`, `stack: <an adapter role>` or `product: <a kind of product named by the bindings>` |
+| Applies | When it applies: `every project`, `stack: <an adapter role>`, `product: <a kind of product named by the bindings>` or `project: <traits from the catalogue's list>` |
 | Decided by | How far a script can decide it: `scriptable`, `judged` or `manual` (below) |
 | Sources | The id of each source, with the date it was last verified |
 
@@ -250,4 +250,5 @@ A targeted report names the dimensions it did not re-score and carries their pre
 
 | Date | Change |
 | ---- | ------ |
+| 2026-11-08 | The value `project:` of the field Applies, for what a project has rather than what it builds. |
 | 2026-11-08 | First version: dimensions S1 to S6, the probe, the rules of engagement, the procedure, where results go and the loop. The catalogue follows in `probes/` and `scenarios/`. |
