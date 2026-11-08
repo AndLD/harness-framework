@@ -92,7 +92,7 @@ test('the estimate of a step is its SP times the coefficient of its model, kind 
   })
   assert.equal(estimateStep({ step: task, profile, usage, subscription: 'max5x' }).fiveHour, 12)
   assert.equal(estimateStep({ step: task, profile, usage, subscription: 'max20x' }).fiveHour, 3)
-  const opus = estimateStep({ step: step({ model: 'C3' }), profile, usage, subscription: 'pro' })
+  const opus = estimateStep({ step: step({ sp: '25', model: 'C3' }), profile, usage, subscription: 'pro' })
   assert.equal(opus.fiveHour, 100)
   assert.equal(
     estimateStep({ step: step({ kind: 'cut', sp: '1', model: '—' }), profile, usage, subscription: 'pro' }).fiveHour,
@@ -267,18 +267,18 @@ test('a window reading is parsed from <percent>[@<reset>], and the reading from 
 test('a step that does not fit one window is flagged where the subscription is known, and the flow is sized from its steps', () => {
   const flow = {
     settings: { usage: { stopAt: STOP_AT } },
-    steps: [step({}), step({ '#': '2', sp: '8', model: 'C3' }), step({ '#': '3', kind: 'cut', sp: '1', model: '—' })]
+    steps: [step({}), step({ '#': '2', sp: '6', model: 'Fable 5.1' }), step({ '#': '3', kind: 'cut', sp: '1', model: '—' })]
   }
   const problems = fitProblems({ flow, profile, usage, subscription: 'pro' })
   assert.equal(problems.length, 1)
   assert.match(
     problems[0],
-    /^step 2: its estimate of 160% of the 5-hour window \(times 1\.2\) does not fit within the threshold 85%.*split the step/
+    /^step 2: its estimate of 180% of the 5-hour window \(times 1\.2\) does not fit within the threshold 85%.*split the step/
   )
   assert.deepEqual(fitProblems({ flow, profile, usage, subscription: 'max5x' }), [])
   assert.deepEqual(fitProblems({ flow, profile, usage, subscription: null }), [])
   const sized = flowEstimate({ flow, profile, usage, subscription: 'max5x' })
-  assert.deepEqual(sized.total, { fiveHour: 45, weekly: 6 })
+  assert.deepEqual(sized.total, { fiveHour: 49, weekly: 6.5 })
   assert.equal(sized.partial, false)
   assert.equal(flowEstimate({ flow, profile, usage, subscription: null }).total, null)
 })

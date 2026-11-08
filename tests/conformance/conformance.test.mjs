@@ -274,7 +274,7 @@ test('a usage role that cannot be read or has an incomplete table fails the usag
   for (const [replace, problem] of [
     ['read: () => [', /usage `read\(\)` returns no means/],
     ["unit: 'percent'", /unit must be "percent" or "usd"/],
-    ['opus: row(20, 2.7),', /defaultModel "sonnet" is missing|has no default row|needs a positive/]
+    ['opus: { ...row(20, 2.7),', /defaultModel "sonnet" is missing|has no default row|needs a positive/]
   ]) {
     const dir = broken('runtime', 'claude-code', {
       'usage.mjs': (text) => {
@@ -285,7 +285,7 @@ test('a usage role that cannot be read or has an incomplete table fails the usag
             "unit: 'percent', provisional: true, kinds: KINDS, perSp: PRO",
             "unit: 'weeks', provisional: true, kinds: KINDS, perSp: PRO"
           )
-        return text.replace('opus: row(20, 2.7),', 'opus: row(0, 2.7),')
+        return text.replace('opus: { ...row(20, 2.7),', 'opus: { ...row(0, 2.7),')
       }
     })
     const suite = await runSuite({ dir, only: /^usage/ })

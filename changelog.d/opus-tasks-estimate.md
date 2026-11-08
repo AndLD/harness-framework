@@ -1,0 +1,1 @@
+Changed: the usage estimate of a `tasks` step on Opus on Claude Pro is 4% of the 5-hour and 0.6% of the weekly window a SP (it was the default row, 20% and 2.7%), from the steps of flow 3; the default row of Opus and the larger subscriptions are unchanged.
