@@ -559,3 +559,31 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **For the owner:** the second take starts from `0.6.0-dev.1` in that repository's lock, since the note of `dev.2` is written against it, so AndLD/bot-rts#306 (green) has to merge first, and that merge is that repository's owner's. The earlier items stay: the 7 days of `SECURITY.md`, the settings S-08, S-10, S-03 and the private advisory for the 4 high findings.
 - **Usage:** 5-hour 26% (resets 2026-11-08T22:30:00Z) · weekly 72% (resets 2026-11-10T07:00:00Z), account andrey.larionov.me@gmail.com.
 - **Next:** on the merge of #306, step 7k, the second take; then 7l stops for the owner's decision on the final cut.
+
+### 2026-11-08 21:00 — decision D1: AndLD/bot-rts#306 is merged, and step 7k starts
+- **Options:** none to weigh: the owner said "You merge it"; the permission check of this session refused the merge as one without review, so the owner ran it (`b59671c`). No other way around the refusal was tried.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** 7k starts · **Decided by:** the owner. Step 7g shows ✅ from the repository.
+
+### 2026-11-08 21:00 — step 7k started
+- **Executor:** cli, the fallback of session: a step in another repository runs on the command line, since a session cannot be counted on to start there without the owner's message · **Worker:** c6798844-073a-4a7e-929c-9f1d3bf4fb33 · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 2 SP, 5-hour 5.2%, weekly 0.5% · **Start:** cold
+- **Usage before:** 5-hour 28% (resets 2026-11-08T22:30:00Z) · weekly 72% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-08 21:03 — step 7k ended: done
+- **Usage after:** 5-hour 31% (resets 2026-11-08T22:30:00Z) · weekly 73% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +3%, weekly +1%; estimated 5-hour 5.2%, weekly 0.5% · **Pull requests:** AndLD/bot-rts#307, the take of `0.6.0-dev.2`, open with its CI running, for that repository's owner · **Worker:** cli c6798844-073a-4a7e-929c-9f1d3bf4fb33, 48 tool calls in 3 minutes by its transcript (the JSON's 3 turns, 28 seconds and $0.47 cover only its last stretch, so they are not a measure of the step)
+- **Report:** the three required actions done, each with its check. **I-46 holds:** with the `SECURITY.md` line taken out of the map for a moment, `check layers` passes. **I-47 holds:** no S2-001 on the workspace manifests. `check core` exits 0 with no new word, and lint and coverage pass in the three packages. The 32 S1-001 findings remain, and `checks.security` stays as it was. The transcript shows the commands; #307's CI is the independent proof and was still running.
+- **What the note missed:** removing the map's line also needs `harness sync --local`, or `check all` fails on the managed block of the bindings: for the note of `0.6.0`.
+- **For that repository's owner:** whether to run its probes (P4, P5, the stack adapters' starting probe; `probes.run` is `ask`), and #307.
+
+### 2026-11-08 21:04 — decision D3: the final cut of `0.6.0`
+- **Options:** (a) cut `0.6.0` from `release/0.6.0` once #307's CI is green, the note of `0.6.0` telling the whole story from `0.5.0` and saying the `harness sync --local` line; (b) a `0.6.0-dev.3` for that one line first.
+- **Own analysis (the worker's recommendations were already seen):** (a). The second take proved both fixes on the consumer, and what it found is one sentence of a note, which a third take cannot usefully test.
+- **Worker's recommendation:** merge #307 once CI is green: compatible.
+- **Choice:** none yet: step 7l stops for the owner (its "Stops for"), who also confirms or changes the 7 days of `SECURITY.md`.
+
+### 2026-11-08 21:04 — stop: the owner decides the final cut (step 7l)
+- **Done:** 7j's tag, 7k's take (AndLD/bot-rts#307, open).
+- **Decided alone, for review later:** the cut of `0.6.0-dev.2` and the choices of I-46 and I-47 (D1).
+- **For the owner:** the decision above; the 7 days of `SECURITY.md`; AndLD/bot-rts#307 and its probes; the earlier settings S-08, S-10, S-03 and the private advisory for the 4 high findings.
+- **Usage:** 5-hour 31% (resets 2026-11-08T22:30:00Z) · weekly 73% (resets 2026-11-10T07:00:00Z), account andrey.larionov.me@gmail.com.
+- **Next:** on the owner's answer, a cut step of `0.6.0`, whose merges and tag the orchestrator or the owner does by the procedure `release`.
