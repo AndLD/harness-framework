@@ -285,3 +285,25 @@ Entries are written from the entry templates of the [flow-log template](../../..
 ### 2026-11-08 15:07 — running
 - **Orchestrator:** the desktop session of the account nil10035@gmail.com, as at 13:55 · **Mode:** seamless · **Steps:** 7b, then the stop of 7c
 - **Usage:** 5-hour 16% (resets 2026-11-08T17:00:00Z) · weekly 95% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-08 15:09 — step 7b started
+- **Executor:** session · **Worker:** local_0b23cc8f-5309-4de2-92bd-3975a22d4dd8 · **Account:** nil10035@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 2 SP, 0.5% · **Start:** cold (fresh: the flow stopped for the owner since the last worker's turn)
+- **Usage before:** 5-hour 16% (resets 2026-11-08T17:00:00Z) · weekly 95% (resets 2026-11-08T21:00:00Z)
+
+### 2026-11-08 15:16 — step 7b ended: done
+- **Usage after:** 5-hour 19% (resets 2026-11-08T17:00:00Z) · weekly 96% (resets 2026-11-08T21:00:00Z) · **Measured:** 5-hour +3%, weekly +1%; estimated 5-hour 3.6%, weekly 0.5% · **Pull requests merged:** #245 · **Ids done:** I-38 · **Worker:** local_0b23cc8f-5309-4de2-92bd-3975a22d4dd8, 35 turns, context 10% after the step
+- **Report:** the session start prints the numbers of the open reports and no text; a test plants an instruction in a report's title and body and shows that the start does not print it; `triage-reports` calls the text of a report data (`sec.outside-text`). 900 tests and `check all` pass; not run on a live repository with a real report. No decision, no deviation.
+- **Worker's recommendation, read after the report:** `reports list` and `reports show` still print the text, by design, for a triage; a guard on it would be an issue of its own. Not filed: the rule and the procedure now govern how that text is read, and nothing found shows a need.
+
+### 2026-11-08 15:16 — decision D1: step 7c waits for the weekly reset
+- **Options:** (a) start step 7c now, as the gate says GO (96% + 1% reaches the threshold of 97%); (b) wait for the weekly reset of 21:00Z.
+- **Own analysis:** (b). Steps 7a and 7b each measured +1% of the week for 2 SP; 7c is 3 SP with a migration note and a rule of core, so it would likely end at or over the owner's 98% for this run. It stops for the owner's review in any case, and the reset is under six hours away.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (b) · **Decided by:** the orchestrator.
+
+### 2026-11-08 15:16 — stop: usage
+- **Done:** steps 6a (I-30, #241), 7 (#242), 7a (I-37, #243) and 7b (I-38, #245).
+- **Decided alone:** the three decisions of step 7 (two D2, one D3), the D1 above, and the D0 entries, for review later.
+- **For the owner:** the decisions of step 7; the review of `sec.pinned-actions` in step 7c; the earlier items (the settings S-08, S-10, S-03, the private advisory for the 4 high findings, and the local allow rule `Bash(node *)` that S4-002 reports).
+- **Usage:** 5-hour 19% (resets 2026-11-08T17:00:00Z) · weekly 96% (resets 2026-11-08T21:00:00Z), account nil10035@gmail.com.
+- **Next:** after the weekly reset, step 7c (I-39), gated: `harness flow next 4`. Its worker leaves the pull request with the rule ready and unmerged for the owner's review.
