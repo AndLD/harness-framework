@@ -457,3 +457,27 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Own analysis:** (a), as with `0.4.0-dev.1` and `0.5.0-dev.1`: a development version is tagged on its release branch (the procedure `release`, step 3), and `main` takes only the final one. The note is complete after the corrections, and the four required checks of #257 (`pr-title`, `changes`, `static checks`, `verify`) were green at `a253a8f`.
 - **Worker's recommendation:** merge and merge back, which its reports named as the next step; (a) answers it by the procedure: a development version does not reach `main`.
 - **Choice:** (a) · **Decided by:** the orchestrator (seamless mode). **Done:** the annotated tag `0.6.0-dev.1` pushed from a local branch at `a253a8f` in a worktree of its own, through the pre-push gate (4 steps); the local branch and worktree removed; no remote branch touched. **Usage after the cut:** 5-hour 13% (resets 2026-11-08T22:30:00Z) · weekly 70% (resets 2026-11-10T07:00:00Z).
+
+### 2026-11-08 19:56 — step 7g started
+- **Executor:** cli, the fallback of session: a step in another repository runs on the command line, since a session cannot be counted on to start there without the owner's message · **Worker:** 45d1bd10-8121-48b9-8f30-48af1c1b1d39 · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 2 SP, 5-hour 5.2%, weekly 0.5% · **Start:** cold
+- **Usage before:** 5-hour 13% (resets 2026-11-08T22:30:00Z) · weekly 70% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-08 20:03 — step 7g ended: partial
+- **Usage after:** 5-hour 16% (resets 2026-11-08T22:30:00Z) · weekly 71% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +3%, weekly +1%; estimated 5-hour 5.2%, weekly 0.5% (2.81 M cache-read and 15k output tokens, $0.71 at list price, 7 minutes) · **Pull requests:** AndLD/bot-rts#306, the take of `0.6.0-dev.1`, open with its CI running, for that repository's owner · **Worker:** cli 45d1bd10-8121-48b9-8f30-48af1c1b1d39, 40 turns
+- **Report:** the five required actions done, each with its check (`check all` passes 19 checks and the lock's `migrations.version` is `0.6.0-dev.1`; no S2-004 and no S3-001); `docs:check`, lint and the tests of every workspace pass, at 100% coverage. Partial only because the pull request waits for its CI and for that repository's owner: nothing to continue. Probes not run (`probes.run` is `ask`); optional actions not done; no report filed (`reports.upstream` is `ask`).
+- **What the note missed:** (1) `check core` failed on 14 lines of the new probes that use `bot(s)`, `scanner` and `base` as ordinary words, cured there with `terms.productGeneric`; (2) `check layers` failed on `SECURITY.md`, in no layer, cured there by adding it to a layer; (3) a project's own workflows are pinned by hand, including actions the preset has no pin for; (4) `check security` reports S2-001 on each workspace's `package.json` although the root lock covers them, and 32 S1-001 findings on test URLs. The note names neither (1) nor (2); (4)'s S2-001 is a defect of `tools/lib/security-deps.mjs`, which looks for a lock beside each manifest.
+- **Deviation:** the report was 2837 characters, over the cap of 2400; the worker is not continued for it, since its pull request holds the same list.
+- **Worker's recommendations, read with the report:** file the missed items and name them in the note of `0.6.0`; mark the test URLs before `checks.security` is turned on there (that repository's own chore).
+
+### 2026-11-08 20:06 — decision D3: the final cut of `0.6.0`, or a `0.6.0-dev.2` first
+- **Options:** (a) fix what the take found (S2-001 on workspaces, `SECURITY.md` and the layer map, the note's missing actions, the stale fragment of 2.2), then cut `0.6.0` with no `dev.2`; (b) the same fixes, then `0.6.0-dev.2`, a second take, then the final cut; (c) cut `0.6.0` now with only the note extended, and the two defects go to `0.6.1` (flow 5).
+- **Own analysis (the worker's recommendations were already seen):** (a). The layers failure makes the check of required action 1 fail for a project with a layer map once it follows required action 3, so a final version should not ship it; S2-001 is a false positive of a security check on any workspaces project. Both fixes are small and narrow, so a second take would prove little that the final take does not, as in flow 3's step 9d. (c) ships a required action whose check fails.
+- **Worker's recommendation:** name the items in the final note and file them: compatible with (a).
+- **Choice:** none yet: step 7h stops for the owner (its "Stops for"), who also confirms or changes the 7 days of `SECURITY.md`.
+
+### 2026-11-08 20:06 — stop: the owner decides the final cut (step 7h)
+- **Done:** steps 7e (2.12, #255), 7f (the tag `0.6.0-dev.1` at `a253a8f`; #257 stays open for the final version) and 7g's take (AndLD/bot-rts#306, open).
+- **Decided alone, for review later:** the 7 days stay for the development version (19:46, D3); the cut (19:55, D1).
+- **For the owner:** the decision above; the 7 days of `SECURITY.md`; AndLD/bot-rts#306 and its probes; the earlier settings S-08, S-10, S-03 and the private advisory for the 4 high findings.
+- **Usage:** 5-hour 16% (resets 2026-11-08T22:30:00Z) · weekly 71% (resets 2026-11-10T07:00:00Z), account andrey.larionov.me@gmail.com.
+- **Next:** on the owner's answer, the fix steps it names as suffix ids of 7h (a D2 record), then the cut of `0.6.0`.
