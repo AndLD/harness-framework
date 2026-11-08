@@ -38,6 +38,21 @@ test('S3-001: a workflow with no permissions at the top is checked job by job', 
   assert.match(found[0].text, /w\.yml:8: the job "b" declares no `permissions:`/)
 })
 
+test('S3-001: write at the top of a workflow is reported, read at the top with write on the job is not (I-37)', () => {
+  const top = `on: push\npermissions:\n  contents: write\n  issues: read # write is not asked\njobs:\n  a:\n    runs-on: x\n`
+  const found = audit(top)
+  assert.equal(found.length, 1)
+  assert.equal(found[0].probe, 'S3-001')
+  assert.match(found[0].text, /w\.yml:3: the workflow grants `contents: write` at the top/)
+
+  assert.equal(audit(`permissions: { pull-requests: write }\njobs:\n  a:\n    runs-on: x\n`).length, 1, 'an inline map')
+  assert.equal(audit(`permissions: write-all\njobs:\n  a:\n    runs-on: x\n`).length, 1, 'write-all counts once')
+
+  const split = `permissions:\n  contents: read\njobs:\n  a:\n    runs-on: x\n    permissions:\n      contents: write\n`
+  assert.deepEqual(audit(split), [], 'write on the job that needs it')
+  assert.equal(audit(`on: push\njobs:\n  a:\n    permissions: write-all\n`).length, 1, 'write-all on a job')
+})
+
 test('S2-004: an action pinned to a tag or a branch is reported, a full commit, a local path and an image digest are not', () => {
   const text = `permissions: {}\njobs:\n  a:\n    steps:\n      - uses: actions/checkout@v4\n      - uses: owner/repo@main # moved\n      - uses: "owner/pinned@${SHA}"\n      - uses: docker://alpine:3\n`
   const found = audit(text)

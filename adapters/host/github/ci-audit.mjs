@@ -1,5 +1,5 @@
 // The GitHub adapter's role "ci-audit" (host contract): the checks that the security review's probes make of the workflow files, read as text (no YAML parser, no
-// download): S3-001 (the token's permissions are declared), S2-004 (an action is pinned to a full commit), S3-005 (text an outsider controls is not spliced into a
+// download): S3-001 (the token's permissions are declared, read-only at the top and write on the job), S2-004 (an action is pinned to a full commit), S3-005 (text an outsider controls is not spliced into a
 // script) and S4-018 (a privileged trigger does not check out the proposed code).
 const FULL_COMMIT = /^[0-9a-f]{40}$/
 const DIGEST = /^sha256:[0-9a-f]{64}$/
@@ -33,13 +33,51 @@ export function isPinned(reference) {
   return FULL_COMMIT.test(reference.split('@')[1] ?? '')
 }
 
+// The lines of the top-level `permissions:` of a workflow, as `{ line, text }`: the key's own line (an inline value or map) and the indented lines under it
+function topPermissions(lines) {
+  const start = lines.findIndex((line) => /^permissions:/.test(line))
+  if (start < 0) return null
+  const block = [{ line: start + 1, text: code(lines[start]) }]
+  for (let index = start + 1; index < lines.length; index += 1) {
+    const text = lines[index]
+    if (text.trim() && indentOf(text) === 0 && !text.startsWith('#')) break
+    block.push({ line: index + 1, text: code(text) })
+  }
+  return block
+}
+
+// S3-001 follows the probe: the token's permissions are declared, read-only at the top, and write is granted to the job that uses it
 function permissionProblems(path, lines) {
-  if (lines.some((line) => /^permissions:/.test(line))) return []
+  const problems = []
+  const top = topPermissions(lines)
+  lines.forEach((line, index) => {
+    if (/^\s*permissions:\s*write-all\b/.test(line)) {
+      problems.push({
+        probe: 'S3-001',
+        text: `${path}:${index + 1}: \`permissions: write-all\` grants every scope; list the scopes the job needs`
+      })
+    }
+  })
+  if (top) {
+    for (const { line, text } of top) {
+      const scope = /([\w-]+):\s*write\b/.exec(text)
+      if (scope && !/write-all/.test(text)) {
+        problems.push({
+          probe: 'S3-001',
+          text: `${path}:${line}: the workflow grants \`${scope[1]}: write\` at the top, so every job gets it; declare read-only at the top and write on the job that needs it`
+        })
+      }
+    }
+    return problems
+  }
   const loose = jobsOf(lines).filter((job) => !job.body.some((line) => /^ {4}permissions:/.test(line)))
-  return loose.map((job) => ({
-    probe: 'S3-001',
-    text: `${path}:${job.line}: the job "${job.name}" declares no \`permissions:\` and the workflow declares none at the top, so the token gets the repository's default`
-  }))
+  return [
+    ...problems,
+    ...loose.map((job) => ({
+      probe: 'S3-001',
+      text: `${path}:${job.line}: the job "${job.name}" declares no \`permissions:\` and the workflow declares none at the top, so the token gets the repository's default`
+    }))
+  ]
 }
 
 function pinProblems(path, lines) {

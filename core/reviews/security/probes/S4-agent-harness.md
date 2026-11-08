@@ -279,6 +279,17 @@ First edition, a draft: see [the index](./README.md). The format is section 3 of
 - **Decided by:** judged
 - **Sources:** RUNTIME-DOCS security (verified 2026-11-08); RUNTIME-DOCS hooks (verified 2026-11-08); OWASP-AGENT-CS do's and don'ts (verified 2026-11-08); OWASP-LLM LLM10 (verified 2026-11-08); OWASP-AGENTIC-TM T4 (verified 2026-11-08)
 
+### S4-026 — The context a hook adds is counts and identifiers, read by a script
+
+- **Dimension:** S4
+- **Checks:** Does the output of each hook that adds context hold only counts, numbers, names of files and identifiers, and none of the text of an issue, a report, a pull request, a commit message or a comment from outside?
+- **Why:** The scriptable half of S4-011: a script that runs the hooks against a sample and lists the lines that carry free text finds the copy of an outsider's title that a reading of the code can miss.
+- **Evidence:** `command` (the hook run on a sample of the session start; the lines of its output that are not counts, numbers or identifiers)
+- **Severity:** 🟡; 🟠 when a line carries outside text.
+- **Applies:** project: hooks
+- **Decided by:** scriptable
+- **Sources:** RUNTIME-DOCS hooks (verified 2026-11-08); OWASP-AGENT-CS memory and context security (verified 2026-11-08)
+
 ## Sources
 
 | Id | Name | Edition | Address |

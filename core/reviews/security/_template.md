@@ -24,6 +24,11 @@ Gate: pass | fail (reason).
 
 What changed in the threat model of the bindings since the last review, or "not applicable" with the reason.
 
+Project traits decided from the repository, for the field Applies of the probes (the reviewer decides each, with the reason where it is not obvious):
+
+- **Has:**
+- **Does not have:**
+
 ## 3. Automation
 
 | Command | Date | Result |

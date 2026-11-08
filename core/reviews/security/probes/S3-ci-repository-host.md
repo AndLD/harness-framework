@@ -174,7 +174,7 @@ First edition, a draft: see [the index](./README.md). The format is section 3 of
 - **Dimension:** S3
 - **Checks:** Are the tokens used by the CI and by maintainers limited to the repository, minimal in permission and expiring, with automation using an application identity or the job token rather than a person's token?
 - **Why:** A leaked broad token gives an attacker every repository its owner can reach, and works after the owner leaves.
-- **Evidence:** `command` (the tokens and keys that can be listed, through the host adapter); `judgment` (no broad or non-expiring token backs automation, or each is justified and owned)
+- **Evidence:** `command` (the scopes and the expiry of the token in use, read through the host adapter: run it first and quote it; and the tokens and keys that can be listed); `judgment` (no broad or non-expiring token backs automation, or each is justified and owned)
 - **Severity:** 🟠; 🔴 when an administrator's token is stored in the CI.
 - **Applies:** every project
 - **Decided by:** manual

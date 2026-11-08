@@ -114,3 +114,29 @@ test('S4-001 and S4-010: a committed setting that turns the permission checks or
     ['S4-001']
   )
 })
+
+test("S4-001, S4-002 and S4-010: the owner's local settings are read too, and need no deny rules of their own (I-37)", () => {
+  const root = project(settingsFor(profile))
+  assert.deepEqual(auditSettings({ root, profile }), [], 'no local file, no finding')
+
+  const local = join(root, '.claude', 'settings.local.json')
+  writeFileSync(local, JSON.stringify({ permissions: { allow: ['Edit(docs/**)'] } }))
+  assert.deepEqual(auditSettings({ root, profile }), [], 'a narrow rule and no deny rules are fine')
+
+  writeFileSync(
+    local,
+    JSON.stringify({
+      disableAllHooks: true,
+      permissions: { defaultMode: 'bypassPermissions', allow: ['Bash(node *)', 'Bash(git *)'] }
+    })
+  )
+  const found = auditSettings({ root, profile })
+  assert.deepEqual(
+    found.map((problem) => problem.probe),
+    ['S4-001', 'S4-010', 'S4-002']
+  )
+  assert.ok(found.every((problem) => problem.text.startsWith('.claude/settings.local.json:')))
+
+  writeFileSync(local, '{ nope')
+  assert.match(auditSettings({ root, profile })[0].text, /settings\.local\.json: not valid JSON/)
+})
