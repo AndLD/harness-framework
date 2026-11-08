@@ -156,3 +156,47 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **For the owner:** the settings of the repository that the review names, which are the owner's: secret scanning and push protection (S-08), private reporting (S-10), a separate identity for agents (S-03); and whether to open a private advisory for the 4 high findings, which is the owner's approval by the method.
 - **Usage:** 5-hour 84% (resets 2026-11-08T12:50:00Z) · weekly 66% (resets 2026-11-10T07:00:00Z) · the gate says WAIT for step 6; the owner's word of 12:11 was for step 5 only.
 - **Next:** check that #236 has merged and set step 5 to ✅; after the reset, step 6 (task 2.10), which stops for the owner's review: `harness flow next 4`.
+
+### 2026-11-08 12:29 — running
+- **Orchestrator:** the desktop session local_5388b1de-b1e0-4916-bc0b-0821efb3fed4 of the owner's account andrey.larionov.me@gmail.com ("Start it now"; the claim ended with the "stop: usage" entry above) · **Mode:** seamless · **Steps:** 6
+- **Usage:** 5-hour 85% (resets 2026-11-08T12:50:00Z) · weekly 66% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-08 12:29 — decision D0: the CI of #236 is run again after a 504 of the host
+- **Options:** none to weigh: a transient failure of the host. After the record #237 merged, the workflow `update-branches` merged `develop` into the branch of #236 (`b7e0430`); the bot's `pull_request` run is `action_required`, and the `workflow_dispatch` run failed on the 504 of `setup-uv` again.
+- **Own analysis:** the flake of `setup-uv`, the third time today; the failed jobs of the dispatched run were run again.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** run again, no bypass · **Decided by:** the orchestrator.
+
+### 2026-11-08 12:29 — decision D2: step 6 starts past the gate's WAIT, stacked on step 5
+- **Options:** (a) wait for the reset of 12:50Z, 142 minutes, as the gate says; (b) start step 6 now.
+- **Own analysis:** I recommended the reset: 85% and 14.4% to come is about 99%, the step may reach the limit of the window and the account's extra usage is enabled. The threshold is the owner's setting and no hard limit. Since #236 is still open, the worker branches from its branch (one level), as the entry file allows.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (b) · **Decided by:** the owner ("Start it now"), for this step only.
+
+### 2026-11-08 12:29 — step 6 started
+- **Executor:** session · **Worker:** local_bec9bf04-20c4-4615-8e0b-ef4e4b0f189f · **Account:** andrey.larionov.me@gmail.com · **Model:** Opus 5.5 at high effort · **Permissions:** auto · **Estimate:** 3 SP, 8.1%
+- **Usage before:** 5-hour 85% (resets 2026-11-08T12:50:00Z) · weekly 66% (resets 2026-11-10T07:00:00Z)
+- **The stop of the step:** the worker leaves the pull request of 2.10 ready and unmerged, for the owner's review.
+
+### 2026-11-08 12:37 — step 6 ended: partial
+- **Usage after:** 5-hour 92% (resets 2026-11-08T12:50:00Z) · weekly 67% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +7%, weekly +1%; estimated 5-hour 12%, weekly 1.8% · **Pull requests merged:** none · **Ids done:** none yet (2.10 is in #238, unmerged) · **Worker:** local_bec9bf04-20c4-4615-8e0b-ef4e4b0f189f, 38 turns, context 15% after the step
+- **Report:** three proposed rules of core in #238, ready and unmerged with auto-merge off, as this step's stop asks: `sec.outside-text`, `sec.own-authority`, `sec.pinned-actions`. #238 is stacked on #236, so no CI has run on it; locally 894 tests pass and 1 is skipped, `check all` passes. Not verified: that the rules change what an agent does (no planted payload was tried). No deviation.
+
+### 2026-11-08 12:37 — decision D0: an empty commit starts the checks of #236
+- **Options:** none to weigh: the checks of `b7e0430` are green, but the run of the bot's update is `action_required`, so the pull request has no checks and the host refuses the merge; an administrator's bypass is a hard limit.
+- **Own analysis:** an empty commit by the owner's credential starts a `pull_request` run, as on #223 (`1bd92f7`). Pushed as `9fc7977`, a fast-forward; auto-merge stays on.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** the empty commit, no bypass · **Decided by:** the orchestrator.
+
+### 2026-11-08 12:37 — stop: owner review
+- **Done:** steps 1 to 4 (#227, #229, #231, #233); step 5 (task 2.4) is in #236, whose checks started again; step 6 (task 2.10) is in #238, unmerged.
+- **Decided alone:** the entries of steps 4 and 5 (D1, two D2, two D3), and the D0 entries above.
+- **For the owner:** approve or drop each rule of #238. Orchestrator's recommendation: approve `sec.outside-text` and `sec.own-authority`, and take `sec.pinned-actions` with the pins (decided at step 5, not yet built), because until they land the framework's own CI templates break it. The worker agrees: decide the pins before or with #238, and open the planted-payload test after approval. The repository's settings and the private advisory of the stop above stay the owner's.
+- **Usage:** 5-hour 92% (resets 2026-11-08T12:50:00Z) · weekly 67% (resets 2026-11-10T07:00:00Z).
+- **Next:** check that #236 merged and set step 5 to ✅; retarget #238 to `develop`, run `harness branch update` and push; with the owner's approval recorded in #238, merge it, then step 6a (I-30) and step 7, each gated: `harness flow next 4`.
+
+### 2026-11-08 13:36 — decision D3: two rules of core approved, the third waits for the pins
+- **Options:** (a) approve `sec.outside-text` and `sec.own-authority`, and take `sec.pinned-actions` with the pins; (b) approve all three now; (c) drop some.
+- **Own analysis:** (a), the recommendation of the stop above: until the pins land, the framework's own CI templates break the third rule.
+- **Worker's recommendation:** decide the pins before or with #238: agrees.
+- **Choice:** (a); the worker removes the third rule from #238 and records the approval there; #236 has merged, so step 5 is ✅ · **Decided by:** the owner ("First two; pins later").
