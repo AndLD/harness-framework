@@ -381,6 +381,7 @@ test('--self makes the framework tree at the root a project of its own: mode sel
   assert.ok(!existsSync(join(root, 'harness')), 'nothing is vendored')
   assert.equal(readFileSync(join(root, 'README.md'), 'utf8'), readme, 'the framework keeps its own README')
   assert.match(done.join('\n'), /Kept the files of the framework itself: .*README\.md/)
+  assert.match(done.join('\n'), /run the project's formatter on .*\.claude\/settings\.json/)
 
   const settings = JSON.parse(readFileSync(join(root, '.claude', 'settings.json'), 'utf8'))
   assert.equal(
