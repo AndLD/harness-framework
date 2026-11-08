@@ -68,8 +68,8 @@ const treeOf = (root) =>
   )
 
 const FLAGS = ['--name', 'acme', '--repository', 'acme/shop', '--stack', 'node-ts', '--runtime', 'claude-code']
-// The interactive answers in the order of the questions: name, repository, stacks, runtimes, then the defaults (host, coverage gate, branches)
-const TYPED = ['acme', 'acme/shop', 'node-ts', 'claude-code', '', '', '', ''].join('\n')
+// The interactive answers in the order of the questions: name, repository, stacks, runtimes, then the defaults (host, coverage gate, branches) and the flows' permission mode (no default; Claude Code lists modes, so it is asked)
+const TYPED = ['acme', 'acme/shop', 'node-ts', 'claude-code', '', '', '', '', ''].join('\n')
 const REASON = 'the project owns its method'
 
 let byFlags

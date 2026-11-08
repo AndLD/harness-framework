@@ -3,6 +3,7 @@
   "name": "claude-code",
   "contract": 2,
   "description": "Claude Code: CLAUDE.md that imports the entry file, hooks in .claude/settings.json, Read deny rules, skills in .claude/skills.",
+  "permissionModes": ["default", "acceptEdits", "auto", "dontAsk", "plan", "bypassPermissions"],
   "terms": "claude code|claude\\.md|\\.claude/|bind_pr|set_monitor|claude_project_dir|start_session|list_events|get_usage|claude -p\\b",
   "roles": {
     "entry-file": {
