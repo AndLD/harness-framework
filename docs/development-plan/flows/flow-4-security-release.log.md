@@ -587,3 +587,16 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **For the owner:** the decision above; the 7 days of `SECURITY.md`; AndLD/bot-rts#307 and its probes; the earlier settings S-08, S-10, S-03 and the private advisory for the 4 high findings.
 - **Usage:** 5-hour 31% (resets 2026-11-08T22:30:00Z) · weekly 73% (resets 2026-11-10T07:00:00Z), account andrey.larionov.me@gmail.com.
 - **Next:** on the owner's answer, a cut step of `0.6.0`, whose merges and tag the orchestrator or the owner does by the procedure `release`.
+
+### 2026-11-08 21:11 — decision D3: `0.6.0` is cut, and the 7 days of `SECURITY.md` stay
+- **Options:** the two of the entry of 21:05 on the cut; on the 7 days, keep them or change them.
+- **Own analysis:** (a) of that entry, the cut, with the sentence on `harness sync --local` in the note. The 7 days stay unless the owner changes them, as the orchestrator told the owner it would.
+- **Worker's recommendation:** merge the take once its CI is green.
+- **Choice:** (a): step 7l ✅, step 7m cuts `0.6.0`; the 7 days stay. AndLD/bot-rts#307 merged at `3529710` with its 16 checks green · **Decided by:** the owner ("Yes you can merge the PR and cut off version"), who did not name the 7 days.
+
+### 2026-11-08 21:11 — decision D1: what the note of `0.6.0` must say (own list, written before the note is read)
+- **Whole story from `0.5.0`:** the items of the list for `0.6.0-dev.1` (19:48), with its corrections (three rules, 148 probes, 14 of 29 scriptable), and those for `0.6.0-dev.2` (20:48), as one note, not by reference.
+- **Required of a project:** take the version; pin its own workflows and move write grants to the job, with the actions the preset has no pin for; add `SECURITY.md` and turn on private reporting; `*.pem` and `*.key` in `.gitignore`; the K11 command when the bindings give one; ordinary words of the probes in `terms.productGeneric`.
+- **Named too:** `SECURITY.md` falls in `PROFILE` of a layer map with no edit, and removing a line a project added needs `harness sync --local`; S2-001 and workspaces; test values that look like credentials before `checks.security` is turned on; the catalogue is a draft until reviewed.
+- **Worker's recommendation:** none yet.
+- **Choice:** the note is checked against this list · **Decided by:** the orchestrator.
