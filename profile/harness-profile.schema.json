@@ -746,6 +746,14 @@
           "type": "string",
           "description": "The harness review bindings."
         },
+        "securityReviews": {
+          "type": "string",
+          "description": "The security review method. Optional: a project that leaves it empty has no security-review procedure."
+        },
+        "securityBindings": {
+          "type": "string",
+          "description": "The security review bindings; required when documents.securityReviews is set, since the procedure links them. The bootstrap writes the framework's template there once; a project that leaves it empty has no such file."
+        },
         "frameworkPlan": {
           "type": "string",
           "description": "The harness-to-framework plan."

@@ -15,7 +15,7 @@ is updated in the change that starts or finishes it.
 | Phase | Theme | Story points | Agent complexity | Status |
 | ----- | ----- | ------------ | ---------------- | ------ |
 | 1 | Adoption, presets, examples and the proof | 12 | C1–C2 | ✅ Done |
-| 2 | Security and review automation | 38 | C2–C3 | ⬜ Not started |
+| 2 | Security and review automation | 38 | C2–C3 | 🟡 In progress |
 | 3 | Stabilization, migrations and local adapters | 71 | C1–C2 | ✅ Done |
 | 4 | Reaching and holding the structure of documents | 27 | C1–C2 | 🟡 In progress |
 | 5 | Releases in a file of their own, and flows run by an orchestrator | 43 | C2–C3 | ✅ Done |

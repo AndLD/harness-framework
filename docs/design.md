@@ -655,7 +655,7 @@ be up to date with its base. The bootstrap asks the host (`detectProtection`) be
   - `finish-phase`: exit criteria, status, the local database step where the profile has database commands (an optional role group,
     "not applicable" otherwise), the summary;
   - `release`;
-  - `harness-review` and `code-review`, the start prompts of the bindings as procedures;
+  - `harness-review`, `code-review` and `security-review`, the start prompts of the bindings as procedures;
   - `new-adapter` (section 5).
 - **Project procedures** (built in task 4.1). `bot-rts`'s own procedures (add an endpoint, add a migration, add a catalogue key) use the same format in
   `docs/procedures/` (the profile's `paths.procedures`, optional), and the same tool packages them: the skill of each is written for the selected
@@ -860,6 +860,7 @@ a report template, project bindings, dated reports that stay in each project, sc
 | S5 | The product's attack surface (project) | a threat model from the bindings: assets, trust boundaries, authentication and authorisation, input handling, isolation of untrusted code, abuse limits |
 | S6 | Operations (project) | deployment configuration, logs, backups, incident response |
 
+- **The method's own terms** (the probe, the rules of engagement of an active test, where results go, the loop of a review) are in [the method](../core/reviews/security/README.md).
 - **Automation.** What a script can decide moves into `harness check security` (task 2.2) and runs in CI. The review judges the rest, and checks
   that the automation still holds.
 - **Cadence.** A full review before a first release and once per major version. A targeted review after a change to authentication, the CI, the
