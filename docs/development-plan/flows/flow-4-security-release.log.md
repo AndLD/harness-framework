@@ -275,3 +275,13 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **For the owner:** whether to go on with step 7b (I-38) after the overrun of 7a; the decisions of step 7; the earlier items (the settings S-08, S-10, S-03, the private advisory for the 4 high findings).
 - **Usage:** 5-hour 15% (resets 2026-11-08T17:00:00Z) · weekly 95% (resets 2026-11-08T21:00:00Z), account nil10035@gmail.com.
 - **Next:** check that #243 merged; then step 7b (I-38), gated: `harness flow next 4`; 7c stops for the owner's review of `sec.pinned-actions`.
+
+### 2026-11-08 15:07 — decision D2: the flow goes on with step 7b after the overrun of 7a
+- **Options:** (a) go on with step 7b (I-38); (b) stop the flow here.
+- **Own analysis:** (a): the overrun includes a conflict turn and the orchestrator's work, step 7b is of the same size, and the weekly window (95%) holds it under the owner's 98%.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** (a) · **Decided by:** the owner ("Continue with 7b").
+
+### 2026-11-08 15:07 — running
+- **Orchestrator:** the desktop session of the account nil10035@gmail.com, as at 13:55 · **Mode:** seamless · **Steps:** 7b, then the stop of 7c
+- **Usage:** 5-hour 16% (resets 2026-11-08T17:00:00Z) · weekly 95% (resets 2026-11-08T21:00:00Z)
