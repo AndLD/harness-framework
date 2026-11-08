@@ -194,3 +194,9 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **For the owner:** approve or drop each rule of #238. Orchestrator's recommendation: approve `sec.outside-text` and `sec.own-authority`, and take `sec.pinned-actions` with the pins (decided at step 5, not yet built), because until they land the framework's own CI templates break it. The worker agrees: decide the pins before or with #238, and open the planted-payload test after approval. The repository's settings and the private advisory of the stop above stay the owner's.
 - **Usage:** 5-hour 92% (resets 2026-11-08T12:50:00Z) · weekly 67% (resets 2026-11-10T07:00:00Z).
 - **Next:** check that #236 merged and set step 5 to ✅; retarget #238 to `develop`, run `harness branch update` and push; with the owner's approval recorded in #238, merge it, then step 6a (I-30) and step 7, each gated: `harness flow next 4`.
+
+### 2026-11-08 13:36 — decision D3: two rules of core approved, the third waits for the pins
+- **Options:** (a) approve `sec.outside-text` and `sec.own-authority`, and take `sec.pinned-actions` with the pins; (b) approve all three now; (c) drop some.
+- **Own analysis:** (a), the recommendation of the stop above: until the pins land, the framework's own CI templates break the third rule.
+- **Worker's recommendation:** decide the pins before or with #238: agrees.
+- **Choice:** (a); the worker removes the third rule from #238 and records the approval there; #236 has merged, so step 5 is ✅ · **Decided by:** the owner ("First two; pins later").
