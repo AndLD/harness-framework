@@ -44,5 +44,7 @@ project's own probes and the review log. The first security review fills them; u
 
 ## Review log
 
+The catalogue of probes was reviewed by a person with security expertise: — (who, and when; until then it is a draft).
+
 | Report | Type | Findings (🔴 / 🟠 / 🟡 / 🔵) |
 | ------ | ---- | ---------------------------- |
