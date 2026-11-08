@@ -94,9 +94,23 @@ test('the map adds what the tools know: the vendored copy, the profile files and
     'harness-profile.json',
     'harness.lock.json',
     'docs/profile.md',
-    '**/bindings.md'
+    '**/bindings.md',
+    'SECURITY.md'
   ])
   assert.equal(layerConfig(project('absent'), {}), null)
+})
+
+test('the SECURITY.md of the scaffold needs no edit of the map, and a map that already places it keeps its own layer', () => {
+  const files = [...FILES, 'SECURITY.md']
+  const plain = classify(files, layerConfig(project('policy'), profile()))
+  assert.deepEqual(plain.problems, [])
+  assert.deepEqual(plain.classes.get('SECURITY.md'), ['profile'])
+
+  const own = profile()
+  own.layers.entry.push('SECURITY.md')
+  const placed = classify(files, layerConfig(project('policy-placed'), own))
+  assert.deepEqual(placed.problems, [])
+  assert.deepEqual(placed.classes.get('SECURITY.md'), ['entry'])
 })
 
 test('every file of the scope is in exactly one layer; a core entry with sections may share its file with another layer', () => {

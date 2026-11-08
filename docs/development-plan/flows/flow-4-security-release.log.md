@@ -406,3 +406,99 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **Worker's recommendation:** none (no worker is involved).
 - **Choice:** (a): B-4 is promoted to task 2.12 (1 SP, C2), which step 7e builds; B-5 stays proposed · **Decided by:** the owner ("Promote into Phase 2", "0.6.1").
 - **Deviation:** the flow template says an inserted step takes a suffix id and never renumbers the others; the entries of 15:40 and 15:55 renamed the steps after 7c twice to keep one letter. None of them had started, and the entries say which old id is which.
+
+### 2026-11-08 19:38 — running
+- **Orchestrator:** the desktop session b1d10f69-cd53-40a2-bc31-82766d7686ce of the account andrey.larionov.me@gmail.com · **Mode:** seamless · **Steps:** 7e, 7f, 7g, then 7h, which stops for the owner
+- **Usage:** 5-hour 2% (resets 2026-11-08T22:30:00Z) · weekly 69% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-08 19:38 — step 7e started
+- **Executor:** session · **Worker:** local_f54f3cd8-bc98-4d89-8fe1-3a26bc67c84f · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 1 SP, 0.3% · **Start:** cold (fresh: another account, and the flow stopped for a usage reset since the last worker's turn)
+- **Usage before:** 5-hour 2% (resets 2026-11-08T22:30:00Z) · weekly 69% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-08 19:44 — step 7e ended: done
+- **Usage after:** 5-hour 6% (resets 2026-11-08T22:30:00Z) · weekly 69% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +4% with the orchestrator's own work, weekly +0%; estimated 5-hour 1.8%, weekly 0.3% · **Pull requests merged:** #255 · **Ids done:** 2.12 · **Worker:** local_f54f3cd8-bc98-4d89-8fe1-3a26bc67c84f, 36 turns, context 11% after the step
+- **Report:** `SECURITY.md` at the root and the same text as a scaffold file of the GitHub host adapter (core stays neutral, since the private-report steps name the host's feature); no role of the profile and no check added, S3-020 being a judged probe. Tests (904), lint, typecheck, `docs:check` and the adapter's conformance pass; a real bootstrap of a new project was not run, the scaffold test renders the file. No open decision, no deviation from the scope.
+- **Worker's recommendation, read with the report (the app's note showed it):** the owner confirms the 7 days of `SECURITY.md`: the next entry. The CI monitor was not attached; the pull request merged without it.
+
+### 2026-11-08 19:46 — decision D0: step 7e's use against its estimate is not an escalation
+- **Options:** (a) not an escalation; (b) escalate (a step over twice its estimate).
+- **Own analysis:** (a), as for step 9c of flow 3 with the same numbers. The 5-hour reading rose 4 points against 1.8%: twice over on paper, but the readings are whole percents and the window also holds this orchestrator's own turns over the step, at a context of 100k tokens; the weekly window rose 0 against 0.3%.
+- **Worker's recommendation:** none.
+- **Choice:** (a) · **Decided by:** the orchestrator.
+
+### 2026-11-08 19:46 — decision D3: the 7 days of `SECURITY.md` stay for `0.6.0-dev.1`, and the owner confirms them at step 7h
+- **Options:** (a) keep "acknowledges the report within 7 days" for the development version, and put it to the owner at the stop of 7h; (b) take the number out before the cut; (c) stop the flow now for the owner.
+- **Own analysis (the worker's recommendation was already seen):** (a). The wording is the worker's: neither the task nor the owner named a period, and it is a public promise made for a solo maintainer, so it is the owner's to confirm before a final version. A development version only reaches the consumer, and 7h already stops for the owner before `0.6.0`, so neither a stop now nor another pull request is needed.
+- **Worker's recommendation:** the owner confirms or changes it before the cut. The difference is one of timing: before the final cut, which is the version that makes the promise to projects.
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode), for review at 7h.
+
+### 2026-11-08 19:47 — step 7f started
+- **Executor:** session · **Worker:** local_f54f3cd8-bc98-4d89-8fe1-3a26bc67c84f (continued: the same repository, account, model and effort, context 11%, the first step's cache alive) · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 1 SP, 5-hour 3.4%, weekly 0.7% · **Start:** warm
+- **Usage before:** 5-hour 6% (resets 2026-11-08T22:30:00Z) · weekly 69% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-08 19:48 — decision D1: what the note of `0.6.0-dev.1` must say (own list, written before the note is read)
+- **Required of a project:** `harness sync`, taking the regenerated workflows (actions pinned to a commit, write grants on the job), or pin its own `uses:` lines and move top-level write grants to the job (I-39, I-43, I-37); add a `SECURITY.md` and turn on the host's private vulnerability reporting (2.12); update the K11 command of the code-review bindings when it gives one (2.1).
+- **Nothing to do, arrives with the sync:** the rules `sec.outside-text`, `sec.own-authority`, `sec.pinned-actions` and the rule-to-check map's column (2.10, I-39); the session start's counts instead of report titles (I-38); the review method, the catalogues (a draft until a person with security expertise reviews them) and the scenarios (2.1, 2.8, 2.9); the lock version in `harness release` (I-35); the Opus estimate.
+- **Optional:** turn `checks.security` on once `harness check security` passes, with `security.allowedRules`, `security.secretPatterns` and the stack role `dependency-audit` (2.2, I-43); Dependabot for the pins of `github-actions` (I-39); the role `flows.permissions` of `harness init` (I-30).
+
+### 2026-11-08 19:50 — decision D1: the note of `0.6.0-dev.1` goes back to the worker
+- **Checked against the own list of 19:48:** every required and optional action is there; the note also adds `*.pem` and `*.key` to `.gitignore`, which the scaffold's `gitignore` confirms. The worker's doubt on action 2 is settled: only `check all` filters on `checks.security` (`tools/lib/checks.mjs`), so `check security` runs while the switch is off.
+- **Wrong in the note:** `sec.pinned-actions` "waiting for the owner's approval" (approved at 15:33), "two" new rules (three), 147 probes (148) and 14 of 28 scriptable (14 of 29). The fragment of I-39 carries the same stale clause.
+- **Deviation:** the step report was 3170 characters, over the cap of 2400.
+- **Choice:** sent back (the procedure `release`, "When a flow cuts") · **Decided by:** the orchestrator.
+
+### 2026-11-08 19:53 — step 7f ended: done
+- **Usage after:** 5-hour 11% (resets 2026-11-08T22:30:00Z) · weekly 70% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +5% with the orchestrator's review of the note, weekly +1%; estimated 5-hour 3.4%, weekly 0.7% · **Pull requests:** #257 open, `release/0.6.0` into `main`, kept for the final version · **Worker:** local_f54f3cd8-bc98-4d89-8fe1-3a26bc67c84f, 18 turns and 5 for the corrections, context 14% after the step
+- **Report:** `release/0.6.0` at `a253a8f` with the versions of `0.6.0-dev.1` and a complete note; tests (904), lint, typecheck, `docs:check` and a dry run pass; no decision, no deviation besides the cap of the first report. The corrections are in the diff `31d50fe..a253a8f`, read in full: the four asked, nothing else.
+- **Worker's recommendation, read after the review:** `changelog.d/2.2-automated-security-checks.md` still says 14 of 28, stale since I-37; it goes into the changelog of `0.6.0`, so it is fixed with the final cut's preparation: agrees, and named for 7h.
+
+### 2026-11-08 19:55 — decision D1: the cut of `0.6.0-dev.1`
+- **Options:** (a) tag `0.6.0-dev.1` at `a253a8f` of `release/0.6.0` and keep #257 open for the final version; (b) merge #257 into `main` for the development version.
+- **Own analysis:** (a), as with `0.4.0-dev.1` and `0.5.0-dev.1`: a development version is tagged on its release branch (the procedure `release`, step 3), and `main` takes only the final one. The note is complete after the corrections, and the four required checks of #257 (`pr-title`, `changes`, `static checks`, `verify`) were green at `a253a8f`.
+- **Worker's recommendation:** merge and merge back, which its reports named as the next step; (a) answers it by the procedure: a development version does not reach `main`.
+- **Choice:** (a) · **Decided by:** the orchestrator (seamless mode). **Done:** the annotated tag `0.6.0-dev.1` pushed from a local branch at `a253a8f` in a worktree of its own, through the pre-push gate (4 steps); the local branch and worktree removed; no remote branch touched. **Usage after the cut:** 5-hour 13% (resets 2026-11-08T22:30:00Z) · weekly 70% (resets 2026-11-10T07:00:00Z).
+
+### 2026-11-08 19:56 — step 7g started
+- **Executor:** cli, the fallback of session: a step in another repository runs on the command line, since a session cannot be counted on to start there without the owner's message · **Worker:** 45d1bd10-8121-48b9-8f30-48af1c1b1d39 · **Account:** andrey.larionov.me@gmail.com · **Model:** Sonnet 5.5 at high effort · **Permissions:** auto · **Estimate:** 2 SP, 5-hour 5.2%, weekly 0.5% · **Start:** cold
+- **Usage before:** 5-hour 13% (resets 2026-11-08T22:30:00Z) · weekly 70% (resets 2026-11-10T07:00:00Z)
+
+### 2026-11-08 20:03 — step 7g ended: partial
+- **Usage after:** 5-hour 16% (resets 2026-11-08T22:30:00Z) · weekly 71% (resets 2026-11-10T07:00:00Z) · **Measured:** 5-hour +3%, weekly +1%; estimated 5-hour 5.2%, weekly 0.5% (2.81 M cache-read and 15k output tokens, $0.71 at list price, 7 minutes) · **Pull requests:** AndLD/bot-rts#306, the take of `0.6.0-dev.1`, open with its CI running, for that repository's owner · **Worker:** cli 45d1bd10-8121-48b9-8f30-48af1c1b1d39, 40 turns
+- **Report:** the five required actions done, each with its check (`check all` passes 19 checks and the lock's `migrations.version` is `0.6.0-dev.1`; no S2-004 and no S3-001); `docs:check`, lint and the tests of every workspace pass, at 100% coverage. Partial only because the pull request waits for its CI and for that repository's owner: nothing to continue. Probes not run (`probes.run` is `ask`); optional actions not done; no report filed (`reports.upstream` is `ask`).
+- **What the note missed:** (1) `check core` failed on 14 lines of the new probes that use `bot(s)`, `scanner` and `base` as ordinary words, cured there with `terms.productGeneric`; (2) `check layers` failed on `SECURITY.md`, in no layer, cured there by adding it to a layer; (3) a project's own workflows are pinned by hand, including actions the preset has no pin for; (4) `check security` reports S2-001 on each workspace's `package.json` although the root lock covers them, and 32 S1-001 findings on test URLs. The note names neither (1) nor (2); (4)'s S2-001 is a defect of `tools/lib/security-deps.mjs`, which looks for a lock beside each manifest.
+- **Deviation:** the report was 2837 characters, over the cap of 2400; the worker is not continued for it, since its pull request holds the same list.
+- **Worker's recommendations, read with the report:** file the missed items and name them in the note of `0.6.0`; mark the test URLs before `checks.security` is turned on there (that repository's own chore).
+
+### 2026-11-08 20:06 — decision D3: the final cut of `0.6.0`, or a `0.6.0-dev.2` first
+- **Options:** (a) fix what the take found (S2-001 on workspaces, `SECURITY.md` and the layer map, the note's missing actions, the stale fragment of 2.2), then cut `0.6.0` with no `dev.2`; (b) the same fixes, then `0.6.0-dev.2`, a second take, then the final cut; (c) cut `0.6.0` now with only the note extended, and the two defects go to `0.6.1` (flow 5).
+- **Own analysis (the worker's recommendations were already seen):** (a). The layers failure makes the check of required action 1 fail for a project with a layer map once it follows required action 3, so a final version should not ship it; S2-001 is a false positive of a security check on any workspaces project. Both fixes are small and narrow, so a second take would prove little that the final take does not, as in flow 3's step 9d. (c) ships a required action whose check fails.
+- **Worker's recommendation:** name the items in the final note and file them: compatible with (a).
+- **Choice:** none yet: step 7h stops for the owner (its "Stops for"), who also confirms or changes the 7 days of `SECURITY.md`.
+
+### 2026-11-08 20:06 — stop: the owner decides the final cut (step 7h)
+- **Done:** steps 7e (2.12, #255), 7f (the tag `0.6.0-dev.1` at `a253a8f`; #257 stays open for the final version) and 7g's take (AndLD/bot-rts#306, open).
+- **Decided alone, for review later:** the 7 days stay for the development version (19:46, D3); the cut (19:55, D1).
+- **For the owner:** the decision above; the 7 days of `SECURITY.md`; AndLD/bot-rts#306 and its probes; the earlier settings S-08, S-10, S-03 and the private advisory for the 4 high findings.
+- **Usage:** 5-hour 16% (resets 2026-11-08T22:30:00Z) · weekly 71% (resets 2026-11-10T07:00:00Z), account andrey.larionov.me@gmail.com.
+- **Next:** on the owner's answer, the fix steps it names as suffix ids of 7h (a D2 record), then the cut of `0.6.0`.
+
+### 2026-11-08 20:33 — decision D3: the way to the final cut is fix, then `0.6.0-dev.2`
+- **Options:** the three of the entry of 20:06.
+- **Own analysis:** (a), fix and cut with no `dev.2` (20:06).
+- **Worker's recommendation:** name the items in the final note and file them.
+- **Choice:** (b): the owner ("Fix, then dev.2"), against the orchestrator's (a). A second take proves the fixes before the final tag · **Decided by:** the owner.
+
+### 2026-11-08 20:33 — decision D2: the steps of the fixes and of `0.6.0-dev.2`
+- **Options:** none to weigh, the owner's choice sets them: 7i builds I-46 (`SECURITY.md` and the layer map) and I-47 (S2-001 on workspaces), both filed now as defects; 7j cuts `0.6.0-dev.2`; 7k is the second take; 7l decides the final cut and stops for the owner, who also confirms the 7 days of `SECURITY.md` there. Step 7h ✅.
+- **Own analysis:** the cut of 7j merges `develop` into `release/0.6.0`, as the cut of `0.5.0` did, and its worker is told what the note must add (a project's own product terms against the words of the probes, the hand pinning of a project's own workflows) and to correct the fragment of 2.2 (14 of 29). The take of 7k needs AndLD/bot-rts#306 merged or a decision about it first: it is that repository's owner's.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** as above; the releases file has a row `0.6.0-dev.2` and the row `0.6.0` names I-46 and I-47 · **Decided by:** the orchestrator (seamless mode).
+
+### 2026-11-08 20:34 — decision D0: 7i starts while step 7g shows 🟡
+- **Options:** none to weigh: `harness flow status` names 7g as the next step because AndLD/bot-rts#306 is open, and what is left of 7g is that repository's owner's merge; 7i needs only 7h.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** 7i starts · **Decided by:** the orchestrator.
+
+### 2026-11-08 20:34 — running
+- **Orchestrator:** the desktop session b1d10f69-cd53-40a2-bc31-82766d7686ce of the account andrey.larionov.me@gmail.com · **Mode:** seamless · **Steps:** 7i, 7j, 7k, then 7l, which stops for the owner
+- **Usage:** 5-hour 18% (resets 2026-11-08T22:30:00Z) · weekly 71% (resets 2026-11-10T07:00:00Z)
