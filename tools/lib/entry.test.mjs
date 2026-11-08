@@ -25,8 +25,7 @@ const IDS = {
     'nn.clean',
     'nn.secrets',
     'sec.outside-text',
-    'sec.own-authority',
-    'sec.pinned-actions'
+    'sec.own-authority'
   ],
   'git-rules': [
     'git.branches',
