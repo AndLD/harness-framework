@@ -16,7 +16,7 @@ For the security review ([the method](../../../core/reviews/security/README.md),
 | Probe | The feature of this runtime |
 | ----- | ---- |
 | S1-015 | deny rules on the file tools, sandbox filesystem isolation; the limits of deny rules for the shell |
-| S1-016 | the location and retention of session data |
+| S1-016 | the folder of session data under the configuration directory (from AGENT-TRANSCRIPTS; the page on security does not give it) |
 | S1-017 | the project-scoped file of tool servers |
 | S4-001 | permission modes, the default mode, the mode that skips the checks |
 | S4-002 | allow rules for the shell and their patterns |

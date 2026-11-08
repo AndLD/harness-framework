@@ -35,7 +35,7 @@ First edition, a draft: see [the index](./README.md). The format is section 3 of
 - **Severity:** 🟡; 🔴 when a real value is in it.
 - **Applies:** project: environment-file
 - **Decided by:** judged
-- **Sources:** CWE-798 Mitigations (verified 2026-11-08); OWASP-SECRETS §8.1 (verified 2026-11-08)
+- **Sources:** FRAMEWORK nn.secrets (verified 2026-11-08)
 
 ### S1-004 — The history has no secret that a past commit removed
 
@@ -56,7 +56,7 @@ First edition, a draft: see [the index](./README.md). The format is section 3 of
 - **Evidence:** `file` (the record of the leak and of the rotation); `judgment` (each past finding has a revocation that comes before or replaces any rewrite of history)
 - **Severity:** 🔴 when a leaked key is still valid; 🟡 when it was rotated and not recorded.
 - **Applies:** project: past-secret-finding
-- **Decided by:** manual
+- **Decided by:** judged
 - **Sources:** HOST-DOCS removing sensitive data (verified 2026-11-08); OWASP-SECRETS §9.2 (verified 2026-11-08)
 
 ### S1-006 — A rewrite of history was complete
@@ -177,8 +177,8 @@ First edition, a draft: see [the index](./README.md). The format is section 3 of
 - **Evidence:** `command` (the secret scan over the agent's session folder); `file` (a procedure says what to do); `judgment` (the scan was done, the scope of backups is decided)
 - **Severity:** 🟠; 🟡 when the scan is clean and the owner is the only reader. A single vendor's research backs this probe: its confidence is lower than the others'.
 - **Applies:** project: agent-runtime
-- **Decided by:** manual
-- **Sources:** AGENT-TRANSCRIPTS (verified 2026-11-08); OWASP-LLM LLM02 (verified 2026-11-08); RUNTIME-DOCS security (verified 2026-11-08)
+- **Decided by:** judged
+- **Sources:** AGENT-TRANSCRIPTS (verified 2026-11-08); OWASP-LLM LLM02 (verified 2026-11-08)
 
 ### S1-017 — The agent's configuration holds no credential
 
@@ -239,9 +239,10 @@ First edition, a draft: see [the index](./README.md). The format is section 3 of
 
 | Id | Name | Edition | Address |
 | -- | ---- | ------- | ------- |
-| AGENT-TRANSCRIPTS | Backslash Security, secrets in AI agent session history | undated vendor research: indicative, not independent | https://www.backslash.security/blog/secrets-in-ai-agent-session-history |
+| AGENT-TRANSCRIPTS | Backslash Security, secrets in AI agent session history | vendor research: indicative, not independent | https://www.backslash.security/blog/secrets-in-ai-agent-session-history |
 | CWE-532 | MITRE CWE-532, Insertion of Sensitive Information into Log File | CWE 5.0, page of 2026-10-28 | https://cwe.mitre.org/data/definitions/532.html |
 | CWE-798 | MITRE CWE-798, Use of Hard-coded Credentials | CWE 5.0, page of 2026-10-28 | https://cwe.mitre.org/data/definitions/798.html |
+| FRAMEWORK | The rules of this framework | the version the project has taken | the rule on secrets of the entry file; no outside source was found for this probe |
 | HOST-DOCS | The security documentation of the project's repository host | as listed by the adapter | `security.md` in the folder of the project's host adapter |
 | OWASP-AGENT-CS | OWASP AI Agent Security Cheat Sheet | the page has no edition; read as published on the date of verification | https://cheatsheetseries.owasp.org/cheatsheets/AI_Agent_Security_Cheat_Sheet.html |
 | OWASP-CICD | OWASP CI/CD Security Cheat Sheet | the page has no edition; read as published on the date of verification | https://cheatsheetseries.owasp.org/cheatsheets/CI_CD_Security_Cheat_Sheet.html |

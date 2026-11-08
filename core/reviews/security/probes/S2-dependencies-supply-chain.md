@@ -70,12 +70,12 @@ First edition, a draft: see [the index](./README.md). The format is section 3 of
 - **Decided by:** judged
 - **Sources:** OWASP-CICD-TOP10 CICD-SEC-9 (verified 2026-11-08); SLSA Verifying artifacts (verified 2026-11-08); NIST-SSDF PO.3.2 (verified 2026-11-08)
 
-### S2-007 — Install-time scripts of dependencies do not run by default
+### S2-007 — Install-time scripts of dependencies cannot reach a secret
 
 - **Dimension:** S2
-- **Checks:** Are the lifecycle scripts of dependencies (those that run at install) off by default, or limited to a reviewed list?
+- **Checks:** Do the lifecycle scripts of dependencies (those that run at install) run only in a context that holds no secret, on developers' machines as in CI?
 - **Why:** A malicious version runs code on the developer's or the CI's machine at install and steals tokens, as package-registry worms have done.
-- **Evidence:** `file` (the configuration of the package manager and the flags of the CI's install); `judgment` (scripts are off for dependencies, with named exceptions)
+- **Evidence:** `file` (the configuration of the package manager and the flags of the CI's install); `judgment` (the context of the install holds no secret; turning scripts off, with named exceptions, is one way to reach that)
 - **Severity:** 🟠; 🔴 when the install runs on a machine that holds publish tokens.
 - **Applies:** project: dependencies
 - **Decided by:** judged
@@ -162,12 +162,12 @@ First edition, a draft: see [the index](./README.md). The format is section 3 of
 
 - **Dimension:** S2
 - **Checks:** Is each new dependency checked before it enters the lock file (spelling against the intended package, owner, age, install scripts), including a name an agent suggested?
-- **Why:** A typosquatted package is added by mistake, or an agent proposes a plausible name that an attacker has registered.
+- **Why:** A typosquatted package is added by mistake, or an agent proposes a plausible name that an attacker has registered (the case of the agent is this catalogue's own addition).
 - **Evidence:** `command` (list the packages a change adds, with their registry data); `judgment` (a stated rule exists, and recent additions followed it)
 - **Severity:** 🟠.
 - **Applies:** project: dependencies
 - **Decided by:** judged
-- **Sources:** OWASP-CICD-TOP10 CICD-SEC-3 (verified 2026-11-08); OWASP-TOP10 A03 (verified 2026-11-08); OWASP-LLM LLM03 (verified 2026-11-08); NIST-SSDF PW.4.1 (verified 2026-11-08)
+- **Sources:** OWASP-CICD-TOP10 CICD-SEC-3 (verified 2026-11-08); OWASP-TOP10 A03 (verified 2026-11-08); NIST-SSDF PW.4.1 (verified 2026-11-08)
 
 ### S2-016 — The repository has no opaque executables, and vendored code has a recorded origin
 
@@ -200,7 +200,7 @@ First edition, a draft: see [the index](./README.md). The format is section 3 of
 - **Severity:** 🟠.
 - **Applies:** project: releases
 - **Decided by:** judged
-- **Sources:** SCORECARD Packaging (verified 2026-11-08); SLSA Build requirements (verified 2026-11-08)
+- **Sources:** SLSA Build requirements (verified 2026-11-08)
 
 ### S2-019 — Releases carry a signature or provenance that users can check
 
@@ -210,7 +210,7 @@ First edition, a draft: see [the index](./README.md). The format is section 3 of
 - **Evidence:** `file` (the signature or provenance files of the release, and the instructions to users); `command` (run a verification against the latest release)
 - **Severity:** 🟠; 🟡 for internal artifacts. The presence of a signature file does not show that it verifies.
 - **Applies:** project: releases
-- **Decided by:** manual
+- **Decided by:** judged
 - **Sources:** SCORECARD Signed-Releases (verified 2026-11-08); SLSA Build requirements (verified 2026-11-08); OWASP-CICD-TOP10 CICD-SEC-9 (verified 2026-11-08); HOST-DOCS artifact attestations (verified 2026-11-08); NIST-SSDF PS.2.1 (verified 2026-11-08)
 
 ### S2-020 — Provenance comes from the build platform, and its level is stated honestly
@@ -251,10 +251,9 @@ First edition, a draft: see [the index](./README.md). The format is section 3 of
 | Id | Name | Edition | Address |
 | -- | ---- | ------- | ------- |
 | HOST-DOCS | The security documentation of the project's repository host | as listed by the adapter | `security.md` in the folder of the project's host adapter |
-| NIST-SSDF | NIST SP 800-218, Secure Software Development Framework | version 1.1, February 2022 (final); revision 1 (version 1.2) is an initial public draft of 2025-12-17, and its changes to the practices cited were read | https://csrc.nist.gov/pubs/sp/800/218/final |
+| NIST-SSDF | NIST SP 800-218, Secure Software Development Framework | version 1.1, February 2022 (final); revision 1 (version 1.2) is an initial public draft of 2025-12-17, and its changes to the practices cited were read | https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-218.pdf |
 | OWASP-CICD | OWASP CI/CD Security Cheat Sheet | the page has no edition; read as published on the date of verification | https://cheatsheetseries.owasp.org/cheatsheets/CI_CD_Security_Cheat_Sheet.html |
 | OWASP-CICD-TOP10 | OWASP Top 10 CI/CD Security Risks | the 2022 list; the risks CICD-SEC-1, 3, 4, 5, 6, 8 and 9 were read | https://owasp.org/www-project-top-10-ci-cd-security-risks/ |
-| OWASP-LLM | OWASP Top 10 for LLM Applications | 2025 | https://genai.owasp.org/llm-top-10/ |
 | OWASP-TOP10 | OWASP Top 10, A03 Software Supply Chain Failures | 2025 | https://top10.owasp.org/2025/A03_2025-Software_Supply_Chain_Failures/ |
-| SCORECARD | OpenSSF Scorecard checks | the 18 checks as published on the date of verification | https://scorecard.dev/ |
+| SCORECARD | OpenSSF Scorecard checks | the checks as published on the date of verification | https://scorecard.dev/ |
 | SLSA | SLSA specification | version 1.2 (build requirements, source requirements, verifying artifacts) | https://slsa.dev/spec/v1.2/ |

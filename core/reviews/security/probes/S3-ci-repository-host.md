@@ -95,13 +95,13 @@ First edition, a draft: see [the index](./README.md). The format is section 3 of
 ### S3-009 — The required checks are real and cannot be skipped
 
 - **Dimension:** S3
-- **Checks:** Is merging gated by required checks that each come from a job that always reports, not skipped by a path filter, a renamed job or a bypass?
-- **Why:** A change merges with a red or never-run check, or a renamed check makes the gate pass silently.
+- **Checks:** Is merging gated by required checks that each come from a job that reports on every pull request, with no required job that a filter or a condition can skip?
+- **Why:** A change merges with a check that never really ran: a job skipped by a condition reports success, and a skipped workflow leaves the gate stuck until someone loosens it.
 - **Evidence:** `command` (compare the host's list of required checks with the jobs that run on every pull request); `file` (triggers and path filters)
 - **Severity:** 🟠; 🟡 when a review also stands behind it.
 - **Applies:** project: ci
 - **Decided by:** judged
-- **Sources:** HOST-DOCS rulesets (verified 2026-11-08); SCORECARD Branch-Protection (verified 2026-11-08); OWASP-CICD-TOP10 CICD-SEC-1 (verified 2026-11-08)
+- **Sources:** HOST-DOCS rulesets (verified 2026-11-08); HOST-DOCS required checks (verified 2026-11-08); SCORECARD Branch-Protection (verified 2026-11-08)
 
 ### S3-010 — Each change needs someone other than its author
 
@@ -243,7 +243,7 @@ First edition, a draft: see [the index](./README.md). The format is section 3 of
 - **Evidence:** `file` (the scheduled scan or its service); `judgment` (the findings have owners)
 - **Severity:** 🔵.
 - **Applies:** every project
-- **Decided by:** scriptable
+- **Decided by:** judged
 - **Sources:** SCORECARD (verified 2026-11-08); OWASP-CICD secure SCM configuration (verified 2026-11-08); HOST-DOCS hardening of CI (verified 2026-11-08)
 
 ## Sources
@@ -251,9 +251,9 @@ First edition, a draft: see [the index](./README.md). The format is section 3 of
 | Id | Name | Edition | Address |
 | -- | ---- | ------- | ------- |
 | HOST-DOCS | The security documentation of the project's repository host | as listed by the adapter | `security.md` in the folder of the project's host adapter |
-| NIST-SSDF | NIST SP 800-218, Secure Software Development Framework | version 1.1, February 2022 (final); revision 1 (version 1.2) is an initial public draft of 2025-12-17, and its changes to the practices cited were read | https://csrc.nist.gov/pubs/sp/800/218/final |
+| NIST-SSDF | NIST SP 800-218, Secure Software Development Framework | version 1.1, February 2022 (final); revision 1 (version 1.2) is an initial public draft of 2025-12-17, and its changes to the practices cited were read | https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-218.pdf |
 | OWASP-CICD | OWASP CI/CD Security Cheat Sheet | the page has no edition; read as published on the date of verification | https://cheatsheetseries.owasp.org/cheatsheets/CI_CD_Security_Cheat_Sheet.html |
 | OWASP-CICD-TOP10 | OWASP Top 10 CI/CD Security Risks | the 2022 list; the risks CICD-SEC-1, 3, 4, 5, 6, 8 and 9 were read | https://owasp.org/www-project-top-10-ci-cd-security-risks/ |
 | OWASP-SECRETS | OWASP Secrets Management Cheat Sheet | the page has no edition; read as published on the date of verification | https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html |
-| SCORECARD | OpenSSF Scorecard checks | the 18 checks as published on the date of verification | https://scorecard.dev/ |
+| SCORECARD | OpenSSF Scorecard checks | the checks as published on the date of verification | https://scorecard.dev/ |
 | SLSA | SLSA specification | version 1.2 (build requirements, source requirements, verifying artifacts) | https://slsa.dev/spec/v1.2/ |

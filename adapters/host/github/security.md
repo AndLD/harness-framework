@@ -12,13 +12,14 @@ For the security review ([the method](../../../core/reviews/security/README.md),
 | hardening of CI | Security hardening for GitHub Actions | https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions |
 | secure use of workflows | Secure use reference | https://docs.github.com/en/actions/reference/security/secure-use |
 | approving runs from forks | Approving workflow runs from forks | https://docs.github.com/en/actions/how-tos/manage-workflow-runs/approve-runs-from-forks |
+| required checks | Troubleshooting required status checks | https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks |
 | rulesets | About rulesets; Available rules for rulesets | https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets |
 | immutable releases | Immutable releases | https://docs.github.com/en/code-security/concepts/supply-chain-security/immutable-releases |
 | environments | Deployments and environments | https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments |
 | tokens | Managing your personal access tokens | https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens |
 | artifact attestations | Artifact attestations | https://docs.github.com/en/actions/concepts/security/artifact-attestations |
 
-The defaults for the secrets of runs from forks and for the permission of the job token were not found in the pages read, so the probes inspect the setting and assume nothing.
+The addresses of "hardening of CI" and "secure use of workflows" led to one page on the date read. The defaults for the secrets of runs from forks and for the permission of the job token were not found in the pages read, so the probes inspect the setting and assume nothing.
 
 ## The feature for each probe
 

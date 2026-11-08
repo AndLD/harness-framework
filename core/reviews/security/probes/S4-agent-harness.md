@@ -107,7 +107,7 @@ First edition, a draft: see [the index](./README.md). The format is section 3 of
 
 - **Dimension:** S4
 - **Checks:** Is each "never" rule also held by something outside the agent's machine or process, given that hooks may be disabled or absent in some session types?
-- **Why:** A session type skips the hook (a headless run, an untrusted folder, a cloud session) and the rule does not apply.
+- **Why:** A setting or a flag of the run switches hooks off, or a kind of hook does not run until a folder is trusted, and the rule does not apply.
 - **Evidence:** `file` (the rules and their layers: the rule-to-check map); `judgment` (each "never" rule has a layer outside the agent)
 - **Severity:** 🟠; 🟡 for conventions that are not about security.
 - **Applies:** project: hooks
@@ -200,7 +200,7 @@ First edition, a draft: see [the index](./README.md). The format is section 3 of
 - **Severity:** 🔴 for privileged triggers on untrusted input; 🟠 otherwise.
 - **Applies:** project: unattended-agent
 - **Decided by:** scriptable
-- **Sources:** HOST-DOCS hardening of CI (verified 2026-11-08); OWASP-AGENT-CS secure agent testing (verified 2026-11-08)
+- **Sources:** HOST-DOCS hardening of CI (verified 2026-11-08)
 
 ### S4-019 — An agent's claim does not alone release a consequential step
 
@@ -271,9 +271,9 @@ First edition, a draft: see [the index](./README.md). The format is section 3 of
 ### S4-025 — Policy cannot be changed by a session, and unattended runs have limits
 
 - **Dimension:** S4
-- **Checks:** Are the non-negotiable guards set at a level a session cannot change (managed or server side), do unattended runs have a limit on cost and iterations, and is the agent software on a supported version?
+- **Checks:** Are the non-negotiable guards set at a level a session cannot change (managed or server side), and do unattended runs have a limit on cost and iterations?
 - **Why:** A repository setting or a session flag removes a guard, or a runaway loop spends money or hammers a service.
-- **Evidence:** `file` (managed settings, the limits of automation); `command` (the version in use); `judgment` (for a solo project the managed level may not apply; the limits still do)
+- **Evidence:** `file` (managed settings, the limits of automation); `judgment` (for a solo project the managed level may not apply; the limits still do)
 - **Severity:** 🟡; 🟠 with many contributors or unattended jobs.
 - **Applies:** project: agent-runtime
 - **Decided by:** judged

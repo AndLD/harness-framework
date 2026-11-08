@@ -8,9 +8,9 @@ Each probe has the format of section 3 of the method. The files of S5 and S6 and
 
 | Dimension | File | Probes | Scriptable | Judged | Manual |
 | --------- | ---- | ------ | ---------- | ------ | ------ |
-| S1 Secrets | [S1-secrets.md](./S1-secrets.md) | 21 | 6 | 13 | 2 |
-| S2 Dependencies and supply chain | [S2-dependencies-supply-chain.md](./S2-dependencies-supply-chain.md) | 22 | 8 | 12 | 2 |
-| S3 CI and the repository host | [S3-ci-repository-host.md](./S3-ci-repository-host.md) | 22 | 8 | 9 | 5 |
+| S1 Secrets | [S1-secrets.md](./S1-secrets.md) | 21 | 6 | 15 | 0 |
+| S2 Dependencies and supply chain | [S2-dependencies-supply-chain.md](./S2-dependencies-supply-chain.md) | 22 | 8 | 13 | 1 |
+| S3 CI and the repository host | [S3-ci-repository-host.md](./S3-ci-repository-host.md) | 22 | 7 | 10 | 5 |
 | S4 Agent harness | [S4-agent-harness.md](./S4-agent-harness.md) | 25 | 3 | 20 | 2 |
 
 ## Project traits
@@ -47,4 +47,4 @@ A probe names what to look at in terms that fit any host and any agent runtime. 
 
 ## How the sources were used
 
-The text of a source is summarized and cited by its id, never copied. Each dimension's file ends with the table of its sources. A date beside a citation is the last day that source was read for that probe. The NIST framework is cited in its final version, and the changes of its draft revision were read.
+The text of a source is summarized and cited by its id, never copied. Each dimension's file ends with the table of its sources. A date beside a citation is the last day that source was read for that probe. Where a clause of a probe has no outside source, the probe says so. The NIST framework is cited in its final version, and the changes of its draft revision were read.
