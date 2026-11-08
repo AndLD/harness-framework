@@ -14,5 +14,4 @@ A request for something new, which is not a defect, is an item of the [backlog](
 <!-- issue-queue:start -->
 | Issue | Title | Area | Agent | SP | Status | Reported |
 | ----- | ----- | ---- | ----- | -- | ------ | -------- |
-| [I-37](./I-37.md) | The security review's method and checks, corrected from the first review | review method | C2 | 2 | ⬜ | the [first security review](../../quality-reviews/security/2026-11-08.md), section 9 |
 <!-- issue-queue:end -->

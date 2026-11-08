@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import { after, test } from 'node:test'
 import { settingsFor } from '../../adapters/runtime/claude-code/settings.mjs'
 import { AUTOMATED, checkSecurity, scriptableProbes } from './security.mjs'
-import { runCheck } from './checks.mjs'
+import { report, runCheck } from './checks.mjs'
 import { loadProfile } from './profile.mjs'
 import { git, removeRepos, repo } from './test-repo.mjs'
 
@@ -23,9 +23,9 @@ const CLEAN = {
 }
 const probesOf = ({ problems }) => problems.map((problem) => problem.split(' ')[0])
 
-test('every probe that a check names is a scriptable probe of the catalogue, and the catalogue has the 28 that the index counts', () => {
+test('every probe that a check names is a scriptable probe of the catalogue, and the catalogue has the 29 that the index counts', () => {
   const scriptable = scriptableProbes(catalogue).map((probe) => probe.id)
-  assert.equal(scriptable.length, 28)
+  assert.equal(scriptable.length, 29)
   for (const id of Object.keys(AUTOMATED)) assert.ok(scriptable.includes(id), `${id} is a scriptable probe`)
   assert.deepEqual(scriptableProbes(join(catalogue, 'missing')), [])
 })
@@ -36,7 +36,7 @@ test('a clean project has no finding; it lists the gaps of the catalogue when it
   assert.deepEqual(result.problems, [])
   assert.match(result.messages[0], /^Scanned 6 of 6 tracked files with 9 secret rules/)
   assert.match(result.messages.join('\n'), /Checked 1 workflow files/)
-  assert.match(result.messages.join('\n'), /Checked the committed settings of claude-code/)
+  assert.match(result.messages.join('\n'), /Checked the committed and the local settings of claude-code/)
   assert.match(result.messages.join('\n'), /Not run: the dependency audit \(S2-010\)/)
   assert.match(result.messages.at(-1), /^Not listed: the gaps/)
 })
@@ -48,6 +48,26 @@ test('the project that is the framework itself lists the scriptable probes witho
     /^\d+ scriptable probes have no check yet, the gaps for the next security review: S1-007/
   )
   assert.ok(!result.messages.at(-1).includes('S1-001'))
+})
+
+test('every result lists the gaps, a failing one and a quiet one too (I-37)', () => {
+  const run = (result, flags) => {
+    const out = []
+    const err = []
+    const code = report('security', result, { out: (line) => out.push(line), err: (line) => err.push(line), ...flags })
+    return { code, out, err }
+  }
+  const clean = checkSecurity({ root: home, profile })
+  const passing = run({ ...clean, problems: [] })
+  assert.equal(passing.out.length, 2, 'the first message and the gaps')
+  assert.match(passing.out.at(-1), /scriptable probes have no check yet/)
+
+  const failing = run({ ...clean, problems: ['S1-001 a.txt: a secret'] })
+  assert.equal(failing.code, 1)
+  assert.deepEqual(failing.out, [clean.notes[0]], 'only the gaps, no other message')
+
+  const verbose = run(clean, { verbose: true })
+  assert.equal(verbose.out.filter((line) => line === clean.notes[0]).length, 1, 'once')
 })
 
 test('a defect planted in each area is reported under the id of its probe', () => {

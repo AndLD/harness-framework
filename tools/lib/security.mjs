@@ -107,7 +107,7 @@ export function checkSecurity({ root, profile, range, audit = false, runtimes = 
   found.push(...settings.problems)
   messages.push(
     settings.names.length
-      ? `Checked the committed settings of ${settings.names.join(', ')} (S1-015, S4-001, S4-002).`
+      ? `Checked the committed and the local settings of ${settings.names.join(', ')} (S1-015, S4-001, S4-002).`
       : 'Not checked: the settings of the agent runtime (no selected runtime fills the role "settings-audit").'
   )
 
@@ -122,12 +122,12 @@ export function checkSecurity({ root, profile, range, audit = false, runtimes = 
 
   const catalogue = join(root, inFramework(profile, 'core/reviews/security/probes'))
   const gaps = scriptableProbes(catalogue).filter(({ id }) => !AUTOMATED[id])
-  messages.push(
-    !existsSync(catalogue)
-      ? 'Not listed: the gaps (the catalogue of probes is not in this copy of the framework).'
-      : gaps.length
-        ? `${gaps.length} scriptable probes have no check yet, the gaps for the next security review: ${gaps.map(({ id }) => id).join(', ')}.`
-        : 'Every scriptable probe of the catalogue has a check.'
-  )
-  return { problems: found.map(note), messages }
+  const gapLine = !existsSync(catalogue)
+    ? 'Not listed: the gaps (the catalogue of probes is not in this copy of the framework).'
+    : gaps.length
+      ? `${gaps.length} scriptable probes have no check yet, the gaps for the next security review: ${gaps.map(({ id }) => id).join(', ')}.`
+      : 'Every scriptable probe of the catalogue has a check.'
+  messages.push(gapLine)
+  // Step 4 of the method gathers the gaps by hand, so every result lists them, a failing one and a quiet one too
+  return { problems: found.map(note), messages, notes: [gapLine] }
 }

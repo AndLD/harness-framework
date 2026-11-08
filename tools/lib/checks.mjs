@@ -122,11 +122,16 @@ export function runProjectChecks({ root, profile }, { stdio, verbose = false, er
 
 /**
  * Prints what a check found (`harness check <name>`); returns its exit code. A check that passes prints its first message (one line), or all of them with
- * `verbose`; a check that finds problems prints them, and its messages only with `verbose`.
+ * `verbose`; a check that finds problems prints them, and its messages only with `verbose`. The `notes` of a result are lines of its messages that a
+ * method relies on in every result (the gaps of `check security`): they are printed when the messages are not.
  */
-export function report(name, { problems, messages }, { out, err, verbose = false }) {
+export function report(name, { problems, messages, notes = [] }, { out, err, verbose = false }) {
   if (verbose) messages.forEach((line) => out(line))
-  else if (!problems.length) messages.slice(0, 1).forEach((line) => out(line))
+  else {
+    const first = problems.length ? [] : messages.slice(0, 1)
+    first.forEach((line) => out(line))
+    notes.filter((line) => !first.includes(line)).forEach((line) => out(line))
+  }
   problems.forEach((line) => err(`harness check ${name}: ${line}`))
   return problems.length ? 1 : 0
 }

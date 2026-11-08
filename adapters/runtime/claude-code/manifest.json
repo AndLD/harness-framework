@@ -72,7 +72,7 @@
       "export": "adoptConfiguration"
     },
     "settings-audit": {
-      "fills": "the committed `.claude/settings.json` read as data: the `Read(...)` deny rules of `access.denyRead` present, no setting that turns the permission checks or the hooks off, and no broad allow rule (a bare tool, an edit outside a named folder of the project or inside the settings, the hooks or `.git`, an interpreter, package runner or fetcher with any argument, a destructive command with a wildcard); `security.allowedRules` names the rules a project accepts",
+      "fills": "the committed `.claude/settings.json`, and the owner's `.claude/settings.local.json` when it is there (for the rules that switch checks off or allow too much, not for the deny rules), read as data: the `Read(...)` deny rules of `access.denyRead` present, no setting that turns the permission checks or the hooks off, and no broad allow rule (a bare tool, an edit outside a named folder of the project or inside the settings, the hooks or `.git`, an interpreter, package runner or fetcher with any argument, a destructive command with a wildcard); `security.allowedRules` names the rules a project accepts",
       "module": "settings-audit.mjs",
       "export": "auditSettings"
     }
