@@ -481,3 +481,24 @@ Entries are written from the entry templates of the [flow-log template](../../..
 - **For the owner:** the decision above; the 7 days of `SECURITY.md`; AndLD/bot-rts#306 and its probes; the earlier settings S-08, S-10, S-03 and the private advisory for the 4 high findings.
 - **Usage:** 5-hour 16% (resets 2026-11-08T22:30:00Z) · weekly 71% (resets 2026-11-10T07:00:00Z), account andrey.larionov.me@gmail.com.
 - **Next:** on the owner's answer, the fix steps it names as suffix ids of 7h (a D2 record), then the cut of `0.6.0`.
+
+### 2026-11-08 20:33 — decision D3: the way to the final cut is fix, then `0.6.0-dev.2`
+- **Options:** the three of the entry of 20:06.
+- **Own analysis:** (a), fix and cut with no `dev.2` (20:06).
+- **Worker's recommendation:** name the items in the final note and file them.
+- **Choice:** (b): the owner ("Fix, then dev.2"), against the orchestrator's (a). A second take proves the fixes before the final tag · **Decided by:** the owner.
+
+### 2026-11-08 20:33 — decision D2: the steps of the fixes and of `0.6.0-dev.2`
+- **Options:** none to weigh, the owner's choice sets them: 7i builds I-46 (`SECURITY.md` and the layer map) and I-47 (S2-001 on workspaces), both filed now as defects; 7j cuts `0.6.0-dev.2`; 7k is the second take; 7l decides the final cut and stops for the owner, who also confirms the 7 days of `SECURITY.md` there. Step 7h ✅.
+- **Own analysis:** the cut of 7j merges `develop` into `release/0.6.0`, as the cut of `0.5.0` did, and its worker is told what the note must add (a project's own product terms against the words of the probes, the hand pinning of a project's own workflows) and to correct the fragment of 2.2 (14 of 29). The take of 7k needs AndLD/bot-rts#306 merged or a decision about it first: it is that repository's owner's.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** as above; the releases file has a row `0.6.0-dev.2` and the row `0.6.0` names I-46 and I-47 · **Decided by:** the orchestrator (seamless mode).
+
+### 2026-11-08 20:34 — decision D0: 7i starts while step 7g shows 🟡
+- **Options:** none to weigh: `harness flow status` names 7g as the next step because AndLD/bot-rts#306 is open, and what is left of 7g is that repository's owner's merge; 7i needs only 7h.
+- **Worker's recommendation:** none (no worker is involved).
+- **Choice:** 7i starts · **Decided by:** the orchestrator.
+
+### 2026-11-08 20:34 — running
+- **Orchestrator:** the desktop session b1d10f69-cd53-40a2-bc31-82766d7686ce of the account andrey.larionov.me@gmail.com · **Mode:** seamless · **Steps:** 7i, 7j, 7k, then 7l, which stops for the owner
+- **Usage:** 5-hour 18% (resets 2026-11-08T22:30:00Z) · weekly 71% (resets 2026-11-10T07:00:00Z)
