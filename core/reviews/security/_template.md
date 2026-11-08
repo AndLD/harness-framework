@@ -83,5 +83,5 @@ Short verdict, then the ordered steps, each naming the findings it removes.
 
 The loop of the method (section 9): what each finding became.
 
-| Finding | Severity | Outcome (fix, probe, rule candidate) | Issue, probe or report upstream |
-| ------- | -------- | ------------------------------------ | ------------------------------- |
+| Finding | Severity | Outcome (one or more of fix, probe, rule candidate) | Issue, probe or report upstream |
+| ------- | -------- | -------------------------------------------------- | ------------------------------- |

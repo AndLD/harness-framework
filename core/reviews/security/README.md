@@ -15,8 +15,8 @@ allows. It says where the project stands, what is wrong and in what order to fix
 **Direction, not a fixed list.** This method states what a review looks at and how a result is recorded. What to check is the **catalogue of
 probes** beside it (`probes/`, one file per dimension, and `scenarios/`, the playbooks of attack scenarios), which is researched from named
 sources and grows with every review (section 9). A review that has checked every probe has not finished thinking: a weakness that no probe
-names is still a finding, and it adds a probe. A dimension whose file of probes does not exist yet is reviewed from its row in section 2, and
-the report says so.
+names is still a finding, and it adds a probe. A dimension whose file of probes does not exist yet is reviewed from its row in section 2, a
+scenario that has no playbook yet is recorded as not run, and the report says so.
 
 ---
 
@@ -87,7 +87,7 @@ The kinds of evidence:
 | `command` | A command through a role of an adapter or of the profile. A probe names the role and never the tool of a stack, so it stays neutral. |
 | `file` | The files or settings to read, and what to look for in them |
 | `judgment` | The question an agent or a person answers from what it has read, and what would count as a yes |
-| `scenario` | The playbook of `scenarios/` to run, under the rules of section 5 |
+| `scenario` | The playbook of `scenarios/` to run, under the rules of section 5. A playbook states its goal, its preconditions, the steps against the test environment, the safe behaviour expected, the evidence to keep and the cleanup; the result is *safe* when the system behaved as expected, *unsafe* when it did not. |
 
 How far a script can decide it:
 
@@ -122,13 +122,13 @@ project's probe that would help any project is reported upstream (section 8), an
 
 ## 4. Procedure
 
-Work on a documentation-type branch cut from the integration branch, named after the review date. The review adds one report and updates the index
-that links to it. Fixes are separate changes after approval.
+Work on a documentation-type branch cut from the integration branch, named after the review date. The review adds one report and its row in the review log
+of the bindings, and any change to the threat model in the bindings. Fixes are separate changes after approval.
 
 1. **Prepare.** Record the commit under review, the date, the type of the review (section 10), the reviewer and the previous report. Prefer a reviewer who
    did not write what is reviewed, and say in the report who reviewed. Read the bindings and the open findings of the previous report.
-2. **Refresh the threat model** (S5 and S6, where they apply): the assets, the trust boundaries, the entry points and who the attackers are. An
-   agent drafts it from the project's code and documents; a person checks it. A change to it is recorded in the bindings by the review's report.
+2. **Refresh the threat model** (S5 and S6, where they apply): the assets, the trust boundaries, the entry points, who the attackers are and the kinds of
+   product that the field `Applies` of a probe can name. An agent drafts it from the project's code and documents; a person checks it.
 3. **Select the probes.** The probes of the catalogue and those of the bindings, filtered by `Applies`. List each one that does not apply, with the reason.
 4. **Run the automation.** `harness check security` gives the result of the probes that have a check, and the report quotes the command and its date. A
    version of the framework without the command, and a scriptable probe with no check, are gathered by hand; the second is listed as a gap. The review also
@@ -200,7 +200,7 @@ A report and an issue are read by everyone who can read the repository, and late
 - **A secret is never written down.** Not in a report, an issue, a commit message or a log: name the file, the line and the kind of secret, and rotate it first.
 - **Where the repository can be read by more people than those who fix it**, an exploitable 🔴 or 🟠 finding that is still open is recorded without the steps that
   would reproduce it: the weakness, its place at the level of a component, its severity and its fix. The details go to the private place that the bindings name, and into the
-  report when the fix has landed.
+  report when the fix has landed. Where the bindings name no private place, the details go to the owner of the project and are not written into the repository.
 - **A rotation comes before the record** where a secret leaked: the fix of a leak is not waiting for a task.
 
 ---
@@ -212,7 +212,7 @@ A report and an issue are read by everyone who can read the repository, and late
 - **Each finding becomes an issue of the project's issue queue**, with the severity on the first line of its text and the id of the finding. Open issues in the
   order the report recommends, within section 7.
 - **A finding that is generic** (a defect of the framework, or a weakness that any project using it has) **is reported upstream** by the procedure `report-upstream`. A
-  security finding that can be exploited and is not fixed needs the owner's approval first, whatever the switch of that procedure says, and is written within section 7.
+  security finding that can be exploited and is not fixed needs the owner's approval first, whatever the role `reports.upstream` allows that procedure to do alone, and is written within section 7.
 
 ---
 
@@ -224,7 +224,7 @@ A review ends by sorting each finding, so that each review leaves the project an
 | ------- | ----- |
 | **Fix** | An issue of the queue (section 8). |
 | **Probe** | A probe to add or change: a weakness that no probe named, a probe that was unclear or that did not apply, a check that gave the wrong answer. In the bindings when it is the project's, upstream when it is general. |
-| **Rule candidate** | A candidate for a security rule of core: something that happened or that a probe found, which a rule loaded by every agent would have prevented. A project reports it upstream; the framework's own review collects it for its distilling step. A rule from fear alone stays in the catalogue. |
+| **Rule candidate** | A candidate for a security rule of core: something that happened or that a probe found, which a rule loaded by every agent would have prevented. A project reports it upstream; the framework's own review collects these, and the framework decides which become rules. A rule from fear alone stays in the catalogue. |
 
 ---
 
