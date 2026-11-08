@@ -25,7 +25,7 @@ The security methodology of Phase 2, in the release `0.6.0` (named by the owner 
 | # | Kind | Scope | Needs | Stops for | SP | Est. usage | Model | State |
 | - | ---- | ----- | ----- | --------- | -- | ---------- | ----- | ----- |
 | 1 | tasks | 2.1 | — | — | 5 | 13.5% | C3 | ✅ |
-| 2 | tasks | 2.8 | 1 | — | 5 | 13.5% | C3 | ⬜ |
+| 2 | tasks | 2.8 | 1 | — | 5 | 13.5% | C3 | ✅ |
 | 3 | tasks | 2.9 | 2 | — | 5 | 13.5% | C3 | ⬜ |
 | 4 | tasks | 2.2 | 3 | — | 3 | 4.8% | C2 | ⬜ |
 | 5 | tasks | 2.4 | 4 | — | 3 | 8.1% | C3 | ⬜ |
