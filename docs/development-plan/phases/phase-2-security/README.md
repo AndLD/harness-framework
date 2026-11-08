@@ -11,7 +11,7 @@ After `0.1.0`: a security review method next to the code review and the harness 
 <!-- phase-tasks:start -->
 | # | Task | Agent | SP | Status |
 | - | ---- | ----- | -- | ------ |
-| [2.1](./2.1.md) | Security review method: the frame, the probe format and the rules of engagement | C3 | 5 | ⬜ |
+| [2.1](./2.1.md) | Security review method: the frame, the probe format and the rules of engagement | C3 | 5 | 🟡 |
 | [2.2](./2.2.md) | Automated security checks | C2 | 3 | ⬜ |
 | [2.3](./2.3.md) | Automated review measurements | C2 | 3 | ✅ |
 | [2.4](./2.4.md) | First security review of the framework itself | C3 | 3 | ⬜ |

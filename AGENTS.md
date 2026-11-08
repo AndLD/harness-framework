@@ -30,6 +30,7 @@ cite by its role (the branches, the coverage gate, the commands) is in the [proj
 | a branch is ready and a pull request has to be opened, or a claim pull request marked ready | [`core/procedures/open-pull-request.md`](./core/procedures/open-pull-request.md) |
 | cutting a release or a hotfix | [`core/procedures/release.md`](./core/procedures/release.md) |
 | the owner asks to run or continue a flow of the plan ("Run flow N", "Run flows N–M", "Continue flow N"), to orchestrate its steps | [`core/procedures/run-flow.md`](./core/procedures/run-flow.md) |
+| asked to review the security of the project (not the diff of one change) | [`core/procedures/security-review.md`](./core/procedures/security-review.md) |
 | starting or resuming a phase or a task of the development plan, before any other work on it | [`core/procedures/start-task.md`](./core/procedures/start-task.md) |
 | the open reports of users have to be triaged: the session start lists them, or the owner asks | [`core/procedures/triage-reports.md`](./core/procedures/triage-reports.md) |
 | the project takes a new version of the framework, adopts it from the copy of a first harness, or has found a defect in the framework | [`core/procedures/update-framework.md`](./core/procedures/update-framework.md) |

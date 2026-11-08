@@ -90,7 +90,9 @@
     "releasing": "docs/operations/releasing.md",
     "codeReviews": "harness/core/reviews/code/README.md",
     "harnessReviews": "harness/core/reviews/harness/README.md",
-    "harnessBindings": "docs/quality-reviews/harness/bindings.md"
+    "harnessBindings": "docs/quality-reviews/harness/bindings.md",
+    "securityReviews": "harness/core/reviews/security/README.md",
+    "securityBindings": "docs/quality-reviews/security/bindings.md"
   },
   "access": {
     "denyRead": [".env", ".env.*", "!.env.example", "*.pem", "*.key"]

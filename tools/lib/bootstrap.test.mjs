@@ -159,6 +159,13 @@ test('the scaffold writes a risk register and a template of design records once,
   const files = Object.fromEntries(scaffoldPlan({ profile, modules }).map(({ path, content }) => [path, content]))
   const risks = files['docs/development-plan/cross-cutting/risk-register.md']
   const rfcs = files['docs/development-plan/cross-cutting/decisions/README.md']
+  const security = files['docs/quality-reviews/security/bindings.md']
+  assert.match(
+    security,
+    /^\[← Security review method\]\(\.\.\/\.\.\/\.\.\/harness\/core\/reviews\/security\/README\.md\)/
+  )
+  assert.match(security, /^## Scope of active tests$/m)
+  assert.doesNotMatch(security, /\{\{/)
   assert.ok(risks.startsWith('[← Development plan](../README.md)\n\n# Risk register'))
   assert.match(risks, /\| ID \| Risk \| Likelihood \| Impact \| Mitigation \| Owner \| Status \| Reviewed \|/)
   assert.match(risks, /\[the decision records\]\(\.\/decisions\/README\.md\)/)
@@ -170,8 +177,9 @@ test('the scaffold writes a risk register and a template of design records once,
   const without = structuredClone(profile)
   without.documents.riskRegister = ''
   without.documents.rfcs = ''
+  without.documents.securityBindings = ''
   const none = scaffoldPlan({ profile: without, modules }).map(({ path }) => path)
-  assert.ok(!none.some((path) => /cross-cutting/.test(path)))
+  assert.ok(!none.some((path) => /cross-cutting|security/.test(path)))
 })
 
 test('a project with two stacks gets one CI workflow whose job ids are unique, each stack with its own static job and its own coverage jobs', () => {

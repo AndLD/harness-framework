@@ -108,7 +108,9 @@
     "releasing": "docs/operations/releasing.md",
     "codeReviews": "core/reviews/code/README.md",
     "harnessReviews": "core/reviews/harness/README.md",
-    "harnessBindings": "docs/quality-reviews/harness/bindings.md"
+    "harnessBindings": "docs/quality-reviews/harness/bindings.md",
+    "securityReviews": "core/reviews/security/README.md",
+    "securityBindings": "docs/quality-reviews/security/bindings.md"
   },
   "layers": {
     "scope": [

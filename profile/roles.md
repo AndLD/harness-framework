@@ -241,4 +241,6 @@ Bounded contexts (files of the product specification):
 | Code quality reviews | {{link:documents.codeReviews}} |
 | Harness quality reviews | {{link:documents.harnessReviews}} |
 | Harness review bindings | {{link:documents.harnessBindings}} |
+| Security reviews | {{link:documents.securityReviews}} |
+| Security review bindings | {{link:documents.securityBindings}} |
 | Harness-to-framework plan | {{link:documents.frameworkPlan}} |

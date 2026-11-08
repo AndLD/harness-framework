@@ -60,6 +60,7 @@ test('the procedures of the framework are all well formed, and each is named by 
       'release',
       'report-upstream',
       'run-flow',
+      'security-review',
       'start-task',
       'triage-reports',
       'update-framework'
@@ -120,12 +121,28 @@ test("the framework's procedures render without a template tag left, with this r
   delete lean.documents.planMethod
   delete lean.paths.backlog
   delete lean.host.autoMerge
+  delete lean.documents.securityBindings
   for (const each of [repository, lean]) {
     for (const procedure of listProcedures().filter((one) => procedureApplies(one, each))) {
       const rendered = renderProcedure(procedure, each, `.claude/skills/${procedure.name}/SKILL.md`)
       assert.doesNotMatch(rendered, /\{\{/, procedure.name)
     }
   }
+})
+
+test('the security review applies only to a project that sets its role, and reads its method and its bindings', () => {
+  const procedure = listProcedures().find(({ name }) => name === 'security-review')
+  assert.equal(procedureApplies(procedure, {}), false)
+  assert.equal(procedureApplies(procedure, { documents: { securityReviews: '' } }), false)
+  const documents = {
+    securityReviews: 'harness/core/reviews/security/README.md',
+    securityBindings: 'docs/s/bindings.md'
+  }
+  assert.equal(procedureApplies(procedure, { documents }), true)
+  const rendered = renderProcedure(procedure, { documents }, '.claude/skills/security-review/SKILL.md')
+  assert.match(rendered, /harness\/core\/reviews\/security\/README\.md/)
+  assert.match(rendered, /docs\/s\/bindings\.md/)
+  assert.match(rendered, /stops and asks/)
 })
 
 const own = (root, files) =>
