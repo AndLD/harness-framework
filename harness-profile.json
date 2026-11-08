@@ -49,6 +49,12 @@
     "changelogFragments": "changelog.d",
     "frameworkDir": "."
   },
+  "checks": {
+    "security": true
+  },
+  "security": {
+    "allowedRules": ["Bash(node *)"]
+  },
   "flows": {
     "permissions": {
       "mode": "auto",

@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { after, test } from 'node:test'
 import { checkValues } from '../../../tools/lib/values.mjs'
-import { isPinned } from './ci-audit.mjs'
+import { auditCi, isPinned } from './ci-audit.mjs'
 import { renderTemplate, renderWorkflow } from './templates.mjs'
 import { readJobNames, readTriggers } from './workflows.mjs'
 
@@ -81,4 +81,22 @@ test('every action of the workflow templates is pinned to a full commit, with it
     assert.ok(isPinned(line.split(/\s+/)[1]), line)
     assert.match(line, / # v\d+\.\d+\.\d+$/, line)
   }
+})
+
+test('the workflow templates grant read at the top and write only on the job, so the security probe on permissions finds nothing', () => {
+  const files = [
+    { path: 'ci.yml', text: renderWorkflow('ci.yml', profile, { jobs: ['t'] }) },
+    { path: 'release.yml', text: renderWorkflow('release.yml', profile) },
+    { path: 'update-branches.yml', text: renderWorkflow('update-branches.yml', profile) }
+  ]
+  assert.deepEqual(
+    auditCi({ files }).filter(({ probe }) => probe === 'S3-001'),
+    []
+  )
+  const update = files[2].text
+  assert.match(update, /\npermissions:\n {2}contents: read\n\njobs:/)
+  assert.match(
+    update,
+    /runs-on: ubuntu-latest\n {4}permissions:\n {6}contents: write\n {6}pull-requests: write\n {6}actions: write\n/
+  )
 })
